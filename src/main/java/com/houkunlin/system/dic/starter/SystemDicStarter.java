@@ -29,7 +29,7 @@ public class SystemDicStarter {
 
     public static boolean isRawValue() {
         if (dicProperties == null) {
-            logger.warn("DicProperties Not Found");
+            logger.warn("DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务");
             return false;
         }
         return dicProperties.isRawValue();
@@ -37,7 +37,7 @@ public class SystemDicStarter {
 
     public static boolean isTextValueDefaultNull() {
         if (dicProperties == null) {
-            logger.warn("DicProperties Not Found");
+            logger.warn("DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务");
             return false;
         }
         return dicProperties.isTextValueDefaultNull();

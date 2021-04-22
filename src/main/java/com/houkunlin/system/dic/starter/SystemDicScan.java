@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(SystemDicScanRegistrar.class)
+@Import({SystemDicScanRegistrar.class, SystemDicStarter.class})
 public @interface SystemDicScan {
     /**
      * 系统字典扫描包路径

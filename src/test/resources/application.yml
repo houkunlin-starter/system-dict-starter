@@ -21,7 +21,7 @@ spring:
 logging:
   level:
     com:
-      system: debug
+      houkunlin: debug
 system:
   dic:
     raw-value: true

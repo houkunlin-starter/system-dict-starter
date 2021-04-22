@@ -21,7 +21,7 @@ public class DicUtil {
     }
 
     public static DicTypeVo getDicType(String type) {
-        if (type == null) {
+        if (type == null || store == null) {
             return null;
         }
         final DicTypeVo dicType = store.getDicType(type);
@@ -32,7 +32,7 @@ public class DicUtil {
     }
 
     public static String getDicValueTitle(String type, String value) {
-        if (type == null || value == null) {
+        if (type == null || value == null || store == null) {
             return null;
         }
         final String title = store.getDicValueTitle(type, value);
