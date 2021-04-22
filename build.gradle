@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.4.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "io.freefair.lombok" version "5.3.0"
     id 'maven-publish'
     id 'java-library'
     id 'application'
@@ -28,10 +29,8 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api 'com.google.guava:guava:30.1.1-jre'
 
-    compileOnly 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:+'
+    testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:+'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
