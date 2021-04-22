@@ -68,17 +68,21 @@ public class DicTextJsonSerializer extends JsonSerializer<String> implements Con
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
         this.dicText = dicText;
+        this.dicType = dicText.value();
         final String fieldName = dicText.fieldName();
         if (StringUtils.hasText(fieldName)) {
             this.destinationFieldName = fieldName;
         } else {
             this.destinationFieldName = beanFieldName + "Text";
         }
-        this.dicType = dicText.value();
         this.enumsClass = dicText.enums();
         if (this.enumsClass.length == 0) {
             return;
         }
+        initEnumsClass();
+    }
+
+    private void initEnumsClass() {
         // 解析系统字典枚举列表
         for (final Class<? extends IDicEnums<?>> enumClass : this.enumsClass) {
             if (!enumClass.isEnum()) {
