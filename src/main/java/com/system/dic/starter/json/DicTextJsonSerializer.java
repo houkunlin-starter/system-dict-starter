@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -245,18 +244,8 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             final String fieldName = property.getName();
             final Class<?> javaTypeRawClass = javaType.getRawClass();
             final DicText annotation = property.getAnnotation(DicText.class);
-            // 非 String 类直接跳过
-            if (Objects.equals(javaTypeRawClass, String.class)) {
-                if (annotation != null) {
-                    // 缓存，防止重复创建
-                    return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
-                            new DicTextJsonSerializer(
-                                    property.getMember().getDeclaringClass(),
-                                    fieldName,
-                                    annotation)
-                    );
-                }
-            } else if (IDicEnums.class.isAssignableFrom(javaTypeRawClass)) {
+            // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
+            if (IDicEnums.class.isAssignableFrom(javaTypeRawClass)) {
                 final Class<? extends IDicEnums<?>> aClass = (Class<? extends IDicEnums<?>>) javaTypeRawClass;
                 if (annotation != null) {
                     // 缓存，防止重复创建
@@ -274,6 +263,15 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                                 property.getMember().getDeclaringClass(),
                                 fieldName,
                                 new Class[]{aClass}));
+            }
+            if (annotation != null) {
+                // 缓存，防止重复创建
+                return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
+                        new DicTextJsonSerializer(
+                                property.getMember().getDeclaringClass(),
+                                fieldName,
+                                annotation)
+                );
             }
             try {
                 return prov.findValueSerializer(javaType, property);

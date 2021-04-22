@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Bean2 {
-    private PeopleType peopleType;
+    private PeopleType peopleType = PeopleType.ADMIN;
     @DicText(fieldName = "sdff")
-    private PeopleType peopleType1;
+    private PeopleType peopleType1 = PeopleType.ADMIN;
 }

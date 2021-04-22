@@ -21,10 +21,10 @@ public class CommandRunnerTests implements CommandLineRunner {
 
     @Override
     public void run(final String... args) throws Exception {
-        System.out.println(objectMapper.writeValueAsString(new Bean2(PeopleType.ADMIN, PeopleType.ADMIN)));
-        final Bean1 bean1 = new Bean1("0", "1", "0", "1", "中风", "0", "0", PeopleType.ADMIN);
+        System.out.println(objectMapper.writeValueAsString(new Bean2()));
+        final Bean1 bean1 = new Bean1();
         System.out.println(objectMapper.writeValueAsString(bean1));
-        System.out.println(objectMapper.writeValueAsString(new Bean2(PeopleType.ADMIN, PeopleType.ADMIN)));
+        System.out.println(objectMapper.writeValueAsString(new Bean2()));
         System.out.println(DicUtil.getDicType(PeopleType.class.getSimpleName()));
         System.out.println(objectMapper.writeValueAsString(DicUtil.getDicType(PeopleType.class.getSimpleName())));
     }
