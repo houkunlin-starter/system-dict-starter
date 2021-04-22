@@ -31,11 +31,11 @@ public class DicUtil {
         return null;
     }
 
-    public static Object getDicValueTitle(String type, String value) {
+    public static String getDicValueTitle(String type, String value) {
         if (type == null || value == null) {
             return null;
         }
-        final Object title = store.getDicValueTitle(type, value);
+        final String title = store.getDicValueTitle(type, value);
         if (title != null) {
             return title;
         }

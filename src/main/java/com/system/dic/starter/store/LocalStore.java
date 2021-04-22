@@ -18,6 +18,11 @@ public class LocalStore implements DicStore {
     private static final Logger logger = LoggerFactory.getLogger(LocalStore.class);
     private static final ConcurrentHashMap<String, DicTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TITLE = new ConcurrentHashMap<>();
+    private final RemoteDic remoteDic;
+
+    public LocalStore(final RemoteDic remoteDic) {
+        this.remoteDic = remoteDic;
+    }
 
     @Override
     public void store(final DicTypeVo dicType) {
@@ -31,12 +36,20 @@ public class LocalStore implements DicStore {
 
     @Override
     public DicTypeVo getDicType(final String type) {
-        return CACHE_TYPE.get(DicUtil.dicKey(type));
+        final DicTypeVo typeVo = CACHE_TYPE.get(DicUtil.dicKey(type));
+        if (typeVo == null) {
+            return remoteDic.getDicType(type);
+        }
+        return typeVo;
     }
 
     @Override
-    public Object getDicValueTitle(final String type, final String value) {
-        return CACHE_TITLE.get(DicUtil.dicKey(type, value));
+    public String getDicValueTitle(final String type, final String value) {
+        final String title = CACHE_TITLE.get(DicUtil.dicKey(type, value));
+        if (title == null) {
+            return remoteDic.getDicValueTitle(type, value);
+        }
+        return title;
     }
 
     @PostConstruct

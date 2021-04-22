@@ -21,9 +21,11 @@ import java.util.Iterator;
 public class RedisStore implements DicStore {
     private static final Logger logger = LoggerFactory.getLogger(RedisStore.class);
     public final RedisTemplate<Object, Object> redisTemplate;
+    private final RemoteDic remoteDic;
 
-    public RedisStore(final RedisTemplate<Object, Object> redisTemplate) {
+    public RedisStore(final RedisTemplate<Object, Object> redisTemplate, final RemoteDic remoteDic) {
         this.redisTemplate = redisTemplate;
+        this.remoteDic = remoteDic;
     }
 
     @Override
@@ -43,23 +45,23 @@ public class RedisStore implements DicStore {
         }
         final Object o = redisTemplate.opsForValue().get(DicUtil.dicKey(type));
         if (o == null) {
-            // TODO Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-            return null;
+            // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
+            return remoteDic.getDicType(type);
         }
         return (DicTypeVo) o;
     }
 
     @Override
-    public Object getDicValueTitle(final String type, final String value) {
+    public String getDicValueTitle(final String type, final String value) {
         if (type == null || value == null) {
             return null;
         }
         final Object o = redisTemplate.opsForValue().get(DicUtil.dicKey(type, value));
         if (o == null) {
-            // TODO Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-            return null;
+            // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
+            return remoteDic.getDicValueTitle(type, value);
         }
-        return o;
+        return String.valueOf(o);
     }
 
     @PostConstruct

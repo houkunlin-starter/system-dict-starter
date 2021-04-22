@@ -1,7 +1,9 @@
 package com.system.dic.starter;
 
+import com.system.dic.starter.bean.DicTypeVo;
 import com.system.dic.starter.store.DicStore;
 import com.system.dic.starter.store.LocalStore;
+import com.system.dic.starter.store.RemoteDic;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +50,29 @@ public class SystemDicStarter {
      */
     @ConditionalOnMissingBean
     @Bean
-    public DicStore dicStore() {
+    public DicStore dicStore(RemoteDic remoteDic) {
         logger.debug("使用默认的本地存储来存储数据字典信息");
-        return new LocalStore();
+        return new LocalStore(remoteDic);
+    }
+
+    /**
+     * 当环境中不存在 RemoteDic Bean 的时候创建一个默认的 RemoteDic Bean 实例。用来获取不存在系统字典的字典数据
+     *
+     * @return DicStore
+     */
+    @ConditionalOnMissingBean
+    @Bean
+    public RemoteDic remoteDic() {
+        return new RemoteDic() {
+            @Override
+            public DicTypeVo getDicType(final String type) {
+                return null;
+            }
+
+            @Override
+            public String getDicValueTitle(final String type, final String value) {
+                return null;
+            }
+        };
     }
 }
