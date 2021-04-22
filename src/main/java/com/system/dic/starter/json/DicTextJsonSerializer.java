@@ -22,10 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author HouKunLin
  */
+@SuppressWarnings("all")
 @Getter
-public class DicTextJsonSerializer extends JsonSerializer<String> implements ContextualSerializer {
+public class DicTextJsonSerializer extends JsonSerializer<Object> implements ContextualSerializer {
     private static final Logger logger = LoggerFactory.getLogger(DicTextJsonSerializer.class);
-    private static final ConcurrentHashMap<String, JsonSerializer<String>> CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, JsonSerializer<Object>> CACHE = new ConcurrentHashMap<>();
     /**
      * 使用了这个注解的对象
      */
@@ -82,6 +83,19 @@ public class DicTextJsonSerializer extends JsonSerializer<String> implements Con
         initEnumsClass();
     }
 
+    public DicTextJsonSerializer(Class<?> beanClazz, String beanFieldName, Class<? extends IDicEnums<?>>[] enumsClass) {
+        this.beanClazz = beanClazz;
+        this.beanFieldName = beanFieldName;
+        this.dicText = null;
+        this.dicType = null;
+        this.destinationFieldName = beanFieldName + "Text";
+        this.enumsClass = enumsClass;
+        if (this.enumsClass.length == 0) {
+            return;
+        }
+        initEnumsClass();
+    }
+
     private void initEnumsClass() {
         // 解析系统字典枚举列表
         for (final Class<? extends IDicEnums<?>> enumClass : this.enumsClass) {
@@ -98,30 +112,76 @@ public class DicTextJsonSerializer extends JsonSerializer<String> implements Con
     }
 
     @Override
-    public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeString(value);
-        gen.writeFieldName(destinationFieldName);
-        if (enumsClass != null && enumsClass.length > 0) {
-            String cacheTitle = null;
-            for (final Class<? extends IDicEnums<?>> aClass : enumsClass) {
-                cacheTitle = CACHE_ENUMS.get(aClass, String.valueOf(value));
-                if (cacheTitle != null) {
-                    break;
-                }
-            }
-            gen.writeObject(defaultValue(cacheTitle));
+    public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (formEnumsFieldValue(value, gen)) {
             return;
         }
+        if (formDicTextEnumsValue(value, gen)) {
+            return;
+        }
+        final String valueString = String.valueOf(value);
+        gen.writeString(valueString);
+        gen.writeFieldName(destinationFieldName);
         if (dicType.isBlank()) {
             gen.writeObject(defaultValue(null));
             logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
         } else {
-            gen.writeObject(defaultValue(DicUtil.getDicValueTitle(dicType, value)));
+            gen.writeObject(defaultValue(DicUtil.getDicValueTitle(dicType, valueString)));
         }
     }
 
+    /**
+     * 字段是系统字典枚举对象
+     *
+     * @param value 实体类字段值，此时该值可能是一个系统字典枚举对象
+     * @param gen
+     * @return 是否设置成功
+     */
+    private boolean formEnumsFieldValue(Object value, JsonGenerator gen) throws IOException {
+        if (value instanceof IDicEnums) {
+            final IDicEnums enums = (IDicEnums) value;
+            final String title = getTitleFormClass(enums.getValue());
+            gen.writeString(String.valueOf(enums.getValue()));
+            gen.writeFieldName(destinationFieldName);
+            gen.writeObject(defaultValue(title));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 字段是普通类型，但是使用 @DicText 标记了来自枚举取值
+     *
+     * @param value 实体类字段值
+     * @param gen
+     * @return
+     */
+    private boolean formDicTextEnumsValue(Object value, JsonGenerator gen) throws IOException {
+        if (enumsClass != null && enumsClass.length > 0) {
+            final String title = getTitleFormClass(value);
+            gen.writeString(String.valueOf(value));
+            gen.writeFieldName(destinationFieldName);
+            gen.writeObject(defaultValue(title));
+            return true;
+        }
+        return false;
+    }
+
+    private String getTitleFormClass(Object value) throws IOException {
+        assert enumsClass != null;
+
+        String cacheTitle = null;
+        for (final Class<? extends IDicEnums<?>> aClass : enumsClass) {
+            cacheTitle = CACHE_ENUMS.get(aClass, String.valueOf(value));
+            if (cacheTitle != null) {
+                break;
+            }
+        }
+        return cacheTitle;
+    }
+
     private Object defaultValue(Object value) {
-        if (dicText.defaultNull()) {
+        if (dicText != null && dicText.defaultNull()) {
             return value;
         }
         if (value == null) {
@@ -135,6 +195,7 @@ public class DicTextJsonSerializer extends JsonSerializer<String> implements Con
         // 为空直接跳过
         if (property != null) {
             final JavaType javaType = property.getType();
+            final String fieldName = property.getName();
             // 非 String 类直接跳过
             if (Objects.equals(javaType.getRawClass(), String.class)) {
                 final DicText annotation = property.getAnnotation(DicText.class);
@@ -157,7 +218,6 @@ public class DicTextJsonSerializer extends JsonSerializer<String> implements Con
                     // 因此导致不同 field 的 DicText 注解可能只有一个 JsonSerializer 对象，从而导致数据字典 JSON 字段名称出现错误、冲突
                     // 方案二：此时需要把 field 加入到 cache 的 key 中
                     // 这样可以由相同的 field 加相同的 DicText 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
-                    final String fieldName = property.getName();
                     final String cacheKey = fieldName + annotation.hashCode();
 
                     // 缓存，防止重复创建
@@ -170,7 +230,21 @@ public class DicTextJsonSerializer extends JsonSerializer<String> implements Con
                 }
             }
             // TODO 发现个问题，DicText注解在枚举上时会出现堆栈溢出；在直接使用枚举对象做字段的时候这里出现了一个堆栈溢出，无法获取到具体的序列化对象
-            return prov.findValueSerializer(javaType, property);
+            final Class<?> javaTypeRawClass = javaType.getRawClass();
+            if (IDicEnums.class.isAssignableFrom(javaTypeRawClass)) {
+                final Class<? extends IDicEnums<?>> aClass = (Class<? extends IDicEnums<?>>) javaTypeRawClass;
+                // 缓存，防止重复创建
+                return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName, key ->
+                        new DicTextJsonSerializer(
+                                property.getMember().getDeclaringClass(),
+                                fieldName,
+                                new Class[]{aClass}));
+            }
+            try {
+                return prov.findValueSerializer(javaType, property);
+            } catch (JsonMappingException e) {
+                throw new JsonMappingException(null, "无法解析 " + javaTypeRawClass + " 类型的字典序列化对象。由于在该对象上使用了 @DicText 注解，但其未实现 IDicEnums 接口可能就会出现这个异常", e);
+            }
         }
         return prov.findNullValueSerializer(null);
     }
