@@ -10,6 +10,8 @@ import test.application.bean.Bean2;
 import test.application.bean.PeopleType;
 
 /**
+ * 启动完成后执行一段代码
+ *
  * @author HouKunLin
  */
 @Component
