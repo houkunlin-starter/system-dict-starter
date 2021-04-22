@@ -130,25 +130,13 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        if (formEnumsFieldValue(value, gen)) {
+        if (formFieldEnumsClass(value, gen)) {
             return;
         }
-        if (formDicTextEnumsValue(value, gen)) {
+        if (formDicTextEnumsClass(value, gen)) {
             return;
         }
-        final String valueString = String.valueOf(value);
-        if (SystemDicStarter.isRawValue()) {
-            gen.writeObject(value);
-        } else {
-            gen.writeString(valueString);
-        }
-        gen.writeFieldName(destinationFieldName);
-        if (dicType != null && dicType.isBlank()) {
-            gen.writeObject(defaultValue(null));
-            logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
-        } else {
-            gen.writeObject(defaultValue(DicUtil.getDicValueTitle(dicType, valueString)));
-        }
+        formDicCache(value, gen);
     }
 
     /**
@@ -158,7 +146,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @param gen
      * @return 是否设置成功
      */
-    private boolean formEnumsFieldValue(Object value, JsonGenerator gen) throws IOException {
+    private boolean formFieldEnumsClass(Object value, JsonGenerator gen) throws IOException {
         if (value instanceof IDicEnums) {
             final IDicEnums enums = (IDicEnums) value;
             final String title = getTitleFormClass(enums.getValue());
@@ -166,11 +154,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 logger.warn("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            if (SystemDicStarter.isRawValue()) {
-                gen.writeObject(enums.getValue());
-            } else {
-                gen.writeString(String.valueOf(enums.getValue()));
-            }
+            writeFieldValue(enums.getValue(), gen);
             gen.writeFieldName(destinationFieldName);
             gen.writeObject(defaultValue(title));
             return true;
@@ -179,24 +163,20 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
     }
 
     /**
-     * 字段是普通类型，但是使用 @DicText 标记了来自枚举取值
+     * 字段是普通类型，但是使用 @DicText 标记了来自枚举对象取值
      *
      * @param value 实体类字段值
      * @param gen
      * @return
      */
-    private boolean formDicTextEnumsValue(Object value, JsonGenerator gen) throws IOException {
+    private boolean formDicTextEnumsClass(Object value, JsonGenerator gen) throws IOException {
         if (enumsClass != null && enumsClass.length > 0) {
             final String title = getTitleFormClass(value);
             if (title == null) {
                 logger.warn("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            if (SystemDicStarter.isRawValue()) {
-                gen.writeObject(value);
-            } else {
-                gen.writeString(String.valueOf(value));
-            }
+            writeFieldValue(value, gen);
             gen.writeFieldName(destinationFieldName);
             gen.writeObject(defaultValue(title));
             return true;
@@ -204,6 +184,46 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         return false;
     }
 
+    /**
+     * 从缓存中获取字典文本
+     *
+     * @param value 字典值对象
+     * @param gen
+     * @throws IOException
+     */
+    private void formDicCache(Object value, JsonGenerator gen) throws IOException {
+        writeFieldValue(value, gen);
+        gen.writeFieldName(destinationFieldName);
+        if (dicType != null && dicType.isBlank()) {
+            gen.writeObject(defaultValue(null));
+            logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
+        } else {
+            gen.writeObject(defaultValue(DicUtil.getDicValueTitle(dicType, String.valueOf(value))));
+        }
+    }
+
+    /**
+     * 把字段字典值写入到JSON数据中
+     *
+     * @param fieldValue 字段值
+     * @param gen
+     * @throws IOException
+     */
+    private void writeFieldValue(Object fieldValue, JsonGenerator gen) throws IOException {
+        if (SystemDicStarter.isRawValue()) {
+            gen.writeObject(fieldValue);
+        } else {
+            gen.writeString(String.valueOf(fieldValue));
+        }
+    }
+
+    /**
+     * 从系统字典枚举对象中获取字典文本信息
+     *
+     * @param value 字典值
+     * @return 字典文本
+     * @throws IOException
+     */
     private String getTitleFormClass(Object value) throws IOException {
         assert enumsClass != null;
 
