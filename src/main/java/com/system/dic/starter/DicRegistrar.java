@@ -26,11 +26,11 @@ import java.util.List;
 public class DicRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DicRegistrar.class);
     private final List<DicProvider> providers;
-    private final List<DicStore> stores;
+    private final DicStore store;
 
-    public DicRegistrar(final List<DicProvider> providers, final List<DicStore> stores) {
+    public DicRegistrar(final List<DicProvider> providers, final DicStore store) {
         this.providers = providers;
-        this.stores = stores;
+        this.store = store;
     }
 
     @Override
@@ -62,14 +62,10 @@ public class DicRegistrar implements InitializingBean {
     }
 
     private void storeDic(Iterator<DicValueVo<? extends Serializable>> iterator) {
-        for (final DicStore store : stores) {
-            store.store(iterator);
-        }
+        store.store(iterator);
     }
 
     private void storeDic(DicTypeVo dicType) {
-        for (final DicStore store : stores) {
-            store.store(dicType);
-        }
+        store.store(dicType);
     }
 }

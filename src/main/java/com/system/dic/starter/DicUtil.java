@@ -6,7 +6,6 @@ import com.system.dic.starter.store.DicStore;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author HouKunLin
@@ -15,21 +14,19 @@ import java.util.List;
 @Component
 public class DicUtil {
 
-    private static List<DicStore> stores;
+    private static DicStore store;
 
-    public DicUtil(final List<DicStore> stores) {
-        DicUtil.stores = stores;
+    public DicUtil(final DicStore store) {
+        DicUtil.store = store;
     }
 
     public static DicTypeVo getDicType(String type) {
         if (type == null) {
             return null;
         }
-        for (final DicStore store : stores) {
-            final DicTypeVo dicType = store.getDicType(type);
-            if (dicType != null) {
-                return dicType;
-            }
+        final DicTypeVo dicType = store.getDicType(type);
+        if (dicType != null) {
+            return dicType;
         }
         return null;
     }
@@ -38,11 +35,9 @@ public class DicUtil {
         if (type == null || value == null) {
             return null;
         }
-        for (final DicStore store : stores) {
-            final Object title = store.getDicValueTitle(type, value);
-            if (title != null) {
-                return title;
-            }
+        final Object title = store.getDicValueTitle(type, value);
+        if (title != null) {
+            return title;
         }
         return null;
     }
