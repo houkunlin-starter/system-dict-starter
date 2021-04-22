@@ -37,19 +37,19 @@ public class LocalStore implements DicStore {
     @Override
     public DicTypeVo getDicType(final String type) {
         final DicTypeVo typeVo = CACHE_TYPE.get(DicUtil.dicKey(type));
-        if (typeVo == null) {
-            return remoteDic.getDicType(type);
+        if (typeVo != null) {
+            return typeVo;
         }
-        return typeVo;
+        return remoteDic.getDicType(type);
     }
 
     @Override
     public String getDicValueTitle(final String type, final String value) {
         final String title = CACHE_TITLE.get(DicUtil.dicKey(type, value));
-        if (title == null) {
-            return remoteDic.getDicValueTitle(type, value);
+        if (title != null) {
+            return title;
         }
-        return title;
+        return remoteDic.getDicValueTitle(type, value);
     }
 
     @PostConstruct

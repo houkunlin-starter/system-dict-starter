@@ -44,11 +44,11 @@ public class RedisStore implements DicStore {
             return null;
         }
         final Object o = redisTemplate.opsForValue().get(DicUtil.dicKey(type));
-        if (o == null) {
-            // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-            return remoteDic.getDicType(type);
+        if (o != null) {
+            return (DicTypeVo) o;
         }
-        return (DicTypeVo) o;
+        // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
+        return remoteDic.getDicType(type);
     }
 
     @Override
@@ -57,11 +57,11 @@ public class RedisStore implements DicStore {
             return null;
         }
         final Object o = redisTemplate.opsForValue().get(DicUtil.dicKey(type, value));
-        if (o == null) {
-            // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-            return remoteDic.getDicValueTitle(type, value);
+        if (o != null) {
+            return String.valueOf(o);
         }
-        return String.valueOf(o);
+        // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
+        return remoteDic.getDicValueTitle(type, value);
     }
 
     @PostConstruct
