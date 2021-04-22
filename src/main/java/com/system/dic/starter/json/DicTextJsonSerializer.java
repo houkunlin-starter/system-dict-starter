@@ -139,7 +139,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         final String valueString = String.valueOf(value);
         gen.writeString(valueString);
         gen.writeFieldName(destinationFieldName);
-        if (dicType.isBlank()) {
+        if (dicType != null && dicType.isBlank()) {
             gen.writeObject(defaultValue(null));
             logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
         } else {
@@ -158,6 +158,10 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         if (value instanceof IDicEnums) {
             final IDicEnums enums = (IDicEnums) value;
             final String title = getTitleFormClass(enums.getValue());
+            if (title == null) {
+                logger.warn("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
+                return false;
+            }
             gen.writeString(String.valueOf(enums.getValue()));
             gen.writeFieldName(destinationFieldName);
             gen.writeObject(defaultValue(title));
@@ -176,6 +180,10 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
     private boolean formDicTextEnumsValue(Object value, JsonGenerator gen) throws IOException {
         if (enumsClass != null && enumsClass.length > 0) {
             final String title = getTitleFormClass(value);
+            if (title == null) {
+                logger.warn("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
+                return false;
+            }
             gen.writeString(String.valueOf(value));
             gen.writeFieldName(destinationFieldName);
             gen.writeObject(defaultValue(title));
