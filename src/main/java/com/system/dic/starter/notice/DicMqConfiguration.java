@@ -89,7 +89,7 @@ public class DicMqConfiguration {
      * 处理系统内部发起的刷新数据字典事件
      */
     @EventListener
-    public void refreshDic(RefreshDicEvent event) throws Exception {
+    public void refreshDic(RefreshDicEvent event) {
         final Object source = event.getSource();
         if (event.isNotifyAllSystem()) {
             logger.debug("接收到刷新数据字典事件，通知 MQ 与其他协同系统刷新 Redis 数据字典内容。事件内容：{}", source);
