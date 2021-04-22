@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.system.dic.starter.SystemDicStarter
+  com.houkunlin.system.dic.starter.SystemDicStarter

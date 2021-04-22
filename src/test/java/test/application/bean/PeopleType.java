@@ -1,8 +1,8 @@
 package test.application.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.system.dic.starter.IDicEnums;
-import com.system.dic.starter.json.DicType;
+import com.houkunlin.system.dic.starter.IDicEnums;
+import com.houkunlin.system.dic.starter.json.DicType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

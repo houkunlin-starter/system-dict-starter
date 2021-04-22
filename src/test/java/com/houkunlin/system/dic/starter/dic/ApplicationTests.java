@@ -1,4 +1,4 @@
-package test.application;
+package com.houkunlin.system.dic.starter.dic;
 
 import com.houkunlin.system.dic.starter.SystemDicScan;
 import org.springframework.boot.SpringApplication;
