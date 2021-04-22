@@ -5,8 +5,6 @@ import com.system.dic.starter.bean.DicTypeVo;
 import com.system.dic.starter.bean.DicValueVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -16,8 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author HouKunLin
  */
-@ConditionalOnMissingBean(RedisStore.class)
-@Component
 public class LocalStore implements DicStore {
     private static final Logger logger = LoggerFactory.getLogger(LocalStore.class);
     private static final ConcurrentHashMap<String, DicTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
