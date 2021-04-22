@@ -1,0 +1,36 @@
+package test.application.bean;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.system.dic.starter.IDicEnums;
+import com.system.dic.starter.json.DicText;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+/**
+ * @author HouKunLin
+ */
+@DicText(value = "PeopleType", comment = "用户类型")
+@Getter
+@AllArgsConstructor
+public enum PeopleType implements IDicEnums<Integer> {
+    /**
+     * 系统管理员
+     */
+    ADMIN(0, "系统管理"),
+    ;
+    @JsonValue
+    private final Integer value;
+    private final String title;
+
+    /**
+     * Jackson 枚举处理，把枚举值转换成枚举对象
+     *
+     * @param code 代码
+     * @return 枚举对象
+     */
+    @JsonCreator
+    public static PeopleType getItem(Integer code) {
+        return IDicEnums.valueOf(values(), code);
+    }
+}

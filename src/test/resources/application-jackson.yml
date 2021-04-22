@@ -1,0 +1,8 @@
+spring:
+  jackson:
+    date-format: ${spring.mvc.format.date-time}
+    default-property-inclusion: always
+    locale: zh_CN
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: GMT+08:00
