@@ -28,4 +28,12 @@ public class SystemDicStarter {
         }
         return dicProperties.isRawValue();
     }
+
+    public static boolean isTextValueDefaultNull() {
+        if (dicProperties == null) {
+            logger.warn("DicProperties Not Found");
+            return false;
+        }
+        return dicProperties.isTextValueDefaultNull();
+    }
 }

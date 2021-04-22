@@ -53,11 +53,24 @@ public @interface DicText {
     Class<? extends IDicEnums<?>>[] enums() default {};
 
     /**
-     * 当没有获取到数据时是否默认为 null。
-     * true：默认为 null
-     * false：默认为空字符串
+     * 设置当没有获取到数据时是否为 null。
      *
-     * @return boolean
+     * @return Type
      */
-    boolean defaultNull() default false;
+    Type nullable() default Type.GLOBAL;
+
+    enum Type {
+        /**
+         * 根据全局参数自动判断是否默认为null
+         */
+        GLOBAL,
+        /**
+         * 强制默认为null
+         */
+        YES,
+        /**
+         * 强制默认为空字符串
+         */
+        NO,
+    }
 }

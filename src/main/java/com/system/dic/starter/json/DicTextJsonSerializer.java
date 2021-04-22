@@ -238,7 +238,24 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
     }
 
     private Object defaultValue(Object value) {
-        if (dicText != null && dicText.defaultNull()) {
+        if (dicText != null) {
+            if (dicText.nullable() == DicText.Type.GLOBAL) {
+                return defaultValue(value, SystemDicStarter.isTextValueDefaultNull());
+            }
+            return defaultValue(value, dicText.nullable() == DicText.Type.YES);
+        }
+        return defaultValue(value, SystemDicStarter.isTextValueDefaultNull());
+    }
+
+    /**
+     * 获取默认值
+     *
+     * @param value    原始值
+     * @param nullable 是否为null
+     * @return 处理结果
+     */
+    private Object defaultValue(Object value, boolean nullable) {
+        if (nullable) {
             return value;
         }
         if (value == null) {

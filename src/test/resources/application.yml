@@ -25,3 +25,4 @@ logging:
 system:
   dic:
     raw-value: true
+    text-value-default-null: true

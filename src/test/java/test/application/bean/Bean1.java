@@ -38,5 +38,12 @@ public class Bean1 {
 
     @DicText
     private String accidentType2 = "0";
+
+    @DicText(nullable = DicText.Type.YES)
+    private String accidentType21 = "0";
+
+    @DicText(nullable = DicText.Type.NO)
+    private String accidentType22 = "0";
+
     private PeopleType peopleType = PeopleType.ADMIN;
 }
