@@ -47,6 +47,26 @@ publishing {
     }
 }
 
+bootJar {
+    enabled = false
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+jar {
+    enabled = true
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 javadoc {
     enabled = true
     options.encoding = "UTF-8"
@@ -54,6 +74,10 @@ javadoc {
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
+}
+
+compileJava {
+    options.encoding = "UTF-8"
 }
 
 test {
