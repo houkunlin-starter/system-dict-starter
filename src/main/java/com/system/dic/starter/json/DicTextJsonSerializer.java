@@ -70,12 +70,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         this.beanFieldName = beanFieldName;
         this.dicText = dicText;
         this.dicType = dicText.value();
-        final String fieldName = dicText.fieldName();
-        if (StringUtils.hasText(fieldName)) {
-            this.destinationFieldName = fieldName;
-        } else {
-            this.destinationFieldName = beanFieldName + "Text";
-        }
+        this.destinationFieldName = getFieldName(dicText);
         this.enumsClass = dicText.enums();
         if (this.enumsClass.length == 0) {
             return;
@@ -94,6 +89,28 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             return;
         }
         initEnumsClass();
+    }
+
+    public DicTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DicText dicText, Class<? extends IDicEnums<?>>[] enumsClass) {
+        this.beanClazz = beanClazz;
+        this.beanFieldName = beanFieldName;
+        this.dicText = dicText;
+        this.dicType = dicText.value();
+        this.destinationFieldName = getFieldName(dicText);
+        this.enumsClass = enumsClass;
+        if (this.enumsClass.length == 0) {
+            return;
+        }
+        initEnumsClass();
+    }
+
+    private String getFieldName(DicText dicText) {
+        final String fieldName = dicText.fieldName();
+        if (StringUtils.hasText(fieldName)) {
+            return fieldName;
+        } else {
+            return beanFieldName + "Text";
+        }
     }
 
     private void initEnumsClass() {
@@ -218,25 +235,31 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         if (property != null) {
             final JavaType javaType = property.getType();
             final String fieldName = property.getName();
+            final Class<?> javaTypeRawClass = javaType.getRawClass();
+            final DicText annotation = property.getAnnotation(DicText.class);
             // 非 String 类直接跳过
-            if (Objects.equals(javaType.getRawClass(), String.class)) {
-                final DicText annotation = property.getAnnotation(DicText.class);
+            if (Objects.equals(javaTypeRawClass, String.class)) {
                 if (annotation != null) {
-                    final String cacheKey = fieldName + annotation.hashCode();
-
                     // 缓存，防止重复创建
-                    return CACHE.computeIfAbsent(cacheKey, key ->
+                    return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
                             new DicTextJsonSerializer(
                                     property.getMember().getDeclaringClass(),
                                     fieldName,
                                     annotation)
                     );
                 }
-            }
-            // TODO 发现个问题，DicText注解在枚举上时会出现堆栈溢出；在直接使用枚举对象做字段的时候这里出现了一个堆栈溢出，无法获取到具体的序列化对象
-            final Class<?> javaTypeRawClass = javaType.getRawClass();
-            if (IDicEnums.class.isAssignableFrom(javaTypeRawClass)) {
+            } else if (IDicEnums.class.isAssignableFrom(javaTypeRawClass)) {
                 final Class<? extends IDicEnums<?>> aClass = (Class<? extends IDicEnums<?>>) javaTypeRawClass;
+                if (annotation != null) {
+                    // 缓存，防止重复创建
+                    return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
+                            new DicTextJsonSerializer(
+                                    property.getMember().getDeclaringClass(),
+                                    fieldName,
+                                    annotation,
+                                    new Class[]{aClass})
+                    );
+                }
                 // 缓存，防止重复创建
                 return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName, key ->
                         new DicTextJsonSerializer(
