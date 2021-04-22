@@ -2,8 +2,8 @@ package com.system.dic.starter;
 
 import com.system.dic.starter.bean.DicTypeVo;
 import com.system.dic.starter.bean.DicValueVo;
+import com.system.dic.starter.json.DicType;
 import com.system.dic.starter.provider.SystemDicProvider;
-import com.system.dic.starter.json.DicText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -88,15 +88,15 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
      * @param dicClass 字典对象
      */
     private void handleDic(Class<?> dicClass) {
-        final DicText dicText = dicClass.getDeclaredAnnotation(DicText.class);
+        final DicType annotation = dicClass.getDeclaredAnnotation(DicType.class);
         String dicType;
         String dicTitle;
-        if (dicText != null) {
-            dicType = dicText.value();
-            if (dicText.comment().isBlank()) {
+        if (annotation != null) {
+            dicType = annotation.value();
+            if (annotation.comment().isBlank()) {
                 dicTitle = dicClass.getSimpleName();
             } else {
-                dicTitle = dicText.comment();
+                dicTitle = annotation.comment();
             }
         } else {
             dicType = dicClass.getSimpleName();

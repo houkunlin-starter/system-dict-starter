@@ -293,12 +293,15 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             final JavaType javaType = property.getType();
             final String fieldName = property.getName();
             final Class<?> javaTypeRawClass = javaType.getRawClass();
+
+            // @DicText 注解目前仅对 字段、方法 起作用，因此这里拿到的注解一定是不为null的
             final DicText annotation = property.getAnnotation(DicText.class);
+
             // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
             if (IDicEnums.class.isAssignableFrom(javaTypeRawClass)) {
                 final Class<? extends IDicEnums<?>> aClass = (Class<? extends IDicEnums<?>>) javaTypeRawClass;
                 if (annotation != null) {
-                    // 缓存，防止重复创建
+                    // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                     return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
                             new DicTextJsonSerializer(
                                     property.getMember().getDeclaringClass(),
@@ -307,7 +310,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                                     new Class[]{aClass})
                     );
                 }
-                // 缓存，防止重复创建
+                // 这里的代码实际已经过时，由于在本次提交，引入了 @DicType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DicText 对整个类起了作用
                 return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName, key ->
                         new DicTextJsonSerializer(
                                 property.getMember().getDeclaringClass(),
@@ -315,7 +318,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                                 new Class[]{aClass}));
             }
             if (annotation != null) {
-                // 缓存，防止重复创建
+                // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                 return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
                         new DicTextJsonSerializer(
                                 property.getMember().getDeclaringClass(),
@@ -324,6 +327,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 );
             }
             try {
+                // 这里的代码实际已经过时，由于在本次提交，引入了 @DicType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DicText 对整个类起了作用
                 return prov.findValueSerializer(javaType, property);
             } catch (JsonMappingException e) {
                 throw new JsonMappingException(null, "无法解析 " + javaTypeRawClass + " 类型的字典序列化对象。由于在该对象上使用了 @DicText 注解，但其未实现 IDicEnums 接口可能就会出现这个异常", e);
