@@ -194,11 +194,11 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
     private void formDicCache(Object value, JsonGenerator gen) throws IOException {
         writeFieldValue(value, gen);
         gen.writeFieldName(destinationFieldName);
-        if (dicType != null && dicType.isBlank()) {
+        if (dicType != null && StringUtils.hasText(dicType)) {
+            gen.writeObject(defaultValue(DicUtil.getDicValueTitle(dicType, String.valueOf(value))));
+        } else {
             gen.writeObject(defaultValue(null));
             logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
-        } else {
-            gen.writeObject(defaultValue(DicUtil.getDicValueTitle(dicType, String.valueOf(value))));
         }
     }
 

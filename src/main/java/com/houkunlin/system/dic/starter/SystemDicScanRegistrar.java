@@ -1,9 +1,9 @@
 package com.houkunlin.system.dic.starter;
 
-import com.houkunlin.system.dic.starter.json.DicType;
-import com.houkunlin.system.dic.starter.provider.SystemDicProvider;
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
 import com.houkunlin.system.dic.starter.bean.DicValueVo;
+import com.houkunlin.system.dic.starter.json.DicType;
+import com.houkunlin.system.dic.starter.provider.SystemDicProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -21,6 +21,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.lang.NonNull;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -93,10 +94,10 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
         String dicTitle;
         if (annotation != null) {
             dicType = annotation.value();
-            if (annotation.comment().isBlank()) {
-                dicTitle = dicClass.getSimpleName();
-            } else {
+            if (StringUtils.hasText(annotation.comment())) {
                 dicTitle = annotation.comment();
+            } else {
+                dicTitle = dicClass.getSimpleName();
             }
         } else {
             dicType = dicClass.getSimpleName();
