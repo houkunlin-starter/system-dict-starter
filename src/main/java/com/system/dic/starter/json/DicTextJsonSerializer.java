@@ -190,6 +190,28 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         return value;
     }
 
+    /**
+     * property.getMember().getDeclaringClass() 是这个实体类的对象class
+     * property.member 是一个 AnnotationMethod 对象，字段名一致的时候 property.member.hashCode() 是相同的
+     * 当字段名相同的时候 property.hashCode() 是相同的
+     * 当 字段名 相同的时候：property.member.hashCode() 是相同的
+     * 当 DicText 参数全部相同的时候：annotation.hashCode() 是相同的
+     * 因此 property.member 和 annotation 都不能作为 CacheMap 的 Key
+     * 否则导致不同 field 的 DicText 注解可能只有一个 JsonSerializer 对象，从而导致 DicJsonSerializer 参数出现错误、冲突，因此Json数据错误
+     * property.member.member 是这个字段对应的 Getter 方法，因此能够保证唯一
+     * 但是想要更优化的缓存，需要把 Key 设置为：字段名 + 注解对象 两个合并使用，才能保证唯一缓存
+     * 这样可以由相同的 field 加相同的 DicText 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
+     * 方案一： property.getMember().getMember() 对象是字段的 Getter 方法对象
+     * 当 DicText 参数一致的时候， DicText.hashCode() 是相同的
+     * 因此导致不同 field 的 DicText 注解可能只有一个 JsonSerializer 对象，从而导致数据字典 JSON 字段名称出现错误、冲突
+     * 方案二：此时需要把 field 加入到 cache 的 key 中
+     * 这样可以由相同的 field 加相同的 DicText 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
+     *
+     * @param prov
+     * @param property
+     * @return
+     * @throws JsonMappingException
+     */
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
         // 为空直接跳过
@@ -200,24 +222,6 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             if (Objects.equals(javaType.getRawClass(), String.class)) {
                 final DicText annotation = property.getAnnotation(DicText.class);
                 if (annotation != null) {
-                    // property.getMember().getDeclaringClass() 是这个实体类的对象class
-                    // property.member 是一个 AnnotationMethod 对象，字段名一致的时候 property.member.hashCode() 是相同的
-                    // 当字段名相同的时候 property.hashCode() 是相同的
-                    // 当 字段名 相同的时候：property.member.hashCode() 是相同的
-                    // 当 DicText 参数全部相同的时候：annotation.hashCode() 是相同的
-                    // 因此 property.member 和 annotation 都不能作为 CacheMap 的 Key
-                    // 否则导致不同 field 的 DicText 注解可能只有一个 JsonSerializer 对象，从而导致 DicJsonSerializer 参数出现错误、冲突，因此Json数据错误
-
-                    // property.member.member 是这个字段对应的 Getter 方法，因此能够保证唯一
-                    // 但是想要更优化的缓存，需要把 Key 设置为：字段名 + 注解对象 两个合并使用，才能保证唯一缓存
-                    // 这样可以由相同的 field 加相同的 DicText 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
-
-                    // 方案一： property.getMember().getMember() 对象是字段的 Getter 方法对象
-
-                    // 当 DicText 参数一致的时候， DicText.hashCode() 是相同的
-                    // 因此导致不同 field 的 DicText 注解可能只有一个 JsonSerializer 对象，从而导致数据字典 JSON 字段名称出现错误、冲突
-                    // 方案二：此时需要把 field 加入到 cache 的 key 中
-                    // 这样可以由相同的 field 加相同的 DicText 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
                     final String cacheKey = fieldName + annotation.hashCode();
 
                     // 缓存，防止重复创建
