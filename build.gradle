@@ -1,7 +1,10 @@
 plugins {
     id 'org.springframework.boot' version '2.4.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
+    id 'maven-publish'
+    id 'java-library'
+    id 'application'
+    id 'idea'
 }
 
 group = 'com.system'
@@ -23,7 +26,7 @@ dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.springframework.boot:spring-boot-starter-amqp'
     // https://mvnrepository.com/artifact/com.google.guava/guava
-    implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
+    api 'com.google.guava:guava:30.1.1-jre'
 
     compileOnly 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
@@ -34,6 +37,14 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 javadoc {
