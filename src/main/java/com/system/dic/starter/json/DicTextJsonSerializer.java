@@ -7,6 +7,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.system.dic.starter.DicUtil;
 import com.system.dic.starter.IDicEnums;
+import com.system.dic.starter.SystemDicStarter;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,7 +137,11 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             return;
         }
         final String valueString = String.valueOf(value);
-        gen.writeString(valueString);
+        if (SystemDicStarter.isRawValue()) {
+            gen.writeObject(value);
+        } else {
+            gen.writeString(valueString);
+        }
         gen.writeFieldName(destinationFieldName);
         if (dicType != null && dicType.isBlank()) {
             gen.writeObject(defaultValue(null));
@@ -161,7 +166,11 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 logger.warn("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            gen.writeString(String.valueOf(enums.getValue()));
+            if (SystemDicStarter.isRawValue()) {
+                gen.writeObject(enums.getValue());
+            } else {
+                gen.writeString(String.valueOf(enums.getValue()));
+            }
             gen.writeFieldName(destinationFieldName);
             gen.writeObject(defaultValue(title));
             return true;
@@ -183,7 +192,11 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 logger.warn("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            gen.writeString(String.valueOf(value));
+            if (SystemDicStarter.isRawValue()) {
+                gen.writeObject(value);
+            } else {
+                gen.writeString(String.valueOf(value));
+            }
             gen.writeFieldName(destinationFieldName);
             gen.writeObject(defaultValue(title));
             return true;

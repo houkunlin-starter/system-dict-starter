@@ -22,3 +22,6 @@ logging:
   level:
     com:
       system: debug
+system:
+  dic:
+    raw-value: true

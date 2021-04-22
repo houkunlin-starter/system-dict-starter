@@ -1,0 +1,9 @@
+{
+  "groups": [
+    {
+      "sourceType": "com.system.dic.starter.DicProperties",
+      "name": "system.dic",
+      "type": "com.system.dic.starter.DicProperties"
+    }
+  ]
+}
