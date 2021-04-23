@@ -21,4 +21,12 @@ public class DicProperties {
      * 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串
      */
     private boolean textValueDefaultNull = false;
+    /**
+     * 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到
+     */
+    private String mqExchangeName = "app.dic.fanout.refreshDic";
+    /**
+     * 刷新日志消息的Header配置，存储标记消息来源应用名称的 Header KEY
+     */
+    private String mqHeaderSourceKey = "SourceApplicationName";
 }

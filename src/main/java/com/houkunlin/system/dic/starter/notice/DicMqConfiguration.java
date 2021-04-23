@@ -1,5 +1,6 @@
 package com.houkunlin.system.dic.starter.notice;
 
+import com.houkunlin.system.dic.starter.DicProperties;
 import com.houkunlin.system.dic.starter.DicRegistrar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +26,21 @@ import java.util.Map;
 @Configuration
 public class DicMqConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DicMqConfiguration.class);
-    public static final String EXCHANGE_NAME = "app.fanout.refreshDic";
     private final DicRegistrar dicRegistrar;
     private final AmqpTemplate amqpTemplate;
     private final String applicationName;
-    private static final String MQ_SOURCE = "SourceApplicationName";
+    private final String exchangeName;
+    private final String headerSourceKey;
 
     public DicMqConfiguration(@Lazy final DicRegistrar dicRegistrar,
                               final AmqpTemplate amqpTemplate,
-                              @Value("${spring.application.name:'system-dic'}") final String applicationName) {
+                              @Value("${spring.application.name:'system-dic'}") final String applicationName,
+                              final DicProperties dicProperties) {
         this.dicRegistrar = dicRegistrar;
         this.amqpTemplate = amqpTemplate;
         this.applicationName = applicationName;
+        this.exchangeName = dicProperties.getMqExchangeName();
+        this.headerSourceKey = dicProperties.getMqHeaderSourceKey();
     }
 
     /**
@@ -56,7 +60,7 @@ public class DicMqConfiguration {
      */
     @Bean
     Exchange dicExchange() {
-        return new FanoutExchange(EXCHANGE_NAME);
+        return new FanoutExchange(exchangeName);
     }
 
     /**
@@ -76,7 +80,7 @@ public class DicMqConfiguration {
      */
     @RabbitListener(queues = "#{dicQueue.name}")
     public void refreshDic(@Payload String content, @Headers Map<Object, Object> map) throws Exception {
-        if (applicationName.equals(map.get(MQ_SOURCE))) {
+        if (applicationName.equals(map.get(headerSourceKey))) {
             logger.debug("收到来自当前系统发起的MQ消息，可以忽略不处理");
             return;
         }
@@ -95,12 +99,12 @@ public class DicMqConfiguration {
             logger.debug("接收到刷新数据字典事件，通知 MQ 与其他协同系统刷新 Redis 数据字典内容。事件内容：{}", source);
             if (event.isNotifyOtherSystemAndBrother()) {
                 // 通知本系统的兄弟系统，通知兄弟系统不需要带上消息来源应用名称
-                amqpTemplate.convertAndSend(DicMqConfiguration.EXCHANGE_NAME, "", "刷新事件：" + source);
+                amqpTemplate.convertAndSend(exchangeName, "", "刷新事件：" + source);
             } else {
                 // 仅通知其他系统，不通知兄弟系统，需要带上来源应用名称来进行过滤
-                amqpTemplate.convertAndSend(DicMqConfiguration.EXCHANGE_NAME, "", "刷新事件：" + source, message -> {
+                amqpTemplate.convertAndSend(exchangeName, "", "刷新事件：" + source, message -> {
                     final MessageProperties properties = message.getMessageProperties();
-                    properties.setHeader(MQ_SOURCE, applicationName);
+                    properties.setHeader(headerSourceKey, applicationName);
                     return message;
                 });
             }
