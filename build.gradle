@@ -8,7 +8,7 @@ plugins {
     id 'idea'
 }
 
-group = 'com.system'
+group = 'com.houkunlin'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
