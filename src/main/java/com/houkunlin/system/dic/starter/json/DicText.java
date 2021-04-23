@@ -2,7 +2,7 @@ package com.houkunlin.system.dic.starter.json;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.houkunlin.system.dic.starter.IDicEnums;
+import com.houkunlin.system.dic.starter.DicEnum;
 
 import java.lang.annotation.*;
 
@@ -42,7 +42,7 @@ public @interface DicText {
      *
      * @return 与当前字典有关的系统字典枚举列表
      */
-    Class<? extends IDicEnums<?>>[] enums() default {};
+    Class<? extends DicEnum<?>>[] enums() default {};
 
     /**
      * 设置当没有获取到数据时是否为 null。

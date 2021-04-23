@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author HouKunLin
  */
-public interface IDicEnums<T extends Serializable> {
+public interface DicEnum<T extends Serializable> {
     /**
      * 字典值
      *
@@ -44,7 +44,7 @@ public interface IDicEnums<T extends Serializable> {
      * @param <T>    枚举值类型
      * @return 枚举对象
      */
-    static <T extends Serializable, E extends Enum<E> & IDicEnums<T>> E valueOf(E[] values, T value) {
+    static <T extends Serializable, E extends Enum<E> & DicEnum<T>> E valueOf(E[] values, T value) {
         for (final E enums : values) {
             if (enums.getValue().equals(value)) {
                 return enums;

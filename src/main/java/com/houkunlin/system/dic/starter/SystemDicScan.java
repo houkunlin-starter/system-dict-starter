@@ -6,7 +6,7 @@ import org.springframework.core.annotation.AliasFor;
 import java.lang.annotation.*;
 
 /**
- * 扫描系统数据字典。系统数据字典需要为枚举类型，然后枚举需要实现 {@link IDicEnums} 接口才能够自动扫描到。
+ * 扫描系统数据字典。系统数据字典需要为枚举类型，然后枚举需要实现 {@link DicEnum} 接口才能够自动扫描到。
  *
  * @author HouKunLin
  */

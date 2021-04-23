@@ -41,7 +41,7 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
 
     public SystemDicScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
-        provider.addIncludeFilter(new AssignableTypeFilter(IDicEnums.class));
+        provider.addIncludeFilter(new AssignableTypeFilter(DicEnum.class));
     }
 
     @Override
@@ -105,8 +105,8 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
         }
 
         List<DicValueVo<? extends Serializable>> list = new ArrayList<>();
-        final IDicEnums<?>[] enumConstants = (IDicEnums<?>[]) dicClass.getEnumConstants();
-        for (IDicEnums<?> enums : enumConstants) {
+        final DicEnum<?>[] enumConstants = (DicEnum<?>[]) dicClass.getEnumConstants();
+        for (DicEnum<?> enums : enumConstants) {
             if (logger.isDebugEnabled()) {
                 logger.debug("class {} : - {} - {} - {} - {}", dicClass.getName(), dicType, enums.getValue(), enums.getTitle(), enums);
             }

@@ -14,7 +14,7 @@
 
 ## 使用枚举对象做系统字典
 
-- 需要实现 `com.houkunlin.system.dic.starter.IDicEnums` 接口的枚举对象才能被扫描到
+- 需要实现 `com.houkunlin.system.dic.starter.DicEnum` 接口的枚举对象才能被扫描到
 - 使用 `com.houkunlin.system.dic.starter.json.DicType` 注解应用到枚举上自定义字典类型名称和说明
 
 

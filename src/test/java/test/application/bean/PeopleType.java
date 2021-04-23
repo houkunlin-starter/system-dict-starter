@@ -1,7 +1,7 @@
 package test.application.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.houkunlin.system.dic.starter.IDicEnums;
+import com.houkunlin.system.dic.starter.DicEnum;
 import com.houkunlin.system.dic.starter.json.DicType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Getter;
 @DicType(value = "PeopleType", comment = "用户类型")
 @Getter
 @AllArgsConstructor
-public enum PeopleType implements IDicEnums<Integer> {
+public enum PeopleType implements DicEnum<Integer> {
     /**
      * 系统管理员
      */
@@ -30,6 +30,6 @@ public enum PeopleType implements IDicEnums<Integer> {
      */
     @JsonCreator
     public static PeopleType getItem(Integer code) {
-        return IDicEnums.valueOf(values(), code);
+        return DicEnum.valueOf(values(), code);
     }
 }
