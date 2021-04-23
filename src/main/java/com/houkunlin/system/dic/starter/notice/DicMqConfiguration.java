@@ -93,11 +93,17 @@ public class DicMqConfiguration {
         final Object source = event.getSource();
         if (event.isNotifyOtherSystem()) {
             logger.debug("接收到刷新数据字典事件，通知 MQ 与其他协同系统刷新 Redis 数据字典内容。事件内容：{}", source);
-            amqpTemplate.convertAndSend(DicMqConfiguration.EXCHANGE_NAME, "", "刷新事件：" + source, message -> {
-                final MessageProperties properties = message.getMessageProperties();
-                properties.setHeader(MQ_SOURCE, applicationName);
-                return message;
-            });
+            if (event.isNotifyOtherSystemAndBrother()) {
+                // 通知本系统的兄弟系统，通知兄弟系统不需要带上消息来源应用名称
+                amqpTemplate.convertAndSend(DicMqConfiguration.EXCHANGE_NAME, "", "刷新事件：" + source);
+            } else {
+                // 仅通知其他系统，不通知兄弟系统，需要带上来源应用名称来进行过滤
+                amqpTemplate.convertAndSend(DicMqConfiguration.EXCHANGE_NAME, "", "刷新事件：" + source, message -> {
+                    final MessageProperties properties = message.getMessageProperties();
+                    properties.setHeader(MQ_SOURCE, applicationName);
+                    return message;
+                });
+            }
         }
     }
 }
