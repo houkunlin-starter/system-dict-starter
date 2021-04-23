@@ -1,6 +1,7 @@
 package com.houkunlin.system.dic.starter;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.google.common.base.Objects;
 
 import java.io.Serializable;
 
@@ -24,6 +25,16 @@ public interface IDicEnums<T extends Serializable> {
      * @return 字典文本
      */
     String getTitle();
+
+    /**
+     * 判断字典值是否相等
+     *
+     * @param o 传入的值，可为当前的枚举对象
+     * @return 判断是否相等
+     */
+    default boolean eq(Object o) {
+        return this == o || Objects.equal(o, getValue());
+    }
 
     /**
      * 通过枚举值从枚举列表中获取枚举对象
