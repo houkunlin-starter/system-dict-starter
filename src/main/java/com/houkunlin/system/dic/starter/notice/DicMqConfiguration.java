@@ -91,7 +91,7 @@ public class DicMqConfiguration {
     @EventListener
     public void refreshDic(RefreshDicEvent event) {
         final Object source = event.getSource();
-        if (event.isNotifyAllSystem()) {
+        if (event.isNotifyOtherSystem()) {
             logger.debug("接收到刷新数据字典事件，通知 MQ 与其他协同系统刷新 Redis 数据字典内容。事件内容：{}", source);
             amqpTemplate.convertAndSend(DicMqConfiguration.EXCHANGE_NAME, "", "刷新事件：" + source, message -> {
                 final MessageProperties properties = message.getMessageProperties();

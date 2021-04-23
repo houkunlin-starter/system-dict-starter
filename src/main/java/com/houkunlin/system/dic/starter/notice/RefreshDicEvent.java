@@ -11,9 +11,9 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class RefreshDicEvent extends ApplicationEvent {
     /**
-     * 是否通知所有的系统。使用 MQ 进行广播通知所有系统更新数据字典
+     * 是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
      */
-    private final boolean notifyAllSystem;
+    private final boolean notifyOtherSystem;
 
     /**
      * Create a new {@code ApplicationEvent}.
@@ -23,17 +23,17 @@ public class RefreshDicEvent extends ApplicationEvent {
      */
     public RefreshDicEvent(final Object source) {
         super(source);
-        this.notifyAllSystem = false;
+        this.notifyOtherSystem = false;
     }
 
     /**
      * 刷新字典事件，通知系统刷新Redis数据字典
      *
      * @param source          事件来源等相关信息
-     * @param notifyAllSystem 是否通知所有的系统。使用 MQ 进行广播通知所有系统更新数据字典
+     * @param notifyOtherSystem 是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
      */
-    public RefreshDicEvent(final Object source, final boolean notifyAllSystem) {
+    public RefreshDicEvent(final Object source, final boolean notifyOtherSystem) {
         super(source);
-        this.notifyAllSystem = notifyAllSystem;
+        this.notifyOtherSystem = notifyOtherSystem;
     }
 }
