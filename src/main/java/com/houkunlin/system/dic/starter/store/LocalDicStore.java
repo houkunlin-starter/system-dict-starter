@@ -16,13 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author HouKunLin
  */
-public class LocalStore implements DicStore {
-    private static final Logger logger = LoggerFactory.getLogger(LocalStore.class);
+public class LocalDicStore implements DicStore {
+    private static final Logger logger = LoggerFactory.getLogger(LocalDicStore.class);
     private static final ConcurrentHashMap<String, DicTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TITLE = new ConcurrentHashMap<>();
     private final RemoteDic remoteDic;
 
-    public LocalStore(final RemoteDic remoteDic) {
+    public LocalDicStore(final RemoteDic remoteDic) {
         this.remoteDic = remoteDic;
     }
 

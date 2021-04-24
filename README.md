@@ -33,8 +33,8 @@
 
 ## 自定义本地字段缓存存储
 
-- 默认了 `com.houkunlin.system.dic.starter.store.LocalStore` 本地存储对象
-- 当存在 Redis 环境时，默认使用 `com.houkunlin.system.dic.starter.store.RedisStore` 存储对象
+- 默认了 `com.houkunlin.system.dic.starter.store.LocalDicStore` 本地存储对象
+- 当存在 Redis 环境时，默认使用 `com.houkunlin.system.dic.starter.store.RedisDicStore` 存储对象
 - 自行实现 `com.houkunlin.system.dic.starter.store.DicStore` 接口并扫描到SpringBoot中
 
 

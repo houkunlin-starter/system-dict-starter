@@ -20,12 +20,12 @@ import java.util.Iterator;
  */
 @ConditionalOnClass(RedisTemplate.class)
 @Component
-public class RedisStore implements DicStore {
-    private static final Logger logger = LoggerFactory.getLogger(RedisStore.class);
+public class RedisDicStore implements DicStore {
+    private static final Logger logger = LoggerFactory.getLogger(RedisDicStore.class);
     public final RedisTemplate<Object, Object> redisTemplate;
     private final RemoteDic remoteDic;
 
-    public RedisStore(final RedisTemplate<Object, Object> redisTemplate, final RemoteDic remoteDic) {
+    public RedisDicStore(final RedisTemplate<Object, Object> redisTemplate, final RemoteDic remoteDic) {
         this.redisTemplate = redisTemplate;
         this.remoteDic = remoteDic;
     }

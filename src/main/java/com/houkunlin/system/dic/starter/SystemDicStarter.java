@@ -2,7 +2,7 @@ package com.houkunlin.system.dic.starter;
 
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
 import com.houkunlin.system.dic.starter.store.DicStore;
-import com.houkunlin.system.dic.starter.store.LocalStore;
+import com.houkunlin.system.dic.starter.store.LocalDicStore;
 import com.houkunlin.system.dic.starter.store.RemoteDic;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class SystemDicStarter {
     @Bean
     public DicStore dicStore(RemoteDic remoteDic) {
         logger.debug("使用默认的本地存储来存储数据字典信息");
-        return new LocalStore(remoteDic);
+        return new LocalDicStore(remoteDic);
     }
 
     /**
