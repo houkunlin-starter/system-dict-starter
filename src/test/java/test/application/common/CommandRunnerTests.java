@@ -1,4 +1,4 @@
-package test.application;
+package test.application.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,9 +7,9 @@ import com.houkunlin.system.dic.starter.notice.RefreshDicEvent;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import test.application.bean.Bean1;
-import test.application.bean.Bean2;
-import test.application.bean.PeopleType;
+import test.application.common.bean.Bean1;
+import test.application.common.bean.Bean2;
+import test.application.common.bean.PeopleType;
 
 /**
  * 启动完成后执行一段代码

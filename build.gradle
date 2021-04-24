@@ -25,6 +25,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+    testCompileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.springframework.boot:spring-boot-starter-amqp'
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api 'com.google.guava:guava:30.1.1-jre'

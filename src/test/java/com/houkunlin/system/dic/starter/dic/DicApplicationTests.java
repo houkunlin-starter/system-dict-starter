@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
-import test.application.bean.Bean1;
-import test.application.bean.Bean2;
-import test.application.bean.PeopleType;
+import test.application.common.bean.Bean1;
+import test.application.common.bean.Bean2;
+import test.application.common.bean.PeopleType;
 
 /**
  * @author HouKunLin
