@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 系统数据字典配置文件配置信息对象
+ *
  * @author HouKunLin
  */
 @Data

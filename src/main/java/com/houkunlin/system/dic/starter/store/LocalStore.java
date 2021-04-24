@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 使用本地 Map 来存储系统字典信息。当不存在 Redis 环境时默认使用该存储方式。
+ *
  * @author HouKunLin
  */
 public class LocalStore implements DicStore {

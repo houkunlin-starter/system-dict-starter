@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /**
+ * 当存在 Redis 环境时使用 Redis 来存储系统字典信息，否则使用本地存储。
+ *
  * @author HouKunLin
  */
 @ConditionalOnClass(RedisTemplate.class)

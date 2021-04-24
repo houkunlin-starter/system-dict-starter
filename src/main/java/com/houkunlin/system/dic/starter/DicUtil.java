@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 
 /**
+ * 系统字典工具
+ *
  * @author HouKunLin
  */
 @SuppressWarnings("all")

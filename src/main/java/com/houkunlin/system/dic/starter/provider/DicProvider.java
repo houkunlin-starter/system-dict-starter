@@ -2,6 +2,7 @@ package com.houkunlin.system.dic.starter.provider;
 
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
 import com.houkunlin.system.dic.starter.bean.DicValueVo;
+import com.houkunlin.system.dic.starter.store.DicStore;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -9,6 +10,8 @@ import java.util.Iterator;
 import java.util.stream.Collectors;
 
 /**
+ * 系统字典提供者。系统扫描到的数据字典信息会先存储到 {@link SystemDicProvider} 来进行一个本地缓存，之后 {@link DicProvider} 中的字典信息会被被保存到 {@link DicStore} 对象中
+ *
  * @author HouKunLin
  */
 public interface DicProvider {

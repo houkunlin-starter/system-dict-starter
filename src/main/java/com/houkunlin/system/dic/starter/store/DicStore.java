@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /**
+ * 系统字典存储对象。程序扫描到的系统字典信息都将会调用该对象来存储字典信息，同时该对象也将负责读取获取系统字典信息
+ *
  * @author HouKunLin
  */
 public interface DicStore {
