@@ -136,8 +136,6 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
         if (packagesToScan.isEmpty()) {
             packagesToScan.add(ClassUtils.getPackageName(metadata.getClassName()));
         }
-        // 默认都添加系统管理模块的扫描路径
-        packagesToScan.add("com.system.dic");
         return packagesToScan;
     }
 }
