@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/houkunlin/system-dic-starter.svg)](https://jitpack.io/#houkunlin/system-dic-starter)
+
 # 系统字典 Starter
 
 ## 如何使用
