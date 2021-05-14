@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,15 +38,15 @@ public class DicRegistrar implements InitializingBean {
         for (final DicProvider provider : providers) {
             if (provider instanceof SystemDicProvider) {
                 // 系统字典特殊处理
-                final Collection<DicTypeVo> dicTypes = provider.getDicTypes();
-                for (final DicTypeVo dicType : dicTypes) {
+                final Iterator<DicTypeVo> typeIterator = provider.dicTypeIterator();
+                typeIterator.forEachRemaining(dicType -> {
                     // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表
                     storeDic(dicType);
                     // 同时系统字典的字典值列表也写入缓存
                     storeDic(dicType.getChildren().iterator());
-                }
+                });
             } else {
-                storeDic(provider.iterator());
+                storeDic(provider.dicValueIterator());
             }
         }
     }

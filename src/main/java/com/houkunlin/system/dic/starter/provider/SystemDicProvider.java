@@ -3,6 +3,8 @@ package com.houkunlin.system.dic.starter.provider;
 import com.houkunlin.system.dic.starter.SystemDicScan;
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
 import com.houkunlin.system.dic.starter.bean.DicValueVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -16,6 +18,7 @@ import java.util.*;
  */
 @Component
 public class SystemDicProvider implements DicProvider {
+    private static final Logger logger = LoggerFactory.getLogger(SystemDicProvider.class);
     private final Map<String, DicTypeVo> cache = new HashMap<>();
 
     /**
@@ -30,7 +33,11 @@ public class SystemDicProvider implements DicProvider {
     }
 
     @Override
-    public Collection<DicTypeVo> getDicTypes() {
-        return cache.values();
+    public Iterator<DicTypeVo> dicTypeIterator() {
+        final Collection<DicTypeVo> values = cache.values();
+        if (logger.isDebugEnabled()) {
+            logger.debug("当前系统共有 {} 个系统字典类型信息", values.size());
+        }
+        return values.iterator();
     }
 }

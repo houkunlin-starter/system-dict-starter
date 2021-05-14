@@ -29,11 +29,17 @@ public class LocalDicStore implements DicStore {
     @Override
     public void store(final DicTypeVo dicType) {
         CACHE_TYPE.put(DicUtil.dicKey(dicType.getType()), dicType);
+        if (logger.isDebugEnabled()) {
+            logger.debug("当前 CACHE_TYPE Map 共有 {} 个字典类型信息", CACHE_TYPE.size());
+        }
     }
 
     @Override
     public void store(final Iterator<DicValueVo<? extends Serializable>> iterator) {
         iterator.forEachRemaining(valueVo -> CACHE_TITLE.put(DicUtil.dicKey(valueVo), valueVo.getTitle()));
+        if (logger.isDebugEnabled()) {
+            logger.debug("当前 CACHE_TITLE Map 共有 {} 个字典值信息", CACHE_TITLE.size());
+        }
     }
 
     @Override
