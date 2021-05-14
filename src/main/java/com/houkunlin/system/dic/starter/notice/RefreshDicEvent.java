@@ -46,8 +46,8 @@ public class RefreshDicEvent extends ApplicationEvent {
     /**
      * 刷新字典事件，通知系统刷新Redis数据字典
      *
-     * @param source                   事件来源等相关信息
-     * @param notifyOtherSystem        是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
+     * @param source                      事件来源等相关信息
+     * @param notifyOtherSystem           是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
      * @param notifyOtherSystemAndBrother 使用MQ通知其他系统的同时，也通知本系统的兄弟系统（同一个系统部署多个实例）
      */
     public RefreshDicEvent(final Object source, final boolean notifyOtherSystem, final boolean notifyOtherSystemAndBrother) {

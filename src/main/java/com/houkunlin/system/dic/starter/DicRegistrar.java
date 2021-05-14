@@ -27,6 +27,10 @@ public class DicRegistrar implements InitializingBean {
     private final List<DicProvider> providers;
     private final DicStore store;
     private final DicProperties dicProperties;
+    /**
+     * 上一次刷新字典时间
+     */
+    private long lastModified = 0;
 
     public DicRegistrar(final List<DicProvider> providers, final DicStore store, final DicProperties dicProperties) {
         this.providers = providers;
@@ -35,6 +39,15 @@ public class DicRegistrar implements InitializingBean {
     }
 
     public void refreshDic() {
+        final long interval = System.currentTimeMillis() - lastModified;
+        final long refreshDicInterval = dicProperties.getRefreshDicInterval();
+        if (interval < refreshDicInterval) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("距离上一次刷新字典 {} ms，小于配置的 {} ms，本次事件将不会刷新字典", interval, refreshDicInterval);
+            }
+            return;
+        }
+        lastModified = System.currentTimeMillis();
         for (final DicProvider provider : providers) {
             if (provider instanceof SystemDicProvider) {
                 // 系统字典特殊处理
