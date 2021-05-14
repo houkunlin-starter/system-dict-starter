@@ -17,6 +17,10 @@ public enum PeopleType implements DicEnum<Integer> {
      * 系统管理员
      */
     ADMIN(0, "系统管理"),
+    /**
+     * 普通用户
+     */
+    USER(1, "普通用户"),
     ;
     // @JsonValue
     private final Integer value;
