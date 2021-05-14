@@ -15,6 +15,16 @@
 
 
 
+配置前缀：`system.dic` 下方参数将忽略前缀信息
+
+| 配置键                  | 参数类型 | 默认值                    | 配置说明                                                     |
+| ----------------------- | -------- | ------------------------- | ------------------------------------------------------------ |
+| raw-value               | boolean  | false                     | 是否显示原生数据字典值。true 实际类型转换，false 转换成字符串值 |
+| text-value-default-null | boolean  | false                     | 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串 |
+| on-boot-refresh-dic     | boolean  | true                      | 是否在启动的时候刷新字典                                     |
+| mq-exchange-name        | String   | app.dic.fanout.refreshDic | 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到 |
+| mq-header-source-key    | String   | SourceApplicationName     | 刷新日志消息的Header配置，存储标记消息来源应用名称的 Header KEY |
+
 
 ## 使用枚举对象做系统字典
 
