@@ -11,6 +11,8 @@
 ## 配置文件配置
 
 - 请参考 `com.houkunlin.system.dic.starter.DicProperties` 文件
+- 系统启动时会自动刷新字典，假如字典数据数量比较多时会影响系统启动速度，此时可以通过 `system.dic.on-boot-refresh-dic=false` 禁用启动时刷新字典，在系统启动完成后再通过 `com.houkunlin.system.dic.starter.notice.RefreshDicEvent` 事件通知刷新字典
+
 
 
 

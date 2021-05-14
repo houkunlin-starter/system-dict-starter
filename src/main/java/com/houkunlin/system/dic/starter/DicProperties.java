@@ -1,5 +1,6 @@
 package com.houkunlin.system.dic.starter;
 
+import com.houkunlin.system.dic.starter.notice.RefreshDicEvent;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,6 +24,11 @@ public class DicProperties {
      * 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串
      */
     private boolean textValueDefaultNull = false;
+    /**
+     * 是否在启动的时候刷新字典；
+     * 设置为 true 时在数据量大的时候可能会影响系统启动速度，可在系统启动后发起 {@link RefreshDicEvent} 事件通知刷新字典
+     */
+    private boolean onBootRefreshDic = true;
     /**
      * 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到
      */

@@ -26,3 +26,4 @@ system:
   dic:
     raw-value: true
     text-value-default-null: true
+#    on-boot-refresh-dic: false
