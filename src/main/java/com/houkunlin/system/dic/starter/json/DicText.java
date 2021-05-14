@@ -51,7 +51,7 @@ public @interface DicText {
     Type nullable() default Type.GLOBAL;
 
     /**
-     * 此配置将优先于 #fieldName 配置,用来标记是否使用 Map 对象返回字典值信息
+     * 此配置将会使 #fieldName 配置失效；用来标记是否使用 Map 对象返回字典值信息
      * <code>
      * {
      * "peopleType" : {
@@ -63,19 +63,19 @@ public @interface DicText {
      *
      * @return mapValue
      */
-    boolean mapValue() default false;
+    Type mapValue() default Type.GLOBAL;
 
     enum Type {
         /**
-         * 根据全局参数自动判断是否默认为null
+         * 根据全局参数决定配置
          */
         GLOBAL,
         /**
-         * 强制默认为null
+         * 强制为 YES
          */
         YES,
         /**
-         * 强制默认为空字符串
+         * 强制为 NO
          */
         NO,
     }

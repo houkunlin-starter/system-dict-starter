@@ -222,11 +222,21 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @throws IOException
      */
     private void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dicValueText) throws IOException {
-        if (SystemDicStarter.isMapValue() || dicText.mapValue()) {
+        if (dicText == null) {
+            writeFieldValue(rawValueObject, gen);
+            return;
+        }
+        if (dicText.mapValue() == DicText.Type.YES || (SystemDicStarter.isMapValue() && dicText.mapValue() == DicText.Type.GLOBAL)) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", rawValueObject);
             map.put("text", dicValueText);
-            gen.writeObject(map);
+            if (StringUtils.hasText(dicText.fieldName())) {
+                writeFieldValue(rawValueObject, gen);
+                gen.writeFieldName(dicText.fieldName());
+                gen.writeObject(map);
+            } else {
+                gen.writeObject(map);
+            }
         } else {
             writeFieldValue(rawValueObject, gen);
             gen.writeFieldName(destinationFieldName);

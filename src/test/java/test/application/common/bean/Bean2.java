@@ -20,6 +20,9 @@ public class Bean2 {
     @DicText(enums = {PeopleType.class})
     private PeopleType peopleType2 = PeopleType.ADMIN;
 
-    @DicText(enums = {PeopleType.class}, mapValue = true)
+    @DicText(enums = {PeopleType.class}, mapValue = DicText.Type.YES)
     private PeopleType peopleType3 = PeopleType.ADMIN;
+
+    @DicText(fieldName = "peopleType4-DIC", enums = {PeopleType.class}, mapValue = DicText.Type.YES)
+    private PeopleType peopleType4 = PeopleType.ADMIN;
 }
