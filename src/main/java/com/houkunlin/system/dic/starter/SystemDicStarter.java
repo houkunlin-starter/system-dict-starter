@@ -43,6 +43,14 @@ public class SystemDicStarter {
         return dicProperties.isTextValueDefaultNull();
     }
 
+    public static boolean isMapValue() {
+        if (dicProperties == null) {
+            logger.warn("DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务");
+            return false;
+        }
+        return dicProperties.isMapValue();
+    }
+
     /**
      * 当环境中不存在 DicStore Bean 的时候创建一个默认的 DicStore Bean 实例
      *

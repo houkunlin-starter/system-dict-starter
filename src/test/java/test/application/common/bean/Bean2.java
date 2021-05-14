@@ -13,6 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Bean2 {
     private PeopleType peopleType = PeopleType.ADMIN;
+    @DicText
+    private PeopleType peopleType0 = PeopleType.ADMIN;
     @DicText(fieldName = "sdff")
     private PeopleType peopleType1 = PeopleType.ADMIN;
+    @DicText(enums = {PeopleType.class})
+    private PeopleType peopleType2 = PeopleType.ADMIN;
+
+    @DicText(enums = {PeopleType.class}, mapValue = true)
+    private PeopleType peopleType3 = PeopleType.ADMIN;
 }

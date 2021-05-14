@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -154,9 +156,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 logger.warn("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            writeFieldValue(enums.getValue(), gen);
-            gen.writeFieldName(destinationFieldName);
-            gen.writeObject(defaultValue(title));
+            writeFieldValue(gen, enums.getValue(), defaultValue(title));
             return true;
         }
         return false;
@@ -176,9 +176,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 logger.warn("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            writeFieldValue(value, gen);
-            gen.writeFieldName(destinationFieldName);
-            gen.writeObject(defaultValue(title));
+            writeFieldValue(gen, value, defaultValue(title));
             return true;
         }
         return false;
@@ -192,12 +190,10 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @throws IOException
      */
     private void formDicCache(Object value, JsonGenerator gen) throws IOException {
-        writeFieldValue(value, gen);
-        gen.writeFieldName(destinationFieldName);
         if (dicType != null && StringUtils.hasText(dicType)) {
-            gen.writeObject(defaultValue(DicUtil.getDicValueTitle(dicType, String.valueOf(value))));
+            writeFieldValue(gen, value, DicUtil.getDicValueTitle(dicType, String.valueOf(value)));
         } else {
-            gen.writeObject(defaultValue(null));
+            writeFieldValue(gen, value, defaultValue(null));
             logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
         }
     }
@@ -214,6 +210,27 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             gen.writeObject(fieldValue);
         } else {
             gen.writeString(String.valueOf(fieldValue));
+        }
+    }
+
+    /**
+     * 把数据字典原始值和转换后的字典文本值写入到 Json 中
+     *
+     * @param gen            JsonGenerator 对象
+     * @param rawValueObject 实体类字典值
+     * @param dicValueText   字典文本值
+     * @throws IOException
+     */
+    private void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dicValueText) throws IOException {
+        if (SystemDicStarter.isMapValue() || dicText.mapValue()) {
+            final Map<String, Object> map = new HashMap<>();
+            map.put("value", rawValueObject);
+            map.put("text", dicValueText);
+            gen.writeObject(map);
+        } else {
+            writeFieldValue(rawValueObject, gen);
+            gen.writeFieldName(destinationFieldName);
+            gen.writeObject(dicValueText);
         }
     }
 

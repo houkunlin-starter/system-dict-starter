@@ -30,6 +30,10 @@ public class DicProperties {
      */
     private boolean onBootRefreshDic = true;
     /**
+     * 是否把字典值转换成 Map 形式，包含字典值和文本。
+     */
+    private boolean mapValue = false;
+    /**
      * 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到
      */
     private String mqExchangeName = "app.dic.fanout.refreshDic";
