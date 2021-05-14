@@ -85,7 +85,7 @@ public class DicMqConfiguration {
             return;
         }
         logger.info("[start] MQ 通知刷新字典：{}", content);
-        dicRegistrar.afterPropertiesSet();
+        dicRegistrar.refreshDic();
         logger.info("[finish] MQ 通知刷新字典");
     }
 
