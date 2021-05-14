@@ -1,8 +1,6 @@
 package com.houkunlin.system.dic.starter;
 
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
-import com.houkunlin.system.dic.starter.store.DicStore;
-import com.houkunlin.system.dic.starter.store.LocalDicStore;
 import com.houkunlin.system.dic.starter.store.RemoteDic;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -22,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 public class SystemDicStarter {
     private static final Logger logger = LoggerFactory.getLogger(SystemDicStarter.class);
     private static DicProperties dicProperties;
+    private static final String WARNING_MESSAGE = "DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务";
 
     public SystemDicStarter(@Lazy final DicProperties dicProperties) {
         SystemDicStarter.dicProperties = dicProperties;
@@ -29,7 +28,7 @@ public class SystemDicStarter {
 
     public static boolean isRawValue() {
         if (dicProperties == null) {
-            logger.warn("DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务");
+            logger.warn(WARNING_MESSAGE);
             return false;
         }
         return dicProperties.isRawValue();
@@ -37,7 +36,7 @@ public class SystemDicStarter {
 
     public static boolean isTextValueDefaultNull() {
         if (dicProperties == null) {
-            logger.warn("DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务");
+            logger.warn(WARNING_MESSAGE);
             return false;
         }
         return dicProperties.isTextValueDefaultNull();
@@ -45,22 +44,10 @@ public class SystemDicStarter {
 
     public static boolean isMapValue() {
         if (dicProperties == null) {
-            logger.warn("DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务");
+            logger.warn(WARNING_MESSAGE);
             return false;
         }
         return dicProperties.isMapValue();
-    }
-
-    /**
-     * 当环境中不存在 DicStore Bean 的时候创建一个默认的 DicStore Bean 实例
-     *
-     * @return DicStore
-     */
-    @ConditionalOnMissingBean
-    @Bean
-    public DicStore dicStore(RemoteDic remoteDic) {
-        logger.debug("使用默认的本地存储来存储数据字典信息");
-        return new LocalDicStore(remoteDic);
     }
 
     /**

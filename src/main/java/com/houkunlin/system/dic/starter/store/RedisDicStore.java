@@ -5,9 +5,7 @@ import com.houkunlin.system.dic.starter.bean.DicTypeVo;
 import com.houkunlin.system.dic.starter.bean.DicValueVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -18,8 +16,6 @@ import java.util.Iterator;
  *
  * @author HouKunLin
  */
-@ConditionalOnClass(RedisTemplate.class)
-@Component
 public class RedisDicStore implements DicStore {
     private static final Logger logger = LoggerFactory.getLogger(RedisDicStore.class);
     public final RedisTemplate<Object, Object> redisTemplate;

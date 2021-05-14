@@ -56,6 +56,6 @@ public class LocalDicStore implements DicStore {
 
     @PostConstruct
     public void post() {
-        logger.info("使用本地缓存存储数据字典信息");
+        logger.info("使用本地 Map 存储数据字典信息");
     }
 }

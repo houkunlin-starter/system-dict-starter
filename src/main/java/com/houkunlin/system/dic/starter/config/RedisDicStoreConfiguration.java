@@ -1,5 +1,8 @@
-package com.houkunlin.system.dic.starter.redis;
+package com.houkunlin.system.dic.starter.config;
 
+import com.houkunlin.system.dic.starter.store.DicStore;
+import com.houkunlin.system.dic.starter.store.RedisDicStore;
+import com.houkunlin.system.dic.starter.store.RemoteDic;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +19,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @ConditionalOnClass(RedisTemplate.class)
 @Configuration
-public class LettuceRedisConfiguration {
+public class RedisDicStoreConfiguration {
     @ConditionalOnMissingBean
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
@@ -25,5 +28,11 @@ public class LettuceRedisConfiguration {
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DicStore dicStore(RedisTemplate<Object, Object> redisTemplate, RemoteDic remoteDic) {
+        return new RedisDicStore(redisTemplate, remoteDic);
     }
 }
