@@ -15,7 +15,8 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -221,8 +222,8 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @throws IOException
      */
     private void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dicValueText) throws IOException {
-        if (dicText.mapValue()) {
-            final LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        if (SystemDicStarter.isMapValue() || dicText.mapValue()) {
+            final Map<String, Object> map = new HashMap<>();
             map.put("value", rawValueObject);
             map.put("text", dicValueText);
             gen.writeObject(map);
