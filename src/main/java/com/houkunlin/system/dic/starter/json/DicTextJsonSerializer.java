@@ -132,13 +132,13 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        if (formFieldEnumsClass(value, gen)) {
+        if (fromFieldEnumsClass(value, gen)) {
             return;
         }
-        if (formDicTextEnumsClass(value, gen)) {
+        if (fromDicTextEnumsClass(value, gen)) {
             return;
         }
-        formDicCache(value, gen);
+        fromDicCache(value, gen);
     }
 
     /**
@@ -148,7 +148,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @param gen
      * @return 是否设置成功
      */
-    private boolean formFieldEnumsClass(Object value, JsonGenerator gen) throws IOException {
+    private boolean fromFieldEnumsClass(Object value, JsonGenerator gen) throws IOException {
         if (value instanceof DicEnum) {
             final DicEnum enums = (DicEnum) value;
             final String title = getTitleFormClass(enums.getValue());
@@ -169,7 +169,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @param gen
      * @return
      */
-    private boolean formDicTextEnumsClass(Object value, JsonGenerator gen) throws IOException {
+    private boolean fromDicTextEnumsClass(Object value, JsonGenerator gen) throws IOException {
         if (enumsClass != null && enumsClass.length > 0) {
             final String title = getTitleFormClass(value);
             if (title == null) {
@@ -189,7 +189,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @param gen
      * @throws IOException
      */
-    private void formDicCache(Object value, JsonGenerator gen) throws IOException {
+    private void fromDicCache(Object value, JsonGenerator gen) throws IOException {
         if (dicType != null && StringUtils.hasText(dicType)) {
             writeFieldValue(gen, value, DicUtil.getDicValueTitle(dicType, String.valueOf(value)));
         } else {
