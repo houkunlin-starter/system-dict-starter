@@ -15,6 +15,7 @@ import org.springframework.context.event.EventListener;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 字典注册，把字典发送到缓存中
@@ -38,7 +39,7 @@ public class DicRegistrar implements InitializingBean {
         this.dicProperties = dicProperties;
     }
 
-    public void refreshDic() {
+    public void refreshDic(Set<String> dicProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified;
         final long refreshDicInterval = dicProperties.getRefreshDicInterval();
         if (interval < refreshDicInterval) {
@@ -49,6 +50,9 @@ public class DicRegistrar implements InitializingBean {
         }
         lastModified = System.currentTimeMillis();
         for (final DicProvider provider : providers) {
+            if (!provider.supportRefresh(dicProviderClasses)) {
+                continue;
+            }
             if (provider instanceof SystemDicProvider) {
                 // 系统字典特殊处理
                 final Iterator<DicTypeVo> typeIterator = provider.dicTypeIterator();
@@ -67,7 +71,7 @@ public class DicRegistrar implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         if (dicProperties.isOnBootRefreshDic()) {
-            refreshDic();
+            refreshDic(null);
         }
     }
 
@@ -75,9 +79,9 @@ public class DicRegistrar implements InitializingBean {
      * 处理系统内部发起的刷新数据字典事件
      */
     @EventListener
-    public void refreshDic(RefreshDicEvent event) throws Exception {
+    public void eventListenerRefreshDicEvent(RefreshDicEvent event) throws Exception {
         logger.info("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
-        refreshDic();
+        refreshDic(event.getDicProviderClasses());
         logger.info("[finish] 应用内部通知刷新字典事件");
     }
 
