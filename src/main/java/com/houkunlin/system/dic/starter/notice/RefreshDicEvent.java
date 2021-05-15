@@ -23,7 +23,7 @@ public class RefreshDicEvent extends ApplicationEvent {
     private final boolean notifyOtherSystemAndBrother;
     /**
      * 限定只刷新指定的 DicProvider 对象。当为 null 或者 空列表 时会刷新所有的 DicProvider 数据。
-     * 通常传入 DicProvider 的完整 class 名称（默认），或者传入 DicType 需要自定实现 {@link DicProvider#supportRefresh(java.util.List)} 方法
+     * 通常传入 DicProvider 的完整 class 名称（默认），或者传入 DicType 需要自定实现 {@link DicProvider#supportRefresh(java.util.Set)} 方法
      */
     private final Set<String> dicProviderClasses;
 
