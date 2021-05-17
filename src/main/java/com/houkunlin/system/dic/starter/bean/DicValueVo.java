@@ -10,10 +10,11 @@ import java.io.Serializable;
 /**
  * @author HouKunLin
  */
+@SuppressWarnings("all")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DicValueVo<V extends Serializable> implements Serializable {
+public class DicValueVo<V> implements Serializable {
     /**
      * 字典类型代码
      */

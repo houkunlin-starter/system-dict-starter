@@ -2,12 +2,10 @@ package com.houkunlin.system.dic.starter.provider;
 
 import com.houkunlin.system.dic.starter.SystemDicScan;
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
-import com.houkunlin.system.dic.starter.bean.DicValueVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -17,24 +15,23 @@ import java.util.*;
  * @author HouKunLin
  */
 @Component
-public class SystemDicProvider implements DicProvider {
+public class SystemDicProvider implements DicProvider<String> {
     private static final Logger logger = LoggerFactory.getLogger(SystemDicProvider.class);
-    private final Map<String, DicTypeVo> cache = new HashMap<>();
+    private final Map<String, DicTypeVo<String>> cache = new HashMap<>();
 
     /**
      * 增加一个字典类型对象（含字典值列表）
      *
      * @param vo 字典类型对象
      */
-    public void addDic(final DicTypeVo vo) {
-        final List<? extends DicValueVo<? extends Serializable>> children = vo.getChildren();
-        vo.setChildren(new ArrayList<>(children));
+    public void addDic(final DicTypeVo<String> vo) {
+        vo.setChildren(new ArrayList<>(vo.getChildren()));
         cache.put(vo.getType(), vo);
     }
 
     @Override
-    public Iterator<DicTypeVo> dicTypeIterator() {
-        final Collection<DicTypeVo> values = cache.values();
+    public Iterator<DicTypeVo<String>> dicTypeIterator() {
+        final Collection<DicTypeVo<String>> values = cache.values();
         if (logger.isDebugEnabled()) {
             logger.debug("当前系统共有 {} 个系统字典类型信息", values.size());
         }

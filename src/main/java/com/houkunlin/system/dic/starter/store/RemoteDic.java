@@ -8,14 +8,14 @@ import com.houkunlin.system.dic.starter.bean.DicTypeVo;
  *
  * @author HouKunLin
  */
-public interface RemoteDic {
+public interface RemoteDic<V> {
     /**
      * 通过字典类型获取完整的字典信息
      *
      * @param type 字典雷系
      * @return 字典对象信息
      */
-    DicTypeVo getDicType(String type);
+    DicTypeVo<V> getDicType(String type);
 
     /**
      * 通过字典值获取字典文本信息

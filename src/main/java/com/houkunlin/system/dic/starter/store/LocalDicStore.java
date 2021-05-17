@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,18 +15,18 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author HouKunLin
  */
-public class LocalDicStore implements DicStore {
+public class LocalDicStore implements DicStore<Object> {
     private static final Logger logger = LoggerFactory.getLogger(LocalDicStore.class);
-    private static final ConcurrentHashMap<String, DicTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, DicTypeVo<Object>> CACHE_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TITLE = new ConcurrentHashMap<>();
-    private final RemoteDic remoteDic;
+    private final RemoteDic<Object> remoteDic;
 
     public LocalDicStore(final RemoteDic remoteDic) {
         this.remoteDic = remoteDic;
     }
 
     @Override
-    public void store(final DicTypeVo dicType) {
+    public void store(final DicTypeVo<Object> dicType) {
         CACHE_TYPE.put(DicUtil.dicKey(dicType.getType()), dicType);
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TYPE Map 共有 {} 个字典类型信息", CACHE_TYPE.size());
@@ -35,7 +34,7 @@ public class LocalDicStore implements DicStore {
     }
 
     @Override
-    public void store(final Iterator<DicValueVo<? extends Serializable>> iterator) {
+    public void store(final Iterator<DicValueVo<Object>> iterator) {
         iterator.forEachRemaining(valueVo -> CACHE_TITLE.put(DicUtil.dicKey(valueVo), valueVo.getTitle()));
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TITLE Map 共有 {} 个字典值信息", CACHE_TITLE.size());
@@ -43,8 +42,8 @@ public class LocalDicStore implements DicStore {
     }
 
     @Override
-    public DicTypeVo getDicType(final String type) {
-        final DicTypeVo typeVo = CACHE_TYPE.get(DicUtil.dicKey(type));
+    public DicTypeVo<Object> getDicType(final String type) {
+        final DicTypeVo<Object> typeVo = CACHE_TYPE.get(DicUtil.dicKey(type));
         if (typeVo != null) {
             return typeVo;
         }

@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DicTypeVo implements Serializable {
+public class DicTypeVo<V> implements Serializable {
     /**
      * 数据字典名称
      */
@@ -30,5 +30,5 @@ public class DicTypeVo implements Serializable {
      */
     private String remark;
 
-    private List<DicValueVo<? extends Serializable>> children;
+    private List<DicValueVo<V>> children;
 }

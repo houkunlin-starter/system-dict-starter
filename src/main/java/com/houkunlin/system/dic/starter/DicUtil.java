@@ -5,8 +5,6 @@ import com.houkunlin.system.dic.starter.bean.DicValueVo;
 import com.houkunlin.system.dic.starter.store.DicStore;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
-
 /**
  * 系统字典工具
  *
@@ -48,7 +46,7 @@ public class DicUtil {
         return "dic:" + type;
     }
 
-    public static String dicKey(DicValueVo<? extends Serializable> value) {
+    public static String dicKey(DicValueVo value) {
         return "dic:" + value.getDicType() + ":" + value.getValue();
     }
 

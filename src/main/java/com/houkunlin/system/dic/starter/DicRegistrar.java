@@ -12,7 +12,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -25,15 +24,15 @@ import java.util.Set;
 @Configuration
 public class DicRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DicRegistrar.class);
-    private final List<DicProvider> providers;
-    private final DicStore store;
+    private final List<DicProvider<?>> providers;
+    private final DicStore<Object> store;
     private final DicProperties dicProperties;
     /**
      * 上一次刷新字典时间
      */
     private long lastModified = 0;
 
-    public DicRegistrar(final List<DicProvider> providers, final DicStore store, final DicProperties dicProperties) {
+    public DicRegistrar(final List<DicProvider<?>> providers, final DicStore store, final DicProperties dicProperties) {
         this.providers = providers;
         this.store = store;
         this.dicProperties = dicProperties;
@@ -49,13 +48,13 @@ public class DicRegistrar implements InitializingBean {
             return;
         }
         lastModified = System.currentTimeMillis();
-        for (final DicProvider provider : providers) {
+        for (final DicProvider<?> provider : providers) {
             if (!provider.supportRefresh(dicProviderClasses)) {
                 continue;
             }
             if (provider instanceof SystemDicProvider) {
                 // 系统字典特殊处理
-                final Iterator<DicTypeVo> typeIterator = provider.dicTypeIterator();
+                final Iterator<? extends DicTypeVo<?>> typeIterator = provider.dicTypeIterator();
                 typeIterator.forEachRemaining(dicType -> {
                     // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表
                     storeDic(dicType);
@@ -85,11 +84,11 @@ public class DicRegistrar implements InitializingBean {
         logger.info("[finish] 应用内部通知刷新字典事件");
     }
 
-    private void storeDic(Iterator<DicValueVo<? extends Serializable>> iterator) {
-        store.store(iterator);
+    private void storeDic(Iterator<? extends DicValueVo<?>> iterator) {
+        store.store((Iterator<DicValueVo<Object>>) iterator);
     }
 
-    private void storeDic(DicTypeVo dicType) {
-        store.store(dicType);
+    private void storeDic(DicTypeVo<?> dicType) {
+        store.store((DicTypeVo<Object>) dicType);
     }
 }

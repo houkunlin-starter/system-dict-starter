@@ -6,7 +6,6 @@ import com.houkunlin.system.dic.starter.bean.DicValueVo;
 import com.houkunlin.system.dic.starter.notice.RefreshDicEvent;
 import com.houkunlin.system.dic.starter.store.DicStore;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Set;
  *
  * @author HouKunLin
  */
-public interface DicProvider {
+public interface DicProvider<V> {
     /**
      * 在发起 {@link RefreshDicEvent} 刷新事件时，可以指定刷新某个或多个 DicProvider 对象，在 {@link DicRegistrar} 刷新字典时将调用此方法来判断是否刷新此 DicProvider 的字典数据
      *
@@ -38,7 +37,7 @@ public interface DicProvider {
      *
      * @return 迭代器对象
      */
-    default Iterator<DicTypeVo> dicTypeIterator() {
+    default Iterator<DicTypeVo<V>> dicTypeIterator() {
         return Collections.emptyIterator();
     }
 
@@ -49,10 +48,10 @@ public interface DicProvider {
      *
      * @return 迭代器对象
      */
-    default Iterator<DicValueVo<? extends Serializable>> dicValueIterator() {
-        final Iterator<DicTypeVo> iterator = dicTypeIterator();
-        return new Iterator<DicValueVo<? extends Serializable>>() {
-            List<DicValueVo<? extends Serializable>> valueVos = null;
+    default Iterator<DicValueVo<V>> dicValueIterator() {
+        final Iterator<DicTypeVo<V>> iterator = dicTypeIterator();
+        return new Iterator<DicValueVo<V>>() {
+            List<DicValueVo<V>> valueVos = null;
             int index = 0;
             int size = 0;
 
@@ -67,7 +66,7 @@ public interface DicProvider {
             }
 
             @Override
-            public DicValueVo<? extends Serializable> next() {
+            public DicValueVo<V> next() {
                 return valueVos.get(index++);
             }
         };
