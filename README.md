@@ -23,7 +23,7 @@
 | raw-value               | boolean      | false                     | 是否显示原生数据字典值。true 实际类型转换，false 转换成字符串值 |
 | text-value-default-null | boolean      | false                     | 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串 |
 | on-boot-refresh-dic     | boolean      | true                      | 是否在启动的时候刷新字典                                     |
-| map-value               | DicText.Type | Type.GLOBAL、Type.NO      | 是否把字典值转换成 Map 形式，包含字典值和文本。YES 时在 json 中插入字段显示字典文本；NO 时把原字段的值变成 Map 数据 |
+| map-value               | DicText.Type | Type.GLOBAL、Type.NO      | 是否把字典值转换成 Map 形式，包含字典值和文本。NO 时在 json 中插入字段显示字典文本；YES 时把原字段的值变成 Map 数据 |
 | mq-exchange-name        | String       | app.dic.fanout.refreshDic | 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到 |
 | mq-header-source-key    | String       | SourceApplicationName     | 刷新日志消息的Header配置，存储标记消息来源应用名称的 Header KEY |
 | refresh-dic-interval    | long         | 60 * 1000L                | 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新。单位：毫秒 |
