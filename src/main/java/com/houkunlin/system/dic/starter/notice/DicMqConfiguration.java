@@ -27,12 +27,12 @@ import java.util.*;
 @Configuration
 public class DicMqConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DicMqConfiguration.class);
+    private static final String DIC_PROVIDER_CLASSES_KEY = "DIC.dicProviderClasses";
     private final DicRegistrar dicRegistrar;
     private final AmqpTemplate amqpTemplate;
     private final String applicationName;
     private final String exchangeName;
     private final String headerSourceKey;
-    private static final String DIC_PROVIDER_CLASSES_KEY = "DIC.dicProviderClasses";
 
     public DicMqConfiguration(@Lazy final DicRegistrar dicRegistrar,
                               final AmqpTemplate amqpTemplate,

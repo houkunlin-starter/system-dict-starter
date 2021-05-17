@@ -30,6 +30,10 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
     private static final Logger logger = LoggerFactory.getLogger(DicTextJsonSerializer.class);
     private static final ConcurrentHashMap<String, JsonSerializer<Object>> CACHE = new ConcurrentHashMap<>();
     /**
+     * 缓存了直接使用系统字典枚举来渲染数据字典文本的所有数据
+     */
+    private static final Table<Class<? extends DicEnum<?>>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
+    /**
      * 使用了这个注解的对象
      */
     private final Class<?> beanClazz;
@@ -53,10 +57,6 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * 直接使用系统字典枚举的枚举对象列表
      */
     private final Class<? extends DicEnum<?>>[] enumsClass;
-    /**
-     * 缓存了直接使用系统字典枚举来渲染数据字典文本的所有数据
-     */
-    private static final Table<Class<? extends DicEnum<?>>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
 
     public DicTextJsonSerializer() {
         this.beanClazz = null;

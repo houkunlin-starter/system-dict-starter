@@ -19,8 +19,8 @@ import org.springframework.context.annotation.Lazy;
 @ComponentScan
 public class SystemDicStarter {
     private static final Logger logger = LoggerFactory.getLogger(SystemDicStarter.class);
-    private static DicProperties dicProperties;
     private static final String WARNING_MESSAGE = "DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务";
+    private static DicProperties dicProperties;
 
     public SystemDicStarter(@Lazy final DicProperties dicProperties) {
         SystemDicStarter.dicProperties = dicProperties;
