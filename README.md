@@ -34,19 +34,18 @@
 - 需要实现 `com.houkunlin.system.dic.starter.DicEnum` 接口的枚举对象才能被扫描到
 - 使用 `com.houkunlin.system.dic.starter.json.DicType` 注解应用到枚举上自定义字典类型名称和说明
 
-
-
 ## 字典文本自动转换
 
 - 在实体字段中使用 `com.houkunlin.system.dic.starter.json.DicText` 注解
 
+## 配合 @Valid 或 Validated 进行字典校验
 
+- 需要引入 `org.springframework.boot:spring-boot-starter-validation` 的 SpringBoot 依赖
+- 在需要校验对象的相关字段添加 `com.houkunlin.system.dic.starter.json.DicValid` 注解，使用方式： `@DicValid(value = "数据字典类型 dicType")`
 
 ## 提供一些其他字典信息到系统字典存储对象中
 
 - 实现 `com.houkunlin.system.dic.starter.provider.DicProvider` 接口并扫描到SpringBoot中
-
-
 
 ## 自定义本地字段缓存存储
 
