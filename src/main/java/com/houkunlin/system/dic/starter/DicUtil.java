@@ -24,22 +24,14 @@ public class DicUtil {
         if (type == null || store == null) {
             return null;
         }
-        final DicTypeVo dicType = store.getDicType(type);
-        if (dicType != null) {
-            return dicType;
-        }
-        return null;
+        return store.getDicType(type);
     }
 
     public static String getDicValueTitle(String type, String value) {
         if (type == null || value == null || store == null) {
             return null;
         }
-        final String title = store.getDicValueTitle(type, value);
-        if (title != null) {
-            return title;
-        }
-        return null;
+        return store.getDicValueTitle(type, value);
     }
 
     public static String dicKey(String type) {
