@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.Iterator;
 import java.util.List;
@@ -77,6 +78,7 @@ public class DicRegistrar implements InitializingBean {
     /**
      * 处理系统内部发起的刷新数据字典事件
      */
+    @Async
     @EventListener
     public void eventListenerRefreshDicEvent(RefreshDicEvent event) throws Exception {
         logger.info("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());

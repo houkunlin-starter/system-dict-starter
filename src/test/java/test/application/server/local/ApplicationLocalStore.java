@@ -3,6 +3,7 @@ package test.application.server.local;
 import com.houkunlin.system.dic.starter.SystemDicScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import test.application.common.CommandRunnerTests;
 
@@ -11,6 +12,7 @@ import test.application.common.CommandRunnerTests;
  *
  * @author HouKunLin
  */
+@EnableAsync
 @EnableScheduling
 @SpringBootApplication(scanBasePackageClasses = {ApplicationLocalStore.class, CommandRunnerTests.class})
 @SystemDicScan(basePackageClasses = {ApplicationLocalStore.class, CommandRunnerTests.class})
