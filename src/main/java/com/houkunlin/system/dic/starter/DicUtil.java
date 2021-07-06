@@ -1,9 +1,13 @@
 package com.houkunlin.system.dic.starter;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
 import com.houkunlin.system.dic.starter.bean.DicValueVo;
 import com.houkunlin.system.dic.starter.store.DicStore;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 系统字典工具
@@ -15,9 +19,19 @@ import org.springframework.stereotype.Component;
 public class DicUtil {
 
     private static DicStore store;
+    /**
+     * 字典值缓存
+     */
+    private static Cache<String, String> cache;
 
     public DicUtil(final DicStore store) {
         DicUtil.store = store;
+        cache = Caffeine
+                .newBuilder()
+                .expireAfterWrite(30, TimeUnit.SECONDS)
+                .maximumSize(500)
+                .initialCapacity(50)
+                .build();
     }
 
     public static DicTypeVo getDicType(String type) {
@@ -31,7 +45,7 @@ public class DicUtil {
         if (type == null || value == null || store == null) {
             return null;
         }
-        return store.getDicValueTitle(type, value);
+        return cache.get(dicKey(type, value), o -> store.getDicValueTitle(type, value));
     }
 
     public static String dicKey(String type) {
