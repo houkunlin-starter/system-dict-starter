@@ -2,6 +2,7 @@ package test.application.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dic.starter.DicEnum;
+import com.houkunlin.system.dic.starter.json.DicConverter;
 import com.houkunlin.system.dic.starter.json.DicType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Getter;
 /**
  * @author HouKunLin
  */
+@DicConverter
 @DicType(value = "PeopleType", comment = "用户类型")
 @Getter
 @AllArgsConstructor

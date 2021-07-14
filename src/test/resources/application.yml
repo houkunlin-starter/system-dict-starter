@@ -22,10 +22,11 @@ logging:
   level:
     com:
       houkunlin: debug
+    test: debug
 system:
   dic:
     raw-value: true
     text-value-default-null: true
-#    refresh-dic-interval: 10000
+    refresh-dic-interval: 20
 #    map-value: true
 #    on-boot-refresh-dic: true
