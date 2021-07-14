@@ -2,6 +2,8 @@ package com.houkunlin.system.dic.starter;
 
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
 import com.houkunlin.system.dic.starter.bean.DicValueVo;
+import com.houkunlin.system.dic.starter.javassist.DynamicGenerateConverterImpl;
+import com.houkunlin.system.dic.starter.json.DicConverter;
 import com.houkunlin.system.dic.starter.json.DicType;
 import com.houkunlin.system.dic.starter.provider.SystemDicProvider;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -34,10 +37,11 @@ import java.util.*;
 public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanFactoryAware {
     private static final Logger logger = LoggerFactory.getLogger(SystemDicScanRegistrar.class);
     private final ClassPathScanningCandidateComponentProvider provider;
-    private BeanFactory beanFactory;
+    private final DynamicGenerateConverterImpl generateConverter = new DynamicGenerateConverterImpl();
     private ClassLoader classLoader;
     private SystemDicProvider systemDicProvider;
     private String applicationName;
+    private DefaultListableBeanFactory beanFactory;
 
     public SystemDicScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
@@ -46,7 +50,7 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
 
     @Override
     public void setBeanFactory(@NonNull BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
+        this.beanFactory = (DefaultListableBeanFactory) beanFactory;
     }
 
     @Override
@@ -90,6 +94,10 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
      */
     private void handleDic(Class<?> dicClass) {
         final DicType annotation = dicClass.getDeclaredAnnotation(DicType.class);
+        final DicConverter dicConverter = dicClass.getDeclaredAnnotation(DicConverter.class);
+        if (dicConverter != null) {
+            generateConverter.registerBean(beanFactory, dicClass, dicConverter);
+        }
         String dicType;
         String dicTitle;
         if (annotation != null) {
