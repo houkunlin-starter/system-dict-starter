@@ -1,0 +1,48 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Upload Plugin
+
+on:
+  push:
+    tags: [ v* ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Release Jar To Maven
+        env: # Or as an environment variable
+          gpg_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_password: ${{ secrets.GPG_PASSWORD }}
+          ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
+          ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
+        run: ./gradlew publish -Pgpg_private_key=${gpg_key} -Pgpg_password=${gpg_password} -PossrhUsername=${ossrhUsername} -PossrhPassword=${ossrhPassword}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/*
