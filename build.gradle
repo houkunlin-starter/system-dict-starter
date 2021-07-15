@@ -81,8 +81,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username "$ossrhUsername"
-                password "$ossrhPassword"
+                username findProperty("ossrhUsername")
+                password findProperty("ossrhPassword")
             }
             // 正式环境
             // def releasesRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/releases/'
