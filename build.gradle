@@ -3,13 +3,14 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "io.freefair.lombok" version "5.3.0"
     id 'maven-publish'
+    id 'signing'
     id 'java-library'
     id 'application'
     id 'idea'
 }
 
 group = 'com.houkunlin'
-version = '0.0.1-SNAPSHOT'
+version = '1.2.0'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -35,7 +36,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api 'com.google.guava:guava:30.1.1-jre'
     api 'com.github.ben-manes.caffeine:caffeine'
-    api 'org.javassist:javassist:3.28.+'
+    api 'org.javassist:javassist:3.28.0-GA'
 
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:+'
     testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:+'
@@ -50,8 +51,60 @@ publishing {
     publications {
         library(MavenPublication) {
             from components.java
+            pom {
+                name = 'system-dic-starter'
+                packaging = 'jar'
+                description = 'system-dic-starter'
+                url = 'https://github.com/houkunlin/system-dic-starter'
+                // properties = []
+                licenses {
+                    license {
+                        name = 'Mulan Permissive Software License，Version 2'
+                        url = 'https://license.coscl.org.cn/MulanPSL2'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'houkunlin'
+                        name = 'HouKunLin'
+                        email = 'houkunlin@aliyun.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git://github.com/houkunlin/system-dic-starter.git'
+                    developerConnection = 'scm:git://github.com/houkunlin/system-dic-starter.git'
+                    url = 'git://github.com/houkunlin/system-dic-starter.git'
+                }
+            }
         }
     }
+    repositories {
+        maven {
+            credentials {
+                username "$ossrhUsername"
+                password "$ossrhPassword"
+            }
+            // 正式环境
+            // def releasesRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/releases/'
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            // 非正式环境库
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            // def releasesRepoUrl = layout.buildDirectory.dir('repos/releases')
+            // def snapshotsRepoUrl = layout.buildDirectory.dir('repos/snapshots')
+            url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+signing {
+    // 使用 gradle.properties 设置参数，或者在命令行中增加 -Pgpg_private_key= -Pgpg_password= 设置参数
+    def signingKey = findProperty("gpg_private_key")
+    if (signingKey != null) {
+        def signingPassword = findProperty("gpg_password")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+    sign publishing.publications
+    // sign configurations.archives
 }
 
 bootJar {
