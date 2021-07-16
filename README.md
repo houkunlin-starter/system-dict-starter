@@ -1,13 +1,31 @@
+[![](https://jitci.com/gh/houkunlin/system-dic-starter/svg)](https://jitci.com/gh/houkunlin/system-dic-starter)
 [![](https://jitpack.io/v/houkunlin/system-dic-starter.svg)](https://jitpack.io/#houkunlin/system-dic-starter)
-[![](https://jitci.com/gh/houkunlin/system-dic-starter/svg)](https://jitci.com/gh/houkunlin/system-dic-starter) 
+[![Maven Central](https://img.shields.io/maven-central/v/com.houkunlin/system-dic-starter.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.houkunlin%22%20AND%20a:%22system-dic-starter%22)
 
 # 系统字典 Starter
+
+## 依赖引入
+
+**Maven**
+
+```xml
+
+<dependency>
+    <groupId>com.houkunlin</groupId>
+    <artifactId>system-dic-starter</artifactId>
+    <version>${latest.version}</version>
+</dependency>
+```
+
+**Gradle**
+
+```groovy
+implementation "com.houkunlin:system-dic-starter:${latest.release}"
+```
 
 ## 如何使用
 
 - 在应用启动类上添加 `com.houkunlin.system.dic.starter.SystemDicScan` 注解
-
-
 
 ## 配置文件配置
 
