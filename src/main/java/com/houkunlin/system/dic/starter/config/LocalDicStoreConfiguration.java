@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 本地字典存储配置
+ *
  * @author HouKunLin
  */
 @ConditionalOnMissingClass("org.springframework.data.redis.core.RedisTemplate")

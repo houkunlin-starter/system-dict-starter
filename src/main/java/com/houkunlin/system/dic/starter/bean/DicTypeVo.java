@@ -11,7 +11,6 @@ import java.util.List;
  * 数据字典（类别、分类）
  *
  * @author HouKunLin
- * @date 2020/3/26 0026 23:19
  */
 @Data
 @AllArgsConstructor

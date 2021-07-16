@@ -310,7 +310,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      *
      * @param prov
      * @param property
-     * @return
+     * @return 序列化对象
      * @throws JsonMappingException
      */
     @Override
@@ -330,27 +330,27 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 if (annotation != null) {
                     // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                     return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
-                            new DicTextJsonSerializer(
-                                    property.getMember().getDeclaringClass(),
-                                    fieldName,
-                                    annotation,
-                                    new Class[]{aClass})
+                        new DicTextJsonSerializer(
+                            property.getMember().getDeclaringClass(),
+                            fieldName,
+                            annotation,
+                            new Class[]{aClass})
                     );
                 }
                 // 这里的代码实际已经过时，由于在本次提交，引入了 @DicType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DicText 对整个类起了作用
                 return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName, key ->
-                        new DicTextJsonSerializer(
-                                property.getMember().getDeclaringClass(),
-                                fieldName,
-                                new Class[]{aClass}));
+                    new DicTextJsonSerializer(
+                        property.getMember().getDeclaringClass(),
+                        fieldName,
+                        new Class[]{aClass}));
             }
             if (annotation != null) {
                 // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                 return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
-                        new DicTextJsonSerializer(
-                                property.getMember().getDeclaringClass(),
-                                fieldName,
-                                annotation)
+                    new DicTextJsonSerializer(
+                        property.getMember().getDeclaringClass(),
+                        fieldName,
+                        annotation)
                 );
             }
             try {

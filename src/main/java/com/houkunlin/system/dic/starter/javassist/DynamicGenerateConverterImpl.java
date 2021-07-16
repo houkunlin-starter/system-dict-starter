@@ -39,6 +39,14 @@ public class DynamicGenerateConverterImpl {
         }
     }
 
+    /**
+     * 动态创建一个转换器对象
+     *
+     * @param clazz        枚举对象
+     * @param dicConverter 枚举转换器配置参数注解
+     * @return 转换器对象
+     * @throws Exception 异常
+     */
     public Class<?> createConverterClass(final Class<?> clazz, final DicConverter dicConverter) throws Exception {
         // 这个 Class 一定是继承一个指定的接口的
         if (!clazz.isEnum() || !DicEnum.class.isAssignableFrom(clazz)) {
@@ -68,9 +76,9 @@ public class DynamicGenerateConverterImpl {
 
         // 创建实现方法
         final CtMethod method = new CtMethod(pool.getCtClass(dicEnumClassName),
-                "convert",
-                new CtClass[]{pool.getCtClass(interfaceTypeClass1.getName())},
-                makeClass);
+            "convert",
+            new CtClass[]{pool.getCtClass(interfaceTypeClass1.getName())},
+            makeClass);
         method.setBody(getMethodBody(dicEnumClassName, dicValueType, interfaceTypeClass1, dicConverter));
         method.setModifiers(Modifier.PUBLIC);
         makeClass.addMethod(method);
@@ -104,7 +112,7 @@ public class DynamicGenerateConverterImpl {
             } else {
                 // 优先尝试使用字符串转换，转换失败再次尝试使用枚举字典的值类型去转换获取
                 return String.format("{ try{ return %s.valueOf($1); }catch(%s e){ return (%s) %s.valueOf(%s.values(),$1);} }",
-                        dicEnumClassName, Exception.class.getName(), dicEnumClassName, DicEnum.class.getName(), dicEnumClassName
+                    dicEnumClassName, Exception.class.getName(), dicEnumClassName, DicEnum.class.getName(), dicEnumClassName
                 );
             }
         } else {
@@ -113,12 +121,21 @@ public class DynamicGenerateConverterImpl {
             } else {
                 // 参数类型不同，优先尝试使用字符串转换，转换失败再次尝试使用枚举字典的值类型去转换获取
                 return String.format("{ try{ return %s.valueOf($1); }catch(%s e){ return (%s) %s.valueOf(%s.values(), %s.valueOf($1));} }",
-                        dicEnumClassName, Exception.class.getName(), dicEnumClassName, DicEnum.class.getName(), dicEnumClassName, dicValueType.getName()
+                    dicEnumClassName, Exception.class.getName(), dicEnumClassName, DicEnum.class.getName(), dicEnumClassName, dicValueType.getName()
                 );
             }
         }
     }
 
+    /**
+     * 增加实现类转换方法的桥接方法
+     *
+     * @param pool                pool
+     * @param makeClass           makeClass
+     * @param methodArgumentClazz 方法参数类对象
+     * @throws NotFoundException      异常信息
+     * @throws CannotCompileException 异常信息
+     */
     private void addBridgeMethod(ClassPool pool, final CtClass makeClass, final Class<?> methodArgumentClazz) throws NotFoundException, CannotCompileException {
         // // 必须设置一个桥接方法，否则调用方法的时候会报 AbstractMethodError 异常，这个据说是编译器的类型擦除的问题，并且 javassist 不会自动设置桥接方法，因此需要手动构建一个桥接方法
         final CtClass objectCtClass = pool.getCtClass(Object.class.getName());

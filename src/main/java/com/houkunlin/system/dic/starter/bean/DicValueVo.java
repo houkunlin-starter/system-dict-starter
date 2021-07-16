@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
+ * 字典值信息对象
+ *
  * @author HouKunLin
  */
 @SuppressWarnings("all")
