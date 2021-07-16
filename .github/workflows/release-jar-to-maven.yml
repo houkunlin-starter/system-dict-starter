@@ -22,11 +22,12 @@ jobs:
         run: chmod +x gradlew
       - name: Release Jar To Maven
         env: # Or as an environment variable
-          gpg_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg_password: ${{ secrets.GPG_PASSWORD }}
           ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
           ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
-        run: ./gradlew publish -Pgpg_private_key=${gpg_key} -Pgpg_password=${gpg_password} -PossrhUsername=${ossrhUsername} -PossrhPassword=${ossrhPassword}
+        # build.gradle 脚本中已支持直接从环境变量中读取相关配置信息，因此这里可以不显式传递相关机密参数
+        run: ./gradlew publish
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -45,4 +46,4 @@ jobs:
         with:
           # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/libs/*
+          asset_path: build/libs/*.jar$
