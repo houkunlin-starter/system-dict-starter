@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.json;
 
-import com.houkunlin.system.dict.starter.DicUtil;
+import com.houkunlin.system.dict.starter.DictUtil;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
  *
  * @author HouKunLin
  */
-public class DicValidConstraintValidator implements ConstraintValidator<DicValid, Object> {
+public class DictValidConstraintValidator implements ConstraintValidator<DictValid, Object> {
     private String dicType;
 
     @Override
@@ -18,11 +18,11 @@ public class DicValidConstraintValidator implements ConstraintValidator<DicValid
         if (dicType == null || value == null) {
             return false;
         }
-        return DicUtil.getDicValueTitle(dicType, String.valueOf(value)) != null;
+        return DictUtil.getDicValueTitle(dicType, String.valueOf(value)) != null;
     }
 
     @Override
-    public void initialize(final DicValid constraintAnnotation) {
+    public void initialize(final DictValid constraintAnnotation) {
         this.dicType = constraintAnnotation.value();
     }
 }

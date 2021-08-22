@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author HouKunLin
  */
-public interface DicEnum<T extends Serializable> {
+public interface DictEnum<T extends Serializable> {
     /**
      * 通过枚举值从枚举列表中获取枚举对象
      *
@@ -19,7 +19,7 @@ public interface DicEnum<T extends Serializable> {
      * @param <T>    枚举值类型
      * @return 枚举对象
      */
-    static <T extends Serializable, E extends Enum<E> & DicEnum<T>> E valueOf(E[] values, T value) {
+    static <T extends Serializable, E extends Enum<E> & DictEnum<T>> E valueOf(E[] values, T value) {
         for (final E enums : values) {
             if (enums.getValue().equals(value)) {
                 return enums;

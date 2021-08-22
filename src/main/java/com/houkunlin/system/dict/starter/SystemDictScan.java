@@ -6,15 +6,15 @@ import org.springframework.core.annotation.AliasFor;
 import java.lang.annotation.*;
 
 /**
- * 扫描系统数据字典。系统数据字典需要为枚举类型，然后枚举需要实现 {@link DicEnum} 接口才能够自动扫描到。
+ * 扫描系统数据字典。系统数据字典需要为枚举类型，然后枚举需要实现 {@link DictEnum} 接口才能够自动扫描到。
  *
  * @author HouKunLin
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({SystemDicScanRegistrar.class, SystemDicStarter.class})
-public @interface SystemDicScan {
+@Import({SystemDictScanRegistrar.class, SystemDictStarter.class})
+public @interface SystemDictScan {
     /**
      * 系统字典扫描包路径
      *

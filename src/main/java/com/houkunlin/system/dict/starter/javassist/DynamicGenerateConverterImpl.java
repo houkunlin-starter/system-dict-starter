@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.javassist;
 
-import com.houkunlin.system.dict.starter.DicEnum;
-import com.houkunlin.system.dict.starter.json.DicConverter;
+import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.json.DictConverter;
 import javassist.*;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
@@ -26,7 +26,7 @@ import java.lang.reflect.Constructor;
 @NoArgsConstructor
 public class DynamicGenerateConverterImpl {
 
-    public void registerBean(final DefaultListableBeanFactory factory, final Class<?> clazz, final DicConverter dicConverter) {
+    public void registerBean(final DefaultListableBeanFactory factory, final Class<?> clazz, final DictConverter dicConverter) {
         try {
             final Class<?> converterClass = createConverterClass(clazz, dicConverter);
             if (converterClass != null) {
@@ -47,9 +47,9 @@ public class DynamicGenerateConverterImpl {
      * @return 转换器对象
      * @throws Exception 异常
      */
-    public Class<?> createConverterClass(final Class<?> clazz, final DicConverter dicConverter) throws Exception {
+    public Class<?> createConverterClass(final Class<?> clazz, final DictConverter dicConverter) throws Exception {
         // 这个 Class 一定是继承一个指定的接口的
-        if (!clazz.isEnum() || !DicEnum.class.isAssignableFrom(clazz)) {
+        if (!clazz.isEnum() || !DictEnum.class.isAssignableFrom(clazz)) {
             return null;
         }
         // 系统字典枚举类完全限定名
@@ -64,7 +64,7 @@ public class DynamicGenerateConverterImpl {
         final ClassPool pool = ClassPool.getDefault();
 
         // 创建一个基础的对象信息
-        final CtClass makeClass = pool.makeClass(clazz.getName() + "SystemDicSpringConverter");
+        final CtClass makeClass = pool.makeClass(clazz.getName() + "SystemDictSpringConverter");
         makeClass.setInterfaces(new CtClass[]{pool.getCtClass(Converter.class.getName())});
 
         final ClassFile classFile = makeClass.getClassFile();
@@ -105,23 +105,23 @@ public class DynamicGenerateConverterImpl {
      * @param dicConverter        字典枚举注解信息
      * @return 方法体内存
      */
-    private String getMethodBody(final String dicEnumClassName, final Class<?> dicValueType, final Class<?> methodArgumentClazz, DicConverter dicConverter) {
+    private String getMethodBody(final String dicEnumClassName, final Class<?> dicValueType, final Class<?> methodArgumentClazz, DictConverter dicConverter) {
         if (methodArgumentClazz == dicValueType) {
             if (dicConverter.onlyDicValue()) {
-                return String.format("{return (%s) %s.valueOf(%s.values(),$1);}", dicEnumClassName, DicEnum.class.getName(), dicEnumClassName);
+                return String.format("{return (%s) %s.valueOf(%s.values(),$1);}", dicEnumClassName, DictEnum.class.getName(), dicEnumClassName);
             } else {
                 // 优先尝试使用字符串转换，转换失败再次尝试使用枚举字典的值类型去转换获取
                 return String.format("{ try{ return %s.valueOf($1); }catch(%s e){ return (%s) %s.valueOf(%s.values(),$1);} }",
-                    dicEnumClassName, Exception.class.getName(), dicEnumClassName, DicEnum.class.getName(), dicEnumClassName
+                    dicEnumClassName, Exception.class.getName(), dicEnumClassName, DictEnum.class.getName(), dicEnumClassName
                 );
             }
         } else {
             if (dicConverter.onlyDicValue()) {
-                return String.format("{return (%s) %s.valueOf(%s.values(), %s.valueOf($1));}", dicEnumClassName, DicEnum.class.getName(), dicEnumClassName, dicValueType.getName());
+                return String.format("{return (%s) %s.valueOf(%s.values(), %s.valueOf($1));}", dicEnumClassName, DictEnum.class.getName(), dicEnumClassName, dicValueType.getName());
             } else {
                 // 参数类型不同，优先尝试使用字符串转换，转换失败再次尝试使用枚举字典的值类型去转换获取
                 return String.format("{ try{ return %s.valueOf($1); }catch(%s e){ return (%s) %s.valueOf(%s.values(), %s.valueOf($1));} }",
-                    dicEnumClassName, Exception.class.getName(), dicEnumClassName, DicEnum.class.getName(), dicEnumClassName, dicValueType.getName()
+                    dicEnumClassName, Exception.class.getName(), dicEnumClassName, DictEnum.class.getName(), dicEnumClassName, dicValueType.getName()
                 );
             }
         }
@@ -153,7 +153,7 @@ public class DynamicGenerateConverterImpl {
      * @see GenericConversionService#getRequiredTypeInfo(java.lang.Class, java.lang.Class)
      */
     private Class<?> getDicEnumInterfaceType(final Class<?> clazz) {
-        final ResolvableType resolvableType = ResolvableType.forClass(clazz).as(DicEnum.class);
+        final ResolvableType resolvableType = ResolvableType.forClass(clazz).as(DictEnum.class);
         final ResolvableType[] interfaces = resolvableType.getGenerics();
 
         // DicEnum 的泛型参数类型

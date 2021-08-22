@@ -1,8 +1,8 @@
 package test.application.server.local;
 
-import com.houkunlin.system.dict.starter.bean.DicTypeVo;
-import com.houkunlin.system.dict.starter.store.LocalDicStore;
-import com.houkunlin.system.dict.starter.store.RemoteDic;
+import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.store.LocalDictStore;
+import com.houkunlin.system.dict.starter.store.RemoteDict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -12,21 +12,21 @@ import org.springframework.context.annotation.Configuration;
  * @author HouKunLin
  */
 @Configuration
-public class DicConfiguration {
-    private static final Logger logger = LoggerFactory.getLogger(DicConfiguration.class);
+public class DictConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(DictConfiguration.class);
 
     @Bean
-    public LocalDicStore localDicStore(final RemoteDic remoteDic) {
+    public LocalDictStore localDicStore(final RemoteDict remoteDic) {
         logger.debug("使用自定义的 LocalDicStore 存储数据字典信息");
-        return new LocalDicStore(remoteDic);
+        return new LocalDictStore(remoteDic);
     }
 
     @Bean
-    public RemoteDic remoteDic() {
+    public RemoteDict remoteDic() {
         logger.debug("提供一个空的 RemoteDic 对象");
-        return new RemoteDic() {
+        return new RemoteDict() {
             @Override
-            public DicTypeVo getDicType(final String type) {
+            public DictTypeVo getDicType(final String type) {
                 return null;
             }
 

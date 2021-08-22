@@ -14,11 +14,11 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DicConverter {
+public @interface DictConverter {
     /**
      * 是否只支持字典值转换。SpringBoot默认支持枚举名称转换；
-     * 是：只支持字典值转换 DicEnum.valueOf(DicEnumObject.values(), VALUE)；
-     * 否：优先使用枚举名称转换（DicEnumObject.valueOf(VALUE)），枚举名称转换失败时使用字典值转换（DicEnum.valueOf(DicEnumObject.values(), VALUE)）；
+     * 是：只支持字典值转换 DictEnum.valueOf(DictEnumObject.values(), VALUE)；
+     * 否：优先使用枚举名称转换（DictEnumObject.valueOf(VALUE)），枚举名称转换失败时使用字典值转换（DictEnum.valueOf(DictEnumObject.values(), VALUE)）；
      *
      * @return 是否
      */

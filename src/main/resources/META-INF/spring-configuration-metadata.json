@@ -1,9 +1,9 @@
 {
   "groups": [
     {
-      "sourceType": "com.houkunlin.system.dict.starter.DicProperties",
-      "name": "system.dic",
-      "type": "com.houkunlin.system.dict.starter.DicProperties"
+      "sourceType": "com.houkunlin.system.dict.starter.DictProperties",
+      "name": "system.dict",
+      "type": "com.houkunlin.system.dict.starter.DictProperties"
     }
   ]
 }

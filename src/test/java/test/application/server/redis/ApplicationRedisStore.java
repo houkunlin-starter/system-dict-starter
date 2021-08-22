@@ -1,6 +1,6 @@
 package test.application.server.redis;
 
-import com.houkunlin.system.dict.starter.SystemDicScan;
+import com.houkunlin.system.dict.starter.SystemDictScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -16,7 +16,7 @@ import test.application.server.local.ApplicationLocalStore;
 @EnableAsync
 @EnableScheduling
 @SpringBootApplication(scanBasePackageClasses = {ApplicationRedisStore.class, CommandRunnerTests.class})
-@SystemDicScan(basePackageClasses = {ApplicationLocalStore.class, CommandRunnerTests.class})
+@SystemDictScan(basePackageClasses = {ApplicationLocalStore.class, CommandRunnerTests.class})
 public class ApplicationRedisStore {
     public static void main(String[] args) {
         SpringApplication.run(ApplicationRedisStore.class);

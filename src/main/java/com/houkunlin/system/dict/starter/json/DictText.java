@@ -2,7 +2,7 @@ package com.houkunlin.system.dict.starter.json;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.houkunlin.system.dict.starter.DicEnum;
+import com.houkunlin.system.dict.starter.DictEnum;
 
 import java.lang.annotation.*;
 
@@ -16,11 +16,11 @@ import java.lang.annotation.*;
  * @author HouKunLin
  */
 @JacksonAnnotationsInside
-@JsonSerialize(using = DicTextJsonSerializer.class)
+@JsonSerialize(using = DictTextJsonSerializer.class)
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DicText {
+public @interface DictText {
     /**
      * 数据字典的代码。
      * 当此注解在系统字典枚举上时，该字段表示字典类型代码。
@@ -41,7 +41,7 @@ public @interface DicText {
      *
      * @return 与当前字典有关的系统字典枚举列表
      */
-    Class<? extends DicEnum<?>>[] enums() default {};
+    Class<? extends DictEnum<?>>[] enums() default {};
 
     /**
      * 设置当没有获取到数据时是否为 null。

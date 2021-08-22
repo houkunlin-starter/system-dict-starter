@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.houkunlin.system.dict.starter.DicEnum;
-import com.houkunlin.system.dict.starter.DicUtil;
-import com.houkunlin.system.dict.starter.SystemDicStarter;
+import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.DictUtil;
+import com.houkunlin.system.dict.starter.SystemDictStarter;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,19 +20,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * DicText 注解的序列化器，处理 DicText 注解，把字段的数据字典值转换成为数据字典文本信息
+ * DictText 注解的序列化器，处理 DictText 注解，把字段的数据字典值转换成为数据字典文本信息
  *
  * @author HouKunLin
  */
 @SuppressWarnings("all")
 @Getter
-public class DicTextJsonSerializer extends JsonSerializer<Object> implements ContextualSerializer {
-    private static final Logger logger = LoggerFactory.getLogger(DicTextJsonSerializer.class);
+public class DictTextJsonSerializer extends JsonSerializer<Object> implements ContextualSerializer {
+    private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializer.class);
     private static final ConcurrentHashMap<String, JsonSerializer<Object>> CACHE = new ConcurrentHashMap<>();
     /**
      * 缓存了直接使用系统字典枚举来渲染数据字典文本的所有数据
      */
-    private static final Table<Class<? extends DicEnum<?>>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
+    private static final Table<Class<? extends DictEnum<?>>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
     /**
      * 使用了这个注解的对象
      */
@@ -48,7 +48,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
     /**
      * 字典转换注解对象
      */
-    private final DicText dicText;
+    private final DictText dicText;
     /**
      * 字典类型代码
      */
@@ -56,9 +56,9 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
     /**
      * 直接使用系统字典枚举的枚举对象列表
      */
-    private final Class<? extends DicEnum<?>>[] enumsClass;
+    private final Class<? extends DictEnum<?>>[] enumsClass;
 
-    public DicTextJsonSerializer() {
+    public DictTextJsonSerializer() {
         this.beanClazz = null;
         this.beanFieldName = null;
         this.destinationFieldName = null;
@@ -67,7 +67,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         this.enumsClass = null;
     }
 
-    public DicTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DicText dicText) {
+    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dicText) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
         this.dicText = dicText;
@@ -80,7 +80,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         initEnumsClass();
     }
 
-    public DicTextJsonSerializer(Class<?> beanClazz, String beanFieldName, Class<? extends DicEnum<?>>[] enumsClass) {
+    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, Class<? extends DictEnum<?>>[] enumsClass) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
         this.dicText = null;
@@ -93,7 +93,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         initEnumsClass();
     }
 
-    public DicTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DicText dicText, Class<? extends DicEnum<?>>[] enumsClass) {
+    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dicText, Class<? extends DictEnum<?>>[] enumsClass) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
         this.dicText = dicText;
@@ -106,7 +106,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         initEnumsClass();
     }
 
-    private String getFieldName(DicText dicText) {
+    private String getFieldName(DictText dicText) {
         final String fieldName = dicText.fieldName();
         if (StringUtils.hasText(fieldName)) {
             return fieldName;
@@ -117,13 +117,13 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
 
     private void initEnumsClass() {
         // 解析系统字典枚举列表
-        for (final Class<? extends DicEnum<?>> enumClass : this.enumsClass) {
+        for (final Class<? extends DictEnum<?>> enumClass : this.enumsClass) {
             if (!enumClass.isEnum()) {
                 continue;
             }
-            final DicEnum<?>[] enumConstants = enumClass.getEnumConstants();
+            final DictEnum<?>[] enumConstants = enumClass.getEnumConstants();
             // 解析枚举对象枚举列表
-            for (DicEnum<?> enums : enumConstants) {
+            for (DictEnum<?> enums : enumConstants) {
                 // 缓存系统字典枚举对象的解析数据
                 CACHE_ENUMS.put(enumClass, String.valueOf(enums.getValue()), enums.getTitle());
             }
@@ -149,8 +149,8 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @return 是否设置成功
      */
     private boolean fromFieldEnumsClass(Object value, JsonGenerator gen) throws IOException {
-        if (value instanceof DicEnum) {
-            final DicEnum enums = (DicEnum) value;
+        if (value instanceof DictEnum) {
+            final DictEnum enums = (DictEnum) value;
             final String title = getTitleFormClass(enums.getValue());
             if (title == null) {
                 logger.warn("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
@@ -191,7 +191,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      */
     private void fromDicCache(Object value, JsonGenerator gen) throws IOException {
         if (dicType != null && StringUtils.hasText(dicType)) {
-            writeFieldValue(gen, value, DicUtil.getDicValueTitle(dicType, String.valueOf(value)));
+            writeFieldValue(gen, value, DictUtil.getDicValueTitle(dicType, String.valueOf(value)));
         } else {
             writeFieldValue(gen, value, defaultValue(null));
             logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
@@ -206,7 +206,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
      * @throws IOException
      */
     private void writeFieldValue(Object fieldValue, JsonGenerator gen) throws IOException {
-        if (SystemDicStarter.isRawValue()) {
+        if (SystemDictStarter.isRawValue()) {
             gen.writeObject(fieldValue);
         } else {
             gen.writeString(String.valueOf(fieldValue));
@@ -226,7 +226,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             writeFieldValue(rawValueObject, gen);
             return;
         }
-        if (dicText.mapValue() == DicText.Type.YES || (SystemDicStarter.isMapValue() && dicText.mapValue() == DicText.Type.GLOBAL)) {
+        if (dicText.mapValue() == DictText.Type.YES || (SystemDictStarter.isMapValue() && dicText.mapValue() == DictText.Type.GLOBAL)) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", rawValueObject);
             map.put("text", dicValueText);
@@ -255,7 +255,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
         assert enumsClass != null;
 
         String cacheTitle = null;
-        for (final Class<? extends DicEnum<?>> aClass : enumsClass) {
+        for (final Class<? extends DictEnum<?>> aClass : enumsClass) {
             cacheTitle = CACHE_ENUMS.get(aClass, String.valueOf(value));
             if (cacheTitle != null) {
                 break;
@@ -266,12 +266,12 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
 
     private Object defaultValue(Object value) {
         if (dicText != null) {
-            if (dicText.nullable() == DicText.Type.GLOBAL) {
-                return defaultValue(value, SystemDicStarter.isTextValueDefaultNull());
+            if (dicText.nullable() == DictText.Type.GLOBAL) {
+                return defaultValue(value, SystemDictStarter.isTextValueDefaultNull());
             }
-            return defaultValue(value, dicText.nullable() == DicText.Type.YES);
+            return defaultValue(value, dicText.nullable() == DictText.Type.YES);
         }
-        return defaultValue(value, SystemDicStarter.isTextValueDefaultNull());
+        return defaultValue(value, SystemDictStarter.isTextValueDefaultNull());
     }
 
     /**
@@ -322,15 +322,15 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             final Class<?> javaTypeRawClass = javaType.getRawClass();
 
             // @DicText 注解目前仅对 字段、方法 起作用，因此这里拿到的注解一定是不为null的
-            final DicText annotation = property.getAnnotation(DicText.class);
+            final DictText annotation = property.getAnnotation(DictText.class);
 
             // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
-            if (DicEnum.class.isAssignableFrom(javaTypeRawClass)) {
-                final Class<? extends DicEnum<?>> aClass = (Class<? extends DicEnum<?>>) javaTypeRawClass;
+            if (DictEnum.class.isAssignableFrom(javaTypeRawClass)) {
+                final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) javaTypeRawClass;
                 if (annotation != null) {
                     // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                     return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
-                        new DicTextJsonSerializer(
+                        new DictTextJsonSerializer(
                             property.getMember().getDeclaringClass(),
                             fieldName,
                             annotation,
@@ -339,7 +339,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
                 }
                 // 这里的代码实际已经过时，由于在本次提交，引入了 @DicType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DicText 对整个类起了作用
                 return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName, key ->
-                    new DicTextJsonSerializer(
+                    new DictTextJsonSerializer(
                         property.getMember().getDeclaringClass(),
                         fieldName,
                         new Class[]{aClass}));
@@ -347,7 +347,7 @@ public class DicTextJsonSerializer extends JsonSerializer<Object> implements Con
             if (annotation != null) {
                 // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                 return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
-                    new DicTextJsonSerializer(
+                    new DictTextJsonSerializer(
                         property.getMember().getDeclaringClass(),
                         fieldName,
                         annotation)

@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.notice;
 
-import com.houkunlin.system.dict.starter.DicProperties;
-import com.houkunlin.system.dict.starter.DicRegistrar;
+import com.houkunlin.system.dict.starter.DictProperties;
+import com.houkunlin.system.dict.starter.DictRegistrar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
@@ -25,19 +25,19 @@ import java.util.*;
  */
 @ConditionalOnClass(AmqpTemplate.class)
 @Configuration
-public class DicMqConfiguration {
-    private static final Logger logger = LoggerFactory.getLogger(DicMqConfiguration.class);
+public class DictMqConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(DictMqConfiguration.class);
     private static final String DIC_PROVIDER_CLASSES_KEY = "DIC.dicProviderClasses";
-    private final DicRegistrar dicRegistrar;
+    private final DictRegistrar dicRegistrar;
     private final AmqpTemplate amqpTemplate;
     private final String applicationName;
     private final String exchangeName;
     private final String headerSourceKey;
 
-    public DicMqConfiguration(@Lazy final DicRegistrar dicRegistrar,
-                              final AmqpTemplate amqpTemplate,
-                              @Value("${spring.application.name:'system-dic'}") final String applicationName,
-                              final DicProperties dicProperties) {
+    public DictMqConfiguration(@Lazy final DictRegistrar dicRegistrar,
+                               final AmqpTemplate amqpTemplate,
+                               @Value("${spring.application.name:'system-dic'}") final String applicationName,
+                               final DictProperties dicProperties) {
         this.dicRegistrar = dicRegistrar;
         this.amqpTemplate = amqpTemplate;
         this.applicationName = applicationName;
@@ -104,7 +104,7 @@ public class DicMqConfiguration {
      * 处理系统内部发起的刷新数据字典事件
      */
     @EventListener
-    public void refreshDic(RefreshDicEvent event) {
+    public void refreshDic(RefreshDictEvent event) {
         final Object source = event.getSource();
         if (event.isNotifyOtherSystem()) {
             logger.debug("接收到刷新数据字典事件，通知 MQ 与其他协同系统刷新 Redis 数据字典内容。事件内容：{}", source);

@@ -1,11 +1,11 @@
 package com.houkunlin.system.dict.starter;
 
-import com.houkunlin.system.dict.starter.bean.DicTypeVo;
-import com.houkunlin.system.dict.starter.bean.DicValueVo;
+import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.javassist.DynamicGenerateConverterImpl;
-import com.houkunlin.system.dict.starter.json.DicConverter;
-import com.houkunlin.system.dict.starter.json.DicType;
-import com.houkunlin.system.dict.starter.provider.SystemDicProvider;
+import com.houkunlin.system.dict.starter.json.DictConverter;
+import com.houkunlin.system.dict.starter.json.DictType;
+import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -34,18 +34,18 @@ import java.util.*;
  *
  * @author HouKunLin
  */
-public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanFactoryAware {
-    private static final Logger logger = LoggerFactory.getLogger(SystemDicScanRegistrar.class);
+public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanFactoryAware {
+    private static final Logger logger = LoggerFactory.getLogger(SystemDictScanRegistrar.class);
     private final ClassPathScanningCandidateComponentProvider provider;
     private final DynamicGenerateConverterImpl generateConverter = new DynamicGenerateConverterImpl();
     private ClassLoader classLoader;
-    private SystemDicProvider systemDicProvider;
+    private SystemDictProvider systemDicProvider;
     private String applicationName;
     private DefaultListableBeanFactory beanFactory;
 
-    public SystemDicScanRegistrar() {
+    public SystemDictScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
-        provider.addIncludeFilter(new AssignableTypeFilter(DicEnum.class));
+        provider.addIncludeFilter(new AssignableTypeFilter(DictEnum.class));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
     public void registerBeanDefinitions(@NonNull AnnotationMetadata annotationMetadata, @NonNull BeanDefinitionRegistry registry) {
         final Environment environment = beanFactory.getBean(Environment.class);
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
-        this.systemDicProvider = beanFactory.getBean(SystemDicProvider.class);
+        this.systemDicProvider = beanFactory.getBean(SystemDictProvider.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
     }
@@ -93,8 +93,8 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
      * @param dicClass 字典对象
      */
     private void handleDic(Class<?> dicClass) {
-        final DicType annotation = dicClass.getDeclaredAnnotation(DicType.class);
-        final DicConverter dicConverter = dicClass.getDeclaredAnnotation(DicConverter.class);
+        final DictType annotation = dicClass.getDeclaredAnnotation(DictType.class);
+        final DictConverter dicConverter = dicClass.getDeclaredAnnotation(DictConverter.class);
         if (dicConverter != null) {
             generateConverter.registerBean(beanFactory, dicClass, dicConverter);
         }
@@ -112,15 +112,15 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
             dicTitle = dicClass.getSimpleName();
         }
 
-        List<DicValueVo<? extends Serializable>> list = new ArrayList<>();
-        final DicEnum<?>[] enumConstants = (DicEnum<?>[]) dicClass.getEnumConstants();
-        for (DicEnum<?> enums : enumConstants) {
+        List<DictValueVo<? extends Serializable>> list = new ArrayList<>();
+        final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dicClass.getEnumConstants();
+        for (DictEnum<?> enums : enumConstants) {
             if (logger.isDebugEnabled()) {
                 logger.debug("class {} : - {} - {} - {} - {}", dicClass.getName(), dicType, enums.getValue(), enums.getTitle(), enums);
             }
-            list.add(new DicValueVo<>(dicType, enums.getValue(), enums.getTitle(), null, 0));
+            list.add(new DictValueVo<>(dicType, enums.getValue(), enums.getTitle(), null, 0));
         }
-        final DicTypeVo dicTypeVo = new DicTypeVo(dicTitle, dicType, "From Application: " + applicationName, list);
+        final DictTypeVo dicTypeVo = new DictTypeVo(dicTitle, dicType, "From Application: " + applicationName, list);
         systemDicProvider.addDic(dicTypeVo);
     }
 
@@ -131,7 +131,7 @@ public class SystemDicScanRegistrar implements ImportBeanDefinitionRegistrar, Re
      * @return 包列表，至少包含一个默认的 com.pension.system 包路径
      */
     private Set<String> getPackagesToScan(AnnotationMetadata metadata) {
-        AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(SystemDicScan.class.getName()));
+        AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(SystemDictScan.class.getName()));
         if (attributes == null) {
             return Collections.emptySet();
         }

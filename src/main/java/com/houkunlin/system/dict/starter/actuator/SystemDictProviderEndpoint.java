@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.actuator;
 
-import com.houkunlin.system.dict.starter.provider.SystemDicProvider;
+import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
@@ -19,8 +19,8 @@ import java.util.Map;
 @Component
 @Endpoint(id = "dict-system")
 @AllArgsConstructor
-public class SystemDicProviderEndpoint {
-    private final SystemDicProvider provider;
+public class SystemDictProviderEndpoint {
+    private final SystemDictProvider provider;
 
     /**
      * 默认端点，返回系统字典类型代码列表

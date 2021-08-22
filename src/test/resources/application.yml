@@ -24,10 +24,10 @@ logging:
       houkunlin: debug
     test: debug
 system:
-  dic:
+  dict:
     raw-value: true
     text-value-default-null: true
-    refresh-dic-interval: 20
+    refresh-dict-interval: 20
 #    map-value: true
 management:
   endpoint:

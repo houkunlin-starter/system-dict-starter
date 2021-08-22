@@ -13,10 +13,10 @@ import java.lang.annotation.Target;
  *
  * @author HouKunLin
  */
-@Constraint(validatedBy = {DicValidConstraintValidator.class})
+@Constraint(validatedBy = {DictValidConstraintValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DicValid {
+public @interface DictValid {
     String message() default "字典参数错误";
 
     Class<?>[] groups() default {};

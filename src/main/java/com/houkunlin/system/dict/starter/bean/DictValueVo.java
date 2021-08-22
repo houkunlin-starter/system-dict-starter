@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DicValueVo<V> implements Serializable {
+public class DictValueVo<V> implements Serializable {
     /**
      * 字典类型代码
      */

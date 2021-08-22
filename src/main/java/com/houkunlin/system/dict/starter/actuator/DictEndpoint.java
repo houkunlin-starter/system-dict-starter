@@ -1,9 +1,9 @@
 package com.houkunlin.system.dict.starter.actuator;
 
-import com.houkunlin.system.dict.starter.DicUtil;
-import com.houkunlin.system.dict.starter.provider.DicProvider;
-import com.houkunlin.system.dict.starter.store.DicStore;
-import com.houkunlin.system.dict.starter.store.RemoteDic;
+import com.houkunlin.system.dict.starter.DictUtil;
+import com.houkunlin.system.dict.starter.provider.DictProvider;
+import com.houkunlin.system.dict.starter.store.DictStore;
+import com.houkunlin.system.dict.starter.store.RemoteDict;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 @Endpoint(id = "dict")
 @AllArgsConstructor
 public class DictEndpoint {
-    private final List<DicProvider> providers;
-    private final List<DicStore> stores;
-    private final List<RemoteDic> remoteDicts;
+    private final List<DictProvider> providers;
+    private final List<DictStore> stores;
+    private final List<RemoteDict> remoteDicts;
 
     /**
      * 默认端点接口信息
@@ -54,7 +54,7 @@ public class DictEndpoint {
      */
     @ReadOperation
     public Object type(@Selector String dictType) {
-        return DicUtil.getDicType(dictType);
+        return DictUtil.getDicType(dictType);
     }
 
     /**
@@ -66,6 +66,6 @@ public class DictEndpoint {
      */
     @ReadOperation
     public Object title(@Selector String dictType, @Selector String dictValue) {
-        return DicUtil.getDicValueTitle(dictType, dictValue);
+        return DictUtil.getDicValueTitle(dictType, dictValue);
     }
 }

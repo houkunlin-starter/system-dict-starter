@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter.config;
 
-import com.houkunlin.system.dict.starter.store.DicStore;
-import com.houkunlin.system.dict.starter.store.RedisDicStore;
-import com.houkunlin.system.dict.starter.store.RemoteDic;
+import com.houkunlin.system.dict.starter.store.DictStore;
+import com.houkunlin.system.dict.starter.store.RedisDictStore;
+import com.houkunlin.system.dict.starter.store.RemoteDict;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @ConditionalOnClass(RedisTemplate.class)
 @Configuration
-public class RedisDicStoreConfiguration {
+public class RedisDictStoreConfiguration {
     @ConditionalOnMissingBean
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
@@ -32,7 +32,7 @@ public class RedisDicStoreConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DicStore dicStore(RedisTemplate<Object, Object> redisTemplate, RemoteDic remoteDic) {
-        return new RedisDicStore(redisTemplate, remoteDic);
+    public DictStore dicStore(RedisTemplate<Object, Object> redisTemplate, RemoteDict remoteDic) {
+        return new RedisDictStore(redisTemplate, remoteDic);
     }
 }

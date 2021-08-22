@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter;
 
-import com.houkunlin.system.dict.starter.bean.DicTypeVo;
-import com.houkunlin.system.dict.starter.store.RemoteDic;
+import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.store.RemoteDict;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +17,13 @@ import org.springframework.context.annotation.Lazy;
  */
 @Getter
 @ComponentScan
-public class SystemDicStarter {
-    private static final Logger logger = LoggerFactory.getLogger(SystemDicStarter.class);
+public class SystemDictStarter {
+    private static final Logger logger = LoggerFactory.getLogger(SystemDictStarter.class);
     private static final String WARNING_MESSAGE = "DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务";
-    private static DicProperties dicProperties;
+    private static DictProperties dicProperties;
 
-    public SystemDicStarter(@Lazy final DicProperties dicProperties) {
-        SystemDicStarter.dicProperties = dicProperties;
+    public SystemDictStarter(@Lazy final DictProperties dicProperties) {
+        SystemDictStarter.dicProperties = dicProperties;
     }
 
     public static boolean isRawValue() {
@@ -57,10 +57,10 @@ public class SystemDicStarter {
      */
     @ConditionalOnMissingBean
     @Bean
-    public RemoteDic remoteDic() {
-        return new RemoteDic() {
+    public RemoteDict remoteDic() {
+        return new RemoteDict() {
             @Override
-            public DicTypeVo getDicType(final String type) {
+            public DictTypeVo getDicType(final String type) {
                 return null;
             }
 

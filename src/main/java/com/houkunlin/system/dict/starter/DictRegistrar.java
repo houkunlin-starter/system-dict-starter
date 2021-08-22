@@ -1,11 +1,11 @@
 package com.houkunlin.system.dict.starter;
 
-import com.houkunlin.system.dict.starter.bean.DicTypeVo;
-import com.houkunlin.system.dict.starter.bean.DicValueVo;
-import com.houkunlin.system.dict.starter.notice.RefreshDicEvent;
-import com.houkunlin.system.dict.starter.provider.DicProvider;
-import com.houkunlin.system.dict.starter.provider.SystemDicProvider;
-import com.houkunlin.system.dict.starter.store.DicStore;
+import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
+import com.houkunlin.system.dict.starter.provider.DictProvider;
+import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
+import com.houkunlin.system.dict.starter.store.DictStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,17 +23,17 @@ import java.util.Set;
  * @author HouKunLin
  */
 @Configuration
-public class DicRegistrar implements InitializingBean {
-    private static final Logger logger = LoggerFactory.getLogger(DicRegistrar.class);
-    private final List<DicProvider<?>> providers;
-    private final DicStore<Object> store;
-    private final DicProperties dicProperties;
+public class DictRegistrar implements InitializingBean {
+    private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
+    private final List<DictProvider<?>> providers;
+    private final DictStore<Object> store;
+    private final DictProperties dicProperties;
     /**
      * 上一次刷新字典时间
      */
     private long lastModified = 0;
 
-    public DicRegistrar(final List<DicProvider<?>> providers, final DicStore store, final DicProperties dicProperties) {
+    public DictRegistrar(final List<DictProvider<?>> providers, final DictStore store, final DictProperties dicProperties) {
         this.providers = providers;
         this.store = store;
         this.dicProperties = dicProperties;
@@ -41,21 +41,21 @@ public class DicRegistrar implements InitializingBean {
 
     public void refreshDic(Set<String> dicProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified;
-        final long refreshDicInterval = dicProperties.getRefreshDicInterval();
-        if (interval < refreshDicInterval) {
+        final long refreshDictInterval = dicProperties.getRefreshDictInterval();
+        if (interval < refreshDictInterval) {
             if (logger.isDebugEnabled()) {
-                logger.debug("距离上一次刷新字典 {} ms，小于配置的 {} ms，本次事件将不会刷新字典", interval, refreshDicInterval);
+                logger.debug("距离上一次刷新字典 {} ms，小于配置的 {} ms，本次事件将不会刷新字典", interval, refreshDictInterval);
             }
             return;
         }
         lastModified = System.currentTimeMillis();
-        for (final DicProvider<?> provider : providers) {
+        for (final DictProvider<?> provider : providers) {
             if (!provider.supportRefresh(dicProviderClasses)) {
                 continue;
             }
-            if (provider instanceof SystemDicProvider) {
+            if (provider instanceof SystemDictProvider) {
                 // 系统字典特殊处理
-                final Iterator<? extends DicTypeVo<?>> typeIterator = provider.dicTypeIterator();
+                final Iterator<? extends DictTypeVo<?>> typeIterator = provider.dicTypeIterator();
                 typeIterator.forEachRemaining(dicType -> {
                     // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表
                     storeDic(dicType);
@@ -70,7 +70,7 @@ public class DicRegistrar implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (dicProperties.isOnBootRefreshDic()) {
+        if (dicProperties.isOnBootRefreshDict()) {
             refreshDic(null);
         }
     }
@@ -80,17 +80,17 @@ public class DicRegistrar implements InitializingBean {
      */
     @Async
     @EventListener
-    public void eventListenerRefreshDicEvent(RefreshDicEvent event) throws Exception {
+    public void eventListenerRefreshDicEvent(RefreshDictEvent event) throws Exception {
         logger.info("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
         refreshDic(event.getDicProviderClasses());
         logger.info("[finish] 应用内部通知刷新字典事件");
     }
 
-    private void storeDic(Iterator<? extends DicValueVo<?>> iterator) {
-        store.store((Iterator<DicValueVo<Object>>) iterator);
+    private void storeDic(Iterator<? extends DictValueVo<?>> iterator) {
+        store.store((Iterator<DictValueVo<Object>>) iterator);
     }
 
-    private void storeDic(DicTypeVo<?> dicType) {
-        store.store((DicTypeVo<Object>) dicType);
+    private void storeDic(DictTypeVo<?> dicType) {
+        store.store((DictTypeVo<Object>) dicType);
     }
 }

@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DicType {
+public @interface DictType {
     /**
      * 数据字典的代码。
      * 当此注解在系统字典枚举上时，该字段表示字典类型代码。

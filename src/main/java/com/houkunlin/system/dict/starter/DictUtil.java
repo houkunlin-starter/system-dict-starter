@@ -2,9 +2,9 @@ package com.houkunlin.system.dict.starter;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.houkunlin.system.dict.starter.bean.DicTypeVo;
-import com.houkunlin.system.dict.starter.bean.DicValueVo;
-import com.houkunlin.system.dict.starter.store.DicStore;
+import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.store.DictStore;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
@@ -16,16 +16,16 @@ import java.util.concurrent.TimeUnit;
  */
 @SuppressWarnings("all")
 @Component
-public class DicUtil {
+public class DictUtil {
 
-    private static DicStore store;
+    private static DictStore store;
     /**
      * 字典值缓存
      */
     private static Cache<String, String> cache;
 
-    public DicUtil(final DicStore store) {
-        DicUtil.store = store;
+    public DictUtil(final DictStore store) {
+        DictUtil.store = store;
         cache = Caffeine
                 .newBuilder()
                 .expireAfterWrite(30, TimeUnit.SECONDS)
@@ -34,7 +34,7 @@ public class DicUtil {
                 .build();
     }
 
-    public static DicTypeVo getDicType(String type) {
+    public static DictTypeVo getDicType(String type) {
         if (type == null || store == null) {
             return null;
         }
@@ -52,7 +52,7 @@ public class DicUtil {
         return "dic:" + type;
     }
 
-    public static String dicKey(DicValueVo value) {
+    public static String dicKey(DictValueVo value) {
         return "dic:" + value.getDicType() + ":" + value.getValue();
     }
 

@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping
 @AllArgsConstructor
-public class DicValidController {
+public class DictValidController {
     private final List<Converter> converters;
 
     @GetMapping("/testValidBean")
-    public Object testValidate(@Validated DicValidBean bean, Errors errors) {
+    public Object testValidate(@Validated DictValidBean bean, Errors errors) {
         if (errors.hasErrors()) {
             return errors.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
         }

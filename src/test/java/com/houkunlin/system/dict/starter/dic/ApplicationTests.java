@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.dic;
 
-import com.houkunlin.system.dict.starter.SystemDicScan;
+import com.houkunlin.system.dict.starter.SystemDictScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import test.application.common.CommandRunnerTests;
@@ -11,7 +11,7 @@ import test.application.common.CommandRunnerTests;
  * @author HouKunLin
  */
 @SpringBootApplication(scanBasePackageClasses = {ApplicationTests.class, CommandRunnerTests.class})
-@SystemDicScan
+@SystemDictScan
 public class ApplicationTests {
     public static void main(String[] args) {
         SpringApplication.run(ApplicationTests.class);

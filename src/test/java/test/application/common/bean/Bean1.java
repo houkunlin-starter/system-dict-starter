@@ -1,6 +1,6 @@
 package test.application.common.bean;
 
-import com.houkunlin.system.dict.starter.json.DicText;
+import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,37 +12,37 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Bean1 {
-    @DicText("PeopleType")
+    @DictText("PeopleType")
     private String userType = "0";
 
-    @DicText("PeopleType")
+    @DictText("PeopleType")
     private String userType1 = "1";
 
-    @DicText(value = "PeopleType", enums = {PeopleType.class})
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
     private String userType3 = "0";
 
-    @DicText(enums = {PeopleType.class})
+    @DictText(enums = {PeopleType.class})
     private int userType31 = 0;
 
-    @DicText(enums = {PeopleType.class})
+    @DictText(enums = {PeopleType.class})
     private Long userType32 = 0L;
 
-    @DicText(enums = {PeopleType.class})
+    @DictText(enums = {PeopleType.class})
     private String userType4 = "1";
 
-    @DicText("accident-type")
+    @DictText("accident-type")
     private String accidentType = "中风";
 
-    @DicText("accident-type")
+    @DictText("accident-type")
     private String accidentType1 = "0";
 
-    @DicText
+    @DictText
     private String accidentType2 = "0";
 
-    @DicText(nullable = DicText.Type.YES)
+    @DictText(nullable = DictText.Type.YES)
     private String accidentType21 = "0";
 
-    @DicText(nullable = DicText.Type.NO)
+    @DictText(nullable = DictText.Type.NO)
     private String accidentType22 = "0";
 
     private PeopleType peopleType = PeopleType.ADMIN;

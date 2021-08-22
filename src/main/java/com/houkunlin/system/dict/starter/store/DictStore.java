@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.store;
 
-import com.houkunlin.system.dict.starter.bean.DicTypeVo;
-import com.houkunlin.system.dict.starter.bean.DicValueVo;
+import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictValueVo;
 
 import java.util.Iterator;
 
@@ -10,20 +10,20 @@ import java.util.Iterator;
  *
  * @author HouKunLin
  */
-public interface DicStore<V> {
+public interface DictStore<V> {
     /**
      * 存储一个完整的数据字典信息
      *
      * @param dicType 数据字典对象
      */
-    void store(DicTypeVo<V> dicType);
+    void store(DictTypeVo<V> dicType);
 
     /**
      * 存储一个字典值列表数据
      *
      * @param iterator 字典值列表
      */
-    void store(Iterator<DicValueVo<V>> iterator);
+    void store(Iterator<DictValueVo<V>> iterator);
 
     /**
      * 通过字典类型获取完整的字典信息
@@ -31,7 +31,7 @@ public interface DicStore<V> {
      * @param type 字典雷系
      * @return 字典对象信息
      */
-    DicTypeVo<V> getDicType(String type);
+    DictTypeVo<V> getDicType(String type);
 
     /**
      * 通过字典值获取字典文本信息

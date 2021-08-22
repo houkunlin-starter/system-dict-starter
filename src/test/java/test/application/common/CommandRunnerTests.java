@@ -2,8 +2,8 @@ package test.application.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.houkunlin.system.dict.starter.DicUtil;
-import com.houkunlin.system.dict.starter.notice.RefreshDicEvent;
+import com.houkunlin.system.dict.starter.DictUtil;
+import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -32,9 +32,9 @@ public class CommandRunnerTests implements CommandLineRunner {
         final Bean1 bean1 = new Bean1();
         System.out.println(toJson(bean1));
         System.out.println(toJson(new Bean2()));
-        System.out.println(DicUtil.getDicType(PeopleType.class.getSimpleName()));
-        System.out.println(toJson(DicUtil.getDicType(PeopleType.class.getSimpleName())));
-        publisher.publishEvent(new RefreshDicEvent("test", true, true));
+        System.out.println(DictUtil.getDicType(PeopleType.class.getSimpleName()));
+        System.out.println(toJson(DictUtil.getDicType(PeopleType.class.getSimpleName())));
+        publisher.publishEvent(new RefreshDictEvent("test", true, true));
     }
 
     private String toJson(Object o) throws JsonProcessingException {
