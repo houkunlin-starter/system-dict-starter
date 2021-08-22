@@ -26,7 +26,7 @@ public class SystemDictProvider implements DictProvider {
      *
      * @param vo 字典类型对象
      */
-    public void addDic(final DictTypeVo vo) {
+    public void addDict(final DictTypeVo vo) {
         vo.setChildren(new ArrayList<>(vo.getChildren()));
         cache.put(vo.getType(), vo);
     }

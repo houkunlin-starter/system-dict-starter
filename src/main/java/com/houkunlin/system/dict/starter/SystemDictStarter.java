@@ -57,7 +57,7 @@ public class SystemDictStarter {
      */
     @ConditionalOnMissingBean
     @Bean
-    public RemoteDict remoteDic() {
+    public RemoteDict remoteDict() {
         return new RemoteDict() {
             @Override
             public DictTypeVo getDictType(final String type) {

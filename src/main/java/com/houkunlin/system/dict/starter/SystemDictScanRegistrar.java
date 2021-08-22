@@ -78,7 +78,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             try {
                 final Class<?> loadClass = classLoader.loadClass(component.getBeanClassName());
                 if (loadClass.isEnum()) {
-                    handleDic(loadClass);
+                    handleDict(loadClass);
                 }
             } catch (ClassNotFoundException | DictException e) {
                 e.printStackTrace();
@@ -91,7 +91,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param dictClass 字典对象
      */
-    private void handleDic(Class<?> dictClass) throws DictException {
+    private void handleDict(Class<?> dictClass) throws DictException {
         final DictType annotation = dictClass.getDeclaredAnnotation(DictType.class);
         final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
         if (converter != null) {
@@ -120,7 +120,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             list.add(new DictValueVo(dictType, enums.getValue(), enums.getTitle(), null, 0));
         }
         final DictTypeVo dictTypeVo = new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, list);
-        systemDictProvider.addDic(dictTypeVo);
+        systemDictProvider.addDict(dictTypeVo);
     }
 
     /**
