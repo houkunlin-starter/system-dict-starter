@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DictEndpoint {
     private final List<DictProvider> providers;
-    private final List<DictStore> stores;
-    private final List<RemoteDict> remoteDicts;
+    private final DictStore store;
+    private final RemoteDict remoteDict;
 
     /**
      * 默认端点接口信息
@@ -38,11 +38,12 @@ public class DictEndpoint {
     public Object index() {
         final Map<String, Object> map = new HashMap<>();
         map.put("providers", providers.stream().map(Object::getClass).map(Class::getName).collect(Collectors.toList()));
-        map.put("stores", stores.stream().map(Object::getClass).map(Class::getName).collect(Collectors.toList()));
-        map.put("remoteDicts", remoteDicts.stream().map(Object::getClass).map(Class::getName).collect(Collectors.toList()));
+        map.put("stores", store.getClass().getName());
+        map.put("remoteDict", remoteDict.getClass().getName());
 
         final Map<String, Object> result = new HashMap<>();
         result.put("dict-classes", map);
+        result.put("dict-types", store.dictTypeKeys());
         return result;
     }
 
