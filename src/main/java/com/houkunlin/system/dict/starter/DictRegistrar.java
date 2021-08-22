@@ -54,7 +54,7 @@ public class DictRegistrar implements InitializingBean {
                 continue;
             }
             if (provider instanceof SystemDictProvider) {
-                // 系统字典特殊处理
+                // 系统字典特殊处理。系统字典的数据数量普遍情况下不大，因此直接存储影响不大
                 final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
                 typeIterator.forEachRemaining(dictType -> {
                     // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表

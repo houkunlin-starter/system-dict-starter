@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter.bean;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @author HouKunLin
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class DictTypeVo implements Serializable {

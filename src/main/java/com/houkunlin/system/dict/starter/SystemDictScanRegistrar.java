@@ -117,7 +117,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             if (logger.isDebugEnabled()) {
                 logger.debug("class {} : - {} - {} - {} - {}", dictClass.getName(), dictType, enums.getValue(), enums.getTitle(), enums);
             }
-            list.add(new DictValueVo(dictType, enums.getValue(), enums.getTitle(), null, 0));
+            list.add(new DictValueVo(dictType, enums.getValue(), enums.getTitle(), 0));
         }
         final DictTypeVo dictTypeVo = new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, list);
         systemDictProvider.addDict(dictTypeVo);
