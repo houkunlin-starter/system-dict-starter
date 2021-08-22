@@ -25,7 +25,7 @@ public class RefreshDictEvent extends ApplicationEvent {
      * 限定只刷新指定的 DictProvider 对象。当为 null 或者 空列表 时会刷新所有的 DictProvider 数据。
      * 通常传入 DictProvider 的完整 class 名称（默认），或者传入 DictType 需要自定实现 {@link DictProvider#supportRefresh(java.util.Set)} 方法
      */
-    private final Set<String> dicProviderClasses;
+    private final Set<String> dictProviderClasses;
 
     /**
      * Create a new {@code ApplicationEvent}.
@@ -37,7 +37,7 @@ public class RefreshDictEvent extends ApplicationEvent {
         super(source);
         this.notifyOtherSystem = false;
         this.notifyOtherSystemAndBrother = false;
-        this.dicProviderClasses = null;
+        this.dictProviderClasses = null;
     }
 
     /**
@@ -45,13 +45,13 @@ public class RefreshDictEvent extends ApplicationEvent {
      *
      * @param source             the object on which the event initially occurred or with
      *                           which the event is associated (never {@code null})
-     * @param dicProviderClasses 限定只刷新指定的 DictProvider 对象。当为 null 或者 空列表 时会刷新所有的 DictProvider 数据
+     * @param dictProviderClasses 限定只刷新指定的 DictProvider 对象。当为 null 或者 空列表 时会刷新所有的 DictProvider 数据
      */
-    public RefreshDictEvent(final Object source, final Set<String> dicProviderClasses) {
+    public RefreshDictEvent(final Object source, final Set<String> dictProviderClasses) {
         super(source);
         this.notifyOtherSystem = false;
         this.notifyOtherSystemAndBrother = false;
-        this.dicProviderClasses = dicProviderClasses;
+        this.dictProviderClasses = dictProviderClasses;
     }
 
     /**
@@ -64,7 +64,7 @@ public class RefreshDictEvent extends ApplicationEvent {
         super(source);
         this.notifyOtherSystem = notifyOtherSystem;
         this.notifyOtherSystemAndBrother = false;
-        this.dicProviderClasses = null;
+        this.dictProviderClasses = null;
     }
 
     /**
@@ -72,13 +72,13 @@ public class RefreshDictEvent extends ApplicationEvent {
      *
      * @param source             事件来源等相关信息
      * @param notifyOtherSystem  是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
-     * @param dicProviderClasses 限定只刷新指定的 DictProvider 对象。当为 null 或者 空列表 时会刷新所有的 DictProvider 数据
+     * @param dictProviderClasses 限定只刷新指定的 DictProvider 对象。当为 null 或者 空列表 时会刷新所有的 DictProvider 数据
      */
-    public RefreshDictEvent(final Object source, final boolean notifyOtherSystem, final Set<String> dicProviderClasses) {
+    public RefreshDictEvent(final Object source, final boolean notifyOtherSystem, final Set<String> dictProviderClasses) {
         super(source);
         this.notifyOtherSystem = notifyOtherSystem;
         this.notifyOtherSystemAndBrother = false;
-        this.dicProviderClasses = dicProviderClasses;
+        this.dictProviderClasses = dictProviderClasses;
     }
 
     /**
@@ -92,13 +92,13 @@ public class RefreshDictEvent extends ApplicationEvent {
         super(source);
         this.notifyOtherSystem = notifyOtherSystem;
         this.notifyOtherSystemAndBrother = notifyOtherSystemAndBrother;
-        this.dicProviderClasses = null;
+        this.dictProviderClasses = null;
     }
 
-    public RefreshDictEvent(final Object source, final boolean notifyOtherSystem, final boolean notifyOtherSystemAndBrother, final Set<String> dicProviderClasses) {
+    public RefreshDictEvent(final Object source, final boolean notifyOtherSystem, final boolean notifyOtherSystemAndBrother, final Set<String> dictProviderClasses) {
         super(source);
         this.notifyOtherSystem = notifyOtherSystem;
         this.notifyOtherSystemAndBrother = notifyOtherSystemAndBrother;
-        this.dicProviderClasses = dicProviderClasses;
+        this.dictProviderClasses = dictProviderClasses;
     }
 }

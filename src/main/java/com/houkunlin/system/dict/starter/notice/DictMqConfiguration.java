@@ -28,21 +28,21 @@ import java.util.*;
 public class DictMqConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DictMqConfiguration.class);
     private static final String DIC_PROVIDER_CLASSES_KEY = "DIC.dicProviderClasses";
-    private final DictRegistrar dicRegistrar;
+    private final DictRegistrar dictRegistrar;
     private final AmqpTemplate amqpTemplate;
     private final String applicationName;
     private final String exchangeName;
     private final String headerSourceKey;
 
-    public DictMqConfiguration(@Lazy final DictRegistrar dicRegistrar,
+    public DictMqConfiguration(@Lazy final DictRegistrar dictRegistrar,
                                final AmqpTemplate amqpTemplate,
                                @Value("${spring.application.name:'system-dic'}") final String applicationName,
-                               final DictProperties dicProperties) {
-        this.dicRegistrar = dicRegistrar;
+                               final DictProperties dictProperties) {
+        this.dictRegistrar = dictRegistrar;
         this.amqpTemplate = amqpTemplate;
         this.applicationName = applicationName;
-        this.exchangeName = dicProperties.getMqExchangeName();
-        this.headerSourceKey = dicProperties.getMqHeaderSourceKey();
+        this.exchangeName = dictProperties.getMqExchangeName();
+        this.headerSourceKey = dictProperties.getMqHeaderSourceKey();
     }
 
     /**
@@ -87,15 +87,15 @@ public class DictMqConfiguration {
             return;
         }
         logger.info("[start] MQ 通知刷新字典：{}", content);
-        final Object dicProviderClasses = map.get(DIC_PROVIDER_CLASSES_KEY);
-        if (dicProviderClasses instanceof List) {
-            dicRegistrar.refreshDic(new HashSet<>((Collection<String>) dicProviderClasses));
-        } else if (dicProviderClasses instanceof Set) {
-            dicRegistrar.refreshDic((Set<String>) dicProviderClasses);
-        } else if (dicProviderClasses instanceof Collection) {
-            dicRegistrar.refreshDic(new HashSet<>((Collection<String>) dicProviderClasses));
+        final Object dictProviderClasses = map.get(DIC_PROVIDER_CLASSES_KEY);
+        if (dictProviderClasses instanceof List) {
+            dictRegistrar.refreshDic(new HashSet<>((Collection<String>) dictProviderClasses));
+        } else if (dictProviderClasses instanceof Set) {
+            dictRegistrar.refreshDic((Set<String>) dictProviderClasses);
+        } else if (dictProviderClasses instanceof Collection) {
+            dictRegistrar.refreshDic(new HashSet<>((Collection<String>) dictProviderClasses));
         } else {
-            dicRegistrar.refreshDic(null);
+            dictRegistrar.refreshDic(null);
         }
         logger.info("[finish] MQ 通知刷新字典");
     }
@@ -110,7 +110,7 @@ public class DictMqConfiguration {
             logger.debug("接收到刷新数据字典事件，通知 MQ 与其他协同系统刷新 Redis 数据字典内容。事件内容：{}", source);
             amqpTemplate.convertAndSend(exchangeName, "", "刷新事件：" + source, message -> {
                 final MessageProperties properties = message.getMessageProperties();
-                properties.setHeader(DIC_PROVIDER_CLASSES_KEY, event.getDicProviderClasses());
+                properties.setHeader(DIC_PROVIDER_CLASSES_KEY, event.getDictProviderClasses());
 
                 if (!event.isNotifyOtherSystemAndBrother()) {
                     // event.isNotifyOtherSystemAndBrother = true 表示通知所有系统，不忽略当前系统的副本系统

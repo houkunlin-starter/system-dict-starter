@@ -18,16 +18,16 @@ import java.util.Set;
  */
 public interface DictProvider<V> {
     /**
-     * 在发起 {@link RefreshDictEvent} 刷新事件时，可以指定刷新某个或多个 DicProvider 对象，在 {@link DictRegistrar} 刷新字典时将调用此方法来判断是否刷新此 DicProvider 的字典数据
+     * 在发起 {@link RefreshDictEvent} 刷新事件时，可以指定刷新某个或多个 {@link DictProvider} 对象，在 {@link DictRegistrar} 刷新字典时将调用此方法来判断是否刷新此 {@link DictProvider} 的字典数据
      *
-     * @param refreshDicProviderClasses {@link RefreshDictEvent#dicProviderClasses} 刷新事件指定的 DicProvider 列表
-     * @return 是否可刷新当前 DicProvider 提供的数据字典
+     * @param refreshDictProviderClasses {@link RefreshDictEvent#dictProviderClasses} 刷新事件指定的 {@link DictProvider} 列表
+     * @return 是否可刷新当前 {@link DictProvider} 提供的数据字典
      */
-    default boolean supportRefresh(Set<String> refreshDicProviderClasses) {
-        if (refreshDicProviderClasses == null || refreshDicProviderClasses.isEmpty()) {
+    default boolean supportRefresh(Set<String> refreshDictProviderClasses) {
+        if (refreshDictProviderClasses == null || refreshDictProviderClasses.isEmpty()) {
             return true;
         }
-        return refreshDicProviderClasses.contains(getClass().getName());
+        return refreshDictProviderClasses.contains(getClass().getName());
     }
 
     /**

@@ -11,18 +11,18 @@ import javax.validation.ConstraintValidatorContext;
  * @author HouKunLin
  */
 public class DictValidConstraintValidator implements ConstraintValidator<DictValid, Object> {
-    private String dicType;
+    private String dictType;
 
     @Override
     public boolean isValid(final Object value, final ConstraintValidatorContext context) {
-        if (dicType == null || value == null) {
+        if (dictType == null || value == null) {
             return false;
         }
-        return DictUtil.getDicValueTitle(dicType, String.valueOf(value)) != null;
+        return DictUtil.getDicValueTitle(dictType, String.valueOf(value)) != null;
     }
 
     @Override
     public void initialize(final DictValid constraintAnnotation) {
-        this.dicType = constraintAnnotation.value();
+        this.dictType = constraintAnnotation.value();
     }
 }

@@ -48,11 +48,11 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     /**
      * 字典转换注解对象
      */
-    private final DictText dicText;
+    private final DictText dictText;
     /**
      * 字典类型代码
      */
-    private final String dicType;
+    private final String dictType;
     /**
      * 直接使用系统字典枚举的枚举对象列表
      */
@@ -62,18 +62,18 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         this.beanClazz = null;
         this.beanFieldName = null;
         this.destinationFieldName = null;
-        this.dicText = null;
-        this.dicType = null;
+        this.dictText = null;
+        this.dictType = null;
         this.enumsClass = null;
     }
 
-    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dicText) {
+    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dictText) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
-        this.dicText = dicText;
-        this.dicType = dicText.value();
-        this.destinationFieldName = getFieldName(dicText);
-        this.enumsClass = dicText.enums();
+        this.dictText = dictText;
+        this.dictType = dictText.value();
+        this.destinationFieldName = getFieldName(dictText);
+        this.enumsClass = dictText.enums();
         if (this.enumsClass.length == 0) {
             return;
         }
@@ -83,8 +83,8 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, Class<? extends DictEnum<?>>[] enumsClass) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
-        this.dicText = null;
-        this.dicType = null;
+        this.dictText = null;
+        this.dictType = null;
         this.destinationFieldName = beanFieldName + "Text";
         this.enumsClass = enumsClass;
         if (this.enumsClass.length == 0) {
@@ -93,12 +93,12 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         initEnumsClass();
     }
 
-    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dicText, Class<? extends DictEnum<?>>[] enumsClass) {
+    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
-        this.dicText = dicText;
-        this.dicType = dicText.value();
-        this.destinationFieldName = getFieldName(dicText);
+        this.dictText = dictText;
+        this.dictType = dictText.value();
+        this.destinationFieldName = getFieldName(dictText);
         this.enumsClass = enumsClass;
         if (this.enumsClass.length == 0) {
             return;
@@ -106,8 +106,8 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         initEnumsClass();
     }
 
-    private String getFieldName(DictText dicText) {
-        final String fieldName = dicText.fieldName();
+    private String getFieldName(DictText dictText) {
+        final String fieldName = dictText.fieldName();
         if (StringUtils.hasText(fieldName)) {
             return fieldName;
         } else {
@@ -190,8 +190,8 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      * @throws IOException
      */
     private void fromDicCache(Object value, JsonGenerator gen) throws IOException {
-        if (dicType != null && StringUtils.hasText(dicType)) {
-            writeFieldValue(gen, value, DictUtil.getDicValueTitle(dicType, String.valueOf(value)));
+        if (dictType != null && StringUtils.hasText(dictType)) {
+            writeFieldValue(gen, value, DictUtil.getDicValueTitle(dictType, String.valueOf(value)));
         } else {
             writeFieldValue(gen, value, defaultValue(null));
             logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
@@ -218,21 +218,21 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      *
      * @param gen            JsonGenerator 对象
      * @param rawValueObject 实体类字典值
-     * @param dicValueText   字典文本值
+     * @param dictValueText   字典文本值
      * @throws IOException
      */
-    private void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dicValueText) throws IOException {
-        if (dicText == null) {
+    private void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dictValueText) throws IOException {
+        if (dictText == null) {
             writeFieldValue(rawValueObject, gen);
             return;
         }
-        if (dicText.mapValue() == DictText.Type.YES || (SystemDictStarter.isMapValue() && dicText.mapValue() == DictText.Type.GLOBAL)) {
+        if (dictText.mapValue() == DictText.Type.YES || (SystemDictStarter.isMapValue() && dictText.mapValue() == DictText.Type.GLOBAL)) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", rawValueObject);
-            map.put("text", dicValueText);
-            if (StringUtils.hasText(dicText.fieldName())) {
+            map.put("text", dictValueText);
+            if (StringUtils.hasText(dictText.fieldName())) {
                 writeFieldValue(rawValueObject, gen);
-                gen.writeFieldName(dicText.fieldName());
+                gen.writeFieldName(dictText.fieldName());
                 gen.writeObject(map);
             } else {
                 gen.writeObject(map);
@@ -240,7 +240,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         } else {
             writeFieldValue(rawValueObject, gen);
             gen.writeFieldName(destinationFieldName);
-            gen.writeObject(dicValueText);
+            gen.writeObject(dictValueText);
         }
     }
 
@@ -265,11 +265,11 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     }
 
     private Object defaultValue(Object value) {
-        if (dicText != null) {
-            if (dicText.nullable() == DictText.Type.GLOBAL) {
+        if (dictText != null) {
+            if (dictText.nullable() == DictText.Type.GLOBAL) {
                 return defaultValue(value, SystemDictStarter.isTextValueDefaultNull());
             }
-            return defaultValue(value, dicText.nullable() == DictText.Type.YES);
+            return defaultValue(value, dictText.nullable() == DictText.Type.YES);
         }
         return defaultValue(value, SystemDictStarter.isTextValueDefaultNull());
     }

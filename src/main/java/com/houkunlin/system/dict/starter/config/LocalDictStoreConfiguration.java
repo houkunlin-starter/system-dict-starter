@@ -23,7 +23,7 @@ public class LocalDictStoreConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dicStore(RemoteDict remoteDic) {
-        return new LocalDictStore(remoteDic);
+    public DictStore dicStore(RemoteDict remoteDict) {
+        return new LocalDictStore(remoteDict);
     }
 }

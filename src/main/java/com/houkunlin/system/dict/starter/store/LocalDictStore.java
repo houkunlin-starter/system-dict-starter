@@ -26,8 +26,8 @@ public class LocalDictStore implements DictStore<Object> {
     }
 
     @Override
-    public void store(final DictTypeVo<Object> dicType) {
-        CACHE_TYPE.put(DictUtil.dicKey(dicType.getType()), dicType);
+    public void store(final DictTypeVo<Object> dictType) {
+        CACHE_TYPE.put(DictUtil.dicKey(dictType.getType()), dictType);
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TYPE Map 共有 {} 个字典类型信息", CACHE_TYPE.size());
         }

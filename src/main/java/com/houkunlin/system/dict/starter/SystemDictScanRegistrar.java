@@ -39,7 +39,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private final ClassPathScanningCandidateComponentProvider provider;
     private final DynamicGenerateConverterImpl generateConverter = new DynamicGenerateConverterImpl();
     private ClassLoader classLoader;
-    private SystemDictProvider systemDicProvider;
+    private SystemDictProvider systemDictProvider;
     private String applicationName;
     private DefaultListableBeanFactory beanFactory;
 
@@ -63,7 +63,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     public void registerBeanDefinitions(@NonNull AnnotationMetadata annotationMetadata, @NonNull BeanDefinitionRegistry registry) {
         final Environment environment = beanFactory.getBean(Environment.class);
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
-        this.systemDicProvider = beanFactory.getBean(SystemDictProvider.class);
+        this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
     }
@@ -90,38 +90,38 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     /**
      * 处理系统数据字典对象
      *
-     * @param dicClass 字典对象
+     * @param dictClass 字典对象
      */
-    private void handleDic(Class<?> dicClass) {
-        final DictType annotation = dicClass.getDeclaredAnnotation(DictType.class);
-        final DictConverter dicConverter = dicClass.getDeclaredAnnotation(DictConverter.class);
-        if (dicConverter != null) {
-            generateConverter.registerBean(beanFactory, dicClass, dicConverter);
+    private void handleDic(Class<?> dictClass) {
+        final DictType annotation = dictClass.getDeclaredAnnotation(DictType.class);
+        final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
+        if (converter != null) {
+            generateConverter.registerBean(beanFactory, dictClass, converter);
         }
-        String dicType;
-        String dicTitle;
+        String dictType;
+        String dictTitle;
         if (annotation != null) {
-            dicType = annotation.value();
+            dictType = annotation.value();
             if (StringUtils.hasText(annotation.comment())) {
-                dicTitle = annotation.comment();
+                dictTitle = annotation.comment();
             } else {
-                dicTitle = dicClass.getSimpleName();
+                dictTitle = dictClass.getSimpleName();
             }
         } else {
-            dicType = dicClass.getSimpleName();
-            dicTitle = dicClass.getSimpleName();
+            dictType = dictClass.getSimpleName();
+            dictTitle = dictClass.getSimpleName();
         }
 
         List<DictValueVo<? extends Serializable>> list = new ArrayList<>();
-        final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dicClass.getEnumConstants();
+        final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dictClass.getEnumConstants();
         for (DictEnum<?> enums : enumConstants) {
             if (logger.isDebugEnabled()) {
-                logger.debug("class {} : - {} - {} - {} - {}", dicClass.getName(), dicType, enums.getValue(), enums.getTitle(), enums);
+                logger.debug("class {} : - {} - {} - {} - {}", dictClass.getName(), dictType, enums.getValue(), enums.getTitle(), enums);
             }
-            list.add(new DictValueVo<>(dicType, enums.getValue(), enums.getTitle(), null, 0));
+            list.add(new DictValueVo<>(dictType, enums.getValue(), enums.getTitle(), null, 0));
         }
-        final DictTypeVo dicTypeVo = new DictTypeVo(dicTitle, dicType, "From Application: " + applicationName, list);
-        systemDicProvider.addDic(dicTypeVo);
+        final DictTypeVo dictTypeVo = new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, list);
+        systemDictProvider.addDic(dictTypeVo);
     }
 
     /**

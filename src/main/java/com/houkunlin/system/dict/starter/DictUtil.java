@@ -53,7 +53,7 @@ public class DictUtil {
     }
 
     public static String dicKey(DictValueVo value) {
-        return "dic:" + value.getDicType() + ":" + value.getValue();
+        return "dic:" + value.getDictType() + ":" + value.getValue();
     }
 
     public static String dicKey(String type, Object value) {

@@ -27,21 +27,21 @@ public class DictRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
     private final List<DictProvider<?>> providers;
     private final DictStore<Object> store;
-    private final DictProperties dicProperties;
+    private final DictProperties properties;
     /**
      * 上一次刷新字典时间
      */
     private long lastModified = 0;
 
-    public DictRegistrar(final List<DictProvider<?>> providers, final DictStore store, final DictProperties dicProperties) {
+    public DictRegistrar(final List<DictProvider<?>> providers, final DictStore store, final DictProperties properties) {
         this.providers = providers;
         this.store = store;
-        this.dicProperties = dicProperties;
+        this.properties = properties;
     }
 
-    public void refreshDic(Set<String> dicProviderClasses) {
+    public void refreshDic(Set<String> dictProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified;
-        final long refreshDictInterval = dicProperties.getRefreshDictInterval();
+        final long refreshDictInterval = properties.getRefreshDictInterval();
         if (interval < refreshDictInterval) {
             if (logger.isDebugEnabled()) {
                 logger.debug("距离上一次刷新字典 {} ms，小于配置的 {} ms，本次事件将不会刷新字典", interval, refreshDictInterval);
@@ -50,17 +50,17 @@ public class DictRegistrar implements InitializingBean {
         }
         lastModified = System.currentTimeMillis();
         for (final DictProvider<?> provider : providers) {
-            if (!provider.supportRefresh(dicProviderClasses)) {
+            if (!provider.supportRefresh(dictProviderClasses)) {
                 continue;
             }
             if (provider instanceof SystemDictProvider) {
                 // 系统字典特殊处理
                 final Iterator<? extends DictTypeVo<?>> typeIterator = provider.dicTypeIterator();
-                typeIterator.forEachRemaining(dicType -> {
+                typeIterator.forEachRemaining(dictType -> {
                     // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表
-                    storeDic(dicType);
+                    storeDic(dictType);
                     // 同时系统字典的字典值列表也写入缓存
-                    storeDic(dicType.getChildren().iterator());
+                    storeDic(dictType.getChildren().iterator());
                 });
             } else {
                 storeDic(provider.dicValueIterator());
@@ -70,7 +70,7 @@ public class DictRegistrar implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (dicProperties.isOnBootRefreshDict()) {
+        if (properties.isOnBootRefreshDict()) {
             refreshDic(null);
         }
     }
@@ -82,7 +82,7 @@ public class DictRegistrar implements InitializingBean {
     @EventListener
     public void eventListenerRefreshDicEvent(RefreshDictEvent event) throws Exception {
         logger.info("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
-        refreshDic(event.getDicProviderClasses());
+        refreshDic(event.getDictProviderClasses());
         logger.info("[finish] 应用内部通知刷新字典事件");
     }
 
@@ -90,7 +90,7 @@ public class DictRegistrar implements InitializingBean {
         store.store((Iterator<DictValueVo<Object>>) iterator);
     }
 
-    private void storeDic(DictTypeVo<?> dicType) {
-        store.store((DictTypeVo<Object>) dicType);
+    private void storeDic(DictTypeVo<?> dictType) {
+        store.store((DictTypeVo<Object>) dictType);
     }
 }

@@ -14,9 +14,9 @@ public interface DictStore<V> {
     /**
      * 存储一个完整的数据字典信息
      *
-     * @param dicType 数据字典对象
+     * @param dictType 数据字典对象
      */
-    void store(DictTypeVo<V> dicType);
+    void store(DictTypeVo<V> dictType);
 
     /**
      * 存储一个字典值列表数据

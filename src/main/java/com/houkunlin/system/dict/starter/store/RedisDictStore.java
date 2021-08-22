@@ -26,8 +26,8 @@ public class RedisDictStore implements DictStore<Object> {
     }
 
     @Override
-    public void store(final DictTypeVo<Object> dicType) {
-        redisTemplate.opsForValue().set(DictUtil.dicKey(dicType.getType()), dicType);
+    public void store(final DictTypeVo<Object> dictType) {
+        redisTemplate.opsForValue().set(DictUtil.dicKey(dictType.getType()), dictType);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class DictValueVo<V> implements Serializable {
      * 字典类型代码
      */
     @JsonIgnore
-    private String dicType;
+    private String dictType;
     /**
      * 字段值
      */

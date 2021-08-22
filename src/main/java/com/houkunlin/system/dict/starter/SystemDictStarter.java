@@ -20,34 +20,34 @@ import org.springframework.context.annotation.Lazy;
 public class SystemDictStarter {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictStarter.class);
     private static final String WARNING_MESSAGE = "DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务";
-    private static DictProperties dicProperties;
+    private static DictProperties properties;
 
-    public SystemDictStarter(@Lazy final DictProperties dicProperties) {
-        SystemDictStarter.dicProperties = dicProperties;
+    public SystemDictStarter(@Lazy final DictProperties properties) {
+        SystemDictStarter.properties = properties;
     }
 
     public static boolean isRawValue() {
-        if (dicProperties == null) {
+        if (properties == null) {
             logger.warn(WARNING_MESSAGE);
             return false;
         }
-        return dicProperties.isRawValue();
+        return properties.isRawValue();
     }
 
     public static boolean isTextValueDefaultNull() {
-        if (dicProperties == null) {
+        if (properties == null) {
             logger.warn(WARNING_MESSAGE);
             return false;
         }
-        return dicProperties.isTextValueDefaultNull();
+        return properties.isTextValueDefaultNull();
     }
 
     public static boolean isMapValue() {
-        if (dicProperties == null) {
+        if (properties == null) {
             logger.warn(WARNING_MESSAGE);
             return false;
         }
-        return dicProperties.isMapValue();
+        return properties.isMapValue();
     }
 
     /**

@@ -32,7 +32,7 @@ public class RedisDictStoreConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dicStore(RedisTemplate<Object, Object> redisTemplate, RemoteDict remoteDic) {
-        return new RedisDictStore(redisTemplate, remoteDic);
+    public DictStore dicStore(RedisTemplate<Object, Object> redisTemplate, RemoteDict remoteDict) {
+        return new RedisDictStore(redisTemplate, remoteDict);
     }
 }
