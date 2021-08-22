@@ -4,6 +4,16 @@
 
 # 系统字典 Starter
 
+> 注意：自 `com.houkunlin:system-dic-starter:1.3.0` 版本发布后将会进行以下变更：
+>
+> - 更改包名：由 `com.houkunlin.system.dic.starter` 改为 `com.houkunlin.system.dict.starter`
+> - 更改坐标：由 `com.houkunlin:system-dic-starter` 改为 `com.houkunlin:system-dict-starter`
+> - 新坐标 `com.houkunlin:system-dict-starter` 起始版本号为 `1.3.0` ，除了与旧坐标的包名不同，其他代码完全相同
+> - 旧坐标将不再提供后续更新发布，后续更新发布将会使用新坐标
+> - 旧坐标代码迁移到 `old-version-dic` 分支，主分支 `main` 将只保留新坐标代码，GIT 标签保持不变：不删除、不更名
+
+
+
 ## 依赖引入
 
 **Maven**
@@ -101,3 +111,35 @@ implementation "com.houkunlin:system-dic-starter:${latest.release}"
 - 需要 rabbitmq 环境；微服务环境建议使用 Redis 存储字典
 - 在系统管理模块可以发起 `RefreshDicEvent` 事件通知其他系统刷新提交最新数据字典数据
 - 系统收到 `RefreshDicEvent` 事件或者 MQ 事件会从 `DicProvider` 中获取最新数据字典信息，然后写入到 `DicStore` 存储对象中
+
+
+
+## Actuator 端点支持
+
+启用端点配置：
+
+```yaml
+# yaml
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-headers: '*'
+        allowed-methods: '*'
+        allowed-origins: '*'
+      exposure:
+        include: dict,dict-system
+```
+
+
+
+在有 actuator 依赖环境会暴露出两个端点：
+
+-  `dict` 默认端点，暴露两个接口
+  - 默认接口：返回一些类名称信息
+  - 接口1：获取字典类型信息
+  - 接口2：获取字典值文本信息
+-  `dict-system` 系统字典 Provider 端点
+  - 默认接口：返回所有系统字典类型代码列表
+  - 接口1：获取系统字典类型信息
+
