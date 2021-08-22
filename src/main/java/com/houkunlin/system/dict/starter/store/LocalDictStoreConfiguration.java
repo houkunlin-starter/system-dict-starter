@@ -1,8 +1,5 @@
-package com.houkunlin.system.dict.starter.config;
+package com.houkunlin.system.dict.starter.store;
 
-import com.houkunlin.system.dict.starter.store.DictStore;
-import com.houkunlin.system.dict.starter.store.LocalDictStore;
-import com.houkunlin.system.dict.starter.store.RemoteDict;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Bean;
