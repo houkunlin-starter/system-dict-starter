@@ -6,10 +6,7 @@ import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.store.DictStore;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 系统字典提供者。系统扫描到的数据字典信息会先存储到 {@link SystemDictProvider} 来进行一个本地缓存，之后 {@link DictProvider} 中的字典信息会被被保存到 {@link DictStore} 对象中
@@ -67,6 +64,9 @@ public interface DictProvider {
 
             @Override
             public DictValueVo next() {
+                if (index >= size) {
+                    throw new NoSuchElementException("没有更多的字典值对象");
+                }
                 return valueVos.get(index++);
             }
         };
