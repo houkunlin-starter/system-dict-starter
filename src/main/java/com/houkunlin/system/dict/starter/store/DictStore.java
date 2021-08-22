@@ -4,6 +4,7 @@ import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * 系统字典存储对象。程序扫描到的系统字典信息都将会调用该对象来存储字典信息，同时该对象也将负责读取获取系统字典信息
@@ -24,6 +25,13 @@ public interface DictStore {
      * @param iterator 字典值列表
      */
     void store(Iterator<DictValueVo> iterator);
+
+    /**
+     * 字典类型代码列表
+     *
+     * @return 字典类型代码列表
+     */
+    Set<String> dictTypeKeys();
 
     /**
      * 通过字典类型获取完整的字典信息

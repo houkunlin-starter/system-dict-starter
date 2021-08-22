@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -27,7 +28,7 @@ public class LocalDictStore implements DictStore {
 
     @Override
     public void store(final DictTypeVo dictType) {
-        CACHE_TYPE.put(DictUtil.dictKey(dictType.getType()), dictType);
+        CACHE_TYPE.put(dictType.getType(), dictType);
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TYPE Map 共有 {} 个字典类型信息", CACHE_TYPE.size());
         }
@@ -42,8 +43,13 @@ public class LocalDictStore implements DictStore {
     }
 
     @Override
+    public Set<String> dictTypeKeys() {
+        return CACHE_TYPE.keySet();
+    }
+
+    @Override
     public DictTypeVo getDictType(final String type) {
-        final DictTypeVo typeVo = CACHE_TYPE.get(DictUtil.dictKey(type));
+        final DictTypeVo typeVo = CACHE_TYPE.get(type);
         if (typeVo != null) {
             return typeVo;
         }

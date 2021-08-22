@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("all")
 @Component
 public class DictUtil {
+    public static final String TYPE_PREFIX = "dict:t:";
+    public static final String VALUE_PREFIX = "dict:v:";
 
     private static DictStore store;
     /**
@@ -27,11 +29,11 @@ public class DictUtil {
     public DictUtil(final DictStore store) {
         DictUtil.store = store;
         cache = Caffeine
-                .newBuilder()
-                .expireAfterWrite(30, TimeUnit.SECONDS)
-                .maximumSize(500)
-                .initialCapacity(50)
-                .build();
+            .newBuilder()
+            .expireAfterWrite(30, TimeUnit.SECONDS)
+            .maximumSize(500)
+            .initialCapacity(50)
+            .build();
     }
 
     public static DictTypeVo getDictType(String type) {
@@ -49,14 +51,14 @@ public class DictUtil {
     }
 
     public static String dictKey(String type) {
-        return "dic:" + type;
+        return TYPE_PREFIX + type;
     }
 
     public static String dictKey(DictValueVo value) {
-        return "dic:" + value.getDictType() + ":" + value.getValue();
+        return VALUE_PREFIX + value.getDictType() + ":" + value.getValue();
     }
 
     public static String dictKey(String type, Object value) {
-        return "dic:" + type + ":" + value;
+        return VALUE_PREFIX + type + ":" + value;
     }
 }
