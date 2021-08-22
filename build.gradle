@@ -56,8 +56,8 @@ publishing {
             pom {
                 name = project.name
                 packaging = 'jar'
-                description = 'this is the final version, please move to the new coordinates: com.houkunlin:system-dict-starter'
-                url = 'https://github.com/houkunlin/system-dic-starter'
+                description = project.name
+                url = 'https://github.com/houkunlin/system-dict-starter'
                 // properties = []
                 licenses {
                     license {
@@ -73,9 +73,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git://github.com/houkunlin/system-dic-starter.git'
-                    developerConnection = 'scm:git://github.com/houkunlin/system-dic-starter.git'
-                    url = 'git://github.com/houkunlin/system-dic-starter.git'
+                    connection = 'scm:git://github.com/houkunlin/system-dict-starter.git'
+                    developerConnection = 'scm:git://github.com/houkunlin/system-dict-starter.git'
+                    url = 'git://github.com/houkunlin/system-dict-starter.git'
                 }
             }
         }
