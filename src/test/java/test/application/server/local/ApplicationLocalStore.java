@@ -1,6 +1,6 @@
 package test.application.server.local;
 
-import com.houkunlin.system.dic.starter.SystemDicScan;
+import com.houkunlin.system.dict.starter.SystemDicScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;

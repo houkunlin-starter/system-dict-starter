@@ -1,6 +1,6 @@
 package test.application.common;
 
-import com.houkunlin.system.dic.starter.notice.RefreshDicEvent;
+import com.houkunlin.system.dict.starter.notice.RefreshDicEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;

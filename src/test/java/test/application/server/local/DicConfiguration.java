@@ -1,8 +1,8 @@
 package test.application.server.local;
 
-import com.houkunlin.system.dic.starter.bean.DicTypeVo;
-import com.houkunlin.system.dic.starter.store.LocalDicStore;
-import com.houkunlin.system.dic.starter.store.RemoteDic;
+import com.houkunlin.system.dict.starter.bean.DicTypeVo;
+import com.houkunlin.system.dict.starter.store.LocalDicStore;
+import com.houkunlin.system.dict.starter.store.RemoteDic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

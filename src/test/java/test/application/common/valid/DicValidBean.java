@@ -1,7 +1,7 @@
 package test.application.common.valid;
 
-import com.houkunlin.system.dic.starter.json.DicText;
-import com.houkunlin.system.dic.starter.json.DicValid;
+import com.houkunlin.system.dict.starter.json.DicText;
+import com.houkunlin.system.dict.starter.json.DicValid;
 import lombok.Data;
 import test.application.common.bean.PeopleType;
 

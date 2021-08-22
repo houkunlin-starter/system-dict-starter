@@ -1,6 +1,6 @@
 package test.application.common.bean;
 
-import com.houkunlin.system.dic.starter.json.DicText;
+import com.houkunlin.system.dict.starter.json.DicText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
