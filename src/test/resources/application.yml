@@ -29,4 +29,17 @@ system:
     text-value-default-null: true
     refresh-dic-interval: 20
 #    map-value: true
+management:
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+  endpoints:
+    web:
+      cors:
+        allowed-headers: '*'
+        allowed-methods: '*'
+        allowed-origins: '*'
+      exposure:
+        include: '*'
 #    on-boot-refresh-dic: true

@@ -2,6 +2,7 @@ package com.houkunlin.system.dic.starter.provider;
 
 import com.houkunlin.system.dic.starter.SystemDicScan;
 import com.houkunlin.system.dic.starter.bean.DicTypeVo;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.util.*;
  *
  * @author HouKunLin
  */
+@Getter
 @Component
 public class SystemDicProvider implements DicProvider<String> {
     private static final Logger logger = LoggerFactory.getLogger(SystemDicProvider.class);
