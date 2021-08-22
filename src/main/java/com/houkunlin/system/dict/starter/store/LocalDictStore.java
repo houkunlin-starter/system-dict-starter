@@ -15,18 +15,18 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author HouKunLin
  */
-public class LocalDictStore implements DictStore<Object> {
+public class LocalDictStore implements DictStore {
     private static final Logger logger = LoggerFactory.getLogger(LocalDictStore.class);
-    private static final ConcurrentHashMap<String, DictTypeVo<Object>> CACHE_TYPE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, DictTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TITLE = new ConcurrentHashMap<>();
-    private final RemoteDict<Object> remoteDic;
+    private final RemoteDict remoteDic;
 
     public LocalDictStore(final RemoteDict remoteDic) {
         this.remoteDic = remoteDic;
     }
 
     @Override
-    public void store(final DictTypeVo<Object> dictType) {
+    public void store(final DictTypeVo dictType) {
         CACHE_TYPE.put(DictUtil.dictKey(dictType.getType()), dictType);
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TYPE Map 共有 {} 个字典类型信息", CACHE_TYPE.size());
@@ -34,7 +34,7 @@ public class LocalDictStore implements DictStore<Object> {
     }
 
     @Override
-    public void store(final Iterator<DictValueVo<Object>> iterator) {
+    public void store(final Iterator<DictValueVo> iterator) {
         iterator.forEachRemaining(valueVo -> CACHE_TITLE.put(DictUtil.dictKey(valueVo), valueVo.getTitle()));
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TITLE Map 共有 {} 个字典值信息", CACHE_TITLE.size());
@@ -42,8 +42,8 @@ public class LocalDictStore implements DictStore<Object> {
     }
 
     @Override
-    public DictTypeVo<Object> getDictType(final String type) {
-        final DictTypeVo<Object> typeVo = CACHE_TYPE.get(DictUtil.dictKey(type));
+    public DictTypeVo getDictType(final String type) {
+        final DictTypeVo typeVo = CACHE_TYPE.get(DictUtil.dictKey(type));
         if (typeVo != null) {
             return typeVo;
         }

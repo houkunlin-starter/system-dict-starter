@@ -32,7 +32,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     /**
      * 缓存了直接使用系统字典枚举来渲染数据字典文本的所有数据
      */
-    private static final Table<Class<? extends DictEnum<?>>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
+    private static final Table<Class<? extends DictEnum>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
     /**
      * 使用了这个注解的对象
      */
@@ -56,7 +56,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     /**
      * 直接使用系统字典枚举的枚举对象列表
      */
-    private final Class<? extends DictEnum<?>>[] enumsClass;
+    private final Class<? extends DictEnum>[] enumsClass;
 
     public DictTextJsonSerializer() {
         this.beanClazz = null;
@@ -117,7 +117,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
 
     private void initEnumsClass() {
         // 解析系统字典枚举列表
-        for (final Class<? extends DictEnum<?>> enumClass : this.enumsClass) {
+        for (final Class<? extends DictEnum> enumClass : this.enumsClass) {
             if (!enumClass.isEnum()) {
                 continue;
             }
@@ -255,7 +255,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         assert enumsClass != null;
 
         String cacheTitle = null;
-        for (final Class<? extends DictEnum<?>> aClass : enumsClass) {
+        for (final Class<? extends DictEnum> aClass : enumsClass) {
             cacheTitle = CACHE_ENUMS.get(aClass, String.valueOf(value));
             if (cacheTitle != null) {
                 break;

@@ -25,15 +25,15 @@ import java.util.Set;
 @Configuration
 public class DictRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
-    private final List<DictProvider<?>> providers;
-    private final DictStore<Object> store;
+    private final List<DictProvider> providers;
+    private final DictStore store;
     private final DictProperties properties;
     /**
      * 上一次刷新字典时间
      */
     private long lastModified = 0;
 
-    public DictRegistrar(final List<DictProvider<?>> providers, final DictStore store, final DictProperties properties) {
+    public DictRegistrar(final List<DictProvider> providers, final DictStore store, final DictProperties properties) {
         this.providers = providers;
         this.store = store;
         this.properties = properties;
@@ -49,13 +49,13 @@ public class DictRegistrar implements InitializingBean {
             return;
         }
         lastModified = System.currentTimeMillis();
-        for (final DictProvider<?> provider : providers) {
+        for (final DictProvider provider : providers) {
             if (!provider.supportRefresh(dictProviderClasses)) {
                 continue;
             }
             if (provider instanceof SystemDictProvider) {
                 // 系统字典特殊处理
-                final Iterator<? extends DictTypeVo<?>> typeIterator = provider.dictTypeIterator();
+                final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
                 typeIterator.forEachRemaining(dictType -> {
                     // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表
                     storeDict(dictType);
@@ -80,17 +80,17 @@ public class DictRegistrar implements InitializingBean {
      */
     @Async
     @EventListener
-    public void eventListenerRefreshEvent(RefreshDictEvent event) throws Exception {
+    public void eventListenerRefreshEvent(RefreshDictEvent event) {
         logger.info("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
         refreshDict(event.getDictProviderClasses());
         logger.info("[finish] 应用内部通知刷新字典事件");
     }
 
-    private void storeDict(Iterator<? extends DictValueVo<?>> iterator) {
-        store.store((Iterator<DictValueVo<Object>>) iterator);
+    private void storeDict(Iterator<DictValueVo> iterator) {
+        store.store(iterator);
     }
 
-    private void storeDict(DictTypeVo<?> dictType) {
-        store.store((DictTypeVo<Object>) dictType);
+    private void storeDict(DictTypeVo dictType) {
+        store.store(dictType);
     }
 }

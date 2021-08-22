@@ -10,20 +10,20 @@ import java.util.Iterator;
  *
  * @author HouKunLin
  */
-public interface DictStore<V> {
+public interface DictStore {
     /**
      * 存储一个完整的数据字典信息
      *
      * @param dictType 数据字典对象
      */
-    void store(DictTypeVo<V> dictType);
+    void store(DictTypeVo dictType);
 
     /**
      * 存储一个字典值列表数据
      *
      * @param iterator 字典值列表
      */
-    void store(Iterator<DictValueVo<V>> iterator);
+    void store(Iterator<DictValueVo> iterator);
 
     /**
      * 通过字典类型获取完整的字典信息
@@ -31,7 +31,7 @@ public interface DictStore<V> {
      * @param type 字典雷系
      * @return 字典对象信息
      */
-    DictTypeVo<V> getDictType(String type);
+    DictTypeVo getDictType(String type);
 
     /**
      * 通过字典值获取字典文本信息

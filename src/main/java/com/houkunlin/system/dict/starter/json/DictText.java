@@ -41,7 +41,7 @@ public @interface DictText {
      *
      * @return 与当前字典有关的系统字典枚举列表
      */
-    Class<? extends DictEnum<?>>[] enums() default {};
+    Class<? extends DictEnum>[] enums() default {};
 
     /**
      * 设置当没有获取到数据时是否为 null。

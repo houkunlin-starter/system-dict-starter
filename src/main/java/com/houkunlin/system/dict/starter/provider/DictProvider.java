@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author HouKunLin
  */
-public interface DictProvider<V> {
+public interface DictProvider {
     /**
      * 在发起 {@link RefreshDictEvent} 刷新事件时，可以指定刷新某个或多个 {@link DictProvider} 对象，在 {@link DictRegistrar} 刷新字典时将调用此方法来判断是否刷新此 {@link DictProvider} 的字典数据
      *
@@ -37,7 +37,7 @@ public interface DictProvider<V> {
      *
      * @return 迭代器对象
      */
-    default Iterator<DictTypeVo<V>> dictTypeIterator() {
+    default Iterator<DictTypeVo> dictTypeIterator() {
         return Collections.emptyIterator();
     }
 
@@ -48,10 +48,10 @@ public interface DictProvider<V> {
      *
      * @return 迭代器对象
      */
-    default Iterator<DictValueVo<V>> dictValueIterator() {
-        final Iterator<DictTypeVo<V>> iterator = dictTypeIterator();
-        return new Iterator<DictValueVo<V>>() {
-            List<DictValueVo<V>> valueVos = null;
+    default Iterator<DictValueVo> dictValueIterator() {
+        final Iterator<DictTypeVo> iterator = dictTypeIterator();
+        return new Iterator<DictValueVo>() {
+            List<DictValueVo> valueVos = null;
             int index = 0;
             int size = 0;
 
@@ -66,7 +66,7 @@ public interface DictProvider<V> {
             }
 
             @Override
-            public DictValueVo<V> next() {
+            public DictValueVo next() {
                 return valueVos.get(index++);
             }
         };

@@ -15,10 +15,10 @@ import java.util.Iterator;
  *
  * @author HouKunLin
  */
-public class RedisDictStore implements DictStore<Object> {
+public class RedisDictStore implements DictStore {
     private static final Logger logger = LoggerFactory.getLogger(RedisDictStore.class);
     public final RedisTemplate<Object, Object> redisTemplate;
-    private final RemoteDict<Object> remoteDic;
+    private final RemoteDict remoteDic;
 
     public RedisDictStore(final RedisTemplate<Object, Object> redisTemplate, final RemoteDict remoteDic) {
         this.redisTemplate = redisTemplate;
@@ -26,23 +26,23 @@ public class RedisDictStore implements DictStore<Object> {
     }
 
     @Override
-    public void store(final DictTypeVo<Object> dictType) {
+    public void store(final DictTypeVo dictType) {
         redisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
     }
 
     @Override
-    public void store(final Iterator<DictValueVo<Object>> iterator) {
+    public void store(final Iterator<DictValueVo> iterator) {
         iterator.forEachRemaining(valueVo -> redisTemplate.opsForValue().set(DictUtil.dictKey(valueVo), valueVo.getTitle()));
     }
 
     @Override
-    public DictTypeVo<Object> getDictType(final String type) {
+    public DictTypeVo getDictType(final String type) {
         if (type == null) {
             return null;
         }
         final Object o = redisTemplate.opsForValue().get(DictUtil.dictKey(type));
         if (o != null) {
-            return (DictTypeVo<Object>) o;
+            return (DictTypeVo) o;
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
         return remoteDic.getDictType(type);

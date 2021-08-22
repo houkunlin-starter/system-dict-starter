@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter.javassist;
 
 import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.DictException;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import javassist.*;
 import javassist.bytecode.ClassFile;
@@ -26,7 +27,7 @@ import java.lang.reflect.Constructor;
 @NoArgsConstructor
 public class DynamicGenerateConverterImpl {
 
-    public void registerBean(final DefaultListableBeanFactory factory, final Class<?> clazz, final DictConverter dictConverter) {
+    public void registerBean(final DefaultListableBeanFactory factory, final Class<?> clazz, final DictConverter dictConverter) throws DictException {
         try {
             final Class<?> converterClass = createConverterClass(clazz, dictConverter);
             if (converterClass != null) {
@@ -35,7 +36,7 @@ public class DynamicGenerateConverterImpl {
             }
         } catch (Exception e) {
             log.error("自动创建系统字典枚举的 Converter 转换器失败", e);
-            throw new RuntimeException("自动创建系统字典枚举的 Converter 转换器失败", e);
+            throw new DictException("自动创建系统字典枚举的 Converter 转换器失败", e);
         }
     }
 
@@ -47,7 +48,7 @@ public class DynamicGenerateConverterImpl {
      * @return 转换器对象
      * @throws Exception 异常
      */
-    public Class<?> createConverterClass(final Class<?> clazz, final DictConverter dictConverter) throws Exception {
+    public Class<?> createConverterClass(final Class<?> clazz, final DictConverter dictConverter) throws NotFoundException, CannotCompileException {
         // 这个 Class 一定是继承一个指定的接口的
         if (!clazz.isEnum() || !DictEnum.class.isAssignableFrom(clazz)) {
             return null;

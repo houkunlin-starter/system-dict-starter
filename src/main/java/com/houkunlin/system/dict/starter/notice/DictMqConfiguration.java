@@ -81,7 +81,7 @@ public class DictMqConfiguration {
      * 监听刷新数据字典消息队列广播通知
      */
     @RabbitListener(queues = "#{dictQueue.name}")
-    public void refreshDict(@Payload String content, @Headers Map<Object, Object> map) throws Exception {
+    public void refreshDict(@Payload String content, @Headers Map<Object, Object> map) {
         if (applicationName.equals(map.get(headerSourceKey))) {
             logger.debug("收到来自当前系统发起的MQ消息，可以忽略不处理");
             return;

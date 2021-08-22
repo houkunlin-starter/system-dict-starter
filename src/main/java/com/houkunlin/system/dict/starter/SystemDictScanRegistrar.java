@@ -26,7 +26,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -81,7 +80,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
                 if (loadClass.isEnum()) {
                     handleDic(loadClass);
                 }
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException | DictException e) {
                 e.printStackTrace();
             }
         }
@@ -92,7 +91,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param dictClass 字典对象
      */
-    private void handleDic(Class<?> dictClass) {
+    private void handleDic(Class<?> dictClass) throws DictException {
         final DictType annotation = dictClass.getDeclaredAnnotation(DictType.class);
         final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
         if (converter != null) {
@@ -112,13 +111,13 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             dictTitle = dictClass.getSimpleName();
         }
 
-        List<DictValueVo<? extends Serializable>> list = new ArrayList<>();
+        List<DictValueVo> list = new ArrayList<>();
         final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dictClass.getEnumConstants();
         for (DictEnum<?> enums : enumConstants) {
             if (logger.isDebugEnabled()) {
                 logger.debug("class {} : - {} - {} - {} - {}", dictClass.getName(), dictType, enums.getValue(), enums.getTitle(), enums);
             }
-            list.add(new DictValueVo<>(dictType, enums.getValue(), enums.getTitle(), null, 0));
+            list.add(new DictValueVo(dictType, enums.getValue(), enums.getTitle(), null, 0));
         }
         final DictTypeVo dictTypeVo = new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, list);
         systemDictProvider.addDic(dictTypeVo);

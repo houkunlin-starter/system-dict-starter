@@ -17,23 +17,23 @@ import java.util.*;
  */
 @Getter
 @Component
-public class SystemDictProvider implements DictProvider<String> {
+public class SystemDictProvider implements DictProvider {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictProvider.class);
-    private final Map<String, DictTypeVo<String>> cache = new HashMap<>();
+    private final Map<String, DictTypeVo> cache = new HashMap<>();
 
     /**
      * 增加一个字典类型对象（含字典值列表）
      *
      * @param vo 字典类型对象
      */
-    public void addDic(final DictTypeVo<String> vo) {
+    public void addDic(final DictTypeVo vo) {
         vo.setChildren(new ArrayList<>(vo.getChildren()));
         cache.put(vo.getType(), vo);
     }
 
     @Override
-    public Iterator<DictTypeVo<String>> dictTypeIterator() {
-        final Collection<DictTypeVo<String>> values = cache.values();
+    public Iterator<DictTypeVo> dictTypeIterator() {
+        final Collection<DictTypeVo> values = cache.values();
         if (logger.isDebugEnabled()) {
             logger.debug("当前系统共有 {} 个系统字典类型信息", values.size());
         }
