@@ -26,12 +26,12 @@ public class DictConfiguration {
         logger.debug("提供一个空的 RemoteDic 对象");
         return new RemoteDict() {
             @Override
-            public DictTypeVo getDicType(final String type) {
+            public DictTypeVo getDictType(final String type) {
                 return null;
             }
 
             @Override
-            public String getDicValueTitle(final String type, final String value) {
+            public String getDictText(final String type, final String value) {
                 return null;
             }
         };

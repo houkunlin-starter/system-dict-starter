@@ -37,7 +37,7 @@ public interface DictProvider<V> {
      *
      * @return 迭代器对象
      */
-    default Iterator<DictTypeVo<V>> dicTypeIterator() {
+    default Iterator<DictTypeVo<V>> dictTypeIterator() {
         return Collections.emptyIterator();
     }
 
@@ -48,8 +48,8 @@ public interface DictProvider<V> {
      *
      * @return 迭代器对象
      */
-    default Iterator<DictValueVo<V>> dicValueIterator() {
-        final Iterator<DictTypeVo<V>> iterator = dicTypeIterator();
+    default Iterator<DictValueVo<V>> dictValueIterator() {
+        final Iterator<DictTypeVo<V>> iterator = dictTypeIterator();
         return new Iterator<DictValueVo<V>>() {
             List<DictValueVo<V>> valueVos = null;
             int index = 0;

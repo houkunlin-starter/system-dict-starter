@@ -27,7 +27,7 @@ import java.util.*;
 @Configuration
 public class DictMqConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DictMqConfiguration.class);
-    private static final String DIC_PROVIDER_CLASSES_KEY = "DIC.dicProviderClasses";
+    private static final String DIC_PROVIDER_CLASSES_KEY = "DIC.dictProviderClasses";
     private final DictRegistrar dictRegistrar;
     private final AmqpTemplate amqpTemplate;
     private final String applicationName;
@@ -51,7 +51,7 @@ public class DictMqConfiguration {
      * @return 队列
      */
     @Bean
-    public Queue dicQueue() {
+    public Queue dictQueue() {
         return new AnonymousQueue();
     }
 
@@ -61,27 +61,27 @@ public class DictMqConfiguration {
      * @return 日志交换器
      */
     @Bean
-    Exchange dicExchange() {
+    Exchange dictExchange() {
         return new FanoutExchange(exchangeName);
     }
 
     /**
      * 配置交换器和队列的绑定，
      *
-     * @param dicQueue    队列
-     * @param dicExchange 交换器
+     * @param dictQueue    队列
+     * @param dictExchange 交换器
      * @return 绑定关系
      */
     @Bean
-    public Binding dicBindingExchangeMessage(Queue dicQueue, Exchange dicExchange) {
-        return BindingBuilder.bind(dicQueue).to(dicExchange).with("").noargs();
+    public Binding dictBindingExchangeMessage(Queue dictQueue, Exchange dictExchange) {
+        return BindingBuilder.bind(dictQueue).to(dictExchange).with("").noargs();
     }
 
     /**
      * 监听刷新数据字典消息队列广播通知
      */
-    @RabbitListener(queues = "#{dicQueue.name}")
-    public void refreshDic(@Payload String content, @Headers Map<Object, Object> map) throws Exception {
+    @RabbitListener(queues = "#{dictQueue.name}")
+    public void refreshDict(@Payload String content, @Headers Map<Object, Object> map) throws Exception {
         if (applicationName.equals(map.get(headerSourceKey))) {
             logger.debug("收到来自当前系统发起的MQ消息，可以忽略不处理");
             return;
@@ -89,13 +89,13 @@ public class DictMqConfiguration {
         logger.info("[start] MQ 通知刷新字典：{}", content);
         final Object dictProviderClasses = map.get(DIC_PROVIDER_CLASSES_KEY);
         if (dictProviderClasses instanceof List) {
-            dictRegistrar.refreshDic(new HashSet<>((Collection<String>) dictProviderClasses));
+            dictRegistrar.refreshDict(new HashSet<>((Collection<String>) dictProviderClasses));
         } else if (dictProviderClasses instanceof Set) {
-            dictRegistrar.refreshDic((Set<String>) dictProviderClasses);
+            dictRegistrar.refreshDict((Set<String>) dictProviderClasses);
         } else if (dictProviderClasses instanceof Collection) {
-            dictRegistrar.refreshDic(new HashSet<>((Collection<String>) dictProviderClasses));
+            dictRegistrar.refreshDict(new HashSet<>((Collection<String>) dictProviderClasses));
         } else {
-            dictRegistrar.refreshDic(null);
+            dictRegistrar.refreshDict(null);
         }
         logger.info("[finish] MQ 通知刷新字典");
     }
@@ -104,7 +104,7 @@ public class DictMqConfiguration {
      * 处理系统内部发起的刷新数据字典事件
      */
     @EventListener
-    public void refreshDic(RefreshDictEvent event) {
+    public void refreshDict(RefreshDictEvent event) {
         final Object source = event.getSource();
         if (event.isNotifyOtherSystem()) {
             logger.debug("接收到刷新数据字典事件，通知 MQ 与其他协同系统刷新 Redis 数据字典内容。事件内容：{}", source);

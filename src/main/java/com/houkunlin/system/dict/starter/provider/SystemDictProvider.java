@@ -32,7 +32,7 @@ public class SystemDictProvider implements DictProvider<String> {
     }
 
     @Override
-    public Iterator<DictTypeVo<String>> dicTypeIterator() {
+    public Iterator<DictTypeVo<String>> dictTypeIterator() {
         final Collection<DictTypeVo<String>> values = cache.values();
         if (logger.isDebugEnabled()) {
             logger.debug("当前系统共有 {} 个系统字典类型信息", values.size());

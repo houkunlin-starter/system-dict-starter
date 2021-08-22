@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Lazy;
 @ComponentScan
 public class SystemDictStarter {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictStarter.class);
-    private static final String WARNING_MESSAGE = "DicProperties 未找到，请在启动类添加 @SystemDicScan 注解启用相关服务";
+    private static final String WARNING_MESSAGE = "DictProperties 未找到，请在启动类添加 @SystemDictScan 注解启用相关服务";
     private static DictProperties properties;
 
     public SystemDictStarter(@Lazy final DictProperties properties) {
@@ -53,19 +53,19 @@ public class SystemDictStarter {
     /**
      * 当环境中不存在 RemoteDic Bean 的时候创建一个默认的 RemoteDic Bean 实例。用来获取不存在系统字典的字典数据
      *
-     * @return DicStore
+     * @return {@link RemoteDict}
      */
     @ConditionalOnMissingBean
     @Bean
     public RemoteDict remoteDic() {
         return new RemoteDict() {
             @Override
-            public DictTypeVo getDicType(final String type) {
+            public DictTypeVo getDictType(final String type) {
                 return null;
             }
 
             @Override
-            public String getDicValueTitle(final String type, final String value) {
+            public String getDictText(final String type, final String value) {
                 return null;
             }
         };

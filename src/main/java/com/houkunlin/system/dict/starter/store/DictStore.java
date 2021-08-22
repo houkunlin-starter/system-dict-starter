@@ -31,7 +31,7 @@ public interface DictStore<V> {
      * @param type 字典雷系
      * @return 字典对象信息
      */
-    DictTypeVo<V> getDicType(String type);
+    DictTypeVo<V> getDictType(String type);
 
     /**
      * 通过字典值获取字典文本信息
@@ -40,5 +40,5 @@ public interface DictStore<V> {
      * @param value 字典值
      * @return 字典文本
      */
-    String getDicValueTitle(String type, String value);
+    String getDictText(String type, String value);
 }

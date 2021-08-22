@@ -54,7 +54,7 @@ public class DictEndpoint {
      */
     @ReadOperation
     public Object type(@Selector String dictType) {
-        return DictUtil.getDicType(dictType);
+        return DictUtil.getDictType(dictType);
     }
 
     /**
@@ -66,6 +66,6 @@ public class DictEndpoint {
      */
     @ReadOperation
     public Object title(@Selector String dictType, @Selector String dictValue) {
-        return DictUtil.getDicValueTitle(dictType, dictValue);
+        return DictUtil.getDictText(dictType, dictValue);
     }
 }

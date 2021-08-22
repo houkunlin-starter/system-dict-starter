@@ -27,7 +27,7 @@ public class LocalDictStore implements DictStore<Object> {
 
     @Override
     public void store(final DictTypeVo<Object> dictType) {
-        CACHE_TYPE.put(DictUtil.dicKey(dictType.getType()), dictType);
+        CACHE_TYPE.put(DictUtil.dictKey(dictType.getType()), dictType);
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TYPE Map 共有 {} 个字典类型信息", CACHE_TYPE.size());
         }
@@ -35,28 +35,28 @@ public class LocalDictStore implements DictStore<Object> {
 
     @Override
     public void store(final Iterator<DictValueVo<Object>> iterator) {
-        iterator.forEachRemaining(valueVo -> CACHE_TITLE.put(DictUtil.dicKey(valueVo), valueVo.getTitle()));
+        iterator.forEachRemaining(valueVo -> CACHE_TITLE.put(DictUtil.dictKey(valueVo), valueVo.getTitle()));
         if (logger.isDebugEnabled()) {
             logger.debug("当前 CACHE_TITLE Map 共有 {} 个字典值信息", CACHE_TITLE.size());
         }
     }
 
     @Override
-    public DictTypeVo<Object> getDicType(final String type) {
-        final DictTypeVo<Object> typeVo = CACHE_TYPE.get(DictUtil.dicKey(type));
+    public DictTypeVo<Object> getDictType(final String type) {
+        final DictTypeVo<Object> typeVo = CACHE_TYPE.get(DictUtil.dictKey(type));
         if (typeVo != null) {
             return typeVo;
         }
-        return remoteDic.getDicType(type);
+        return remoteDic.getDictType(type);
     }
 
     @Override
-    public String getDicValueTitle(final String type, final String value) {
-        final String title = CACHE_TITLE.get(DictUtil.dicKey(type, value));
+    public String getDictText(final String type, final String value) {
+        final String title = CACHE_TITLE.get(DictUtil.dictKey(type, value));
         if (title != null) {
             return title;
         }
-        return remoteDic.getDicValueTitle(type, value);
+        return remoteDic.getDictText(type, value);
     }
 
     @PostConstruct

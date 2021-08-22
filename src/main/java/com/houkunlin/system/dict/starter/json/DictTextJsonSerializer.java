@@ -135,10 +135,10 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         if (fromFieldEnumsClass(value, gen)) {
             return;
         }
-        if (fromDicTextEnumsClass(value, gen)) {
+        if (fromDictTextEnumsClass(value, gen)) {
             return;
         }
-        fromDicCache(value, gen);
+        fromDictCache(value, gen);
     }
 
     /**
@@ -163,13 +163,13 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     }
 
     /**
-     * 字段是普通类型，但是使用 @DicText 标记了来自枚举对象取值
+     * 字段是普通类型，但是使用 {@link DictText} 标记了来自枚举对象取值
      *
      * @param value 实体类字段值
      * @param gen
      * @return
      */
-    private boolean fromDicTextEnumsClass(Object value, JsonGenerator gen) throws IOException {
+    private boolean fromDictTextEnumsClass(Object value, JsonGenerator gen) throws IOException {
         if (enumsClass != null && enumsClass.length > 0) {
             final String title = getTitleFormClass(value);
             if (title == null) {
@@ -189,12 +189,12 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      * @param gen
      * @throws IOException
      */
-    private void fromDicCache(Object value, JsonGenerator gen) throws IOException {
+    private void fromDictCache(Object value, JsonGenerator gen) throws IOException {
         if (dictType != null && StringUtils.hasText(dictType)) {
-            writeFieldValue(gen, value, DictUtil.getDicValueTitle(dictType, String.valueOf(value)));
+            writeFieldValue(gen, value, DictUtil.getDictText(dictType, String.valueOf(value)));
         } else {
             writeFieldValue(gen, value, defaultValue(null));
-            logger.warn("{}#{} @DicText annotation not set dicType value", beanClazz, beanFieldName);
+            logger.warn("{}#{} @DictText annotation not set dictType value", beanClazz, beanFieldName);
         }
     }
 
@@ -218,7 +218,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      *
      * @param gen            JsonGenerator 对象
      * @param rawValueObject 实体类字典值
-     * @param dictValueText   字典文本值
+     * @param dictValueText  字典文本值
      * @throws IOException
      */
     private void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dictValueText) throws IOException {
@@ -296,17 +296,17 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      * property.member 是一个 AnnotationMethod 对象，字段名一致的时候 property.member.hashCode() 是相同的
      * 当字段名相同的时候 property.hashCode() 是相同的
      * 当 字段名 相同的时候：property.member.hashCode() 是相同的
-     * 当 DicText 参数全部相同的时候：annotation.hashCode() 是相同的
+     * 当 {@link DictText} 参数全部相同的时候：annotation.hashCode() 是相同的
      * 因此 property.member 和 annotation 都不能作为 CacheMap 的 Key
-     * 否则导致不同 field 的 DicText 注解可能只有一个 JsonSerializer 对象，从而导致 DicJsonSerializer 参数出现错误、冲突，因此Json数据错误
+     * 否则导致不同 field 的 {@link DictText} 注解可能只有一个 JsonSerializer 对象，从而导致 {@link DictTextJsonSerializer} 参数出现错误、冲突，因此Json数据错误
      * property.member.member 是这个字段对应的 Getter 方法，因此能够保证唯一
      * 但是想要更优化的缓存，需要把 Key 设置为：字段名 + 注解对象 两个合并使用，才能保证唯一缓存
-     * 这样可以由相同的 field 加相同的 DicText 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
+     * 这样可以由相同的 field 加相同的 {@link DictText} 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
      * 方案一： property.getMember().getMember() 对象是字段的 Getter 方法对象
-     * 当 DicText 参数一致的时候， DicText.hashCode() 是相同的
-     * 因此导致不同 field 的 DicText 注解可能只有一个 JsonSerializer 对象，从而导致数据字典 JSON 字段名称出现错误、冲突
+     * 当 {@link DictText} 参数一致的时候， {@link DictText#hashCode()} 是相同的
+     * 因此导致不同 field 的 {@link DictText} 注解可能只有一个 JsonSerializer 对象，从而导致数据字典 JSON 字段名称出现错误、冲突
      * 方案二：此时需要把 field 加入到 cache 的 key 中
-     * 这样可以由相同的 field 加相同的 DicText 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
+     * 这样可以由相同的 field 加相同的 {@link DictText} 共用同一个 JsonSerializer 对象，当任何一个参数不同时都会重新创建一个 JsonSerializer 对象
      *
      * @param prov
      * @param property
@@ -321,14 +321,14 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
             final String fieldName = property.getName();
             final Class<?> javaTypeRawClass = javaType.getRawClass();
 
-            // @DicText 注解目前仅对 字段、方法 起作用，因此这里拿到的注解一定是不为null的
+            // @DictText 注解目前仅对 字段、方法 起作用，因此这里拿到的注解一定是不为null的
             final DictText annotation = property.getAnnotation(DictText.class);
 
             // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
             if (DictEnum.class.isAssignableFrom(javaTypeRawClass)) {
                 final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) javaTypeRawClass;
                 if (annotation != null) {
-                    // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
+                    // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                     return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
                         new DictTextJsonSerializer(
                             property.getMember().getDeclaringClass(),
@@ -337,7 +337,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
                             new Class[]{aClass})
                     );
                 }
-                // 这里的代码实际已经过时，由于在本次提交，引入了 @DicType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DicText 对整个类起了作用
+                // 这里的代码实际已经过时，由于在本次提交，引入了 @DictType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DictText 对整个类起了作用
                 return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName, key ->
                     new DictTextJsonSerializer(
                         property.getMember().getDeclaringClass(),
@@ -345,7 +345,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
                         new Class[]{aClass}));
             }
             if (annotation != null) {
-                // @DicText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
+                // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
                 return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
                     new DictTextJsonSerializer(
                         property.getMember().getDeclaringClass(),
@@ -354,10 +354,10 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
                 );
             }
             try {
-                // 这里的代码实际已经过时，由于在本次提交，引入了 @DicType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DicText 对整个类起了作用
+                // 这里的代码实际已经过时，由于在本次提交，引入了 @DictType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DictText 对整个类起了作用
                 return prov.findValueSerializer(javaType, property);
             } catch (JsonMappingException e) {
-                throw new JsonMappingException(null, "无法解析 " + javaTypeRawClass + " 类型的字典序列化对象。由于在该对象上使用了 @DicText 注解，但其未实现 DicEnum 接口可能就会出现这个异常", e);
+                throw new JsonMappingException(null, "无法解析 " + javaTypeRawClass + " 类型的字典序列化对象。由于在该对象上使用了 @DictText 注解，但其未实现 DictEnum 接口可能就会出现这个异常", e);
             }
         }
         return prov.findNullValueSerializer(null);

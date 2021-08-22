@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * 系统字典枚举 {@link Converter Converter 转换器} 生成配置，生成的 {@link Converter Converter 转换器} 只对 GET 方法参数有效；
- * 使用该注解将自动向SpringBoot提供一个对应的 {@link Converter Converter&lt;String, DicEnumObject&gt;} 对象；
+ * 使用该注解将自动向SpringBoot提供一个对应的 {@link Converter Converter&lt;String, DictEnumObject&gt;} 对象；
  * 该功能需要使用到 javassist 动态字节码技术，在运行时动态生成 {@link Converter Converter 转换器} 实现类并注入到 SpringBoot Bean 中
  *
  * @author HouKunLin
@@ -22,5 +22,5 @@ public @interface DictConverter {
      *
      * @return 是否
      */
-    boolean onlyDicValue() default false;
+    boolean onlyDictValue() default false;
 }

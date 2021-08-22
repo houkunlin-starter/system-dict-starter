@@ -32,8 +32,8 @@ public class CommandRunnerTests implements CommandLineRunner {
         final Bean1 bean1 = new Bean1();
         System.out.println(toJson(bean1));
         System.out.println(toJson(new Bean2()));
-        System.out.println(DictUtil.getDicType(PeopleType.class.getSimpleName()));
-        System.out.println(toJson(DictUtil.getDicType(PeopleType.class.getSimpleName())));
+        System.out.println(DictUtil.getDictType(PeopleType.class.getSimpleName()));
+        System.out.println(toJson(DictUtil.getDictType(PeopleType.class.getSimpleName())));
         publisher.publishEvent(new RefreshDictEvent("test", true, true));
     }
 

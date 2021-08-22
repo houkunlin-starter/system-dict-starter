@@ -34,29 +34,29 @@ public class DictUtil {
                 .build();
     }
 
-    public static DictTypeVo getDicType(String type) {
+    public static DictTypeVo getDictType(String type) {
         if (type == null || store == null) {
             return null;
         }
-        return store.getDicType(type);
+        return store.getDictType(type);
     }
 
-    public static String getDicValueTitle(String type, String value) {
+    public static String getDictText(String type, String value) {
         if (type == null || value == null || store == null) {
             return null;
         }
-        return cache.get(dicKey(type, value), o -> store.getDicValueTitle(type, value));
+        return cache.get(dictKey(type, value), o -> store.getDictText(type, value));
     }
 
-    public static String dicKey(String type) {
+    public static String dictKey(String type) {
         return "dic:" + type;
     }
 
-    public static String dicKey(DictValueVo value) {
+    public static String dictKey(DictValueVo value) {
         return "dic:" + value.getDictType() + ":" + value.getValue();
     }
 
-    public static String dicKey(String type, Object value) {
+    public static String dictKey(String type, Object value) {
         return "dic:" + type + ":" + value;
     }
 }

@@ -19,11 +19,11 @@ public class LocalDictStoreConfiguration {
     /**
      * 当环境中不存在 DictStore Bean 的时候创建一个默认的 DictStore Bean 实例
      *
-     * @return DicStore
+     * @return {@link DictStore}
      */
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dicStore(RemoteDict remoteDict) {
+    public DictStore dictStore(RemoteDict remoteDict) {
         return new LocalDictStore(remoteDict);
     }
 }

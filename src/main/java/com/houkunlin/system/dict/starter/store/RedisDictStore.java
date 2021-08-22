@@ -27,38 +27,38 @@ public class RedisDictStore implements DictStore<Object> {
 
     @Override
     public void store(final DictTypeVo<Object> dictType) {
-        redisTemplate.opsForValue().set(DictUtil.dicKey(dictType.getType()), dictType);
+        redisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
     }
 
     @Override
     public void store(final Iterator<DictValueVo<Object>> iterator) {
-        iterator.forEachRemaining(valueVo -> redisTemplate.opsForValue().set(DictUtil.dicKey(valueVo), valueVo.getTitle()));
+        iterator.forEachRemaining(valueVo -> redisTemplate.opsForValue().set(DictUtil.dictKey(valueVo), valueVo.getTitle()));
     }
 
     @Override
-    public DictTypeVo<Object> getDicType(final String type) {
+    public DictTypeVo<Object> getDictType(final String type) {
         if (type == null) {
             return null;
         }
-        final Object o = redisTemplate.opsForValue().get(DictUtil.dicKey(type));
+        final Object o = redisTemplate.opsForValue().get(DictUtil.dictKey(type));
         if (o != null) {
             return (DictTypeVo<Object>) o;
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-        return remoteDic.getDicType(type);
+        return remoteDic.getDictType(type);
     }
 
     @Override
-    public String getDicValueTitle(final String type, final String value) {
+    public String getDictText(final String type, final String value) {
         if (type == null || value == null) {
             return null;
         }
-        final Object o = redisTemplate.opsForValue().get(DictUtil.dicKey(type, value));
+        final Object o = redisTemplate.opsForValue().get(DictUtil.dictKey(type, value));
         if (o != null) {
             return String.valueOf(o);
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-        return remoteDic.getDicValueTitle(type, value);
+        return remoteDic.getDictText(type, value);
     }
 
     @PostConstruct

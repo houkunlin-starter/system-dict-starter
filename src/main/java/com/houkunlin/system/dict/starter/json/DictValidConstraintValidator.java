@@ -18,7 +18,7 @@ public class DictValidConstraintValidator implements ConstraintValidator<DictVal
         if (dictType == null || value == null) {
             return false;
         }
-        return DictUtil.getDicValueTitle(dictType, String.valueOf(value)) != null;
+        return DictUtil.getDictText(dictType, String.valueOf(value)) != null;
     }
 
     @Override

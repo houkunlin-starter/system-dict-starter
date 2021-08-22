@@ -31,7 +31,7 @@ public class DynamicGenerateConverterImpl {
             final Class<?> converterClass = createConverterClass(clazz, dictConverter);
             if (converterClass != null) {
                 final Constructor<?>[] constructors = converterClass.getConstructors();
-                factory.registerSingleton(clazz.getName() + ".SystemDicSpringConverter", constructors[0].newInstance());
+                factory.registerSingleton(clazz.getName() + ".SystemDictSpringConverter", constructors[0].newInstance());
             }
         } catch (Exception e) {
             log.error("自动创建系统字典枚举的 Converter 转换器失败", e);
@@ -42,7 +42,7 @@ public class DynamicGenerateConverterImpl {
     /**
      * 动态创建一个转换器对象
      *
-     * @param clazz        枚举对象
+     * @param clazz         枚举对象
      * @param dictConverter 枚举转换器配置参数注解
      * @return 转换器对象
      * @throws Exception 异常
@@ -55,8 +55,8 @@ public class DynamicGenerateConverterImpl {
         // 系统字典枚举类完全限定名
         final String dictEnumClassName = clazz.getName();
 
-        // DicEnum 的泛型参数类型
-        final Class<?> dictValueType = getDicEnumInterfaceType(clazz);
+        // {@link DictEnum} 的泛型参数类型
+        final Class<?> dictValueType = getDictEnumInterfaceType(clazz);
 
         // 第一个泛型参数一定是字符串类型；            第二个泛型参数是枚举类型，也就是当前方法的入参参数
         final Class<?> interfaceTypeClass1 = String.class;
@@ -99,15 +99,15 @@ public class DynamicGenerateConverterImpl {
     /**
      * 获取方法体内容
      *
-     * @param dictEnumClassName    字典枚举对象类全称
-     * @param dictValueType        字典枚举对象值类型
+     * @param dictEnumClassName   字典枚举对象类全称
+     * @param dictValueType       字典枚举对象值类型
      * @param methodArgumentClazz 转换方法参数对象（字符串对象）
-     * @param dictConverter        字典枚举注解信息
+     * @param dictConverter       字典枚举注解信息
      * @return 方法体内存
      */
     private String getMethodBody(final String dictEnumClassName, final Class<?> dictValueType, final Class<?> methodArgumentClazz, DictConverter dictConverter) {
         if (methodArgumentClazz == dictValueType) {
-            if (dictConverter.onlyDicValue()) {
+            if (dictConverter.onlyDictValue()) {
                 return String.format("{return (%s) %s.valueOf(%s.values(),$1);}", dictEnumClassName, DictEnum.class.getName(), dictEnumClassName);
             } else {
                 // 优先尝试使用字符串转换，转换失败再次尝试使用枚举字典的值类型去转换获取
@@ -116,7 +116,7 @@ public class DynamicGenerateConverterImpl {
                 );
             }
         } else {
-            if (dictConverter.onlyDicValue()) {
+            if (dictConverter.onlyDictValue()) {
                 return String.format("{return (%s) %s.valueOf(%s.values(), %s.valueOf($1));}", dictEnumClassName, DictEnum.class.getName(), dictEnumClassName, dictValueType.getName());
             } else {
                 // 参数类型不同，优先尝试使用字符串转换，转换失败再次尝试使用枚举字典的值类型去转换获取
@@ -152,11 +152,11 @@ public class DynamicGenerateConverterImpl {
      * @return 泛型对象
      * @see GenericConversionService#getRequiredTypeInfo(java.lang.Class, java.lang.Class)
      */
-    private Class<?> getDicEnumInterfaceType(final Class<?> clazz) {
+    private Class<?> getDictEnumInterfaceType(final Class<?> clazz) {
         final ResolvableType resolvableType = ResolvableType.forClass(clazz).as(DictEnum.class);
         final ResolvableType[] interfaces = resolvableType.getGenerics();
 
-        // DicEnum 的泛型参数类型
+        // DictEnum 的泛型参数类型
         final Class<?> valueType = interfaces[0].resolve();
         assert valueType != null;
         return valueType;
