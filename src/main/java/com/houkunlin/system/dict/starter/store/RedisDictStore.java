@@ -38,7 +38,8 @@ public class RedisDictStore implements DictStore {
     public Set<String> dictTypeKeys() {
         final Set<Object> keys = redisTemplate.keys(DictUtil.TYPE_PREFIX.concat("*"));
         assert keys != null;
-        return keys.stream().map(String::valueOf).collect(Collectors.toSet());
+        final int length = DictUtil.TYPE_PREFIX.length();
+        return keys.stream().map(String::valueOf).map(key -> key.substring(length)).collect(Collectors.toSet());
     }
 
     @Override
