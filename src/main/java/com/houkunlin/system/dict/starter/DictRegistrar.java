@@ -1,7 +1,6 @@
 package com.houkunlin.system.dict.starter;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
@@ -17,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 字典注册，把字典发送到缓存中
@@ -33,10 +33,10 @@ public class DictRegistrar implements InitializingBean {
     /**
      * 上一次刷新字典时间
      */
-    private long lastModified = 0;
+    private final AtomicLong lastModified = new AtomicLong(0);
 
     public void refreshDict(Set<String> dictProviderClasses) {
-        final long interval = System.currentTimeMillis() - lastModified;
+        final long interval = System.currentTimeMillis() - lastModified.get();
         final long refreshDictInterval = properties.getRefreshDictInterval();
         if (interval < refreshDictInterval) {
             if (logger.isDebugEnabled()) {
@@ -44,7 +44,7 @@ public class DictRegistrar implements InitializingBean {
             }
             return;
         }
-        lastModified = System.currentTimeMillis();
+        lastModified.set(System.currentTimeMillis());
         for (final DictProvider provider : providers) {
             if (!provider.supportRefresh(dictProviderClasses)) {
                 continue;
@@ -54,12 +54,12 @@ public class DictRegistrar implements InitializingBean {
                 final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
                 typeIterator.forEachRemaining(dictType -> {
                     // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表
-                    storeDict(dictType);
+                    store.store(dictType);
                     // 同时系统字典的字典值列表也写入缓存
-                    storeDict(dictType.getChildren().iterator());
+                    store.store(dictType.getChildren().iterator());
                 });
             } else {
-                storeDict(provider.dictValueIterator());
+                store.store(provider.dictValueIterator());
             }
         }
     }
@@ -80,13 +80,5 @@ public class DictRegistrar implements InitializingBean {
         logger.info("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
         refreshDict(event.getDictProviderClasses());
         logger.info("[finish] 应用内部通知刷新字典事件");
-    }
-
-    private void storeDict(Iterator<DictValueVo> iterator) {
-        store.store(iterator);
-    }
-
-    private void storeDict(DictTypeVo dictType) {
-        store.store(dictType);
     }
 }
