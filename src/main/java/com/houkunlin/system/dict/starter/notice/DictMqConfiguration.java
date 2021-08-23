@@ -36,7 +36,7 @@ public class DictMqConfiguration {
 
     public DictMqConfiguration(@Lazy final DictRegistrar dictRegistrar,
                                final AmqpTemplate amqpTemplate,
-                               @Value("${spring.application.name:'system-dic'}") final String applicationName,
+                               @Value("${spring.application.name:'system-dict'}") final String applicationName,
                                final DictProperties dictProperties) {
         this.dictRegistrar = dictRegistrar;
         this.amqpTemplate = amqpTemplate;
