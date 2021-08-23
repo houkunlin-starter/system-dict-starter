@@ -3,6 +3,7 @@ package com.houkunlin.system.dict.starter.store;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,15 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author HouKunLin
  */
+@AllArgsConstructor
 public class LocalDictStore implements DictStore {
     private static final Logger logger = LoggerFactory.getLogger(LocalDictStore.class);
     private static final ConcurrentHashMap<String, DictTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TITLE = new ConcurrentHashMap<>();
     private final RemoteDict remoteDic;
-
-    public LocalDictStore(final RemoteDict remoteDic) {
-        this.remoteDic = remoteDic;
-    }
 
     @Override
     public void store(final DictTypeVo dictType) {

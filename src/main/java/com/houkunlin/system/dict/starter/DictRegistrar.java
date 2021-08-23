@@ -6,6 +6,7 @@ import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,6 +24,7 @@ import java.util.Set;
  * @author HouKunLin
  */
 @Configuration
+@AllArgsConstructor
 public class DictRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
     private final List<DictProvider> providers;
@@ -32,12 +34,6 @@ public class DictRegistrar implements InitializingBean {
      * 上一次刷新字典时间
      */
     private long lastModified = 0;
-
-    public DictRegistrar(final List<DictProvider> providers, final DictStore store, final DictProperties properties) {
-        this.providers = providers;
-        this.store = store;
-        this.properties = properties;
-    }
 
     public void refreshDict(Set<String> dictProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified;
