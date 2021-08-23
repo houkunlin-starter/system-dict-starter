@@ -1,10 +1,12 @@
 package test.application.server.redis;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.store.DictStore;
 import com.houkunlin.system.dict.starter.store.RedisDictStore;
 import com.houkunlin.system.dict.starter.store.RemoteDict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,9 +19,10 @@ public class DictConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DictConfiguration.class);
 
     @Bean
-    public RedisDictStore redisDicStore(final RedisTemplate<Object, Object> redisTemplate, final RemoteDict remoteDic) {
+    @ConditionalOnMissingBean
+    public DictStore dictStore(RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate, RedisTemplate<String, String> dictValueRedisTemplate, RemoteDict remoteDict) {
         logger.debug("使用自定义的 RedisDicStore 存储数据字典信息");
-        return new RedisDictStore(redisTemplate, remoteDic);
+        return new RedisDictStore(dictTypeRedisTemplate, dictValueRedisTemplate, remoteDict);
     }
 
     @Bean

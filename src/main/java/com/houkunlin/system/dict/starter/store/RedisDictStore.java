@@ -21,25 +21,26 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RedisDictStore implements DictStore {
     private static final Logger logger = LoggerFactory.getLogger(RedisDictStore.class);
-    public final RedisTemplate<Object, Object> redisTemplate;
+    public final RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate;
+    public final RedisTemplate<String, String> dictValueRedisTemplate;
     private final RemoteDict remoteDic;
 
     @Override
     public void store(final DictTypeVo dictType) {
-        redisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
+        dictTypeRedisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
     }
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
-        iterator.forEachRemaining(valueVo -> redisTemplate.opsForValue().set(DictUtil.dictKey(valueVo), valueVo.getTitle()));
+        iterator.forEachRemaining(valueVo -> dictValueRedisTemplate.opsForValue().set(DictUtil.dictKey(valueVo), valueVo.getTitle()));
     }
 
     @Override
     public Set<String> dictTypeKeys() {
-        final Set<Object> keys = redisTemplate.keys(DictUtil.TYPE_PREFIX.concat("*"));
+        final Set<String> keys = dictTypeRedisTemplate.keys(DictUtil.TYPE_PREFIX.concat("*"));
         assert keys != null;
         final int length = DictUtil.TYPE_PREFIX.length();
-        return keys.stream().map(String::valueOf).map(key -> key.substring(length)).collect(Collectors.toSet());
+        return keys.stream().map(key -> key.substring(length)).collect(Collectors.toSet());
     }
 
     @Override
@@ -47,9 +48,9 @@ public class RedisDictStore implements DictStore {
         if (type == null) {
             return null;
         }
-        final Object o = redisTemplate.opsForValue().get(DictUtil.dictKey(type));
+        final DictTypeVo o = dictTypeRedisTemplate.opsForValue().get(DictUtil.dictKey(type));
         if (o != null) {
-            return (DictTypeVo) o;
+            return o;
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
         return remoteDic.getDictType(type);
@@ -60,9 +61,9 @@ public class RedisDictStore implements DictStore {
         if (type == null || value == null) {
             return null;
         }
-        final Object o = redisTemplate.opsForValue().get(DictUtil.dictKey(type, value));
+        final String o = dictValueRedisTemplate.opsForValue().get(DictUtil.dictKey(type, value));
         if (o != null) {
-            return String.valueOf(o);
+            return o;
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
         return remoteDic.getDictText(type, value);
