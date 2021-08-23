@@ -84,8 +84,8 @@ publishing {
         maven {
             name = "sonatype"
             credentials {
-                username findProperty("ossrhUsername") ?: System.getenv("ossrhUsername")
-                password findProperty("ossrhPassword") ?: System.getenv("ossrhPassword")
+                username = findProperty("ossrhUsername") ?: System.getenv("ossrhUsername")
+                password = findProperty("ossrhPassword") ?: System.getenv("ossrhPassword")
             }
             // 正式环境
             def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
@@ -95,8 +95,8 @@ publishing {
         }
         maven {
             name = "buildDir"
-            def releasesRepoUrl = "$buildDir/repos/releases"
-            def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+            String releasesRepoUrl = "$buildDir/repos/releases"
+            String snapshotsRepoUrl = "$buildDir/repos/snapshots"
             url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
@@ -105,9 +105,9 @@ publishing {
 signing {
     // 使用 gradle.properties 设置参数，或者在命令行中增加 -Pgpg_private_key= -Pgpg_password= 设置参数
     // 或者在环境变量中设置相应的环境变量
-    def signingKey = findProperty("gpg_private_key") ?: System.getenv("gpg_private_key")
+    String signingKey = findProperty("gpg_private_key") ?: System.getenv("gpg_private_key")
     if (signingKey != null) {
-        def signingPassword = findProperty("gpg_password") ?: System.getenv("gpg_password")
+        String signingPassword = findProperty("gpg_password") ?: System.getenv("gpg_password")
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
     sign publishing.publications
