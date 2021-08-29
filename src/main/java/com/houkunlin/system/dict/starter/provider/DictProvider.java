@@ -28,6 +28,17 @@ public interface DictProvider {
     }
 
     /**
+     * 标记该字典提供者是否存储完整的字典类型信息。当字典数据特别多的时候，不建议把此项设置为 true ，因为数据量多会影响系统存储读取。
+     * 系统字典 {@link SystemDictProvider} 默认存储字典类型对象信息。
+     *
+     * @return <p>true: 在缓存中存储完整的字典类型对象（含字典值列表对象），会调用 {@link #dictTypeIterator()} 方法获取数据</p>
+     * <p>false: 会调用 {@link #dictValueIterator()} 方法获取数据，假如 {@link #dictValueIterator()} 未被实现类覆盖，则实际上就是调用 {@link #dictTypeIterator()} 方法</p>
+     */
+    default boolean isStoreDictType() {
+        return false;
+    }
+
+    /**
      * 实现一个迭代器，可以通过迭代器直接获取到列表信息。
      * 建议在进行超大数据量的时候手动实现此方法，虽然有可能不存在这种使用场景。
      * 该方法不会并发执行。

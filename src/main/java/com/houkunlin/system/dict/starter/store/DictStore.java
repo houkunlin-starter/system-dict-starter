@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter.store;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.provider.DictProvider;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -27,7 +28,9 @@ public interface DictStore {
     void store(Iterator<DictValueVo> iterator);
 
     /**
-     * 字典类型代码列表
+     * 字典类型代码列表。
+     * <p>仅能够得到 {@link DictProvider#isStoreDictType()} 返回 true 的字典类型代码信息。</p>
+     * <p>当 {@link DictProvider#isStoreDictType()} 返回 false 时对应的 {@link DictProvider} 提供的字典类型信息对象将不会被存储，也就是当前方法无法获得该字典类型代码</p>
      *
      * @return 字典类型代码列表
      */
@@ -35,8 +38,10 @@ public interface DictStore {
 
     /**
      * 通过字典类型获取完整的字典信息
+     * <p>仅能够得到 {@link DictProvider#isStoreDictType()} 返回 true 的字典类型代码信息。</p>
+     * <p>当 {@link DictProvider#isStoreDictType()} 返回 false 时对应的 {@link DictProvider} 提供的字典类型信息对象将不会被存储，也就是当前方法无法获得该字典类型代码</p>
      *
-     * @param type 字典雷系
+     * @param type 字典类型
      * @return 字典对象信息
      */
     DictTypeVo getDictType(String type);

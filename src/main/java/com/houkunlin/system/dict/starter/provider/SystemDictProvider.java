@@ -22,6 +22,17 @@ public class SystemDictProvider implements DictProvider {
     private final Map<String, DictTypeVo> cache = new HashMap<>();
 
     /**
+     * 系统字典的字典类型信息（含字典值列表）一定要存储到缓存中，否则无法给前端页面提供完整可用字典值列表数据
+     *
+     * @return true
+     * @see DictProvider#isStoreDictType()
+     */
+    @Override
+    public boolean isStoreDictType() {
+        return true;
+    }
+
+    /**
      * 增加一个字典类型对象（含字典值列表）
      *
      * @param vo 字典类型对象

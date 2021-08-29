@@ -3,7 +3,6 @@ package com.houkunlin.system.dict.starter;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
-import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -49,13 +48,11 @@ public class DictRegistrar implements InitializingBean {
             if (!provider.supportRefresh(dictProviderClasses)) {
                 continue;
             }
-            if (provider instanceof SystemDictProvider) {
-                // 系统字典特殊处理。系统字典的数据数量普遍情况下不大，因此直接存储影响不大
+            // 根据 Provider 参数决定是否存储完整的字典类型信息对象
+            if (provider.isStoreDictType()) {
                 final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
                 typeIterator.forEachRemaining(dictType -> {
-                    // 系统字典直接写入完整的对象，因为在给前端做字典选择的时候需要完整的列表
                     store.store(dictType);
-                    // 同时系统字典的字典值列表也写入缓存
                     store.store(dictType.getChildren().iterator());
                 });
             } else {
