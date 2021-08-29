@@ -33,6 +33,7 @@ public interface DictStore {
      * <p>当 {@link DictProvider#isStoreDictType()} 返回 false 时对应的 {@link DictProvider} 提供的字典类型信息对象将不会被存储，也就是当前方法无法获得该字典类型代码</p>
      *
      * @return 字典类型代码列表
+     * @since 1.4.0
      */
     Set<String> dictTypeKeys();
 

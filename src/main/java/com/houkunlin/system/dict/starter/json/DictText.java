@@ -52,14 +52,14 @@ public @interface DictText {
 
     /**
      * 此配置将会使 #fieldName 配置失效；用来标记是否使用 Map 对象返回字典值信息
-     * <code>
+     * <pre>
      * {
-     * "peopleType" : {
-     * "value" : 0,
-     * "text" : "系统管理"
+     *   "peopleType" : {
+     *     "value" : 0,
+     *     "text" : "系统管理"
+     *   }
      * }
-     * }
-     * </code>
+     * </pre>
      *
      * @return mapValue
      */

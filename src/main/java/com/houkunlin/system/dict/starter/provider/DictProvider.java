@@ -33,6 +33,7 @@ public interface DictProvider {
      *
      * @return <p>true: 在缓存中存储完整的字典类型对象（含字典值列表对象），会调用 {@link #dictTypeIterator()} 方法获取数据</p>
      * <p>false: 会调用 {@link #dictValueIterator()} 方法获取数据，假如 {@link #dictValueIterator()} 未被实现类覆盖，则实际上就是调用 {@link #dictTypeIterator()} 方法</p>
+     * @since 1.4.0
      */
     default boolean isStoreDictType() {
         return false;
