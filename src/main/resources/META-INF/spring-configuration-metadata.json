@@ -1,9 +1,0 @@
-{
-  "groups": [
-    {
-      "sourceType": "com.houkunlin.system.dict.starter.DictProperties",
-      "name": "system.dict",
-      "type": "com.houkunlin.system.dict.starter.DictProperties"
-    }
-  ]
-}

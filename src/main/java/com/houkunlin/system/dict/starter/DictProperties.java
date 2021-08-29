@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter;
 
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Data
 @ToString
+@EqualsAndHashCode
 @Configuration
 @ConfigurationProperties("system.dict")
 public class DictProperties {
