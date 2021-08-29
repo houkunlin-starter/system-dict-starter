@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.4.0-SNAPSHOT'
+version = '1.4.0'
 sourceCompatibility = '1.8'
 
 configurations {
