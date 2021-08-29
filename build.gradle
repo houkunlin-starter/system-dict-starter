@@ -39,6 +39,7 @@ dependencies {
     api 'com.google.guava:guava:30.1.1-jre'
     api 'com.github.ben-manes.caffeine:caffeine'
     api 'org.javassist:javassist:3.28.0-GA'
+    api 'io.swagger:swagger-annotations:1.6.2'
 
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:+'
     testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:+'
