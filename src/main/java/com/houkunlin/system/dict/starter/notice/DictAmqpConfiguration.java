@@ -25,8 +25,8 @@ import java.util.*;
  */
 @ConditionalOnClass(AmqpTemplate.class)
 @Configuration
-public class DictMqConfiguration {
-    private static final Logger logger = LoggerFactory.getLogger(DictMqConfiguration.class);
+public class DictAmqpConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(DictAmqpConfiguration.class);
     private static final String DIC_PROVIDER_CLASSES_KEY = "DIC.dictProviderClasses";
     private final DictRegistrar dictRegistrar;
     private final AmqpTemplate amqpTemplate;
@@ -34,10 +34,10 @@ public class DictMqConfiguration {
     private final String exchangeName;
     private final String headerSourceKey;
 
-    public DictMqConfiguration(@Lazy final DictRegistrar dictRegistrar,
-                               final AmqpTemplate amqpTemplate,
-                               @Value("${spring.application.name:'system-dict'}") final String applicationName,
-                               final DictProperties dictProperties) {
+    public DictAmqpConfiguration(@Lazy final DictRegistrar dictRegistrar,
+                                 final AmqpTemplate amqpTemplate,
+                                 @Value("${spring.application.name:'system-dict'}") final String applicationName,
+                                 final DictProperties dictProperties) {
         this.dictRegistrar = dictRegistrar;
         this.amqpTemplate = amqpTemplate;
         this.applicationName = applicationName;
