@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * 字典端点
  *
  * @author HouKunLin
- * @see 1.3.0
+ * @since 1.3.0
  */
 @Component
 @Endpoint(id = "dict")
