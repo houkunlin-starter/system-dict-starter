@@ -6,9 +6,9 @@ import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author HouKunLin
  */
 @AllArgsConstructor
-public class RedisDictStore implements DictStore {
+public class RedisDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(RedisDictStore.class);
     public final RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate;
     public final RedisTemplate<String, String> dictValueRedisTemplate;
@@ -69,8 +69,10 @@ public class RedisDictStore implements DictStore {
         return remoteDic.getDictText(type, value);
     }
 
-    @PostConstruct
-    public void post() {
-        logger.info("使用 Redis 存储数据字典信息");
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (logger.isDebugEnabled()) {
+            logger.debug("使用 {} 存储数据字典信息", getClass().getName());
+        }
     }
 }

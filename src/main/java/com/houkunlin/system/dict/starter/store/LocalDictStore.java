@@ -6,8 +6,8 @@ import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
-import javax.annotation.PostConstruct;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,26 +18,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author HouKunLin
  */
 @AllArgsConstructor
-public class LocalDictStore implements DictStore {
+public class LocalDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(LocalDictStore.class);
     private static final ConcurrentHashMap<String, DictTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, String> CACHE_TITLE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, String> CACHE_TEXT = new ConcurrentHashMap<>();
     private final RemoteDict remoteDic;
 
     @Override
     public void store(final DictTypeVo dictType) {
         CACHE_TYPE.put(dictType.getType(), dictType);
-        if (logger.isDebugEnabled()) {
-            logger.debug("当前 CACHE_TYPE Map 共有 {} 个字典类型信息", CACHE_TYPE.size());
-        }
     }
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
-        iterator.forEachRemaining(valueVo -> CACHE_TITLE.put(DictUtil.dictKey(valueVo), valueVo.getTitle()));
-        if (logger.isDebugEnabled()) {
-            logger.debug("当前 CACHE_TITLE Map 共有 {} 个字典值信息", CACHE_TITLE.size());
-        }
+        iterator.forEachRemaining(valueVo -> CACHE_TEXT.put(DictUtil.dictKey(valueVo), valueVo.getTitle()));
     }
 
     @Override
@@ -56,15 +50,17 @@ public class LocalDictStore implements DictStore {
 
     @Override
     public String getDictText(final String type, final String value) {
-        final String title = CACHE_TITLE.get(DictUtil.dictKey(type, value));
+        final String title = CACHE_TEXT.get(DictUtil.dictKey(type, value));
         if (title != null) {
             return title;
         }
         return remoteDic.getDictText(type, value);
     }
 
-    @PostConstruct
-    public void post() {
-        logger.info("使用本地 Map 存储数据字典信息");
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (logger.isDebugEnabled()) {
+            logger.debug("使用 {} 存储数据字典信息", getClass().getName());
+        }
     }
 }
