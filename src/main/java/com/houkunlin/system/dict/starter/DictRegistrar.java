@@ -75,8 +75,10 @@ public class DictRegistrar implements InitializingBean {
     @Async
     @EventListener
     public void eventListenerRefreshEvent(RefreshDictEvent event) {
-        logger.info("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
+        if (logger.isDebugEnabled()) {
+            logger.debug("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
+        }
         refreshDict(event.getDictProviderClasses());
-        logger.info("[finish] 应用内部通知刷新字典事件");
+        logger.debug("[finish] 应用内部通知刷新字典事件");
     }
 }

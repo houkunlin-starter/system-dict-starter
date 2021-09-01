@@ -86,7 +86,7 @@ public class DictAmqpConfiguration {
             logger.debug("收到来自当前系统发起的MQ消息，可以忽略不处理");
             return;
         }
-        logger.info("[start] MQ 通知刷新字典：{}", content);
+        logger.debug("[start] MQ 通知刷新字典：{}", content);
         final Object dictProviderClasses = map.get(DIC_PROVIDER_CLASSES_KEY);
         if (dictProviderClasses instanceof List) {
             dictRegistrar.refreshDict(new HashSet<>((Collection<String>) dictProviderClasses));
@@ -97,7 +97,7 @@ public class DictAmqpConfiguration {
         } else {
             dictRegistrar.refreshDict(null);
         }
-        logger.info("[finish] MQ 通知刷新字典");
+        logger.debug("[finish] MQ 通知刷新字典");
     }
 
     /**
