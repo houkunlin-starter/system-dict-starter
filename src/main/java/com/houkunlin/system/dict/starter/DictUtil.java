@@ -1,13 +1,11 @@
 package com.houkunlin.system.dict.starter;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * 系统字典工具
@@ -26,14 +24,9 @@ public class DictUtil {
      */
     private static Cache<String, String> cache;
 
-    public DictUtil(final DictStore store) {
+    public DictUtil(final DictStore store, final DictCacheFactory cacheFactory) {
         DictUtil.store = store;
-        cache = Caffeine
-            .newBuilder()
-            .expireAfterWrite(30, TimeUnit.SECONDS)
-            .maximumSize(500)
-            .initialCapacity(50)
-            .build();
+        cache = cacheFactory.build();
     }
 
     public static DictTypeVo getDictType(String type) {
@@ -46,6 +39,9 @@ public class DictUtil {
     public static String getDictText(String type, String value) {
         if (type == null || value == null || store == null) {
             return null;
+        }
+        if (cache == null) {
+            return store.getDictText(type, value);
         }
         return cache.get(dictKey(type, value), o -> store.getDictText(type, value));
     }
