@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.store.RemoteDict;
 import lombok.Getter;
 import org.slf4j.Logger;

@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
+import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import lombok.AllArgsConstructor;

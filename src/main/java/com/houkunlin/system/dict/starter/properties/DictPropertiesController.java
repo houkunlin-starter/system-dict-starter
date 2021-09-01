@@ -1,4 +1,4 @@
-package com.houkunlin.system.dict.starter;
+package com.houkunlin.system.dict.starter.properties;
 
 import lombok.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;

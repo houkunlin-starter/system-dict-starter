@@ -1,4 +1,4 @@
-package com.houkunlin.system.dict.starter;
+package com.houkunlin.system.dict.starter.properties;
 
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import lombok.Data;

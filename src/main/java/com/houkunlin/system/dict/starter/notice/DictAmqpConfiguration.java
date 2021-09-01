@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.notice;
 
-import com.houkunlin.system.dict.starter.DictProperties;
 import com.houkunlin.system.dict.starter.DictRegistrar;
+import com.houkunlin.system.dict.starter.properties.DictProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Queue;
