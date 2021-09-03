@@ -14,6 +14,11 @@ version = '1.4.3-BUILD-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 def gitRepo = "github.com/houkunlin/system-dict-starter.git"
+def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
+
+if (!version.endsWith('SNAPSHOT')) {
+    version += '-BUILD-SNAPSHOT'
+}
 
 configurations {
     compileOnly {
@@ -94,13 +99,13 @@ publishing {
             def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
             // 非正式环境库
             def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-            url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
         }
         maven {
             name = "buildDir"
             String releasesRepoUrl = "$buildDir/repos/releases"
             String snapshotsRepoUrl = "$buildDir/repos/snapshots"
-            url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
 }
