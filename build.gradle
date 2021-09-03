@@ -10,8 +10,10 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.4.2'
+version = '1.4.3-BUILD-SNAPSHOT'
 sourceCompatibility = '1.8'
+
+def gitRepo = "github.com/houkunlin/system-dict-starter.git"
 
 configurations {
     compileOnly {
@@ -58,7 +60,7 @@ publishing {
                 name = project.name
                 packaging = 'jar'
                 description = project.name
-                url = 'https://github.com/houkunlin/system-dict-starter'
+                url = "https://${gitRepo}"
                 // properties = []
                 licenses {
                     license {
@@ -74,9 +76,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git://github.com/houkunlin/system-dict-starter.git'
-                    developerConnection = 'scm:git://github.com/houkunlin/system-dict-starter.git'
-                    url = 'git://github.com/houkunlin/system-dict-starter.git'
+                    connection = "scm:git://${gitRepo}"
+                    developerConnection = "scm:git://${gitRepo}"
+                    url = "git://${gitRepo}"
                 }
             }
         }
