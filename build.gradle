@@ -16,7 +16,7 @@ sourceCompatibility = '1.8'
 def gitRepo = "github.com/houkunlin/system-dict-starter.git"
 def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
 
-if (!version.endsWith('SNAPSHOT')) {
+if (isSnapshot && !version.endsWith('SNAPSHOT')) {
     version += '-BUILD-SNAPSHOT'
 }
 
