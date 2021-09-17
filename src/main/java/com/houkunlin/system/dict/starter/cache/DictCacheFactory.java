@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.properties.DictPropertiesCache;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +18,11 @@ import java.util.List;
 @Configuration
 @AllArgsConstructor
 public class DictCacheFactory {
-    private final DictPropertiesCache propertiesCache;
+    private final DictProperties dictProperties;
     private final List<DictCacheCustomizer> cacheCustomizers;
 
     public Cache<String, String> build() {
+        final DictPropertiesCache propertiesCache = dictProperties.getCache();
         if (!propertiesCache.isEnabled()) {
             return null;
         }

@@ -28,6 +28,12 @@ system:
     raw-value: true
     text-value-default-null: true
     refresh-dict-interval: 20
+    cache:
+      enabled: true
+      maximum-size: 10
+      initial-capacity: 5
+    controller:
+      enabled: true
 #    map-value: true
 management:
   endpoint:

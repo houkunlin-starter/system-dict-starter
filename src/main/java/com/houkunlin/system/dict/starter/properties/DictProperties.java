@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -47,4 +48,10 @@ public class DictProperties {
      * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新
      */
     private long refreshDictInterval = 60 * 1000L;
+
+    @NestedConfigurationProperty
+    private DictPropertiesCache cache = new DictPropertiesCache();
+
+    @NestedConfigurationProperty
+    private DictPropertiesController controller = new DictPropertiesController();
 }

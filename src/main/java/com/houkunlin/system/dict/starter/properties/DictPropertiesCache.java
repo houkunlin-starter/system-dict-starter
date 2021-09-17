@@ -2,8 +2,6 @@ package com.houkunlin.system.dict.starter.properties;
 
 import com.houkunlin.system.dict.starter.DictUtil;
 import lombok.*;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.Duration;
 
@@ -25,8 +23,6 @@ import java.time.Duration;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Configuration
-@ConfigurationProperties("system.dict.cache")
 public class DictPropertiesCache {
     /**
      * 是否启用缓存
