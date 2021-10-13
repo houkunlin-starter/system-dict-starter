@@ -74,9 +74,6 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         this.dictType = dictText.value();
         this.destinationFieldName = getFieldName(dictText);
         this.enumsClass = dictText.enums();
-        if (this.enumsClass.length == 0) {
-            return;
-        }
         initEnumsClass();
     }
 
@@ -87,9 +84,6 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         this.dictType = null;
         this.destinationFieldName = beanFieldName + "Text";
         this.enumsClass = enumsClass;
-        if (this.enumsClass.length == 0) {
-            return;
-        }
         initEnumsClass();
     }
 
@@ -100,9 +94,6 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         this.dictType = dictText.value();
         this.destinationFieldName = getFieldName(dictText);
         this.enumsClass = enumsClass;
-        if (this.enumsClass.length == 0) {
-            return;
-        }
         initEnumsClass();
     }
 
@@ -116,6 +107,9 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     }
 
     private void initEnumsClass() {
+        if (this.enumsClass.length == 0) {
+            return;
+        }
         // 解析系统字典枚举列表
         for (final Class<? extends DictEnum> enumClass : this.enumsClass) {
             if (!enumClass.isEnum()) {
