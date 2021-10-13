@@ -58,6 +58,9 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      */
     private final Class<? extends DictEnum>[] enumsClass;
 
+    /**
+     * 默认的构造方法， Jackson 会先调用该构造方法实例化对象，然后再调用 {@link #createContextual(SerializerProvider, BeanProperty)} 方法获取序列化对象
+     */
     public DictTextJsonSerializer() {
         this.beanClazz = null;
         this.beanFieldName = null;
@@ -67,6 +70,13 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         this.enumsClass = null;
     }
 
+    /**
+     * 一般情况下的场景，{@link DictText} 的普通用法
+     *
+     * @param beanClazz     实体类 class
+     * @param beanFieldName 实体类字段名称
+     * @param dictText      实体类字段上的 {@link DictText} 注解对象
+     */
     public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dictText) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
@@ -77,6 +87,13 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         initEnumsClass();
     }
 
+    /**
+     * 字段是特定枚举对象类型的场景，但是字段并未使用 {@link DictText} 注解
+     *
+     * @param beanClazz     实体类 class
+     * @param beanFieldName 实体类字段名称
+     * @param enumsClass    实体类字段是一个特定枚举对象
+     */
     public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, Class<? extends DictEnum<?>>[] enumsClass) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
@@ -87,6 +104,14 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         initEnumsClass();
     }
 
+    /**
+     * 字段是特定枚举对象类型的场景
+     *
+     * @param beanClazz     实体类 class
+     * @param beanFieldName 实体类字段名称
+     * @param dictText      实体类字段上的 {@link DictText} 注解对象
+     * @param enumsClass    实体类字段是一个特定枚举对象
+     */
     public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
         this.beanClazz = beanClazz;
         this.beanFieldName = beanFieldName;
@@ -97,6 +122,12 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         initEnumsClass();
     }
 
+    /**
+     * 获取字典文本的字段名称
+     *
+     * @param dictText 注解对象
+     * @return
+     */
     private String getFieldName(DictText dictText) {
         final String fieldName = dictText.fieldName();
         if (StringUtils.hasText(fieldName)) {
@@ -106,6 +137,9 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         }
     }
 
+    /**
+     * 初始化枚举对象数据，主要初始化枚举对象的字典值信息存储到Map对象中
+     */
     private void initEnumsClass() {
         if (this.enumsClass.length == 0) {
             return;
@@ -124,6 +158,15 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         }
     }
 
+    /**
+     * 序列化字段
+     *
+     * @param value       字段值
+     * @param gen         JsonGenerator 对象
+     * @param serializers SerializerProvider 对象
+     * @throws IOException
+     * @see JsonSerializer#serialize(java.lang.Object, com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
+     */
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         if (fromFieldEnumsClass(value, gen)) {
