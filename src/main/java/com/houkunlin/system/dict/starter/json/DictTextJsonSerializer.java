@@ -88,23 +88,6 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     }
 
     /**
-     * 字段是特定枚举对象类型的场景，但是字段并未使用 {@link DictText} 注解
-     *
-     * @param beanClazz     实体类 class
-     * @param beanFieldName 实体类字段名称
-     * @param enumsClass    实体类字段是一个特定枚举对象
-     */
-    public DictTextJsonSerializer(Class<?> beanClazz, String beanFieldName, Class<? extends DictEnum<?>>[] enumsClass) {
-        this.beanClazz = beanClazz;
-        this.beanFieldName = beanFieldName;
-        this.dictText = null;
-        this.dictType = null;
-        this.destinationFieldName = beanFieldName + "Text";
-        this.enumsClass = enumsClass;
-        initEnumsClass();
-    }
-
-    /**
      * 字段是特定枚举对象类型的场景
      *
      * @param beanClazz     实体类 class
@@ -227,7 +210,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      * @throws IOException
      */
     private void fromDictCache(Object value, JsonGenerator gen) throws IOException {
-        if (dictType != null && StringUtils.hasText(dictType)) {
+        if (StringUtils.hasText(dictType)) {
             writeFieldValue(gen, value, DictUtil.getDictText(dictType, String.valueOf(value)));
         } else {
             writeFieldValue(gen, value, defaultNullableValue(null));
@@ -244,10 +227,6 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      * @throws IOException
      */
     private void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dictValueText) throws IOException {
-        if (dictText == null) {
-            writeFieldValue(rawValueObject, gen);
-            return;
-        }
         if (dictText.mapValue() == DictText.Type.YES || (SystemDictStarter.isMapValue() && dictText.mapValue() == DictText.Type.GLOBAL)) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", rawValueObject);
@@ -354,45 +333,27 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
             final JavaType javaType = property.getType();
             final String fieldName = property.getName();
             final Class<?> javaTypeRawClass = javaType.getRawClass();
+            final Class<?> beanClazz = property.getMember().getDeclaringClass();
 
             // @DictText 注解目前仅对 字段、方法 起作用，因此这里拿到的注解一定是不为null的
             final DictText annotation = property.getAnnotation(DictText.class);
+            if (annotation == null) {
+                // 这里的代码实际已经过时，由于在之前的一次次提交中引入了 @DictType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DictText 对整个类起了作用，这是一种错误的情况
+                throw new JsonMappingException(null, "无法解析 " + beanClazz.getName() + "#" + fieldName + " 字段的字典信息。请在该对象上使用 @DictText 注解标记");
+            }
 
             // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
             if (DictEnum.class.isAssignableFrom(javaTypeRawClass)) {
                 final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) javaTypeRawClass;
-                if (annotation != null) {
-                    // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
-                    return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
-                        new DictTextJsonSerializer(
-                            property.getMember().getDeclaringClass(),
-                            fieldName,
-                            annotation,
-                            new Class[]{aClass})
-                    );
-                }
-                // 这里的代码实际已经过时，由于在本次提交，引入了 @DictType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DictText 对整个类起了作用
-                return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName, key ->
-                    new DictTextJsonSerializer(
-                        property.getMember().getDeclaringClass(),
-                        fieldName,
-                        new Class[]{aClass}));
-            }
-            if (annotation != null) {
                 // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
-                return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
-                    new DictTextJsonSerializer(
-                        property.getMember().getDeclaringClass(),
-                        fieldName,
-                        annotation)
+                return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
+                    new DictTextJsonSerializer(beanClazz, fieldName, annotation, new Class[]{aClass})
                 );
             }
-            try {
-                // 这里的代码实际已经过时，由于在本次提交，引入了 @DictType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DictText 对整个类起了作用
-                return prov.findValueSerializer(javaType, property);
-            } catch (JsonMappingException e) {
-                throw new JsonMappingException(null, "无法解析 " + javaTypeRawClass + " 类型的字典序列化对象。由于在该对象上使用了 @DictText 注解，但其未实现 DictEnum 接口可能就会出现这个异常", e);
-            }
+            // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
+            return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
+                new DictTextJsonSerializer(beanClazz, fieldName, annotation)
+            );
         }
         return prov.findNullValueSerializer(null);
     }
