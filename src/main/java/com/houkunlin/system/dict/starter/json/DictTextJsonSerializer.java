@@ -211,7 +211,8 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      */
     private void fromDictCache(Object value, JsonGenerator gen) throws IOException {
         if (StringUtils.hasText(dictType)) {
-            writeFieldValue(gen, value, DictUtil.getDictText(dictType, String.valueOf(value)));
+            final String dictValueText = DictUtil.getDictText(dictType, String.valueOf(value));
+            writeFieldValue(gen, value, defaultNullableValue(dictValueText));
         } else {
             writeFieldValue(gen, value, defaultNullableValue(null));
             logger.warn("{}#{} @DictText annotation not set dictType value", beanClazz, beanFieldName);
