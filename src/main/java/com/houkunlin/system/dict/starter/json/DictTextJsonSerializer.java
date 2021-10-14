@@ -193,7 +193,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
                 logger.warn("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            writeFieldValue(gen, enums.getValue(), defaultValue(title));
+            writeFieldValue(gen, enums.getValue(), defaultNullableValue(title));
             return true;
         }
         return false;
@@ -213,7 +213,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
                 logger.warn("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
                 return false;
             }
-            writeFieldValue(gen, value, defaultValue(title));
+            writeFieldValue(gen, value, defaultNullableValue(title));
             return true;
         }
         return false;
@@ -230,23 +230,8 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         if (dictType != null && StringUtils.hasText(dictType)) {
             writeFieldValue(gen, value, DictUtil.getDictText(dictType, String.valueOf(value)));
         } else {
-            writeFieldValue(gen, value, defaultValue(null));
+            writeFieldValue(gen, value, defaultNullableValue(null));
             logger.warn("{}#{} @DictText annotation not set dictType value", beanClazz, beanFieldName);
-        }
-    }
-
-    /**
-     * 把字段字典值写入到JSON数据中
-     *
-     * @param fieldValue 字段值
-     * @param gen
-     * @throws IOException
-     */
-    private void writeFieldValue(Object fieldValue, JsonGenerator gen) throws IOException {
-        if (SystemDictStarter.isRawValue()) {
-            gen.writeObject(fieldValue);
-        } else {
-            gen.writeString(String.valueOf(fieldValue));
         }
     }
 
@@ -282,6 +267,21 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
     }
 
     /**
+     * 把字段字典值写入到JSON数据中
+     *
+     * @param fieldValue 字段值
+     * @param gen
+     * @throws IOException
+     */
+    private void writeFieldValue(Object fieldValue, JsonGenerator gen) throws IOException {
+        if (SystemDictStarter.isRawValue()) {
+            gen.writeObject(fieldValue);
+        } else {
+            gen.writeString(String.valueOf(fieldValue));
+        }
+    }
+
+    /**
      * 从系统字典枚举对象中获取字典文本信息
      *
      * @param value 字典值
@@ -301,14 +301,14 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         return cacheTitle;
     }
 
-    private Object defaultValue(Object value) {
+    private Object defaultNullableValue(Object value) {
         if (dictText != null) {
             if (dictText.nullable() == DictText.Type.GLOBAL) {
-                return defaultValue(value, SystemDictStarter.isTextValueDefaultNull());
+                return defaultNullableValue(value, SystemDictStarter.isTextValueDefaultNull());
             }
-            return defaultValue(value, dictText.nullable() == DictText.Type.YES);
+            return defaultNullableValue(value, dictText.nullable() == DictText.Type.YES);
         }
-        return defaultValue(value, SystemDictStarter.isTextValueDefaultNull());
+        return defaultNullableValue(value, SystemDictStarter.isTextValueDefaultNull());
     }
 
     /**
@@ -318,14 +318,11 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      * @param nullable 是否为null
      * @return 处理结果
      */
-    private Object defaultValue(Object value, boolean nullable) {
+    private Object defaultNullableValue(Object value, boolean nullable) {
         if (nullable) {
             return value;
         }
-        if (value == null) {
-            return "";
-        }
-        return value;
+        return value == null ? "" : value;
     }
 
     /**
