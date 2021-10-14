@@ -65,6 +65,16 @@ public @interface DictText {
      */
     Type mapValue() default Type.GLOBAL;
 
+    /**
+     * 数据字典分割成数组配置。
+     * 用在字段是字符串时，并且字段使用了特定的分隔符来存储多个字典值。
+     * 例如： userType = "1,2,3,4" 这种场景
+     *
+     * @return 分隔配置（默认不分割）
+     * @since 1.4.3
+     */
+    Array array() default @Array(split = "");
+
     enum Type {
         /**
          * 根据全局参数决定配置
