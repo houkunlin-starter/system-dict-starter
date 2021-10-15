@@ -23,6 +23,10 @@ public enum PeopleType implements DictEnum<Integer> {
      * 普通用户
      */
     USER(1, "普通用户"),
+    /**
+     * 其他用户
+     */
+    OTHER(2, "其他用户"),
     ;
     // @JsonValue
     private final Integer value;
