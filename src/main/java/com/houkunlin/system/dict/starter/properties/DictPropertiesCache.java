@@ -40,4 +40,10 @@ public class DictPropertiesCache {
      * 有效期时长
      */
     private Duration duration = Duration.ofSeconds(30);
+    /**
+     * 在有效期内同一个字典值未命中指定次数  将快速返回，不再重复请求获取数据字典信息。
+     * 例如：一个 userType 类型 值为 2 的字典，在 30 秒内超过 50 次找不到字典文本，那么在本次 30 秒的周期内将不再继续请求字典信息，而是直接返回一个 null 值。
+     * 特别是在使用 Redis 存储数据字典信息时，频繁未命中数据将会频繁进行网络IO，因此可能会增加单个接口返回数据的耗时（数据量大转换次数多时）
+     */
+    private int missNum = 50;
 }
