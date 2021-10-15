@@ -27,7 +27,6 @@
 **Maven**
 
 ```xml
-
 <dependency>
     <groupId>com.houkunlin</groupId>
     <artifactId>system-dict-starter</artifactId>
@@ -41,9 +40,24 @@
 implementation "com.houkunlin:system-dict-starter:${latest.release}"
 ```
 
-## 如何使用
+
+
+## 如何启用？
 
 - 在应用启动类上添加 `SystemDictScan` 注解
+- 后续步骤请看本文后面内容
+
+```java
+// 启动类上加注解
+@SystemDictScan
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class);
+    }
+}
+```
+
+
 
 ## 配置文件配置
 
@@ -65,23 +79,129 @@ implementation "com.houkunlin:system-dict-starter:${latest.release}"
 | refresh-dict-interval    | long         | 60 * 1000L                | 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新。单位：毫秒 |
 
 
+
+缓存配置前缀：`system.dict.cache`
+| 配置键          | 参数类型 | 默认值 | 配置说明                                                     |
+| --------------- | -------- | ------ | ------------------------------------------------------------ |
+| enabled         | boolean  | true   | 是否启用缓存                                                 |
+| maximumSize     | int      | 500    | 缓存最大容量                                                 |
+| initialCapacity | int      | 50     | 缓存初始化容量                                               |
+| duration        | Duration | 30s    | 有效期时长                                                   |
+| missNum         | int      | 50     | 在有效期内同一个字典值未命中指定次数将快速返回，不再重复请求获取数据字典信息 |
+
+
+
+默认 Controller 配置前缀：`system.dict.controller`
+
+| 配置键  | 参数类型 | 默认值 | 配置说明              |
+| ------- | -------- | ------ | --------------------- |
+| enabled | boolean  | true   | 是否启用 WEB 请求接口 |
+| prefix  | String   | /dict  | WEB 请求接口前缀      |
+
+启用默认 Controller 后将自动提供 4 个接口信息：
+
+- `${prefix}/{dict}` 通过字典类型代码获取字典类型信息
+- `${prefix}/{dict}/{value}` 通过字典类型代码和字典值获取字典文本信息
+- `${prefix}/?dict={dict}` 通过字典类型代码获取字典类型信息
+- `${prefix}/?dict={dict}&value={value}` 通过字典类型代码和字典值获取字典文本信息
+
+
+
+
 ## 使用枚举对象做系统字典
 
 - 需要实现 `DictEnum` 接口的枚举对象才能被扫描到
 - 使用 `DictType` 注解应用到枚举上自定义字典类型名称和说明
 
+> `@DictConverter` 一般与 `@DictType` 配合使用。
+>
+> `@DictType` 用来标记枚举对象的字典类型代码
+>
+> `@DictConverter` 用来标记是否对这个枚举对象生成 `org.springframework.core.convert.converter.Converter` 转换对象，提供使用枚举接收参数时自动转换字典值到相应枚举对象类型的功能
+
+```java
+@DictConverter
+@DictType(value = "PeopleType", comment = "用户类型")
+@Getter
+@AllArgsConstructor
+public enum PeopleType implements DictEnum<Integer> {
+    /** 系统管理员 */
+    ADMIN(0, "系统管理"),
+    /** 普通用户 */
+    USER(1, "普通用户"),
+    ;
+    private final Integer value;
+    private final String title;
+
+    /**
+     * Jackson 枚举处理，把枚举值转换成枚举对象
+     *
+     * @param code 代码
+     * @return 枚举对象
+     */
+    @JsonCreator
+    public static PeopleType getItem(Integer code) {
+        return DictEnum.valueOf(values(), code);
+    }
+}
+```
+
+
+
 ## 字典文本自动转换
 
 - 在实体字段中使用 `DictText` 注解
+
+```java
+@Data
+@AllArgsConstructor
+class Bean {
+    @DictText("PeopleType")
+    private String userType1 = "1";
+
+    @DictText(value = "PeopleType", array = @Array)
+    private String userType2 = "1,2,3";
+
+    @DictText(value = "PeopleType", array = @Array(toText = false))
+    private List<String> userType3 = Arrays.asList("1", "2", "3");
+}
+```
+
+
 
 ## 配合 @Valid 或 Validated 进行字典校验
 
 - 需要引入 `org.springframework.boot:spring-boot-starter-validation` 的 SpringBoot 依赖
 - 在需要校验对象的相关字段添加 `DictValid` 注解，使用方式： `@DictValid(value = "数据字典类型 dictType")`
 
+
+
 ## 提供一些其他字典信息到系统字典存储对象中
 
 - 实现 `DictProvider` 接口并扫描到SpringBoot中
+
+```java
+@Component
+public class MyProvider implements DictProvider {
+    @Override
+    public boolean isStoreDictType() {
+        return true;
+    }
+
+    @Override
+    public Iterator<DictTypeVo> dictTypeIterator() {
+        // 从其他地方（其他服务、数据库、本地文件）加载完整的数据字典信息（字典类型+字典值列表）
+        // 从这里返回的数据字典信息将会被存入缓存中，以便下次直接调用，当有数据变动时可以发起 RefreshDictEvent 事件通知更新字典信息
+        final DictTypeVo typeVo = DictTypeVo.newBuilder("name", "测试字典")
+            .add("1", "测试1")
+            .add("2", "测试2")
+            .build();
+        return Collections.singletonList(typeVo).iterator();
+    }
+}
+```
+
+
 
 ## 自定义本地字段缓存存储
 
@@ -96,11 +216,48 @@ implementation "com.houkunlin:system-dict-starter:${latest.release}"
 - 实现 `RemoteDict` 接口并扫描到SpringBoot中，当自行定义 `LocalDictStore` 对象时，此时的默认`RemoteDict`无法生效，需要手动处理此类情况。
 - 例如无法从 `DictStore` 获取到字典信息时，可以使用 `RemoteDict` 从特定的系统服务中获取字典信息
 
+```java
+@Configuration
+public class DictConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(DictConfiguration.class);
+
+    @Bean
+    public RemoteDict remoteDic() {
+        return new RemoteDict() {
+            @Override
+            public DictTypeVo getDictType(final String type) {
+                // 从其他地方（其他服务、数据库、本地文件）加载一个完整的数据字典信息（字典类型+字典值列表）
+                return null;
+            }
+
+            @Override
+            public String getDictText(final String type, final String value) {
+                // 从其他地方（其他服务、数据库、本地文件）加载一个字典文本信息
+                return null;
+            }
+        };
+    }
+}
+```
+
 
 
 ## 全局工具类直接获取字典信息
 
 - 调用 `DictUtil` 对象
+
+```java
+@Component
+@AllArgsConstructor
+public class CommandRunnerTests implements CommandLineRunner {
+    private final ApplicationEventPublisher publisher;
+
+    @Override
+    public void run(final String... args) throws Exception {
+        System.out.println(DictUtil.getDictText("PeopleType", "1"))
+    }
+}
+```
 
 
 
@@ -112,11 +269,26 @@ implementation "com.houkunlin:system-dict-starter:${latest.release}"
 - 当存在 rabbitmq 环境时会监听来自其他系统的刷新通知
 - 当存在 rabbitmq 环境时，可以通过 `RefreshDictEvent` 通知其他系统进行字典刷新提交最新数据字典数据
 
+```java
+@Component
+@AllArgsConstructor
+public class CommandRunnerTests implements CommandLineRunner {
+    private final ApplicationEventPublisher publisher;
+
+    @Override
+    public void run(final String... args) throws Exception {
+        // 发起 RefreshDictEvent 事件通知刷新字典信息
+        publisher.publishEvent(new RefreshDictEvent("test", true, true));
+    }
+}
+```
+
 
 
 ## 微服务环境下与其他系统的字典协调工作
 
-- 需要 rabbitmq 环境；微服务环境建议使用 Redis 存储字典
+- 引入依赖后确保 rabbitmq 服务连接正常无需其他配置即可正常使用
+- 需要 rabbitmq 环境；微服务环境建议使用 Redis 存储字典；
 - 在系统管理模块可以发起 `RefreshDictEvent` 事件通知其他系统刷新提交最新数据字典数据
 - 系统收到 `RefreshDictEvent` 事件或者 MQ 事件会从 `DictProvider` 中获取最新数据字典信息，然后写入到 `DictStore` 存储对象中
 
@@ -143,10 +315,105 @@ management:
 
 在有 actuator 依赖环境会暴露出两个端点：
 
--  `dict` 默认端点，暴露两个接口
-  - 默认接口：返回一些类名称信息
-  - 接口1：获取字典类型信息
-  - 接口2：获取字典值文本信息
--  `dict-system` 系统字典 Provider 端点
-  - 默认接口：返回所有系统字典类型代码列表
-  - 接口1：获取系统字典类型信息
+### `dict` 默认端点，暴露两个接口
+
+- 默认接口：返回一些类名称信息
+
+  - ```json
+    // GET http://localhost:8081/api/system/actuator/dict/
+    
+    {
+      "dict-types": [
+        "name",
+        "PeopleType"
+      ],
+      "dict-classes": {
+        "remoteDict": "test.application.server.local.DictConfiguration$1",
+        "stores": "com.houkunlin.system.dict.starter.store.LocalDictStore",
+        "providers": [
+          "test.application.common.MyProvider",
+          "com.houkunlin.system.dict.starter.provider.SystemDictProvider"
+        ]
+      }
+    }
+    ```
+
+- 接口1：获取字典类型信息
+
+  - ```json
+    // GET http://localhost:8081/api/system/actuator/dict/name
+    
+    {
+      "title": "测试字典",
+      "type": "name",
+      "remark": null,
+      "children": [
+        {
+          "value": "1",
+          "title": "测试1",
+          "sorted": 0
+        },
+        {
+          "value": "2",
+          "title": "测试2",
+          "sorted": 0
+        }
+      ]
+    }
+    ```
+
+- 接口2：获取字典值文本信息
+
+  - ```text
+    // GET http://localhost:8081/api/system/actuator/dict/PeopleType/1
+    
+    普通用户
+    ```
+
+
+
+
+### `dict-system` 系统字典 Provider 端点
+
+- 默认接口：返回所有系统字典类型代码列表
+
+  - ```json
+    // GET http://localhost:8081/api/system/actuator/dict-system
+    
+    {
+      "types": [
+        "PeopleType"
+      ]
+    }
+    ```
+
+  - 
+
+- 接口1：获取系统字典类型信息
+
+  - ```json
+    // GET http://localhost:8081/api/system/actuator/dict-system/PeopleType
+    
+    {
+      "title": "用户类型",
+      "type": "PeopleType",
+      "remark": "From Application: system",
+      "children": [
+        {
+          "value": 0,
+          "title": "系统管理",
+          "sorted": 0
+        },
+        {
+          "value": 1,
+          "title": "普通用户",
+          "sorted": 0
+        },
+        {
+          "value": 2,
+          "title": "其他用户",
+          "sorted": 0
+        }
+      ]
+    }
+    ```
