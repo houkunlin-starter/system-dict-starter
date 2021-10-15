@@ -62,8 +62,8 @@ class BasicUsageTest {
         }
         final Bean bean = new Bean(null);
         final String value = objectMapper.writeValueAsString(bean);
-        System.out.println(bean); // Bean(userType=1)
-        System.out.println(value); // {"userType":"1","userTypeText":"普通用户"}
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":null,"userTypeText":""}
         Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
@@ -77,8 +77,8 @@ class BasicUsageTest {
         }
         final Bean bean = new Bean(null);
         final String value = objectMapper.writeValueAsString(bean);
-        System.out.println(bean); // Bean(userType=1)
-        System.out.println(value); // {"userType":"1","userTypeTitle":"普通用户"}
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":null,"userTypeTitle":""}
         Assertions.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
     }
 

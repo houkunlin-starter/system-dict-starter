@@ -46,7 +46,13 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * 字典类型代码
      */
     protected final String dictType;
-    protected final boolean dictTypeHas;
+    protected final Array array;
+    protected final boolean hasDictType;
+    protected final boolean hasFieldName;
+    protected final boolean isIterable;
+    protected final boolean isArray;
+    protected final boolean isCharSequence;
+    protected final boolean isNeedSpiltValue;
 
     /**
      * 一般情况下的场景，{@link DictText} 的普通用法
@@ -58,11 +64,17 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     public DictTextJsonSerializerDefault(Class<?> beanClazz, Class<?> fieldClazz, String beanFieldName, DictText dictText) {
         this.beanClazz = beanClazz;
         this.fieldClazz = fieldClazz;
+        this.isIterable = Iterable.class.isAssignableFrom(fieldClazz);
+        this.isArray = fieldClazz.isArray();
+        this.isCharSequence = CharSequence.class.isAssignableFrom(fieldClazz);
         this.beanFieldName = beanFieldName;
         this.dictText = dictText;
+        this.array = dictText.array();
+        this.isNeedSpiltValue = StringUtils.hasText(array.split());
         this.dictType = dictText.value();
-        this.dictTypeHas = StringUtils.hasText(dictType);
+        this.hasDictType = StringUtils.hasText(dictType);
         this.destinationFieldName = getFieldName(dictText);
+        this.hasFieldName = StringUtils.hasText(dictText.fieldName());
     }
 
     /**
@@ -93,7 +105,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @throws IOException 异常
      */
     protected void fromDictCache(@Nullable Object value, JsonGenerator gen) throws IOException {
-        if (dictTypeHas) {
+        if (hasDictType) {
             writeFieldValue(gen, value, defaultNullableValue(obtainDictValueText(value)));
         } else {
             writeFieldValue(gen, value, defaultNullableValue(null));
@@ -108,51 +120,49 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @return 字典值文本信息
      */
     protected Object obtainDictValueText(@Nullable Object value) {
-        final String valueAsString = value == null ? "" : value.toString();
-        final Array array = dictText.array();
-        final String splitStr = array.split();
+        if (value == null) {
+            return obtainResults(array, Collections.emptyList());
+        }
+        final String valueAsString = value.toString();
 
-        if (Iterable.class.isAssignableFrom(fieldClazz)) {
+        if (isIterable) {
             final List<String> texts = new ArrayList<>();
-            if (value != null) {
-                final Iterable<?> iterable = (Iterable<?>) value;
-                iterable.forEach(o -> {
-                    final String dictValueText;
-                    if (o instanceof DictEnum) {
-                        dictValueText = ((DictEnum) o).getTitle();
-                    } else {
-                        dictValueText = obtainDictValueText(String.valueOf(o));
-                    }
-                    if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-                        texts.add(dictValueText);
-                    }
-                });
-            }
+            final Iterable<?> iterable = (Iterable<?>) value;
+            iterable.forEach(o -> {
+                final String dictValueText;
+                if (o instanceof DictEnum) {
+                    dictValueText = ((DictEnum) o).getTitle();
+                } else {
+                    dictValueText = obtainDictValueText(String.valueOf(o));
+                }
+                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                    texts.add(dictValueText);
+                }
+            });
 
             return obtainResults(array, texts);
         }
 
-        if (fieldClazz.isArray()) {
+        if (isArray) {
             final List<String> texts = new ArrayList<>();
-            if (value != null) {
-                Object[] objects = (Object[]) value;
-                for (final Object o : objects) {
-                    final String dictValueText = obtainDictValueText(String.valueOf(o));
-                    if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-                        texts.add(dictValueText);
-                    }
+            Object[] objects = (Object[]) value;
+            for (final Object o : objects) {
+                final String dictValueText = obtainDictValueText(String.valueOf(o));
+                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                    texts.add(dictValueText);
                 }
             }
 
             return obtainResults(array, texts);
         }
 
-        if (!StringUtils.hasText(splitStr)) {
+        if (!isNeedSpiltValue) {
             return obtainDictValueText(valueAsString);
         }
 
         final List<String> texts;
-        if (CharSequence.class.isAssignableFrom(fieldClazz)) {
+        if (isCharSequence) {
+            final String splitStr = array.split();
             if (valueAsString.contains(splitStr)) {
                 texts = new ArrayList<>();
                 final String[] splitValue = valueAsString.split(splitStr);
@@ -207,7 +217,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", rawValueObject);
             map.put("text", dictValueText);
-            if (StringUtils.hasText(dictText.fieldName())) {
+            if (hasFieldName) {
                 writeFieldValue(rawValueObject, gen);
                 gen.writeFieldName(dictText.fieldName());
             }
