@@ -83,16 +83,16 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * @return 是否处理成功
      */
     private boolean fromFieldEnumsClass(@Nullable Object value, JsonGenerator gen) throws IOException {
-        if (!(value instanceof DictEnum)) {
+        if (!DictEnum.class.isAssignableFrom(fieldClazz)) {
             return false;
         }
-        final DictEnum enums = (DictEnum) value;
-        final Object title = obtainDictValueText(enums.getValue());
-        if (title == null) {
-            logger.debug("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
-            return false;
+        if (value != null) {
+            final DictEnum enums = (DictEnum) value;
+            final Object title = obtainDictValueText(enums.getValue());
+            writeFieldValue(gen, enums.getValue(), defaultNullableValue(title));
+        } else {
+            writeFieldValue(gen, null, defaultNullableValue(null));
         }
-        writeFieldValue(gen, enums.getValue(), defaultNullableValue(title));
         return true;
     }
 

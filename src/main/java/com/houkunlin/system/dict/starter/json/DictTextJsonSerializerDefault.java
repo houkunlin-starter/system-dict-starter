@@ -3,6 +3,7 @@ package com.houkunlin.system.dict.starter.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictStarter;
 import org.slf4j.Logger;
@@ -116,7 +117,12 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             if (value != null) {
                 final Iterable<?> iterable = (Iterable<?>) value;
                 iterable.forEach(o -> {
-                    final String dictValueText = obtainDictValueText(String.valueOf(o));
+                    final String dictValueText;
+                    if (o instanceof DictEnum) {
+                        dictValueText = ((DictEnum) o).getTitle();
+                    } else {
+                        dictValueText = obtainDictValueText(String.valueOf(o));
+                    }
                     if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
                         texts.add(dictValueText);
                     }
