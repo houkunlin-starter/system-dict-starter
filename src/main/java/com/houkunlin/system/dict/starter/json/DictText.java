@@ -68,7 +68,9 @@ public @interface DictText {
     /**
      * 数据字典分割成数组配置。
      * 用在字段是字符串时，并且字段使用了特定的分隔符来存储多个字典值。
-     * 例如： userType = "1,2,3,4" 这种场景
+     * 例如：
+     * <p>userType = "1,2,3,4" 可配置 {@link Array#split()} = "," 进行分割</p>
+     * <p>userType301 = Arrays.asList("0", "1", "3", "0", "0", "2") 可配置 {@link Array#toText()} = false 字典文本输出成数组</p>
      *
      * @return 分隔配置（默认不分割）
      * @since 1.4.3

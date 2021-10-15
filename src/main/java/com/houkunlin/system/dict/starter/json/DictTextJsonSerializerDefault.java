@@ -106,6 +106,32 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
         final Array array = dictText.array();
         final String splitStr = array.split();
 
+        if (value instanceof Iterable) {
+            final Iterable<?> iterable = (Iterable<?>) value;
+            final List<String> texts = new ArrayList<>();
+            iterable.forEach(o -> {
+                final String dictValueText = obtainDictValueText(String.valueOf(o));
+                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                    texts.add(dictValueText);
+                }
+            });
+
+            return obtainResults(array, texts);
+        }
+
+        if (value != null && value.getClass().isArray()) {
+            Object[] objects = (Object[]) value;
+            final List<String> texts = new ArrayList<>();
+            for (final Object o : objects) {
+                final String dictValueText = obtainDictValueText(String.valueOf(o));
+                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                    texts.add(dictValueText);
+                }
+            }
+
+            return obtainResults(array, texts);
+        }
+
         if (!StringUtils.hasText(splitStr)) {
             return obtainDictValueText(valueAsString);
         }
@@ -123,6 +149,10 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             texts = Collections.emptyList();
         }
 
+        return obtainResults(array, texts);
+    }
+
+    private Object obtainResults(final Array array, final List<String> texts) {
         if (array.toText()) {
             if (texts.isEmpty()) {
                 return null;

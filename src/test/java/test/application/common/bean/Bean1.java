@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author HouKunLin
  */
@@ -21,6 +24,24 @@ public class Bean1 {
 
     @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array)
     private String userType3 = "0,1,3,0,0,2";
+
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
+    private List<String> userType301 = Arrays.asList("0", "1", "3", "0", "0", "2");
+
+    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array)
+    private List<String> userType302 = Arrays.asList("0", "1", "3", "0", "0", "2");
+
+    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array(toText = false))
+    private List<String> userType303 = Arrays.asList("0", "1", "3", "0", "0", "2");
+
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
+    private String[] userType304 = new String[]{"0", "1", "3", "0", "0", "2"};
+
+    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array)
+    private String[] userType305 = new String[]{"0", "1", "3", "0", "0", "2"};
+
+    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array(toText = false))
+    private String[] userType306 = new String[]{"0", "1", "3", "0", "0", "2"};
 
     @DictText(enums = {PeopleType.class}, array = @Array)
     private int userType31 = 11;

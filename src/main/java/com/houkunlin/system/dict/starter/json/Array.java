@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface Array {
     /**
-     * 是否分隔字段值来转换字典。当此值为 空字符串 的时候配置失效，表示不启用数据字典数组转换
+     * 是否分隔字段值来转换字典。此值只对字段为字符串类型的生效，当此值为 空字符串 的时候不生效（即字符串不分割）
      *
      * @return 分隔符
      */
