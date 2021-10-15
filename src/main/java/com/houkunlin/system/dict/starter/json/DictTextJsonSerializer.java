@@ -69,26 +69,34 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
                 throw new JsonMappingException(null, "无法解析 " + beanClazz.getName() + "#" + fieldName + " 字段的字典信息。请在该对象上使用 @DictText 注解标记");
             }
 
+            JsonSerializer<Object> serializer = null;
+
             // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
             if (DictEnum.class.isAssignableFrom(javaTypeRawClass)) {
                 final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) javaTypeRawClass;
                 // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
-                return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
-                    new DictTextJsonSerializerEnums(beanClazz, fieldName, annotation, new Class[]{aClass})
+                serializer = CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
+                    new DictTextJsonSerializerEnums(beanClazz, javaTypeRawClass, fieldName, annotation, new Class[]{aClass})
                 );
             }
 
             final Class<? extends DictEnum<?>>[] enums = (Class<? extends DictEnum<?>>[]) annotation.enums();
-            if (enums.length > 0) {
-                return CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
-                    new DictTextJsonSerializerEnums(beanClazz, fieldName, annotation, enums)
+            if (serializer == null && enums.length > 0) {
+                serializer = CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
+                    new DictTextJsonSerializerEnums(beanClazz, javaTypeRawClass, fieldName, annotation, enums)
                 );
             }
 
             // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
-            return CACHE.computeIfAbsent(fieldName + annotation.hashCode(), key ->
-                new DictTextJsonSerializerDefault(beanClazz, fieldName, annotation)
-            );
+            if (serializer == null) {
+                serializer = CACHE.computeIfAbsent(javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode(), key ->
+                    new DictTextJsonSerializerDefault(beanClazz, javaTypeRawClass, fieldName, annotation)
+                );
+            }
+
+            // 修改默认的 null 值序列化器
+            prov.setNullValueSerializer(serializer);
+            return serializer;
         }
         return prov.findNullValueSerializer(null);
     }

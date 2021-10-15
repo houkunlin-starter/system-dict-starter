@@ -53,6 +53,36 @@ class BasicUsageTest {
     }
 
     @Test
+    void testBasicNull1() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(DICT_TYPE)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=1)
+        System.out.println(value); // {"userType":"1","userTypeText":"普通用户"}
+        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
+    }
+
+    @Test
+    void testBasicNull2() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, fieldName = "userTypeTitle")
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=1)
+        System.out.println(value); // {"userType":"1","userTypeTitle":"普通用户"}
+        Assertions.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
+    }
+
+    @Test
     void testBasicNullable1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -215,5 +245,65 @@ class BasicUsageTest {
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","map":{"text":"","value":"-1"}}
         Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+    }
+
+    @Test
+    void testMapValueNullableNull1() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":{"text":null,"value":null}}
+        Assertions.assertEquals("{\"userType\":{\"text\":null,\"value\":null}}", value);
+    }
+
+    @Test
+    void testMapValueNullableNull2() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.NO)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":{"text":"","value":null}}
+        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":null}}", value);
+    }
+
+    @Test
+    void testMapValueNullableNull3() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":null,"map":{"text":null,"value":null}}
+        Assertions.assertEquals("{\"userType\":null,\"map\":{\"text\":null,\"value\":null}}", value);
+    }
+
+    @Test
+    void testMapValueNullableNull4() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":null,"map":{"text":"","value":null}}
+        Assertions.assertEquals("{\"userType\":null,\"map\":{\"text\":\"\",\"value\":null}}", value);
     }
 }

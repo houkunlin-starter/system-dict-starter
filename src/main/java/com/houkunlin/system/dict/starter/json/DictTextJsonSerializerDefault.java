@@ -7,11 +7,11 @@ import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictStarter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 一般情况下的场景，{@link DictText} 的普通用法
@@ -25,6 +25,10 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * 使用了这个注解的对象
      */
     protected final Class<?> beanClazz;
+    /**
+     * 字段的类型
+     */
+    protected final Class<?> fieldClazz;
     /**
      * 使用了这个注解的字段名称
      */
@@ -50,8 +54,9 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param beanFieldName 实体类字段名称
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      */
-    public DictTextJsonSerializerDefault(Class<?> beanClazz, String beanFieldName, DictText dictText) {
+    public DictTextJsonSerializerDefault(Class<?> beanClazz, Class<?> fieldClazz, String beanFieldName, DictText dictText) {
         this.beanClazz = beanClazz;
+        this.fieldClazz = fieldClazz;
         this.beanFieldName = beanFieldName;
         this.dictText = dictText;
         this.dictType = dictText.value();
@@ -75,7 +80,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     }
 
     @Override
-    public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    public void serialize(@Nullable final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
         fromDictCache(value, gen);
     }
 
@@ -86,7 +91,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param gen   JsonGenerator
      * @throws IOException 异常
      */
-    protected void fromDictCache(Object value, JsonGenerator gen) throws IOException {
+    protected void fromDictCache(@Nullable Object value, JsonGenerator gen) throws IOException {
         if (dictTypeHas) {
             writeFieldValue(gen, value, defaultNullableValue(obtainDictValueText(value)));
         } else {
@@ -101,31 +106,35 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param value 字段值（可能是一个需要分隔的字符串内容）
      * @return 字典值文本信息
      */
-    protected Object obtainDictValueText(Object value) {
-        final String valueAsString = String.valueOf(value);
+    protected Object obtainDictValueText(@Nullable Object value) {
+        final String valueAsString = value == null ? "" : value.toString();
         final Array array = dictText.array();
         final String splitStr = array.split();
 
-        if (value instanceof Iterable) {
-            final Iterable<?> iterable = (Iterable<?>) value;
+        if (Iterable.class.isAssignableFrom(fieldClazz)) {
             final List<String> texts = new ArrayList<>();
-            iterable.forEach(o -> {
-                final String dictValueText = obtainDictValueText(String.valueOf(o));
-                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-                    texts.add(dictValueText);
-                }
-            });
+            if (value != null) {
+                final Iterable<?> iterable = (Iterable<?>) value;
+                iterable.forEach(o -> {
+                    final String dictValueText = obtainDictValueText(String.valueOf(o));
+                    if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                        texts.add(dictValueText);
+                    }
+                });
+            }
 
             return obtainResults(array, texts);
         }
 
-        if (value != null && value.getClass().isArray()) {
-            Object[] objects = (Object[]) value;
+        if (fieldClazz.isArray()) {
             final List<String> texts = new ArrayList<>();
-            for (final Object o : objects) {
-                final String dictValueText = obtainDictValueText(String.valueOf(o));
-                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-                    texts.add(dictValueText);
+            if (value != null) {
+                Object[] objects = (Object[]) value;
+                for (final Object o : objects) {
+                    final String dictValueText = obtainDictValueText(String.valueOf(o));
+                    if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                        texts.add(dictValueText);
+                    }
                 }
             }
 
@@ -137,13 +146,19 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
         }
 
         final List<String> texts;
-        if (value instanceof CharSequence && valueAsString.contains(splitStr)) {
-            final String[] splitValue = valueAsString.split(splitStr);
-            texts = Arrays.stream(splitValue)
-                .map(this::obtainDictValueText)
-                // 判断是否需要忽略为 null 的数据
-                .filter(s -> !array.ignoreNull() || StringUtils.hasText(s))
-                .collect(Collectors.toList());
+        if (CharSequence.class.isAssignableFrom(fieldClazz)) {
+            if (valueAsString.contains(splitStr)) {
+                texts = new ArrayList<>();
+                final String[] splitValue = valueAsString.split(splitStr);
+                for (final Object o : splitValue) {
+                    final String dictValueText = obtainDictValueText(String.valueOf(o));
+                    if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                        texts.add(dictValueText);
+                    }
+                }
+            } else {
+                texts = Collections.emptyList();
+            }
         } else {
             logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClazz, beanFieldName, value);
             texts = Collections.emptyList();
@@ -181,7 +196,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param dictValueText  字典文本值
      * @throws IOException 异常
      */
-    protected void writeFieldValue(JsonGenerator gen, Object rawValueObject, Object dictValueText) throws IOException {
+    protected void writeFieldValue(JsonGenerator gen, @Nullable Object rawValueObject, Object dictValueText) throws IOException {
         if (isMapValue()) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", rawValueObject);
@@ -205,7 +220,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param gen        JsonGenerator
      * @throws IOException 异常
      */
-    private void writeFieldValue(Object fieldValue, JsonGenerator gen) throws IOException {
+    private void writeFieldValue(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
         if (SystemDictStarter.isRawValue()) {
             gen.writeObject(fieldValue);
         } else {

@@ -7,6 +7,7 @@ import com.google.common.collect.Table;
 import com.houkunlin.system.dict.starter.DictEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -36,8 +37,8 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      * @param enumsClass    实体类字段是一个特定枚举对象
      */
-    public DictTextJsonSerializerEnums(Class<?> beanClazz, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
-        super(beanClazz, beanFieldName, dictText);
+    public DictTextJsonSerializerEnums(Class<?> beanClazz, Class<?> fieldClazz, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
+        super(beanClazz, fieldClazz, beanFieldName, dictText);
         this.enumsClass = enumsClass;
         if (this.enumsClass.length == 0) {
             logger.error("无法解析 {}#{} 字段的字典信息。请在该对象上使用 @DictText 注解标记", beanClazz, beanFieldName);
@@ -64,7 +65,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     }
 
     @Override
-    public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    public void serialize(@Nullable final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
         if (fromFieldEnumsClass(value, gen)) {
             return;
         }
@@ -81,14 +82,14 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * @param gen   JsonGenerator
      * @return 是否处理成功
      */
-    private boolean fromFieldEnumsClass(Object value, JsonGenerator gen) throws IOException {
+    private boolean fromFieldEnumsClass(@Nullable Object value, JsonGenerator gen) throws IOException {
         if (!(value instanceof DictEnum)) {
             return false;
         }
         final DictEnum enums = (DictEnum) value;
         final Object title = obtainDictValueText(enums.getValue());
         if (title == null) {
-            logger.warn("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
+            logger.debug("{}#{} = {} 本身是一个 系统字典枚举对象，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
             return false;
         }
         writeFieldValue(gen, enums.getValue(), defaultNullableValue(title));
@@ -102,10 +103,10 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * @param gen   JsonGenerator
      * @return 是否处理成功
      */
-    private boolean fromDictTextEnumsClass(Object value, JsonGenerator gen) throws IOException {
+    private boolean fromDictTextEnumsClass(@Nullable Object value, JsonGenerator gen) throws IOException {
         final Object title = obtainDictValueText(value);
         if (title == null) {
-            logger.warn("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
+            logger.debug("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
             return false;
         }
         writeFieldValue(gen, value, defaultNullableValue(title));
