@@ -23,7 +23,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(RedisDictStore.class);
     public final RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate;
     public final RedisTemplate<String, String> dictValueRedisTemplate;
-    private final RemoteDict remoteDic;
+    private final RemoteDict remoteDict;
 
     @Override
     public void store(final DictTypeVo dictType) {
@@ -53,7 +53,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
             return o;
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-        return remoteDic.getDictType(type);
+        return remoteDict.getDictType(type);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
             return o;
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
-        return remoteDic.getDictText(type, value);
+        return remoteDict.getDictText(type, value);
     }
 
     @Override

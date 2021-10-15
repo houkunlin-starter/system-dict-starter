@@ -22,7 +22,7 @@ public class LocalDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(LocalDictStore.class);
     private static final ConcurrentHashMap<String, DictTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TEXT = new ConcurrentHashMap<>();
-    private final RemoteDict remoteDic;
+    private final RemoteDict remoteDict;
 
     @Override
     public void store(final DictTypeVo dictType) {
@@ -45,7 +45,7 @@ public class LocalDictStore implements DictStore, InitializingBean {
         if (typeVo != null) {
             return typeVo;
         }
-        return remoteDic.getDictType(type);
+        return remoteDict.getDictType(type);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class LocalDictStore implements DictStore, InitializingBean {
         if (title != null) {
             return title;
         }
-        return remoteDic.getDictText(type, value);
+        return remoteDict.getDictText(type, value);
     }
 
     @Override
