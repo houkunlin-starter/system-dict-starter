@@ -29,10 +29,14 @@ public class DynamicGenerateConverterImpl {
 
     public void registerBean(final DefaultListableBeanFactory factory, final Class<?> clazz, final DictConverter dictConverter) throws DictException {
         try {
+            final String beanName = clazz.getName() + ".SystemDictSpringConverter";
+            if (factory.containsBean(beanName)) {
+                return;
+            }
             final Class<?> converterClass = createConverterClass(clazz, dictConverter);
             if (converterClass != null) {
                 final Constructor<?>[] constructors = converterClass.getConstructors();
-                factory.registerSingleton(clazz.getName() + ".SystemDictSpringConverter", constructors[0].newInstance());
+                factory.registerSingleton(beanName, constructors[0].newInstance());
             }
         } catch (Exception e) {
             log.error("自动创建系统字典枚举的 Converter 转换器失败", e);
@@ -46,7 +50,8 @@ public class DynamicGenerateConverterImpl {
      * @param clazz         枚举对象
      * @param dictConverter 枚举转换器配置参数注解
      * @return 转换器对象
-     * @throws Exception 异常
+     * @throws NotFoundException      找不到 Class 异常
+     * @throws CannotCompileException 修改 Class 异常
      */
     public Class<?> createConverterClass(final Class<?> clazz, final DictConverter dictConverter) throws NotFoundException, CannotCompileException {
         // 这个 Class 一定是继承一个指定的接口的
@@ -65,7 +70,7 @@ public class DynamicGenerateConverterImpl {
         final ClassPool pool = ClassPool.getDefault();
 
         // 创建一个基础的对象信息
-        final CtClass makeClass = pool.makeClass(clazz.getName() + "SystemDictSpringConverter");
+        final CtClass makeClass = pool.makeClass(dictEnumClassName + "SystemDictSpringConverter");
         makeClass.setInterfaces(new CtClass[]{pool.getCtClass(Converter.class.getName())});
 
         final ClassFile classFile = makeClass.getClassFile();
