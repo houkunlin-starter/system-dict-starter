@@ -10,10 +10,10 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.4.3-BUILD-SNAPSHOT'
+version = '1.4.3'
 sourceCompatibility = '1.8'
 
-def gitRepo = "github.com/houkunlin/system-dict-starter.git"
+def gitRepo = "github.com/houkunlin-starter/system-dict-starter.git"
 def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
 
 if (isSnapshot && !version.endsWith('SNAPSHOT')) {
@@ -41,6 +41,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-validation'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
     testCompileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
     compileOnly 'org.springframework.boot:spring-boot-starter-amqp'
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api 'com.google.guava:guava:30.1.1-jre'
