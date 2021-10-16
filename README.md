@@ -21,6 +21,8 @@
 >   - 增加 `DictProvider#storeDictType` 来决定 `DictStore` 是否存储完整的字典类型信息对象
 >   - 端点 `DictEndpoint` 增加返回系统中缓存的字典类型代码信息
 
+点击查看 [基础用法文档](./usage.md) 
+
 
 ## 依赖引入
 
@@ -250,8 +252,6 @@ public class DictConfiguration {
 @Component
 @AllArgsConstructor
 public class CommandRunnerTests implements CommandLineRunner {
-    private final ApplicationEventPublisher publisher;
-
     @Override
     public void run(final String... args) throws Exception {
         System.out.println(DictUtil.getDictText("PeopleType", "1"))
