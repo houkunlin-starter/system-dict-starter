@@ -3,6 +3,7 @@ package com.houkunlin.system.dict.starter;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.store.LocalDictStore;
 import com.houkunlin.system.dict.starter.store.RemoteDict;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @author HouKunLin
  */
 @Configuration
+@AllArgsConstructor
 public class DefaultConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DefaultConfiguration.class);
 

@@ -10,7 +10,7 @@ import test.application.common.CommandRunnerTests;
  * @author HouKunLin
  */
 @SpringBootApplication(scanBasePackageClasses = {ApplicationTests.class, CommandRunnerTests.class})
-@SystemDictScan
+@SystemDictScan(basePackages = "test.application.common.bean")
 public class ApplicationTests {
     public static void main(String[] args) {
         SpringApplication.run(ApplicationTests.class);

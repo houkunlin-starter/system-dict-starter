@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author HouKunLin
  */
 @SpringBootTest
-@SystemDictScan(basePackages = "test.application")
+@SystemDictScan(basePackages = "test.application.common.bean")
 class BasicUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired
@@ -29,12 +29,13 @@ class BasicUsageTest {
         class Bean {
             @DictText(DICT_TYPE)
             private String userType;
+            private String userType1;
         }
-        final Bean bean = new Bean("1");
+        final Bean bean = new Bean("1", null);
         final String value = objectMapper.writeValueAsString(bean);
-        System.out.println(bean); // Bean(userType=1)
-        System.out.println(value); // {"userType":"1","userTypeText":"普通用户"}
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\"}", value);
+        System.out.println(bean); // Bean(userType=1,userType1=null)
+        System.out.println(value); // {"userType":"1","userTypeText":"普通用户","userType1":null}
+        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userType1\":null}", value);
     }
 
     @Test
