@@ -32,16 +32,16 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     /**
      * 字段是特定枚举对象类型的场景
      *
-     * @param beanClazz     实体类 class
+     * @param beanClass     实体类 class
      * @param beanFieldName 实体类字段名称
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      * @param enumsClass    实体类字段是一个特定枚举对象
      */
-    public DictTextJsonSerializerEnums(Class<?> beanClazz, Class<?> fieldClazz, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
-        super(beanClazz, fieldClazz, beanFieldName, dictText);
+    public DictTextJsonSerializerEnums(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
+        super(beanClass, beanFieldClass, beanFieldName, dictText);
         this.enumsClass = enumsClass;
         if (this.enumsClass.length == 0) {
-            logger.error("无法解析 {}#{} 字段的字典信息。请在该对象上使用 @DictText 注解标记", beanClazz, beanFieldName);
+            logger.error("无法解析 {}#{} 字段的字典信息。请在该对象上使用 @DictText 注解标记", beanClass, beanFieldName);
         }
         initEnumsClass();
     }
@@ -83,7 +83,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * @return 是否处理成功
      */
     private boolean fromFieldEnumsClass(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
-        if (!DictEnum.class.isAssignableFrom(fieldClazz)) {
+        if (!DictEnum.class.isAssignableFrom(beanFieldClass)) {
             return false;
         }
         if (fieldValue != null) {
@@ -106,7 +106,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     private boolean fromDictTextEnumsClass(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
         final Object title = obtainDictValueText(fieldValue);
         if (title == null) {
-            logger.debug("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, fieldValue);
+            logger.debug("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClass, beanFieldName, fieldValue);
             return false;
         }
         writeFieldValue(gen, fieldValue, defaultNullableValue(title));

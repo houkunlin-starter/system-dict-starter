@@ -25,11 +25,11 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     /**
      * 使用了这个注解的对象
      */
-    protected final Class<?> beanClazz;
+    protected final Class<?> beanClass;
     /**
      * 字段的类型
      */
-    protected final Class<?> fieldClazz;
+    protected final Class<?> beanFieldClass;
     /**
      * 使用了这个注解的字段名称
      */
@@ -37,7 +37,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     /**
      * 字典输出字段名称
      */
-    protected final String destinationFieldName;
+    protected final String outFieldName;
     /**
      * 字典转换注解对象
      */
@@ -48,7 +48,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     protected final String dictType;
     protected final Array array;
     protected final boolean hasDictType;
-    protected final boolean hasFieldName;
+    protected final boolean hasDictTextFieldName;
     protected final boolean isIterable;
     protected final boolean isArray;
     protected final boolean isCharSequence;
@@ -57,24 +57,24 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     /**
      * 一般情况下的场景，{@link DictText} 的普通用法
      *
-     * @param beanClazz     实体类 class
+     * @param beanClass     实体类 class
      * @param beanFieldName 实体类字段名称
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      */
-    public DictTextJsonSerializerDefault(Class<?> beanClazz, Class<?> fieldClazz, String beanFieldName, DictText dictText) {
-        this.beanClazz = beanClazz;
-        this.fieldClazz = fieldClazz;
-        this.isIterable = Iterable.class.isAssignableFrom(fieldClazz);
-        this.isArray = fieldClazz.isArray();
-        this.isCharSequence = CharSequence.class.isAssignableFrom(fieldClazz);
+    public DictTextJsonSerializerDefault(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText) {
+        this.beanClass = beanClass;
+        this.beanFieldClass = beanFieldClass;
+        this.isIterable = Iterable.class.isAssignableFrom(beanFieldClass);
+        this.isArray = beanFieldClass.isArray();
+        this.isCharSequence = CharSequence.class.isAssignableFrom(beanFieldClass);
         this.beanFieldName = beanFieldName;
         this.dictText = dictText;
         this.array = dictText.array();
         this.isNeedSpiltValue = StringUtils.hasText(array.split());
         this.dictType = dictText.value();
         this.hasDictType = StringUtils.hasText(dictType);
-        this.destinationFieldName = getFieldName(dictText);
-        this.hasFieldName = StringUtils.hasText(dictText.fieldName());
+        this.outFieldName = getFieldName(dictText);
+        this.hasDictTextFieldName = StringUtils.hasText(dictText.fieldName());
     }
 
     /**
@@ -109,7 +109,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             writeFieldValue(gen, fieldValue, defaultNullableValue(obtainDictValueText(fieldValue)));
         } else {
             writeFieldValue(gen, fieldValue, defaultNullableValue(null));
-            logger.warn("{}#{} @DictText annotation not set dictType value", beanClazz, beanFieldName);
+            logger.warn("{}#{} @DictText annotation not set dictType value", beanClass, beanFieldName);
         }
     }
 
@@ -142,7 +142,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             return processStringField(fieldValueString);
         }
 
-        logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClazz, beanFieldName, fieldValue);
+        logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClass, beanFieldName, fieldValue);
 
         return obtainResult(Collections.emptyList());
     }
@@ -251,14 +251,14 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", fieldValue);
             map.put("text", dictValueText);
-            if (hasFieldName) {
+            if (hasDictTextFieldName) {
                 writeFieldValue(fieldValue, gen);
                 gen.writeFieldName(dictText.fieldName());
             }
             gen.writeObject(map);
         } else {
             writeFieldValue(fieldValue, gen);
-            gen.writeFieldName(destinationFieldName);
+            gen.writeFieldName(outFieldName);
             gen.writeObject(dictValueText);
         }
     }
@@ -281,14 +281,14 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     /**
      * 获取默认值
      *
-     * @param value 原始值
+     * @param dictValueText 原始值
      * @return 处理结果
      */
-    protected Object defaultNullableValue(Object value) {
+    protected Object defaultNullableValue(Object dictValueText) {
         if (isNullableValue()) {
-            return value;
+            return dictValueText;
         }
-        return value == null ? "" : value;
+        return dictValueText == null ? "" : dictValueText;
     }
 
     private boolean isMapValue() {
