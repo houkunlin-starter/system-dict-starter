@@ -28,6 +28,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * 直接使用系统字典枚举的枚举对象列表
      */
     protected final Class<? extends DictEnum>[] enumsClass;
+    protected final boolean isDictEnum;
 
     /**
      * 字段是特定枚举对象类型的场景
@@ -40,6 +41,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     public DictTextJsonSerializerEnums(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
         super(beanClass, beanFieldClass, beanFieldName, dictText);
         this.enumsClass = enumsClass;
+        this.isDictEnum = DictEnum.class.isAssignableFrom(beanFieldClass);
         if (this.enumsClass.length == 0) {
             logger.error("无法解析 {}#{} 字段的字典信息。请在该对象上使用 @DictText 注解标记", beanClass, beanFieldName);
         }
@@ -66,51 +68,23 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
 
     @Override
     public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
-        if (fromFieldEnumsClass(fieldValue, gen)) {
+        if (fieldValue == null) {
+            writeFieldValue(gen, null, defaultNullableValue(defaultDictTextResult));
             return;
         }
-        if (fromDictTextEnumsClass(fieldValue, gen)) {
-            return;
-        }
-        writeFieldValue(gen, fieldValue, defaultNullableValue(null));
-    }
-
-    /**
-     * 字段是系统字典枚举对象
-     *
-     * @param fieldValue 实体类字段值，此时该值可能是一个系统字典枚举对象
-     * @param gen        JsonGenerator
-     * @return 是否处理成功
-     */
-    private boolean fromFieldEnumsClass(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
-        if (!DictEnum.class.isAssignableFrom(beanFieldClass)) {
-            return false;
-        }
-        if (fieldValue != null) {
+        final Object outFieldValue;
+        final Object dictValueText;
+        if (isDictEnum) {
+            // 字段是系统字典枚举对象
             final DictEnum enums = (DictEnum) fieldValue;
-            final Object title = obtainDictValueText(enums.getValue());
-            writeFieldValue(gen, enums.getValue(), defaultNullableValue(title));
+            outFieldValue = enums.getValue();
+            dictValueText = enums.getTitle();
         } else {
-            writeFieldValue(gen, null, defaultNullableValue(null));
+            // 字段是普通类型，但是使用注解标记了来自枚举对象取值
+            outFieldValue = fieldValue;
+            dictValueText = obtainDictValueText(outFieldValue);
         }
-        return true;
-    }
-
-    /**
-     * 字段是普通类型，但是使用 {@link DictText} 标记了来自枚举对象取值
-     *
-     * @param fieldValue 实体类字段值
-     * @param gen        JsonGenerator
-     * @return 是否处理成功
-     */
-    private boolean fromDictTextEnumsClass(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
-        final Object title = obtainDictValueText(fieldValue);
-        if (title == null) {
-            logger.debug("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClass, beanFieldName, fieldValue);
-            return false;
-        }
-        writeFieldValue(gen, fieldValue, defaultNullableValue(title));
-        return true;
+        writeFieldValue(gen, outFieldValue, defaultNullableValue(dictValueText));
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictStarter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
@@ -53,6 +54,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     protected final boolean isArray;
     protected final boolean isCharSequence;
     protected final boolean isNeedSpiltValue;
+    protected final Object defaultDictTextResult;
 
     /**
      * 一般情况下的场景，{@link DictText} 的普通用法
@@ -75,6 +77,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
         this.hasDictType = StringUtils.hasText(dictType);
         this.outFieldName = getFieldName(dictText);
         this.hasDictTextFieldName = StringUtils.hasText(dictText.fieldName());
+        this.defaultDictTextResult = obtainResult(Collections.emptyList());
     }
 
     /**
@@ -94,21 +97,14 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
 
     @Override
     public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
-        fromDictCache(fieldValue, gen);
-    }
-
-    /**
-     * 从缓存中获取字典文本
-     *
-     * @param fieldValue 字典值对象
-     * @param gen        JsonGenerator
-     * @throws IOException 异常
-     */
-    protected void fromDictCache(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
+        if (fieldValue == null) {
+            writeFieldValue(gen, null, defaultNullableValue(defaultDictTextResult));
+            return;
+        }
         if (hasDictType) {
             writeFieldValue(gen, fieldValue, defaultNullableValue(obtainDictValueText(fieldValue)));
         } else {
-            writeFieldValue(gen, fieldValue, defaultNullableValue(null));
+            writeFieldValue(gen, fieldValue, defaultNullableValue(defaultDictTextResult));
             logger.warn("{}#{} @DictText annotation not set dictType value", beanClass, beanFieldName);
         }
     }
@@ -119,10 +115,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param fieldValue 字段值（可能是一个需要分隔的字符串内容）
      * @return 字典值文本信息
      */
-    protected Object obtainDictValueText(@Nullable Object fieldValue) {
-        if (fieldValue == null) {
-            return obtainResult(Collections.emptyList());
-        }
+    protected Object obtainDictValueText(@NonNull Object fieldValue) {
         final String fieldValueString = fieldValue.toString();
 
         if (isIterable) {
@@ -144,7 +137,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
 
         logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClass, beanFieldName, fieldValue);
 
-        return obtainResult(Collections.emptyList());
+        return defaultDictTextResult;
     }
 
     /**
