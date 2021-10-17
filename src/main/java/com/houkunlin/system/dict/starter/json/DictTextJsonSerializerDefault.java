@@ -121,77 +121,111 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      */
     protected Object obtainDictValueText(@Nullable Object fieldValue) {
         if (fieldValue == null) {
-            return obtainResults(Collections.emptyList());
+            return obtainResult(Collections.emptyList());
         }
-        final String valueAsString = fieldValue.toString();
+        final String fieldValueString = fieldValue.toString();
 
         if (isIterable) {
-            final List<String> texts = new ArrayList<>();
-            final Iterable<?> iterable = (Iterable<?>) fieldValue;
-            iterable.forEach(o -> {
-                final String dictValueText;
-                if (o instanceof DictEnum) {
-                    dictValueText = ((DictEnum) o).getTitle();
-                } else {
-                    dictValueText = obtainDictValueText(String.valueOf(o));
-                }
-                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-                    texts.add(dictValueText);
-                }
-            });
-
-            return obtainResults(texts);
+            return processIterableField((Iterable<?>) fieldValue);
         }
 
         if (isArray) {
+            return processArrayField((Object[]) fieldValue);
+        }
+
+        if (!isNeedSpiltValue) {
+            // 不需要对值进行分割处理，直接当作一个普通的字典值去获取数据
+            return obtainDictValueText(fieldValueString);
+        }
+
+        if (isCharSequence) {
+            return processStringField(fieldValueString);
+        }
+
+        logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClazz, beanFieldName, fieldValue);
+
+        return obtainResult(Collections.emptyList());
+    }
+
+    /**
+     * 处理字段是 集合 类型的场景
+     *
+     * @param fieldValues 字段值（集合类型）
+     * @return 字典文本结果
+     */
+    private Object processIterableField(final Iterable<?> fieldValues) {
+        final List<String> texts = new ArrayList<>();
+        for (final Object o : fieldValues) {
+            processFieldArrayValue(texts, o);
+        }
+
+        return obtainResult(texts);
+    }
+
+    /**
+     * 处理字段是 数据 类型的场景
+     *
+     * @param fieldValues 字段值（数组类型）
+     * @return 字典文本结果
+     */
+    private Object processArrayField(final Object[] fieldValues) {
+        final List<String> texts = new ArrayList<>();
+        for (final Object o : fieldValues) {
+            processFieldArrayValue(texts, o);
+        }
+
+        return obtainResult(texts);
+    }
+
+    /**
+     * 处理字段是 字符串 类型的场景
+     *
+     * @param fieldValueString 字段值（字符串类型）
+     * @return 字典文本结果
+     */
+    private Object processStringField(final String fieldValueString) {
+        final String splitStr = array.split();
+        if (fieldValueString.contains(splitStr)) {
             final List<String> texts = new ArrayList<>();
-            Object[] objects = (Object[]) fieldValue;
-            for (final Object o : objects) {
+            final String[] splitValue = fieldValueString.split(splitStr);
+            for (final Object o : splitValue) {
                 final String dictValueText = obtainDictValueText(String.valueOf(o));
                 if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
                     texts.add(dictValueText);
                 }
             }
-
-            return obtainResults(texts);
+            return obtainResult(texts);
         }
-
-        if (!isNeedSpiltValue) {
-            return obtainDictValueText(valueAsString);
-        }
-
-        final List<String> texts;
-        if (isCharSequence) {
-            final String splitStr = array.split();
-            if (valueAsString.contains(splitStr)) {
-                texts = new ArrayList<>();
-                final String[] splitValue = valueAsString.split(splitStr);
-                for (final Object o : splitValue) {
-                    final String dictValueText = obtainDictValueText(String.valueOf(o));
-                    if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-                        texts.add(dictValueText);
-                    }
-                }
-            } else {
-                texts = Collections.emptyList();
-            }
-        } else {
-            logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClazz, beanFieldName, fieldValue);
-            texts = Collections.emptyList();
-        }
-
-        return obtainResults(texts);
+        return obtainResult(Collections.emptyList());
     }
 
-    private Object obtainResults(final List<String> texts) {
+    /**
+     * 处理 集合、数组 类型的字段里面的 单个值 信息
+     *
+     * @param texts          存放字典文本结果的对象
+     * @param fieldValueItem 集合、数组 的单个值
+     */
+    private void processFieldArrayValue(final List<String> texts, final Object fieldValueItem) {
+        final String dictValueText;
+        if (fieldValueItem instanceof DictEnum) {
+            dictValueText = ((DictEnum) fieldValueItem).getTitle();
+        } else {
+            dictValueText = obtainDictValueText(String.valueOf(fieldValueItem));
+        }
+        if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+            texts.add(dictValueText);
+        }
+    }
+
+    private Object obtainResult(final List<String> dictTexts) {
         if (array.toText()) {
-            if (texts.isEmpty()) {
+            if (dictTexts.isEmpty()) {
                 return null;
             }
-            return String.join(array.joinSeparator(), texts);
+            return String.join(array.joinSeparator(), dictTexts);
         }
 
-        return texts;
+        return dictTexts;
     }
 
     /**
