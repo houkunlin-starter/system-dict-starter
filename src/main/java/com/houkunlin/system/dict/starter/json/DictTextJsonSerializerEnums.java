@@ -65,29 +65,29 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     }
 
     @Override
-    public void serialize(@Nullable final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
-        if (fromFieldEnumsClass(value, gen)) {
+    public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+        if (fromFieldEnumsClass(fieldValue, gen)) {
             return;
         }
-        if (fromDictTextEnumsClass(value, gen)) {
+        if (fromDictTextEnumsClass(fieldValue, gen)) {
             return;
         }
-        writeFieldValue(gen, value, defaultNullableValue(null));
+        writeFieldValue(gen, fieldValue, defaultNullableValue(null));
     }
 
     /**
      * 字段是系统字典枚举对象
      *
-     * @param value 实体类字段值，此时该值可能是一个系统字典枚举对象
-     * @param gen   JsonGenerator
+     * @param fieldValue 实体类字段值，此时该值可能是一个系统字典枚举对象
+     * @param gen        JsonGenerator
      * @return 是否处理成功
      */
-    private boolean fromFieldEnumsClass(@Nullable Object value, JsonGenerator gen) throws IOException {
+    private boolean fromFieldEnumsClass(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
         if (!DictEnum.class.isAssignableFrom(fieldClazz)) {
             return false;
         }
-        if (value != null) {
-            final DictEnum enums = (DictEnum) value;
+        if (fieldValue != null) {
+            final DictEnum enums = (DictEnum) fieldValue;
             final Object title = obtainDictValueText(enums.getValue());
             writeFieldValue(gen, enums.getValue(), defaultNullableValue(title));
         } else {
@@ -99,17 +99,17 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     /**
      * 字段是普通类型，但是使用 {@link DictText} 标记了来自枚举对象取值
      *
-     * @param value 实体类字段值
-     * @param gen   JsonGenerator
+     * @param fieldValue 实体类字段值
+     * @param gen        JsonGenerator
      * @return 是否处理成功
      */
-    private boolean fromDictTextEnumsClass(@Nullable Object value, JsonGenerator gen) throws IOException {
-        final Object title = obtainDictValueText(value);
+    private boolean fromDictTextEnumsClass(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
+        final Object title = obtainDictValueText(fieldValue);
         if (title == null) {
-            logger.debug("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, value);
+            logger.debug("{}#{} = {} 指定了从多个字典枚举中取值，但是由于未找到其值因而会进行进一步的信息获取。实际上这里不应该发生的", beanClazz, beanFieldName, fieldValue);
             return false;
         }
-        writeFieldValue(gen, value, defaultNullableValue(title));
+        writeFieldValue(gen, fieldValue, defaultNullableValue(title));
         return true;
     }
 

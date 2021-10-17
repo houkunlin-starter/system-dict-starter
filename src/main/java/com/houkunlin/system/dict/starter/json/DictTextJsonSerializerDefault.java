@@ -93,22 +93,22 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     }
 
     @Override
-    public void serialize(@Nullable final Object value, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
-        fromDictCache(value, gen);
+    public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+        fromDictCache(fieldValue, gen);
     }
 
     /**
      * 从缓存中获取字典文本
      *
-     * @param value 字典值对象
-     * @param gen   JsonGenerator
+     * @param fieldValue 字典值对象
+     * @param gen        JsonGenerator
      * @throws IOException 异常
      */
-    protected void fromDictCache(@Nullable Object value, JsonGenerator gen) throws IOException {
+    protected void fromDictCache(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
         if (hasDictType) {
-            writeFieldValue(gen, value, defaultNullableValue(obtainDictValueText(value)));
+            writeFieldValue(gen, fieldValue, defaultNullableValue(obtainDictValueText(fieldValue)));
         } else {
-            writeFieldValue(gen, value, defaultNullableValue(null));
+            writeFieldValue(gen, fieldValue, defaultNullableValue(null));
             logger.warn("{}#{} @DictText annotation not set dictType value", beanClazz, beanFieldName);
         }
     }
@@ -116,18 +116,18 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     /**
      * 获取字段值的字典文本信息
      *
-     * @param value 字段值（可能是一个需要分隔的字符串内容）
+     * @param fieldValue 字段值（可能是一个需要分隔的字符串内容）
      * @return 字典值文本信息
      */
-    protected Object obtainDictValueText(@Nullable Object value) {
-        if (value == null) {
-            return obtainResults(array, Collections.emptyList());
+    protected Object obtainDictValueText(@Nullable Object fieldValue) {
+        if (fieldValue == null) {
+            return obtainResults(Collections.emptyList());
         }
-        final String valueAsString = value.toString();
+        final String valueAsString = fieldValue.toString();
 
         if (isIterable) {
             final List<String> texts = new ArrayList<>();
-            final Iterable<?> iterable = (Iterable<?>) value;
+            final Iterable<?> iterable = (Iterable<?>) fieldValue;
             iterable.forEach(o -> {
                 final String dictValueText;
                 if (o instanceof DictEnum) {
@@ -140,12 +140,12 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
                 }
             });
 
-            return obtainResults(array, texts);
+            return obtainResults(texts);
         }
 
         if (isArray) {
             final List<String> texts = new ArrayList<>();
-            Object[] objects = (Object[]) value;
+            Object[] objects = (Object[]) fieldValue;
             for (final Object o : objects) {
                 final String dictValueText = obtainDictValueText(String.valueOf(o));
                 if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
@@ -153,7 +153,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
                 }
             }
 
-            return obtainResults(array, texts);
+            return obtainResults(texts);
         }
 
         if (!isNeedSpiltValue) {
@@ -176,14 +176,14 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
                 texts = Collections.emptyList();
             }
         } else {
-            logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClazz, beanFieldName, value);
+            logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClazz, beanFieldName, fieldValue);
             texts = Collections.emptyList();
         }
 
-        return obtainResults(array, texts);
+        return obtainResults(texts);
     }
 
-    private Object obtainResults(final Array array, final List<String> texts) {
+    private Object obtainResults(final List<String> texts) {
         if (array.toText()) {
             if (texts.isEmpty()) {
                 return null;
@@ -207,23 +207,23 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     /**
      * 把数据字典原始值和转换后的字典文本值写入到 Json 中
      *
-     * @param gen            JsonGenerator 对象
-     * @param rawValueObject 实体类字典值
-     * @param dictValueText  字典文本值
+     * @param gen           JsonGenerator 对象
+     * @param fieldValue    实体类字典值
+     * @param dictValueText 字典文本值
      * @throws IOException 异常
      */
-    protected void writeFieldValue(JsonGenerator gen, @Nullable Object rawValueObject, Object dictValueText) throws IOException {
+    protected void writeFieldValue(JsonGenerator gen, @Nullable Object fieldValue, Object dictValueText) throws IOException {
         if (isMapValue()) {
             final Map<String, Object> map = new HashMap<>();
-            map.put("value", rawValueObject);
+            map.put("value", fieldValue);
             map.put("text", dictValueText);
             if (hasFieldName) {
-                writeFieldValue(rawValueObject, gen);
+                writeFieldValue(fieldValue, gen);
                 gen.writeFieldName(dictText.fieldName());
             }
             gen.writeObject(map);
         } else {
-            writeFieldValue(rawValueObject, gen);
+            writeFieldValue(fieldValue, gen);
             gen.writeFieldName(destinationFieldName);
             gen.writeObject(dictValueText);
         }
