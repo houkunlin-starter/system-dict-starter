@@ -36,7 +36,7 @@ import java.util.*;
 public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanFactoryAware {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictScanRegistrar.class);
     private final ClassPathScanningCandidateComponentProvider provider;
-    private final DynamicGenerateConverterImpl generateConverter = new DynamicGenerateConverterImpl();
+    private DynamicGenerateConverterImpl generateConverter;
     private ClassLoader classLoader;
     private SystemDictProvider systemDictProvider;
     private String applicationName;
@@ -63,6 +63,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
         final Environment environment = beanFactory.getBean(Environment.class);
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
         this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
+        this.generateConverter = beanFactory.getBean(DynamicGenerateConverterImpl.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
     }
@@ -81,7 +82,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
                     handleDict(loadClass);
                 }
             } catch (ClassNotFoundException | DictException e) {
-                e.printStackTrace();
+                logger.error("扫描系统字典枚举失败，虽然不影响启动，但是最终会影响 @DictText 注解功能", e);
             }
         }
     }

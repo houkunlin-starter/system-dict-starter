@@ -7,7 +7,6 @@ import javassist.*;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.SignatureAttribute;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.ResolvableType;
@@ -24,8 +23,16 @@ import java.lang.reflect.Constructor;
  */
 @Slf4j
 @Component
-@NoArgsConstructor
 public class DynamicGenerateConverterImpl {
+
+    final ClassPool pool = ClassPool.getDefault();
+
+    public DynamicGenerateConverterImpl() {
+        if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9) {
+            // 修复 Java 8 环境下 SpringBoot 打包后使用 java -jar 启动异常问题
+            pool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
+        }
+    }
 
     public void registerBean(final DefaultListableBeanFactory factory, final Class<?> clazz, final DictConverter dictConverter) throws DictException {
         try {
@@ -66,8 +73,6 @@ public class DynamicGenerateConverterImpl {
 
         // 第一个泛型参数一定是字符串类型；            第二个泛型参数是枚举类型，也就是当前方法的入参参数
         final Class<?> interfaceTypeClass1 = String.class;
-
-        final ClassPool pool = ClassPool.getDefault();
 
         // 创建一个基础的对象信息
         final CtClass makeClass = pool.makeClass(dictEnumClassName + "SystemDictSpringConverter");
