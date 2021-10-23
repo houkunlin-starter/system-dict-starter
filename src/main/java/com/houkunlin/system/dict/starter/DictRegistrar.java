@@ -1,7 +1,9 @@
 package com.houkunlin.system.dict.starter;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
+import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
@@ -74,11 +76,24 @@ public class DictRegistrar implements InitializingBean {
      */
     @Async
     @EventListener
-    public void eventListenerRefreshEvent(RefreshDictEvent event) {
+    public void eventListenerRefreshEvent(final RefreshDictEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
         }
         refreshDict(event.getDictProviderClasses());
         logger.debug("[finish] 应用内部通知刷新字典事件");
+    }
+
+    /**
+     * 刷新单个字典值文本信息，不会刷新整个字典信息
+     *
+     * @param event 事件
+     * @since 1.4.3.4
+     */
+    @Async
+    @EventListener
+    public void refreshDictValueEvent(final RefreshDictValueEvent event) {
+        final Iterable<DictValueVo> dictValueVos = event.getSource();
+        store.store(dictValueVos.iterator());
     }
 }
