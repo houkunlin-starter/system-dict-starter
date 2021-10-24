@@ -17,7 +17,7 @@ import java.util.Map;
  * @since 1.3.0
  */
 @Component
-@Endpoint(id = "dict-system")
+@Endpoint(id = "dictSystem")
 @AllArgsConstructor
 public class SystemDictProviderEndpoint {
     private final SystemDictProvider provider;
