@@ -41,10 +41,6 @@ public class DictProperties {
      */
     private String mqExchangeName = "app.dict.fanout.refreshDict";
     /**
-     * 刷新日志消息的Header配置，存储标记消息来源应用名称的 Header KEY
-     */
-    private String mqHeaderSourceKey = "SourceApplicationName";
-    /**
      * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新
      */
     private long refreshDictInterval = 60 * 1000L;
