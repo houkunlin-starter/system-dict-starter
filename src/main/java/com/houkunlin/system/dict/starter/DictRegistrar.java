@@ -89,7 +89,7 @@ public class DictRegistrar implements InitializingBean {
      * 刷新单个字典值文本信息，不会刷新整个字典信息
      *
      * @param event 事件
-     * @since 1.4.3.4
+     * @since 1.4.4
      */
     @Async
     @EventListener

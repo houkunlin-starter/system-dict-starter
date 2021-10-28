@@ -10,7 +10,7 @@ import java.util.Collections;
  * 使用此事件时 {@link DictValueVo#dictType} 字段值为必填项，否则会导致数据更新失败。
  *
  * @author HouKunLin
- * @since 1.4.3.4
+ * @since 1.4.4
  */
 public class RefreshDictValueEvent extends ApplicationEvent {
     public RefreshDictValueEvent(final DictValueVo source) {

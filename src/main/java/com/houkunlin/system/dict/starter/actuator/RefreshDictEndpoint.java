@@ -18,7 +18,7 @@ import java.util.Set;
  * 字典刷新端点
  *
  * @author HouKunLin
- * @since 1.4.3.4
+ * @since 1.4.4
  */
 @Component
 @Endpoint(id = "dictRefresh")
