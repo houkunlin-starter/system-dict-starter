@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 
+import java.time.Duration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -39,8 +40,8 @@ public class DictRegistrar implements InitializingBean {
 
     public void refreshDict(Set<String> dictProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified.get();
-        final long refreshDictInterval = properties.getRefreshDictInterval();
-        if (interval < refreshDictInterval) {
+        final Duration refreshDictInterval = properties.getRefreshDictInterval();
+        if (interval < refreshDictInterval.toMillis()) {
             if (logger.isDebugEnabled()) {
                 logger.debug("距离上一次刷新字典 {} ms，小于配置的 {} ms，本次事件将不会刷新字典", interval, refreshDictInterval);
             }

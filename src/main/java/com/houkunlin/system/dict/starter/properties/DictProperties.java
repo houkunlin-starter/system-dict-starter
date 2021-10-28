@@ -8,6 +8,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Duration;
+
 /**
  * 系统数据字典配置文件配置信息对象
  *
@@ -50,7 +52,7 @@ public class DictProperties {
     /**
      * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新
      */
-    private long refreshDictInterval = 60 * 1000L;
+    private Duration refreshDictInterval = Duration.ofSeconds(60);
 
     @NestedConfigurationProperty
     private DictPropertiesCache cache = new DictPropertiesCache();
