@@ -1,15 +1,12 @@
 package com.houkunlin.system.dict.starter.store;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
  * Redis 字典存储配置
@@ -18,21 +15,16 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @ConditionalOnClass(RedisTemplate.class)
 @Configuration
-@AllArgsConstructor
 public class RedisDictStoreConfiguration {
-    @ConditionalOnMissingBean
-    @Bean
-    public RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, DictTypeVo> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(DictTypeVo.class));
-        redisTemplate.setConnectionFactory(connectionFactory);
-        return redisTemplate;
-    }
 
+    /**
+     * 当环境中不存在 DictStore Bean 的时候创建一个默认的 RedisDictStore Bean 实例
+     *
+     * @return {@link DictStore}
+     */
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dictStore(RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate, RedisTemplate<String, String> dictValueRedisTemplate, RemoteDict remoteDict) {
-        return new RedisDictStore(dictTypeRedisTemplate, dictValueRedisTemplate, remoteDict);
+    public DictStore dictStore(RedisTemplate<String, DictTypeVo> redisTemplate1, StringRedisTemplate redisTemplate2, RemoteDict remoteDict) {
+        return new RedisDictStore(redisTemplate1, redisTemplate2, remoteDict);
     }
 }
