@@ -35,7 +35,7 @@
 
 ### 0.1 依赖坐标
 
-![Maven Central](assets/system-dict-starter.svg) 
+[![Maven Central](https://img.shields.io/maven-central/v/com.houkunlin/system-dict-starter.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.houkunlin%22%20AND%20a:%22system-dict-starter%22)
 
 ```xml
 <dependency>
@@ -358,4 +358,3 @@ GET /actuator/dictSystem/PeopleType
 - `system.dict.controller` 默认控制器
   - `enabled=true` 是否启用 WEB 请求接口
   - `prefix=/dict` WEB 请求接口前缀
-
