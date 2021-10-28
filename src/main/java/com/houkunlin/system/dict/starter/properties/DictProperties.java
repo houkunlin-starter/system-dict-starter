@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties("system.dict")
 public class DictProperties {
+    public static final String DEFAULT_MQ_EXCHANGE_NAME = "app.dict.fanout.refreshDict";
     /**
      * 是否显示原生数据字典值。true 实际类型转换，false 转换成字符串值
      */
@@ -37,9 +38,15 @@ public class DictProperties {
      */
     private boolean mapValue = false;
     /**
+     * 通知其他协同系统刷新字典的MQ类型
+     *
+     * @since 1.4.4
+     */
+    private MqType mqType = MqType.NONE;
+    /**
      * 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到
      */
-    private String mqExchangeName = "app.dict.fanout.refreshDict";
+    private String mqExchangeName = DEFAULT_MQ_EXCHANGE_NAME;
     /**
      * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新
      */

@@ -28,6 +28,7 @@ system:
     raw-value: true
     text-value-default-null: false
     refresh-dict-interval: 20
+    mq-type: redis
     cache:
       enabled: true
       maximum-size: 10

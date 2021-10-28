@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.connection.Message;
@@ -28,6 +29,7 @@ import java.util.Objects;
  * @author HouKunLin
  * @since 1.4.4
  */
+@ConditionalOnProperty(prefix = "system.dict", name = "mq-type", havingValue = "REDIS")
 @ConditionalOnClass(StringRedisTemplate.class)
 @Configuration
 public class DictRedisSubscribeConfiguration implements InitializingBean {
