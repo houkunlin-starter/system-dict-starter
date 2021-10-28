@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.store.RemoteDict;
+import com.houkunlin.system.dict.starter.store.RemoteDictDefaultImpl;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,16 +59,6 @@ public class SystemDictStarter {
     @ConditionalOnMissingBean
     @Bean
     public RemoteDict remoteDict() {
-        return new RemoteDict() {
-            @Override
-            public DictTypeVo getDictType(final String type) {
-                return null;
-            }
-
-            @Override
-            public String getDictText(final String type, final String value) {
-                return null;
-            }
-        };
+        return new RemoteDictDefaultImpl();
     }
 }
