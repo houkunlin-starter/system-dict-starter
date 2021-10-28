@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.4.3.3'
+version = '1.4.4'
 sourceCompatibility = '1.8'
 
 def gitRepo = "github.com/houkunlin-starter/system-dict-starter.git"
@@ -44,6 +44,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
     // implementation 'org.redisson:redisson-spring-boot-starter:+'
     compileOnly 'org.springframework.boot:spring-boot-starter-amqp'
+    // testImplementation 'org.springframework.boot:spring-boot-starter-amqp'
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api 'com.google.guava:guava:30.1.1-jre'
     api 'com.github.ben-manes.caffeine:caffeine'

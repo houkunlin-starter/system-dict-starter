@@ -19,9 +19,13 @@
 
 
 
-在日常项目开发中，不免都会用到一些数据字典的信息，以及前端展示的时候通常也需要把这些数据字典值转换成具体字典文本信息。遇到这种场景通常都是后端把字典的文本转换好一起返回给前端，前端只需要直接转换即可。一般情况下后端可能需要单独给返回对象创建一个字段来存储对应的字典文本值，然后进行手动的处理，这种方式通常比较繁琐，在字段多的时候会增加更多的工作量。
+在日常项目开发中，不免都会用到一些数据字典的信息，以及前端展示的时候通常也需要把这些数据字典值转换成具体字典文本信息。遇到这种场景通常都是后端把字典的文本转换好一起返回给前端，前端只需要直接展示即可。
 
-本文基于 Jackson 的自定义注解功能实现了这一自动转换过程，不需要在对象中定义存放字典文本的字段，只需要在字段上使用特定的注解配置，Jackson序列化的时候即可自动把字典值转换成字典文本。
+一般情况下后端可能需要单独给返回对象创建一个字段来存储对应的字典文本值，然后进行手动的处理，这种方式通常比较繁琐，在字段多的时候会增加更多的工作量。
+
+本项目基于 Jackson 的自定义注解功能实现了这一自动转换过程，不需要在对象中定义存放字典文本的字段，只需要在字段上使用特定的注解配置，Jackson序列化的时候即可自动把字典值转换成字典文本。
+
+
 
 ## 0. 项目地址
 
@@ -29,13 +33,14 @@
 
 - https://github.com/houkunlin-starter/system-dict-starter
 
-
 ### 0.1 依赖坐标
+
+![Maven Central](assets/system-dict-starter.svg) 
+
 ```xml
 <dependency>
     <groupId>com.houkunlin</groupId>
     <artifactId>system-dict-starter</artifactId>
-    <!-- 当前版本：1.4.3 -->
     <version>${latest.version}</version>
 </dependency>
 ```
@@ -299,7 +304,7 @@ public class CommandRunnerTests implements CommandLineRunner {
 
 ### 3.1 SpringBoot Actuator 端点支持
 
-提供了 `dict` 和 `dict-system` 两个端点信息
+提供了 `dict`  `dictSystem`  `dictRefresh` 三个端点信息
 
 ```
 // 获取所有的字典名称列表和一些配置的对象名称
@@ -312,10 +317,10 @@ GET /actuator/dict/PeopleType
 GET /actuator/dict/PeopleType/1
 
 // 获取系统字典的名称列表（枚举对象）
-GET /actuator/dict-system
+GET /actuator/dictSystem
 
 // 获取系统字典的完整信息
-GET /actuator/dict-system/PeopleType
+GET /actuator/dictSystem/PeopleType
 ```
 
 ### 3.2 默认 Controller 接口
@@ -340,13 +345,17 @@ GET /actuator/dict-system/PeopleType
   - `text-value-default-null=false` 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串
   - `on-boot-refresh-dict=true` 是否在启动的时候刷新字典
   - `map-value=false` 是否把字典值转换成 Map 形式，包含字典值和文本。false 时在 json 中插入字段显示字典文本；true 时把原字段的值变成 Map 数据
-  - `refresh-dict-interval=60000` 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新。单位：毫秒
+  - `mq-type` 通知其他协同系统刷新字典的MQ类型
+    - 可选值：`none` 不启用，`amqp` 使用 RabbitMQ， `redis` 使用 Redis 的发布/订阅功能
+  - `mq-exchange-name` 消息队列交换器名称 或 Redis channel 名称
+  - `refresh-dict-interval=60s` 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新。
 - `system.dict.cache` DictUtil 工具字典缓存
   - `enabled=true` 是否启用缓存
   - `maximum-size=500` 缓存最大容量
   - `initial-capacity=50` 缓存初始化容量
   - `duration=30s` 有效期时长
-  - `missNum=50` 在有效期内同一个字典值未命中指定次数将快速返回，不再重复请求获取数据字典信息
+  - `miss-num=50` 在有效期内同一个字典值未命中指定次数将快速返回，不再重复请求获取数据字典信息
 - `system.dict.controller` 默认控制器
   - `enabled=true` 是否启用 WEB 请求接口
   - `prefix=/dict` WEB 请求接口前缀
+
