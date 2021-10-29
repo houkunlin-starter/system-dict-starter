@@ -31,7 +31,15 @@ public class LocalDictStore implements DictStore, InitializingBean {
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
-        iterator.forEachRemaining(valueVo -> CACHE_TEXT.put(DictUtil.dictKey(valueVo), valueVo.getTitle()));
+        iterator.forEachRemaining(valueVo -> {
+            final String dictKey = DictUtil.dictKey(valueVo);
+            final String title = valueVo.getTitle();
+            if (title == null) {
+                CACHE_TEXT.remove(dictKey);
+            } else {
+                CACHE_TEXT.put(dictKey, title);
+            }
+        });
     }
 
     @Override

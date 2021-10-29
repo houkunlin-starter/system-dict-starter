@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -32,7 +34,17 @@ public class RedisDictStore implements DictStore, InitializingBean {
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
-        iterator.forEachRemaining(valueVo -> dictValueRedisTemplate.opsForValue().set(DictUtil.dictKey(valueVo), valueVo.getTitle()));
+        final ValueOperations<String, String> opsForValue = dictValueRedisTemplate.opsForValue();
+        final RedisOperations<String, String> operations = opsForValue.getOperations();
+        iterator.forEachRemaining(valueVo -> {
+            final String dictKey = DictUtil.dictKey(valueVo);
+            final String title = valueVo.getTitle();
+            if (title == null) {
+                operations.delete(dictKey);
+            } else {
+                opsForValue.set(dictKey, title);
+            }
+        });
     }
 
     @Override
