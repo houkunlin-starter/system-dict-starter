@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @author HouKunLin
  */
 @ConditionalOnMissingClass("org.springframework.data.redis.core.RedisTemplate")
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class LocalDictStoreConfiguration {
     /**
      * 当环境中不存在 DictStore Bean 的时候创建一个默认的 DictStore Bean 实例

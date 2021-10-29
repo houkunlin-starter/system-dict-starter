@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Lazy;
  * @author HouKunLin
  */
 @Getter
+@Configuration(proxyBeanMethods = false)
 @ComponentScan
 public class SystemDictStarter {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictStarter.class);

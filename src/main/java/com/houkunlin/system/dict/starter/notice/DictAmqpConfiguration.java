@@ -23,7 +23,7 @@ import java.util.Objects;
  */
 @ConditionalOnProperty(prefix = "system.dict", name = "mq-type", havingValue = "AMQP")
 @ConditionalOnClass(AmqpTemplate.class)
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class DictAmqpConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DictAmqpConfiguration.class);
     private final DictRegistrar dictRegistrar;

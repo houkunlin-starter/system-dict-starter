@@ -17,7 +17,7 @@ import java.util.List;
  * @since 1.4.2
  */
 @Getter
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @AllArgsConstructor
 public class DictCacheFactory {
     private final DictProperties dictProperties;

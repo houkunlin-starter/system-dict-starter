@@ -18,7 +18,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @author HouKunLin
  */
 @ConditionalOnClass(RedisTemplate.class)
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @AllArgsConstructor
 public class DictRedisConfiguration {
     /**

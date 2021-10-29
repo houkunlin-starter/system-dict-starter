@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
  * @author HouKunLin
  */
 @ConditionalOnClass(RedisTemplate.class)
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class RedisDictStoreConfiguration {
 
     /**

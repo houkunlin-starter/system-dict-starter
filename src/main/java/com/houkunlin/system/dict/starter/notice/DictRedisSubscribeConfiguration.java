@@ -31,7 +31,7 @@ import java.util.Objects;
  */
 @ConditionalOnProperty(prefix = "system.dict", name = "mq-type", havingValue = "REDIS")
 @ConditionalOnClass(StringRedisTemplate.class)
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class DictRedisSubscribeConfiguration implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DictRedisSubscribeConfiguration.class);
     private final RedisMessageListenerContainer redisMessageListenerContainer;
