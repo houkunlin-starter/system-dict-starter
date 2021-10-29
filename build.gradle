@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.4.4'
+version = '1.4.4.1'
 sourceCompatibility = '1.8'
 
 def gitRepo = "github.com/houkunlin-starter/system-dict-starter.git"
