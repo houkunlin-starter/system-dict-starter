@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author HouKunLin
  */
 @SpringBootTest
-@SystemDictScan(basePackages = "test.application.common.bean")
 class BasicUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired

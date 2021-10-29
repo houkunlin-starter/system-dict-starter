@@ -20,6 +20,8 @@ spring:
       max-request-size: -1
 logging:
   level:
+    root: warn
+    web: warn
     com:
       houkunlin: debug
     test: debug
@@ -49,4 +51,3 @@ management:
         allowed-origins: '*'
       exposure:
         include: '*'
-#    on-boot-refresh-dic: true

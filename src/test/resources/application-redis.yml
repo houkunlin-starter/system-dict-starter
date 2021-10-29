@@ -1,5 +1,4 @@
 spring:
   redis:
-    # 使用 ZeroTier One 组建虚拟局域网，连接局域网内的树莓派主机
-    host: hkl1.houkunlin.cn
+    host: 127.0.0.1
     port: 6379

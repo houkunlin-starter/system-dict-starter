@@ -21,7 +21,6 @@ import java.util.List;
  * @author HouKunLin
  */
 @SpringBootTest
-@SystemDictScan(basePackages = "test.application.common.bean")
 class EnumUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired
