@@ -1,5 +1,7 @@
 package com.houkunlin.system.dict.starter;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
@@ -17,11 +19,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
  * 字典注册，把字典发送到缓存中
@@ -98,6 +98,56 @@ public class DictRegistrar implements InitializingBean {
     public void refreshDictValueEvent(final RefreshDictValueEvent event) {
         final Iterable<DictValueVo> dictValueVos = event.getSource();
         store.store(dictValueVos.iterator());
+        // 把字典值列表通过字典类型收集起来
+        Multimap<String, DictValueVo> multimap = ArrayListMultimap.create();
+        dictValueVos.forEach(valueVo -> multimap.put(valueVo.getDictType(), valueVo));
+        final Set<String> keySet = multimap.keySet();
+        for (final String dictType : keySet) {
+            // 处理维护字典类型代码的字典信息
+            maintainHandleDictType(dictType, new ArrayList<>(multimap.get(dictType)));
+        }
+    }
+
+    /**
+     * 维护处理字典类型信息
+     *
+     * @param dictType 字典类型代码
+     * @param valueVos 字典值列表
+     * @since 1.4.5
+     */
+    private void maintainHandleDictType(final String dictType, final List<DictValueVo> valueVos) {
+        final DictTypeVo dictTypeVo = store.getDictType(dictType);
+        final List<DictValueVo> valueVosResult = valueVos.stream().filter(vo -> vo.getTitle() != null).collect(Collectors.toList());
+        if (dictTypeVo == null) {
+            // 不存在字典类型信息，新增一个字典类型信息
+            final DictTypeVo newType = new DictTypeVo("RefreshDictValueEvent Add", dictType, "RefreshDictValueEvent Add", valueVosResult);
+            store.store(newType);
+            return;
+        }
+        final List<DictValueVo> children = dictTypeVo.getChildren();
+        if (children == null || children.isEmpty()) {
+            // 原字典类型无字典值列表，增加新的字典值列表
+            dictTypeVo.setChildren(valueVosResult);
+            store.store(dictTypeVo);
+            return;
+        }
+        final List<DictValueVo> valueVosRemove = valueVos.stream().filter(vo -> vo.getTitle() == null).collect(Collectors.toList());
+        // 从列表移除需要删除的字典列表
+        children.removeIf(vo1 -> {
+            for (final DictValueVo vo2 : valueVosRemove) {
+                if (Objects.equals(vo1.getValue(), vo2.getValue())) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        // 维护需要替换的字典值列表信息
+        children.addAll(valueVosResult);
+        Map<Object, DictValueVo> map = new LinkedHashMap<>();
+        children.forEach(valueVo -> map.put(valueVo.getValue(), valueVo));
+
+        dictTypeVo.setChildren(new ArrayList<>(map.values()));
+        store.store(dictTypeVo);
     }
 
     /**
