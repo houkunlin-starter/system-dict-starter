@@ -27,18 +27,23 @@ public class DictProperties {
      */
     private boolean rawValue = false;
     /**
+     * 是否把字典值转换成 Map 形式，包含字典值和文本。
+     */
+    private boolean mapValue = false;
+    /**
+     * 是否用字典文本替换字典值输出（在原字段输出字典文本）
+     */
+    private boolean replaceValue = false;
+    /**
      * 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串
      */
     private boolean textValueDefaultNull = false;
+    // =================================================
     /**
      * 是否在启动的时候刷新字典；
      * 设置为 true 时在数据量大的时候可能会影响系统启动速度，可在系统启动后发起 {@link RefreshDictEvent} 事件通知刷新字典
      */
     private boolean onBootRefreshDict = true;
-    /**
-     * 是否把字典值转换成 Map 形式，包含字典值和文本。
-     */
-    private boolean mapValue = false;
     /**
      * 通知其他协同系统刷新字典的MQ类型
      *
@@ -53,10 +58,14 @@ public class DictProperties {
      * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新
      */
     private Duration refreshDictInterval = Duration.ofSeconds(60);
-
+    /**
+     * 缓存配置
+     */
     @NestedConfigurationProperty
     private DictPropertiesCache cache = new DictPropertiesCache();
-
+    /**
+     * 默认控制器接口
+     */
     @NestedConfigurationProperty
     private DictPropertiesController controller = new DictPropertiesController();
 }

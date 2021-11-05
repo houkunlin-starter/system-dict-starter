@@ -29,6 +29,7 @@ system:
   dict:
     raw-value: true
     text-value-default-null: false
+    replace-value: false
     refresh-dict-interval: 20
     mq-type: redis
     cache:

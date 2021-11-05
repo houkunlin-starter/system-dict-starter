@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.houkunlin.system.dict.starter.DictEnum;
 
 import java.lang.annotation.*;
+import java.util.function.BooleanSupplier;
 
 /**
  * 把数据字典值转换成数据字典文本。
@@ -66,6 +67,14 @@ public @interface DictText {
     Type mapValue() default Type.GLOBAL;
 
     /**
+     * 标记是否替换原始值，不使用 {@link #fieldName} 字段输出，直接用字典文本替换原来的字典值输出。
+     * 默认使用 全局配置 配置参数
+     *
+     * @return 是否替换原始值
+     */
+    Type replace() default Type.GLOBAL;
+
+    /**
      * 数据字典分割成数组配置。
      * 用在字段是字符串时，并且字段使用了特定的分隔符来存储多个字典值。
      * 例如：
@@ -89,6 +98,32 @@ public @interface DictText {
         /**
          * 强制为 NO
          */
-        NO,
+        NO;
+
+        /**
+         * 获取所需的值
+         *
+         * @param global 全局配置值
+         * @return true or false
+         */
+        public boolean getValue(final boolean global) {
+            if (this == GLOBAL) {
+                return global;
+            }
+            return this == YES;
+        }
+
+        /**
+         * 获取所需的值
+         *
+         * @param booleanSupplier 全局配置值
+         * @return true or false
+         */
+        public boolean getValue(final BooleanSupplier booleanSupplier) {
+            if (this == GLOBAL) {
+                return booleanSupplier.getAsBoolean();
+            }
+            return this == YES;
+        }
     }
 }

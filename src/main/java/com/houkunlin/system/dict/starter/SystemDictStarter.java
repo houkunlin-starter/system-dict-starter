@@ -53,6 +53,14 @@ public class SystemDictStarter {
         return properties.isMapValue();
     }
 
+    public static boolean isReplaceValue() {
+        if (properties == null) {
+            logger.warn(WARNING_MESSAGE);
+            return false;
+        }
+        return properties.isReplaceValue();
+    }
+
     /**
      * 当环境中不存在 RemoteDic Bean 的时候创建一个默认的 RemoteDic Bean 实例。用来获取不存在系统字典的字典数据
      *

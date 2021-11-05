@@ -132,7 +132,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, replace = DictText.Type.YES)
             private String userType;
         }
         final Bean bean = new Bean("1");
@@ -147,7 +147,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, replace = DictText.Type.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -192,7 +192,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.YES)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.YES, replace = DictText.Type.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -207,7 +207,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.NO)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.NO, replace = DictText.Type.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -222,7 +222,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.YES)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.YES, replace = DictText.Type.NO)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -237,7 +237,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.NO)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -252,7 +252,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.YES)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.YES, replace = DictText.Type.YES)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -267,7 +267,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.NO)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, nullable = DictText.Type.NO, replace = DictText.Type.YES)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -282,7 +282,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.YES)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.YES, replace = DictText.Type.NO)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -297,7 +297,7 @@ class BasicUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO)
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.NO)
             private String userType;
         }
         final Bean bean = new Bean(null);

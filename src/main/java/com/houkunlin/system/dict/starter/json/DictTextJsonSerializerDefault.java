@@ -240,18 +240,21 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @throws IOException 异常
      */
     protected void writeFieldValue(JsonGenerator gen, @Nullable Object fieldValue, Object dictValueText) throws IOException {
-        if (isMapValue()) {
+        final boolean isReplaceValue = dictText.replace().getValue(SystemDictStarter::isReplaceValue);
+        if (dictText.mapValue().getValue(SystemDictStarter::isMapValue)) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", fieldValue);
             map.put("text", dictValueText);
-            if (hasDictTextFieldName) {
+            if (!isReplaceValue) {
                 writeFieldValue(fieldValue, gen);
-                gen.writeFieldName(dictText.fieldName());
+                gen.writeFieldName(outFieldName);
             }
             gen.writeObject(map);
         } else {
-            writeFieldValue(fieldValue, gen);
-            gen.writeFieldName(outFieldName);
+            if (!isReplaceValue) {
+                writeFieldValue(fieldValue, gen);
+                gen.writeFieldName(outFieldName);
+            }
             gen.writeObject(dictValueText);
         }
     }
@@ -278,23 +281,9 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @return 处理结果
      */
     protected Object defaultNullableValue(Object dictValueText) {
-        if (isNullableValue()) {
+        if (dictText.nullable().getValue(SystemDictStarter::isTextValueDefaultNull)) {
             return dictValueText;
         }
         return dictValueText == null ? "" : dictValueText;
-    }
-
-    private boolean isMapValue() {
-        if (dictText.mapValue() == DictText.Type.YES) {
-            return true;
-        }
-        return dictText.mapValue() == DictText.Type.GLOBAL && SystemDictStarter.isMapValue();
-    }
-
-    private boolean isNullableValue() {
-        if (dictText.nullable() == DictText.Type.YES) {
-            return true;
-        }
-        return dictText.nullable() == DictText.Type.GLOBAL && SystemDictStarter.isTextValueDefaultNull();
     }
 }
