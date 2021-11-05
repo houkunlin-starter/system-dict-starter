@@ -3,6 +3,7 @@ package com.houkunlin.system.dict.starter;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
+import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
@@ -16,6 +17,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -96,5 +98,35 @@ public class DictRegistrar implements InitializingBean {
     public void refreshDictValueEvent(final RefreshDictValueEvent event) {
         final Iterable<DictValueVo> dictValueVos = event.getSource();
         store.store(dictValueVos.iterator());
+    }
+
+    /**
+     * 刷新单个字典值文本信息，不会刷新整个字典信息
+     *
+     * @param event 事件
+     * @since 1.4.5
+     */
+    @Async
+    @EventListener
+    public void refreshDictValueEvent(final RefreshDictTypeEvent event) {
+        final Iterable<DictTypeVo> dictTypeVos = event.getSource();
+        dictTypeVos.forEach(dictType -> {
+            final List<DictValueVo> dictValueVos = fixDictTypeChildren(dictType);
+            store.store(dictType);
+            store.store(dictValueVos.iterator());
+        });
+    }
+
+    private List<DictValueVo> fixDictTypeChildren(final DictTypeVo dictTypeVo) {
+        final List<DictValueVo> children = dictTypeVo.getChildren();
+        if (children != null) {
+            for (final DictValueVo valueVo : children) {
+                valueVo.setDictType(dictTypeVo.getType());
+            }
+            return children;
+        } else {
+            dictTypeVo.setChildren(Collections.emptyList());
+            return Collections.emptyList();
+        }
     }
 }
