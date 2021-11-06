@@ -22,7 +22,7 @@ public class ScheduledRefreshDicEvent {
     @Scheduled(fixedRate = 30000)
     public void refreshDicEvent() {
         logger.info("开始定时刷新事件");
-        publisher.publishEvent(new RefreshDictEvent("定时刷新字典：" + System.currentTimeMillis(), true, true));
+        publisher.publishEvent(new RefreshDictEvent("定时刷新字典：" + System.currentTimeMillis(), true, false));
         logger.info("结束定时刷新事件");
     }
 }

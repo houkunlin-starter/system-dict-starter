@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -17,24 +19,24 @@ import test.application.common.bean.PeopleType;
  * @author HouKunLin
  */
 @Component
-public class CommandRunnerTests implements CommandLineRunner {
+public class CommandRunnerTests1 implements CommandLineRunner {
+    private static final Logger logger = LoggerFactory.getLogger(CommandRunnerTests1.class);
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher publisher;
 
-    public CommandRunnerTests(final ObjectMapper objectMapper, final ApplicationEventPublisher publisher) {
+    public CommandRunnerTests1(final ObjectMapper objectMapper, final ApplicationEventPublisher publisher) {
         this.objectMapper = objectMapper;
         this.publisher = publisher;
     }
 
     @Override
     public void run(final String... args) throws Exception {
-        System.out.println(toJson(new Bean2()));
+        logger.info("默认的 Bean2 输出：{}", toJson(new Bean2()));
         final Bean1 bean1 = new Bean1();
-        System.out.println(toJson(bean1));
-        System.out.println(toJson(new Bean2()));
-        System.out.println(DictUtil.getDictType(PeopleType.class.getSimpleName()));
-        System.out.println(toJson(DictUtil.getDictType(PeopleType.class.getSimpleName())));
-        publisher.publishEvent(new RefreshDictEvent("test", true, true));
+        logger.info("默认的 Bean1 输出：{}", toJson(bean1));
+        logger.info("从字典存储中读取 PeopleType ：{}", DictUtil.getDictType(PeopleType.class.getSimpleName()));
+        logger.info("从字典存储中读取 PeopleType JSON：{}", toJson(DictUtil.getDictType(PeopleType.class.getSimpleName())));
+        publisher.publishEvent(new RefreshDictEvent("CommandRunnerTests1 刷新", true, false));
     }
 
     private String toJson(Object o) throws JsonProcessingException {
