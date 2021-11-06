@@ -12,6 +12,12 @@ plugins {
 group = 'com.houkunlin'
 version = '1.4.4.1'
 sourceCompatibility = '1.8'
+description = """
+系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
+The system data dictionary is automatically translated into dictionary text.
+The user data dictionary stored in the system database can be aggregated, and the enumeration can also be used as the system data dictionary.
+It is mainly used to automatically translate dictionary values into dictionary text information when returning data to the front end.
+"""
 
 def gitRepo = "github.com/houkunlin-starter/system-dict-starter.git"
 def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
@@ -67,7 +73,7 @@ publishing {
             pom {
                 name = project.name
                 packaging = 'jar'
-                description = project.name
+                description = project.description
                 url = "https://${gitRepo}"
                 // properties = []
                 licenses {
