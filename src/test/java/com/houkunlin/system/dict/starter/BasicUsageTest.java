@@ -53,6 +53,21 @@ class BasicUsageTest {
     }
 
     @Test
+    void testBasic3() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean("1");
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=1)
+        System.out.println(value); // {"userType":"普通用户"}
+        Assertions.assertEquals("{\"userType\":\"普通用户\"}", value);
+    }
+
+    @Test
     void testBasicNull1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -83,6 +98,21 @@ class BasicUsageTest {
     }
 
     @Test
+    void testBasicNull3() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":""}
+        Assertions.assertEquals("{\"userType\":\"\"}", value);
+    }
+
+    @Test
     void testBasicNullable1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -110,6 +140,21 @@ class BasicUsageTest {
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","userTypeText":""}
         Assertions.assertEquals("{\"userType\":\"-1\",\"userTypeText\":\"\"}", value);
+    }
+
+    @Test
+    void testBasicNullable3() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean("-1");
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=-1)
+        System.out.println(value); // {"userType":""}
+        Assertions.assertEquals("{\"userType\":\"\"}", value);
     }
 
     @Test
@@ -188,6 +233,21 @@ class BasicUsageTest {
     }
 
     @Test
+    void testMapValue6() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean("-1");
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=-1)
+        System.out.println(value); // {"userType":{"text":"","value":"-1"}}
+        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+    }
+
+    @Test
     void testMapValueNullable1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -248,6 +308,21 @@ class BasicUsageTest {
     }
 
     @Test
+    void testMapValueNullable5() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean("-1");
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=-1)
+        System.out.println(value); // {"userType":{"text":"","value":"-1"}}
+        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+    }
+
+    @Test
     void testMapValueNullableNull1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -305,5 +380,20 @@ class BasicUsageTest {
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"map":{"text":"","value":null}}
         Assertions.assertEquals("{\"userType\":null,\"map\":{\"text\":\"\",\"value\":null}}", value);
+    }
+
+    @Test
+    void testMapValueNullableNull5() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":{"text":"","value":null}}
+        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":null}}", value);
     }
 }

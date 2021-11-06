@@ -57,6 +57,21 @@ class DictEnumUsageTest {
     }
 
     @Test
+    void testBasic3() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            private PeopleType userType;
+        }
+        final Bean bean = new Bean(PeopleType.ADMIN);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=0)
+        System.out.println(value); // {"userType":"系统管理"}
+        Assertions.assertEquals("{\"userType\":\"系统管理\"}", value);
+    }
+
+    @Test
     void testBasicNull1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -84,6 +99,21 @@ class DictEnumUsageTest {
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeTitle":""}
         Assertions.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
+    }
+
+    @Test
+    void testBasicNull3() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            private PeopleType userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":""}
+        Assertions.assertEquals("{\"userType\":\"\"}", value);
     }
 
     @Test
@@ -132,6 +162,21 @@ class DictEnumUsageTest {
     }
 
     @Test
+    void testArray4() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictText.Type.YES)
+            private List<PeopleType> userType;
+        }
+        final Bean bean = new Bean(Arrays.asList(null, PeopleType.ADMIN, PeopleType.USER));
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=[null,0,1])
+        System.out.println(value); // {"userType":["系统管理","普通用户"]}
+        Assertions.assertEquals("{\"userType\":[\"系统管理\",\"普通用户\"]}", value);
+    }
+
+    @Test
     void testArrayNull1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -174,5 +219,20 @@ class DictEnumUsageTest {
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":[]}
         Assertions.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
+    }
+
+    @Test
+    void testArrayNull4() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictText.Type.YES)
+            private List<PeopleType> userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":[]}
+        Assertions.assertEquals("{\"userType\":[]}", value);
     }
 }

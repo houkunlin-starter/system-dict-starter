@@ -71,6 +71,21 @@ class ArrayUsageTest {
     }
 
     @Test
+    void testString4() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean("0,1");
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=0,1)
+        System.out.println(value); // {"userType":["系统管理","普通用户"]}
+        Assertions.assertEquals("{\"userType\":[\"系统管理\",\"普通用户\"]}", value);
+    }
+
+    @Test
     void testStringNull1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -113,6 +128,21 @@ class ArrayUsageTest {
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":[]}
         Assertions.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
+    }
+
+    @Test
+    void testStringNull4() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictText.Type.YES)
+            private String userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":[]}
+        Assertions.assertEquals("{\"userType\":[]}", value);
     }
 
     @Test
@@ -161,6 +191,21 @@ class ArrayUsageTest {
     }
 
     @Test
+    void testArray4() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictText.Type.YES)
+            private List<String> userType;
+        }
+        final Bean bean = new Bean(Arrays.asList("-1", "0", "1"));
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=[-1, 0, 1])
+        System.out.println(value); // {"userType":["系统管理","普通用户"]}
+        Assertions.assertEquals("{\"userType\":[\"系统管理\",\"普通用户\"]}", value);
+    }
+
+    @Test
     void testArrayNull1() throws JsonProcessingException {
         @Data
         @AllArgsConstructor
@@ -203,5 +248,20 @@ class ArrayUsageTest {
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":[]}
         Assertions.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
+    }
+
+    @Test
+    void testArrayNull4() throws JsonProcessingException {
+        @Data
+        @AllArgsConstructor
+        class Bean {
+            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictText.Type.YES)
+            private List<String> userType;
+        }
+        final Bean bean = new Bean(null);
+        final String value = objectMapper.writeValueAsString(bean);
+        System.out.println(bean); // Bean(userType=null)
+        System.out.println(value); // {"userType":[]}
+        Assertions.assertEquals("{\"userType\":[]}", value);
     }
 }
