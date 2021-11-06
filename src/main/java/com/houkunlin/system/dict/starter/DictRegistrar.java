@@ -76,6 +76,8 @@ public class DictRegistrar implements InitializingBean {
 
     /**
      * 处理系统内部发起的刷新数据字典事件
+     *
+     * @param event RefreshDictEvent 事件
      */
     @Async
     @EventListener
@@ -88,9 +90,9 @@ public class DictRegistrar implements InitializingBean {
     }
 
     /**
-     * 刷新单个字典值文本信息，不会刷新整个字典信息
+     * 刷新单个字典值文本信息。
      *
-     * @param event 事件
+     * @param event RefreshDictValueEvent 事件
      * @since 1.4.4
      */
     @Async
@@ -98,6 +100,21 @@ public class DictRegistrar implements InitializingBean {
     public void refreshDictValueEvent(final RefreshDictValueEvent event) {
         final Iterable<DictValueVo> dictValueVos = event.getSource();
         store.store(dictValueVos.iterator());
+    }
+
+    /**
+     * 刷新单个字典值文本信息时根据 {@link RefreshDictValueEvent#updateDictType} 参数决定是否维护的字典类型对象里面的字典值列表信息
+     *
+     * @param event RefreshDictValueEvent 事件
+     * @since 1.4.5
+     */
+    @Async
+    @EventListener
+    public void refreshDictValueEventUpdateDictType(final RefreshDictValueEvent event) {
+        if (!event.isUpdateDictType()) {
+            return;
+        }
+        final Iterable<DictValueVo> dictValueVos = event.getSource();
         // 把字典值列表通过字典类型收集起来
         Multimap<String, DictValueVo> multimap = ArrayListMultimap.create();
         dictValueVos.forEach(valueVo -> multimap.put(valueVo.getDictType(), valueVo));
@@ -151,9 +168,9 @@ public class DictRegistrar implements InitializingBean {
     }
 
     /**
-     * 刷新单个字典值文本信息，不会刷新整个字典信息
+     * 刷新单个字典值类型信息（包含此字典类型的字典值列表）
      *
-     * @param event 事件
+     * @param event RefreshDictTypeEvent 事件
      * @since 1.4.5
      */
     @Async
