@@ -68,7 +68,22 @@ class RefreshTest {
         Assertions.assertTrue(valueVo.isPresent());
         Assertions.assertEquals("修改后的名称", valueVo.get().getTitle());
         Assertions.assertEquals("修改后的名称", DictUtil.getDictText(dictType, "2"));
+    }
 
+    @Test
+    void testRefreshDictValueRemove() {
+        System.out.println(toJson(DictUtil.getDictType(dictType)));
+
+        long start = System.nanoTime();
+        publisher.publishEvent(new RefreshDictValueEvent(DictValueVo.builder().dictType(dictType).value(2).title(null).build()));
+        logger.info("修改了一个值 耗时 {} ms", (System.nanoTime() - start) / 1000_000.0);
+        final DictTypeVo dictTypeVo = DictUtil.getDictType(dictType);
+        System.out.println(toJson(dictTypeVo));
+
+        final Optional<DictValueVo> valueVo = dictTypeVo.getChildren().stream().filter(vo -> Objects.equals(vo.getValue(), 2)).findFirst();
+        Assertions.assertFalse(valueVo.isPresent());
+        Assertions.assertEquals(2, dictTypeVo.getChildren().size());
+        Assertions.assertNull(DictUtil.getDictText(dictType, "2"));
     }
 
     @Test
