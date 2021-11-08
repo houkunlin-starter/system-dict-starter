@@ -35,6 +35,9 @@ public class RedisDictStore implements DictStore, InitializingBean {
         final String dictKey = DictUtil.dictKey(dictType.getType());
         if (children == null) {
             opsForValue.getOperations().delete(dictKey);
+            if (logger.isDebugEnabled()) {
+                logger.debug("字典类型被删除 {}", dictType.getType());
+            }
         } else {
             opsForValue.set(dictKey, dictType);
         }
@@ -49,6 +52,9 @@ public class RedisDictStore implements DictStore, InitializingBean {
             final String title = valueVo.getTitle();
             if (title == null) {
                 operations.delete(dictKey);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("字典值文本被删除 {}", dictKey);
+                }
             } else {
                 opsForValue.set(dictKey, title);
             }

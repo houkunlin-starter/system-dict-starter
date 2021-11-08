@@ -24,7 +24,6 @@ import java.util.function.BooleanSupplier;
 public @interface DictText {
     /**
      * 数据字典的代码。
-     * 当此注解在系统字典枚举上时，该字段表示字典类型代码。
      *
      * @return 数据字典代码
      */

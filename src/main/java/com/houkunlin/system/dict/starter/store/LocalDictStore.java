@@ -30,6 +30,9 @@ public class LocalDictStore implements DictStore, InitializingBean {
         final List<DictValueVo> children = dictType.getChildren();
         if (children == null) {
             CACHE_TYPE.remove(dictType.getType());
+            if (logger.isDebugEnabled()) {
+                logger.debug("字典类型被删除 {}", dictType.getType());
+            }
         } else {
             CACHE_TYPE.put(dictType.getType(), dictType);
         }
@@ -42,6 +45,9 @@ public class LocalDictStore implements DictStore, InitializingBean {
             final String title = valueVo.getTitle();
             if (title == null) {
                 CACHE_TEXT.remove(dictKey);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("字典值文本被删除 {}", dictKey);
+                }
             } else {
                 CACHE_TEXT.put(dictKey, title);
             }

@@ -87,10 +87,9 @@ public class DictRegistrar implements InitializingBean {
     @EventListener
     public void eventListenerRefreshEvent(final RefreshDictEvent event) {
         if (logger.isDebugEnabled()) {
-            logger.debug("[start] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
+            logger.debug("[RefreshDictEvent] 应用内部通知刷新字典事件。事件内容：{}", event.getSource());
         }
         refreshDict(event.getDictProviderClasses());
-        logger.debug("[finish] 应用内部通知刷新字典事件");
     }
 
     /**
@@ -103,6 +102,9 @@ public class DictRegistrar implements InitializingBean {
     @EventListener
     public void refreshDictValueEvent(final RefreshDictValueEvent event) {
         final Iterable<DictValueVo> dictValueVos = event.getSource();
+        if (logger.isDebugEnabled()) {
+            logger.debug("[RefreshDictValueEvent.value] 刷新字典值文本信息 {}", dictValueVos);
+        }
         store.store(dictValueVos.iterator());
     }
 
@@ -124,6 +126,9 @@ public class DictRegistrar implements InitializingBean {
         Multimap<String, DictValueVo> multimap = ArrayListMultimap.create();
         dictValueVos.forEach(valueVo -> multimap.put(valueVo.getDictType(), valueVo));
         final Set<String> keySet = multimap.keySet();
+        if (logger.isDebugEnabled()) {
+            logger.debug("[RefreshDictValueEvent.type] 刷新字典值涉及的字典类型代码 {}", keySet);
+        }
         for (final String dictType : keySet) {
             // 处理维护字典类型代码的字典信息
             maintainHandleDictType(dictType, new ArrayList<>(multimap.get(dictType)), removeDictType);
@@ -133,42 +138,70 @@ public class DictRegistrar implements InitializingBean {
     /**
      * 维护处理字典类型信息
      *
-     * @param dictType 字典类型代码
-     * @param valueVos 字典值列表
+     * @param dictType       字典类型代码
+     * @param valueVos       字典值列表
+     * @param removeDictType 没有字典值列表时是否删除字典类型
      * @since 1.4.5
      */
     private void maintainHandleDictType(final String dictType, final List<DictValueVo> valueVos, final boolean removeDictType) {
         final DictTypeVo dictTypeVo = store.getDictType(dictType);
-        final List<DictValueVo> valueVosResult = valueVos.stream().filter(vo -> vo.getTitle() != null).collect(Collectors.toList());
+        final List<DictValueVo> valueVosUpdate = valueVos.stream().filter(vo -> vo.getTitle() != null).collect(Collectors.toList());
         if (dictTypeVo == null) {
             // 不存在字典类型信息，新增一个字典类型信息
-            final DictTypeVo newType = new DictTypeVo("RefreshDictValueEvent Add", dictType, "RefreshDictValueEvent Add", valueVosResult);
+            final DictTypeVo newType = new DictTypeVo("RefreshDictValueEvent Add", dictType, "RefreshDictValueEvent Add", valueVosUpdate);
             store.store(newType);
+            if (logger.isDebugEnabled()) {
+                logger.debug("[RefreshDictValueEvent.type] 有一个新的字典类型被加入到缓存中 {}", newType);
+            }
             return;
         }
         final List<DictValueVo> children = dictTypeVo.getChildren();
         if (children == null || children.isEmpty()) {
             // 原字典类型无字典值列表，增加新的字典值列表
-            dictTypeVo.setChildren(valueVosResult);
+            dictTypeVo.setChildren(valueVosUpdate);
             store.store(dictTypeVo);
+            if (logger.isDebugEnabled()) {
+                logger.debug("[RefreshDictValueEvent.type] 旧字典类型无字典值，更新后字典类型有字典值 {}", dictTypeVo);
+            }
             return;
         }
         final List<DictValueVo> valueVosRemove = valueVos.stream().filter(vo -> vo.getTitle() == null).collect(Collectors.toList());
+        maintainHandleDictTypeDiffUpdate(dictTypeVo, valueVosUpdate, valueVosRemove, removeDictType);
+    }
+
+    /**
+     * 维护处理字典类型信息（处理字典值列表差异合并）
+     *
+     * @param dictTypeVo     字典类型对象
+     * @param valueVosUpdate 需要更新或新增的字典值列表
+     * @param valueVosRemove 需要删除的字典值类别
+     * @param removeDictType 没有字典值列表时是否删除字典类型
+     * @since 1.4.5.1
+     */
+    private void maintainHandleDictTypeDiffUpdate(final DictTypeVo dictTypeVo, final List<DictValueVo> valueVosUpdate,
+                                                  final List<DictValueVo> valueVosRemove, final boolean removeDictType) {
+        final List<DictValueVo> children = dictTypeVo.getChildren();
         // 从列表移除需要删除的字典列表
         children.removeIf(vo1 -> {
             for (final DictValueVo vo2 : valueVosRemove) {
                 if (Objects.equals(vo1.getValue(), vo2.getValue())) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("[RefreshDictValueEvent.type] 字典类型 {} 的 {} = {} 字典值被删除", dictTypeVo.getType(), vo1.getValue(), vo1.getTitle());
+                    }
                     return true;
                 }
             }
             return false;
         });
         // 维护需要替换的字典值列表信息
-        children.addAll(valueVosResult);
+        children.addAll(valueVosUpdate);
         Map<Object, DictValueVo> map = new LinkedHashMap<>();
         children.forEach(valueVo -> map.put(valueVo.getValue(), valueVo));
 
         dictTypeVo.setChildren(removeDictType && map.isEmpty() ? null : new ArrayList<>(map.values()));
+        if (logger.isDebugEnabled()) {
+            logger.debug("[RefreshDictValueEvent.type] 字典类型的字典值列表被更新 {}", dictTypeVo);
+        }
         store.store(dictTypeVo);
     }
 
