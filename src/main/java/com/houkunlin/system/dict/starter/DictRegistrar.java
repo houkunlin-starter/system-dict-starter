@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.Duration;
@@ -59,7 +60,10 @@ public class DictRegistrar implements InitializingBean {
                 final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
                 typeIterator.forEachRemaining(dictType -> {
                     store.store(dictType);
-                    store.store(dictType.getChildren().iterator());
+                    final List<DictValueVo> valueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
+                    if (valueVos != null) {
+                        store.store(valueVos.iterator());
+                    }
                 });
             } else {
                 store.store(provider.dictValueIterator());
@@ -175,25 +179,25 @@ public class DictRegistrar implements InitializingBean {
      */
     @Async
     @EventListener
-    public void refreshDictValueEvent(final RefreshDictTypeEvent event) {
+    public void refreshDictTypeEvent(final RefreshDictTypeEvent event) {
         final Iterable<DictTypeVo> dictTypeVos = event.getSource();
         dictTypeVos.forEach(dictType -> {
-            final List<DictValueVo> dictValueVos = fixDictTypeChildren(dictType);
+            final List<DictValueVo> dictValueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
             store.store(dictType);
-            store.store(dictValueVos.iterator());
+            if (dictValueVos != null) {
+                store.store(dictValueVos.iterator());
+            }
         });
     }
 
-    private List<DictValueVo> fixDictTypeChildren(final DictTypeVo dictTypeVo) {
-        final List<DictValueVo> children = dictTypeVo.getChildren();
-        if (children != null) {
-            for (final DictValueVo valueVo : children) {
-                valueVo.setDictType(dictTypeVo.getType());
-            }
-            return children;
-        } else {
-            dictTypeVo.setChildren(Collections.emptyList());
-            return Collections.emptyList();
+    @Nullable
+    private List<DictValueVo> fixDictTypeChildren(final String dictType, final List<DictValueVo> dictValueVos) {
+        if (dictValueVos == null) {
+            return null;
         }
+        for (final DictValueVo valueVo : dictValueVos) {
+            valueVo.setDictType(dictType);
+        }
+        return dictValueVos;
     }
 }

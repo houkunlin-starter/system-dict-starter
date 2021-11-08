@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,8 @@ public class DictValueVo implements Serializable {
     @ApiModelProperty("字典值")
     private Object value;
     /**
-     * 字典名称
+     * 字典名称。
+     * <p>在使用 {@link RefreshDictValueEvent} 事件时，此值为 null 意为删除这个字典值文本信息</p>
      */
     @ApiModelProperty("字典名称")
     private String title;

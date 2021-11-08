@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,14 @@ public class RedisDictStore implements DictStore, InitializingBean {
 
     @Override
     public void store(final DictTypeVo dictType) {
-        dictTypeRedisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
+        final ValueOperations<String, DictTypeVo> opsForValue = dictTypeRedisTemplate.opsForValue();
+        final List<DictValueVo> children = dictType.getChildren();
+        final String dictKey = DictUtil.dictKey(dictType.getType());
+        if (children == null) {
+            opsForValue.getOperations().delete(dictKey);
+        } else {
+            opsForValue.set(dictKey, dictType);
+        }
     }
 
     @Override

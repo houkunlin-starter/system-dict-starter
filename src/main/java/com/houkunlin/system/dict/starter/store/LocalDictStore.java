@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +27,12 @@ public class LocalDictStore implements DictStore, InitializingBean {
 
     @Override
     public void store(final DictTypeVo dictType) {
-        CACHE_TYPE.put(dictType.getType(), dictType);
+        final List<DictValueVo> children = dictType.getChildren();
+        if (children == null) {
+            CACHE_TYPE.remove(dictType.getType());
+        } else {
+            CACHE_TYPE.put(dictType.getType(), dictType);
+        }
     }
 
     @Override

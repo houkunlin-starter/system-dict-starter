@@ -1,5 +1,6 @@
 package com.houkunlin.system.dict.starter.bean;
 
+import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,7 @@ public class DictTypeVo implements Serializable {
     private String remark;
     /**
      * 字典值列表
+     * <p>在使用 {@link RefreshDictTypeEvent} 事件时，此值为 null 意为删除这个字典类型对象信息</p>
      */
     @ApiModelProperty("字典值列表")
     private List<DictValueVo> children;

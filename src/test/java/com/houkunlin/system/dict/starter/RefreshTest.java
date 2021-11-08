@@ -105,4 +105,18 @@ class RefreshTest {
         Assertions.assertEquals("新的值1", DictUtil.getDictText(dictType, "1"));
         Assertions.assertEquals("新的值2", DictUtil.getDictText(dictType, "2"));
     }
+
+    @Test
+    void testRefreshDictTypeRemove() {
+        System.out.println(toJson(DictUtil.getDictType(dictType)));
+
+        long start = System.nanoTime();
+        final DictTypeVo newDictType = new DictTypeVo("", dictType, "", null);
+        publisher.publishEvent(new RefreshDictTypeEvent(newDictType));
+        logger.info("删除一个对象 耗时 {} ms", (System.nanoTime() - start) / 1000_000.0);
+        final DictTypeVo dictTypeVo = DictUtil.getDictType(dictType);
+        System.out.println(toJson(dictTypeVo));
+
+        Assertions.assertNull(dictTypeVo);
+    }
 }
