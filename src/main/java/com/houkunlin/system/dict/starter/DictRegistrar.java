@@ -217,10 +217,11 @@ public class DictRegistrar implements InitializingBean {
         final Iterable<DictTypeVo> dictTypeVos = event.getSource();
         dictTypeVos.forEach(dictType -> {
             final List<DictValueVo> dictValueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
-            store.store(dictType);
             if (dictValueVos != null) {
+                store.removeDictType(dictType.getType());
                 store.store(dictValueVos.iterator());
             }
+            store.store(dictType);
         });
     }
 

@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.Iterator;
 import java.util.List;
@@ -30,35 +28,43 @@ public class RedisDictStore implements DictStore, InitializingBean {
 
     @Override
     public void store(final DictTypeVo dictType) {
-        final ValueOperations<String, DictTypeVo> opsForValue = dictTypeRedisTemplate.opsForValue();
         final List<DictValueVo> children = dictType.getChildren();
-        final String dictKey = DictUtil.dictKey(dictType.getType());
         if (children == null) {
-            opsForValue.getOperations().delete(dictKey);
-            if (logger.isDebugEnabled()) {
-                logger.debug("字典类型被删除 {}", dictType.getType());
-            }
+            removeDictType(dictType.getType());
         } else {
-            opsForValue.set(dictKey, dictType);
+            dictTypeRedisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
         }
     }
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
-        final ValueOperations<String, String> opsForValue = dictValueRedisTemplate.opsForValue();
-        final RedisOperations<String, String> operations = opsForValue.getOperations();
         iterator.forEachRemaining(valueVo -> {
             final String dictKey = DictUtil.dictKey(valueVo);
             final String title = valueVo.getTitle();
             if (title == null) {
-                operations.delete(dictKey);
+                dictValueRedisTemplate.delete(dictKey);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("字典值文本被删除 {}", dictKey);
+                    logger.debug("[removeDictValue] 字典值文本被删除 {}", dictKey);
                 }
             } else {
-                opsForValue.set(dictKey, title);
+                dictValueRedisTemplate.opsForValue().set(dictKey, title);
             }
         });
+    }
+
+    @Override
+    public void removeDictType(final String dictType) {
+        dictTypeRedisTemplate.delete(DictUtil.dictKey(dictType));
+        if (logger.isDebugEnabled()) {
+            logger.debug("[removeDictType] 字典类型被删除 {}", dictType);
+        }
+        final String prefix = DictUtil.VALUE_PREFIX.concat(dictType);
+        final Set<String> keys = dictValueRedisTemplate.keys(prefix + ":*");
+        logger.debug("[removeDictType] 字典值文本被删除 {}", keys);
+        assert keys != null;
+        if (!keys.isEmpty()) {
+            dictValueRedisTemplate.delete(keys);
+        }
     }
 
     @Override

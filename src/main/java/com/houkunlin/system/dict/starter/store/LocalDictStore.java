@@ -29,10 +29,7 @@ public class LocalDictStore implements DictStore, InitializingBean {
     public void store(final DictTypeVo dictType) {
         final List<DictValueVo> children = dictType.getChildren();
         if (children == null) {
-            CACHE_TYPE.remove(dictType.getType());
-            if (logger.isDebugEnabled()) {
-                logger.debug("字典类型被删除 {}", dictType.getType());
-            }
+            removeDictType(dictType.getType());
         } else {
             CACHE_TYPE.put(dictType.getType(), dictType);
         }
@@ -46,11 +43,28 @@ public class LocalDictStore implements DictStore, InitializingBean {
             if (title == null) {
                 CACHE_TEXT.remove(dictKey);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("字典值文本被删除 {}", dictKey);
+                    logger.debug("[removeDictValue] 字典值文本被删除 {}", dictKey);
                 }
             } else {
                 CACHE_TEXT.put(dictKey, title);
             }
+        });
+    }
+
+    @Override
+    public void removeDictType(final String dictType) {
+        CACHE_TYPE.remove(dictType);
+        if (logger.isDebugEnabled()) {
+            logger.debug("[removeDictType] 字典类型被删除 {}", dictType);
+        }
+        final String prefix = DictUtil.VALUE_PREFIX.concat(dictType);
+        CACHE_TEXT.entrySet().removeIf(entry -> {
+            final String entryKey = entry.getKey();
+            if (entryKey != null && entryKey.startsWith(prefix)) {
+                logger.debug("[removeDictType] 字典值文本被删除 {}", entryKey);
+                return true;
+            }
+            return false;
         });
     }
 

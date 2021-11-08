@@ -28,6 +28,13 @@ public interface DictStore {
     void store(Iterator<DictValueVo> iterator);
 
     /**
+     * 删除一个字典类型（同时删除对应的字典值列表）
+     *
+     * @param dictType 字典类型代码
+     */
+    void removeDictType(final String dictType);
+
+    /**
      * 字典类型代码列表。
      * <p>仅能够得到 {@link DictProvider#isStoreDictType()} 返回 true 的字典类型代码信息。</p>
      * <p>当 {@link DictProvider#isStoreDictType()} 返回 false 时对应的 {@link DictProvider} 提供的字典类型信息对象将不会被存储，也就是当前方法无法获得该字典类型代码</p>
