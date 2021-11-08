@@ -119,13 +119,14 @@ public class DictRegistrar implements InitializingBean {
             return;
         }
         final Iterable<DictValueVo> dictValueVos = event.getSource();
+        final boolean removeDictType = event.isRemoveDictType();
         // 把字典值列表通过字典类型收集起来
         Multimap<String, DictValueVo> multimap = ArrayListMultimap.create();
         dictValueVos.forEach(valueVo -> multimap.put(valueVo.getDictType(), valueVo));
         final Set<String> keySet = multimap.keySet();
         for (final String dictType : keySet) {
             // 处理维护字典类型代码的字典信息
-            maintainHandleDictType(dictType, new ArrayList<>(multimap.get(dictType)));
+            maintainHandleDictType(dictType, new ArrayList<>(multimap.get(dictType)), removeDictType);
         }
     }
 
@@ -136,7 +137,7 @@ public class DictRegistrar implements InitializingBean {
      * @param valueVos 字典值列表
      * @since 1.4.5
      */
-    private void maintainHandleDictType(final String dictType, final List<DictValueVo> valueVos) {
+    private void maintainHandleDictType(final String dictType, final List<DictValueVo> valueVos, final boolean removeDictType) {
         final DictTypeVo dictTypeVo = store.getDictType(dictType);
         final List<DictValueVo> valueVosResult = valueVos.stream().filter(vo -> vo.getTitle() != null).collect(Collectors.toList());
         if (dictTypeVo == null) {
@@ -167,7 +168,7 @@ public class DictRegistrar implements InitializingBean {
         Map<Object, DictValueVo> map = new LinkedHashMap<>();
         children.forEach(valueVo -> map.put(valueVo.getValue(), valueVo));
 
-        dictTypeVo.setChildren(new ArrayList<>(map.values()));
+        dictTypeVo.setChildren(removeDictType && map.isEmpty() ? null : new ArrayList<>(map.values()));
         store.store(dictTypeVo);
     }
 
