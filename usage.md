@@ -136,7 +136,7 @@ public class MyRemoteDict implements RemoteDict {
 
 
 
-### 1.2 字典缓存存储
+### 1.2 字典存储
 
 在前面说到系统的枚举字典和 `DictProvider` 提供的字典会被缓存，工具中已经默认提供了两个缓存对象
 

@@ -1,5 +1,8 @@
 # 更改日志
 
+## 1.4.5.1 版本
+
+- feat(store): 刷新字典时当 DictTypeVo#children = null 时视为删除字典类型对象
 
 ## 1.4.5 版本
 
