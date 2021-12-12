@@ -30,6 +30,14 @@ public class DictValueVo implements Serializable {
     @JsonIgnore
     private String dictType;
     /**
+     * 父级字典值，由父级字典值可以组成一个类似树形结构数据的字典信息。
+     * 构建树形结构字典数据所需要的一个父级值；
+     *
+     * @since 1.4.6
+     */
+    @ApiModelProperty("父级字典值")
+    private Object parentValue;
+    /**
      * 字典值
      */
     @ApiModelProperty("字典值")
@@ -45,4 +53,11 @@ public class DictValueVo implements Serializable {
      */
     @ApiModelProperty("排序值（系统不会执行排序后再返回给前端）")
     private int sorted;
+
+    public DictValueVo(final String dictType, final Object value, final String title, final int sorted) {
+        this.dictType = dictType;
+        this.value = value;
+        this.title = title;
+        this.sorted = sorted;
+    }
 }

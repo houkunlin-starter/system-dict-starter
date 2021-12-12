@@ -96,6 +96,20 @@ public class DictTypeVo implements Serializable {
             return this;
         }
 
+        /**
+         * 树形结构数据
+         *
+         * @param parentValue 字典父级值
+         * @param value       字典值
+         * @param title       字典文本
+         * @return this
+         * @since 1.4.6
+         */
+        public DictTypeVo.DictTypeBuilder add(final Object parentValue, final Object value, final String title) {
+            this.children.add(new DictValueVo(type, parentValue, value, title, 0));
+            return this;
+        }
+
         public DictTypeVo build() {
             return new DictTypeVo(title, type, remark, children);
         }

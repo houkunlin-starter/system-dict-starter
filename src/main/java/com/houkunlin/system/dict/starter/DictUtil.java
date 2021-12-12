@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DictUtil {
     public static final String TYPE_PREFIX = "dict:t:";
     public static final String VALUE_PREFIX = "dict:v:";
+    public static final String PARENT_PREFIX = "dict:p:";
 
     private static DictStore store;
     /**
@@ -42,6 +43,13 @@ public class DictUtil {
         return store.getDictType(type);
     }
 
+    /**
+     * 获取字典文本
+     *
+     * @param type  字典类型
+     * @param value 字典值
+     * @return
+     */
     public static String getDictText(String type, String value) {
         if (type == null || value == null || store == null) {
             return null;
@@ -69,6 +77,41 @@ public class DictUtil {
         return dictText;
     }
 
+    /**
+     * 获取字典父级值
+     *
+     * @param type  字典类型
+     * @param value 字典值
+     * @return 字典父级值
+     * @since 1.4.6
+     */
+    public static String getDictParentValue(String type, String value) {
+        if (type == null || value == null || store == null) {
+            return null;
+        }
+        if (cache == null || missCache == null) {
+            return store.getDictParentValue(type, value);
+        }
+        final String dictParentKey = dictParentKey(type, value);
+        final String result = cache.getIfPresent(dictParentKey);
+        if (result != null) {
+            return result;
+        }
+        final AtomicInteger integer = missCache.get(dictParentKey, s -> new AtomicInteger(1));
+        if (integer.get() > missNum) {
+            return null;
+        }
+
+        final String parentValue = store.getDictParentValue(type, value);
+        if (parentValue == null) {
+            // 未命中数据
+            integer.incrementAndGet();
+        } else {
+            cache.put(dictParentKey, parentValue);
+        }
+        return parentValue;
+    }
+
     public static String dictKey(String type) {
         return TYPE_PREFIX + type;
     }
@@ -77,7 +120,30 @@ public class DictUtil {
         return VALUE_PREFIX + value.getDictType() + ":" + value.getValue();
     }
 
+    /**
+     * 构建字典父级值缓存 KEY
+     *
+     * @param value 字典值对象
+     * @return 字典父级值缓存 KEY
+     * @since 1.4.6
+     */
+    public static String dictParentKey(DictValueVo value) {
+        return PARENT_PREFIX + value.getDictType() + ":" + value.getValue();
+    }
+
     public static String dictKey(String type, Object value) {
         return VALUE_PREFIX + type + ":" + value;
+    }
+
+    /**
+     * 构建字典父级值缓存 KEY
+     *
+     * @param type  字典类型
+     * @param value 字典值
+     * @return 字典父级值缓存 KEY
+     * @since 1.4.6
+     */
+    public static String dictParentKey(String type, Object value) {
+        return PARENT_PREFIX + type + ":" + value;
     }
 }

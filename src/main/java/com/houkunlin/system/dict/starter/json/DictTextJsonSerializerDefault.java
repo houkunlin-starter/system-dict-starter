@@ -228,6 +228,23 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @return 字典值文本
      */
     protected String obtainDictValueText(String dictValue) {
+        // @since 1.4.6 - START
+        if (dictText.tree()) {
+            final List<String> values = new LinkedList<>();
+            String value = dictValue;
+            do {
+                final String text = DictUtil.getDictText(dictType, value);
+                if (text != null) {
+                    values.add(0, text);
+                }
+                value = DictUtil.getDictParentValue(dictType, value);
+            } while (value != null);
+            if (values.isEmpty()) {
+                return null;
+            }
+            return String.join("/", values);
+        }
+        // @since 1.4.6 - END
         return DictUtil.getDictText(dictType, dictValue);
     }
 

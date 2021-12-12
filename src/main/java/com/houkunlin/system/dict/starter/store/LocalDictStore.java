@@ -47,6 +47,15 @@ public class LocalDictStore implements DictStore, InitializingBean {
                 }
             } else {
                 CACHE_TEXT.put(dictKey, title);
+                // @since 1.4.6 - START
+                final String dictParentKey = DictUtil.dictParentKey(valueVo);
+                final Object parentValue = valueVo.getParentValue();
+                if (parentValue == null) {
+                    CACHE_TEXT.remove(dictParentKey);
+                } else {
+                    CACHE_TEXT.put(dictParentKey, parentValue.toString());
+                }
+                // @since 1.4.6 - END
             }
         });
     }
@@ -89,6 +98,11 @@ public class LocalDictStore implements DictStore, InitializingBean {
             return title;
         }
         return remoteDict.getDictText(type, value);
+    }
+
+    @Override
+    public String getDictParentValue(final String type, final String value) {
+        return CACHE_TEXT.get(DictUtil.dictParentKey(type, value));
     }
 
     @Override

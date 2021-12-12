@@ -85,6 +85,17 @@ public @interface DictText {
      */
     Array array() default @Array(split = "");
 
+    /**
+     * 是否是树形结构数据；
+     *
+     * @return boolean <ul>
+     * <li>true 是树形结构数据，加载父级信息（采用递归加载，可能会多次加载父级信息）；</li>
+     * <li>false 不是树形结构数据，不加载父级信息；</li>
+     * </ul>
+     * @since 1.4.6
+     */
+    boolean tree() default false;
+
     enum Type {
         /**
          * 根据全局参数决定配置

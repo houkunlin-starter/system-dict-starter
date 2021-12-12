@@ -62,4 +62,14 @@ public interface DictStore {
      * @return 字典文本
      */
     String getDictText(String type, String value);
+
+    /**
+     * 获取字典父级值
+     *
+     * @param type  字典所属类型
+     * @param value 字典值
+     * @return 字典文本
+     * @since 1.4.6
+     */
+    String getDictParentValue(String type, String value);
 }

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +39,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
+        final ValueOperations<String, String> opsForValue = dictValueRedisTemplate.opsForValue();
         iterator.forEachRemaining(valueVo -> {
             final String dictKey = DictUtil.dictKey(valueVo);
             final String title = valueVo.getTitle();
@@ -47,7 +49,16 @@ public class RedisDictStore implements DictStore, InitializingBean {
                     logger.debug("[removeDictValue] 字典值文本被删除 {}", dictKey);
                 }
             } else {
-                dictValueRedisTemplate.opsForValue().set(dictKey, title);
+                opsForValue.set(dictKey, title);
+                // @since 1.4.6 - START
+                final String dictParentKey = DictUtil.dictParentKey(valueVo);
+                final Object parentValue = valueVo.getParentValue();
+                if (parentValue == null) {
+                    dictValueRedisTemplate.delete(dictParentKey);
+                } else {
+                    opsForValue.set(dictParentKey, parentValue.toString());
+                }
+                // @since 1.4.6 - END
             }
         });
     }
@@ -99,6 +110,14 @@ public class RedisDictStore implements DictStore, InitializingBean {
         }
         // 例如 Redis 中不存在这个字典，说明可能是一个用户字典，此时需要调用系统模块服务来获取用户字典
         return remoteDict.getDictText(type, value);
+    }
+
+    @Override
+    public String getDictParentValue(final String type, final String value) {
+        if (type == null || value == null) {
+            return null;
+        }
+        return dictValueRedisTemplate.opsForValue().get(DictUtil.dictParentKey(type, value));
     }
 
     @Override
