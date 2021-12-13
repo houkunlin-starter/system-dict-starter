@@ -1,5 +1,11 @@
 # 更改日志
 
+## 1.4.6.2 版本
+
+- fix: 修复某些场景下获取不到 RedisTemplate<String, DictTypeVo> 导致启动失败问题
+  - 在一些多模块项目中，公共模块配置了 RedisTemplate<String, Object> Bean 先注入到上下文中，系统字典的
+    RedisTemplate<String, DictTypeVo> 无法继续注入，因此导致启动失败
+
 ## 1.4.6.1 版本
 
 - fix: 修复字典值使用文本分隔转换数组结果时，字典值无分隔符导致无数据问题
