@@ -178,18 +178,15 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      */
     private Object processStringField(final String fieldValueString) {
         final String splitStr = array.split();
-        if (fieldValueString.contains(splitStr)) {
-            final List<String> texts = new ArrayList<>();
-            final String[] splitValue = fieldValueString.split(splitStr);
-            for (final Object o : splitValue) {
-                final String dictValueText = obtainDictValueText(String.valueOf(o));
-                if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-                    texts.add(dictValueText);
-                }
+        final List<String> texts = new ArrayList<>();
+        final String[] splitValue = fieldValueString.split(splitStr);
+        for (final Object o : splitValue) {
+            final String dictValueText = obtainDictValueText(String.valueOf(o));
+            if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+                texts.add(dictValueText);
             }
-            return obtainResult(texts);
         }
-        return obtainResult(Collections.emptyList());
+        return obtainResult(texts);
     }
 
     /**
