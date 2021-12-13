@@ -55,7 +55,8 @@ public class DictProperties {
      */
     private String mqExchangeName = DEFAULT_MQ_EXCHANGE_NAME;
     /**
-     * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新
+     * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新。
+     * 此设置只影响 {@link RefreshDictEvent} 事件
      */
     private Duration refreshDictInterval = Duration.ofSeconds(60);
     /**
