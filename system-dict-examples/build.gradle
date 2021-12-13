@@ -29,13 +29,17 @@ allprojects {
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://repo.spring.io/release' }
         mavenCentral()
+        // 项目发布正式仓库地址
+        maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
+        // 项目发布快照仓库地址
+        maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     }
 }
 
 subprojects {
     dependencies {
         // 项目依赖
-        implementation 'com.houkunlin:system-dict-starter:1.4.5'
+        implementation 'com.houkunlin:system-dict-starter:1.4.6-BUILD-SNAPSHOT'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         // implementation 'org.springframework.boot:spring-boot-starter-amqp'
         // implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -50,7 +54,6 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 }
-
 
 test {
     useJUnitPlatform()
