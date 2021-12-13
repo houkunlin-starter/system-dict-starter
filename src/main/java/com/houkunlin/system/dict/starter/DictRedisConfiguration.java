@@ -10,7 +10,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
  * Redis 配置（在存在 Redis 环境时自动配置相关对象，无论后续是否需要）
@@ -22,16 +22,21 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @AllArgsConstructor
 public class DictRedisConfiguration {
     /**
+     * 系统字典 RedisTemplate Bean 名称
+     */
+    public static final String DICT_REDIS_BEAN_NAME = "DictTypeRedisTemplate";
+
+    /**
      * 创建一个默认的 DictTypeVo 类型 Redis 客户端
      *
      * @param connectionFactory RedisConnectionFactory
      * @return RedisTemplate<String, DictTypeVo>
      */
-    @ConditionalOnMissingBean
-    @Bean
-    public RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, DictTypeVo> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
+    @ConditionalOnMissingBean(name = DICT_REDIS_BEAN_NAME)
+    @Bean(DICT_REDIS_BEAN_NAME)
+    public RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate(final RedisConnectionFactory connectionFactory) {
+        final RedisTemplate<String, DictTypeVo> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(RedisSerializer.string());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(DictTypeVo.class));
         redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
@@ -45,7 +50,7 @@ public class DictRedisConfiguration {
      */
     @ConditionalOnMissingBean
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(final RedisConnectionFactory connectionFactory) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         return container;
