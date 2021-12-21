@@ -1,5 +1,6 @@
 package com.houkunlin.system.dict.starter.properties;
 
+import com.houkunlin.system.dict.starter.json.DictText;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,6 +35,14 @@ public class DictProperties {
      * 是否用字典文本替换字典值输出（在原字段输出字典文本）
      */
     private boolean replaceValue = false;
+    /**
+     * 为防止陷入死循环，请设置树形结构数据的向访问的最大访问深度，超过最大访问深度则直接返回。
+     * int <= 0 视为不限制深度
+     *
+     * @see DictText#treeDepth()
+     * @since 1.4.6.1
+     */
+    private int treeDepth = -1;
     /**
      * 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串
      */

@@ -96,6 +96,14 @@ public @interface DictText {
      */
     boolean tree() default false;
 
+    /**
+     * 为防止陷入死循环，请设置树形结构数据的向访问的最大访问深度，超过最大访问深度则直接返回。
+     *
+     * @return int <= 0 视为不限制深度
+     * @since 1.4.6.1
+     */
+    int treeDepth() default -1;
+
     enum Type {
         /**
          * 根据全局参数决定配置

@@ -12,6 +12,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+
 /**
  * 自动扫描配置系统注解所需要的Bean对象
  *
@@ -59,6 +63,19 @@ public class SystemDictStarter {
             return false;
         }
         return properties.isReplaceValue();
+    }
+
+    public static Optional<DictProperties> properties() {
+        return Optional.ofNullable(properties);
+    }
+
+    public static <U> Optional<U> get(Function<DictProperties, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (properties == null) {
+            logger.warn(WARNING_MESSAGE);
+            return Optional.empty();
+        }
+        return Optional.ofNullable(mapper.apply(properties));
     }
 
     /**

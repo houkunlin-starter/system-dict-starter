@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictStarter;
+import com.houkunlin.system.dict.starter.properties.DictProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -227,6 +228,11 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     protected String obtainDictValueText(String dictValue) {
         // @since 1.4.6 - START
         if (dictText.tree()) {
+            int depth = dictText.treeDepth();
+            if (depth <= 0) {
+                // 使用全局配置
+                depth = SystemDictStarter.get(DictProperties::getTreeDepth).orElse(-1);
+            }
             final List<String> values = new LinkedList<>();
             String value = dictValue;
             do {
@@ -235,7 +241,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
                     values.add(0, text);
                 }
                 value = DictUtil.getDictParentValue(dictType, value);
-            } while (value != null);
+            } while (value != null && (depth <= 0 || --depth > 0));
             if (values.isEmpty()) {
                 return null;
             }
