@@ -92,27 +92,47 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param dictClass 字典对象
      */
-    private void handleDict(Class<?> dictClass) throws DictException {
-        final DictType annotation = dictClass.getDeclaredAnnotation(DictType.class);
+    private void handleDict(final Class<?> dictClass) throws DictException {
         final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
         if (converter != null) {
             generateConverter.registerBean(beanFactory, dictClass, converter);
         }
-        String dictType;
+        final DictType[] annotation = dictClass.getDeclaredAnnotationsByType(DictType.class);
+        if (annotation.length > 0) {
+            for (final DictType dictType : annotation) {
+                handleDict(dictClass, dictType);
+            }
+        } else {
+            handleDict(dictClass, null);
+        }
+    }
+
+    /**
+     * 处理系统数据字典对象
+     *
+     * @param dictClass 字典对象
+     */
+    private void handleDict(final Class<?> dictClass, final DictType annotation) {
+        final String dictType;
         String dictTitle;
         if (annotation != null) {
-            dictType = annotation.value();
             if (StringUtils.hasText(annotation.comment())) {
                 dictTitle = annotation.comment();
             } else {
                 dictTitle = dictClass.getSimpleName();
+            }
+            if (StringUtils.hasText(annotation.value())) {
+                dictType = annotation.value();
+            } else {
+                dictType = dictClass.getSimpleName();
             }
         } else {
             dictType = dictClass.getSimpleName();
             dictTitle = dictClass.getSimpleName();
         }
 
-        List<DictValueVo> list = new ArrayList<>();
+        final DictTypeVo dictTypeVo = systemDictProvider.getDict(dictType, () -> new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, new ArrayList<>()));
+        List<DictValueVo> list = dictTypeVo.getChildren();
         final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dictClass.getEnumConstants();
         for (DictEnum<?> enums : enumConstants) {
             if (logger.isDebugEnabled()) {
@@ -120,8 +140,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             }
             list.add(new DictValueVo(dictType, enums.getValue(), enums.getTitle(), 0));
         }
-        final DictTypeVo dictTypeVo = new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, list);
-        systemDictProvider.addDict(dictTypeVo);
     }
 
     /**

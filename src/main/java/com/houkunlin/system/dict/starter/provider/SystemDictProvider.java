@@ -7,7 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 系统字典提供者。{@link SystemDictScan} 注解扫描到的系统字典都会写入到该对象中。
@@ -33,13 +37,14 @@ public class SystemDictProvider implements DictProvider {
     }
 
     /**
-     * 增加一个字典类型对象（含字典值列表）
+     * 获取一个字典类型对象
      *
-     * @param vo 字典类型对象
+     * @param dictType 字典类型代码
+     * @param creator  创建一个新的字典类型对象
+     * @since 1.4.7
      */
-    public void addDict(final DictTypeVo vo) {
-        vo.setChildren(new ArrayList<>(vo.getChildren()));
-        cache.put(vo.getType(), vo);
+    public DictTypeVo getDict(final String dictType, final Supplier<DictTypeVo> creator) {
+        return cache.computeIfAbsent(dictType, s -> creator.get());
     }
 
     @Override

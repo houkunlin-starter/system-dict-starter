@@ -9,6 +9,7 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Repeatable(DictTypes.class)
 @Documented
 public @interface DictType {
     /**
