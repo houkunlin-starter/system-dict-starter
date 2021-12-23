@@ -23,11 +23,11 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     /**
      * 缓存了直接使用系统字典枚举来渲染数据字典文本的所有数据
      */
-    private static final Table<Class<? extends DictEnum>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
+    private static final Table<Class<? extends DictEnum<?>>, Serializable, String> CACHE_ENUMS = HashBasedTable.create();
     /**
      * 直接使用系统字典枚举的枚举对象列表
      */
-    protected final Class<? extends DictEnum>[] enumsClass;
+    protected final Class<? extends DictEnum<?>>[] enumsClass;
     protected final boolean isDictEnum;
 
     /**
@@ -53,7 +53,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      */
     private void initEnumsClass() {
         // 解析系统字典枚举列表
-        for (final Class<? extends DictEnum> enumClass : enumsClass) {
+        for (final Class<? extends DictEnum<?>> enumClass : enumsClass) {
             if (!enumClass.isEnum()) {
                 continue;
             }
@@ -76,7 +76,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
         final Object dictValueText;
         if (isDictEnum) {
             // 字段是系统字典枚举对象
-            final DictEnum enums = (DictEnum) fieldValue;
+            final DictEnum<?> enums = (DictEnum<?>) fieldValue;
             outFieldValue = enums.getValue();
             dictValueText = enums.getTitle();
         } else {
@@ -90,7 +90,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     @Override
     protected String obtainDictValueText(final String dictValue) {
         String cacheTitle;
-        for (final Class<? extends DictEnum> aClass : enumsClass) {
+        for (final Class<? extends DictEnum<?>> aClass : enumsClass) {
             cacheTitle = CACHE_ENUMS.get(aClass, String.valueOf(dictValue));
             if (cacheTitle != null) {
                 return cacheTitle;
