@@ -290,7 +290,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
         if (SystemDictStarter.isRawValue()) {
             gen.writeObject(fieldValue);
         } else {
-            gen.writeString(String.valueOf(fieldValue));
+            gen.writeString(fieldValue == null ? "" : fieldValue.toString());
         }
     }
 
