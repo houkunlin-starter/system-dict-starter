@@ -38,6 +38,10 @@ system:
       initial-capacity: 5
     controller:
       enabled: true
+    store-key:
+      value-prefix: 'u:myDict:'
+      type-prefix: 'u:aaDict:'
+      parent-prefix: 'u:ppDict:'
 #    map-value: true
 management:
   endpoint:

@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
+import com.houkunlin.system.dict.starter.properties.DictPropertiesStorePrefixKey;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +18,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings("all")
 @Component
 public class DictUtil {
-    public static final String TYPE_PREFIX = "dict:t:";
-    public static final String VALUE_PREFIX = "dict:v:";
-    public static final String PARENT_PREFIX = "dict:p:";
+    public static String TYPE_PREFIX = "dict:t:";
+    public static String VALUE_PREFIX = "dict:v:";
+    public static String PARENT_PREFIX = "dict:p:";
 
     private static DictStore store;
     /**
@@ -34,6 +35,18 @@ public class DictUtil {
         cache = cacheFactory.build();
         missCache = cacheFactory.build();
         missNum = cacheFactory.getDictProperties().getCache().getMissNum();
+    }
+
+    /**
+     * 初始化 缓存键 前缀信息
+     *
+     * @param properties 配置信息
+     * @since 1.4.7
+     */
+    public static void initPrefix(final DictPropertiesStorePrefixKey properties) {
+        TYPE_PREFIX = properties.getTypePrefix();
+        VALUE_PREFIX = properties.getValuePrefix();
+        PARENT_PREFIX = properties.getParentPrefix();
     }
 
     public static DictTypeVo getDictType(String type) {

@@ -34,6 +34,7 @@ public class SystemDictStarter {
     public SystemDictStarter(@Lazy final DictProperties properties, @Lazy final ApplicationContext applicationContext) {
         SystemDictStarter.properties = properties;
         SystemDictStarter.applicationContext = applicationContext;
+        DictUtil.initPrefix(properties.getStoreKey());
     }
 
     public static boolean isRawValue() {

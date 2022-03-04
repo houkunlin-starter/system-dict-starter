@@ -78,4 +78,11 @@ public class DictProperties {
      */
     @NestedConfigurationProperty
     private DictPropertiesController controller = new DictPropertiesController();
+    /**
+     * 缓存存储 键前缀
+     *
+     * @since 1.4.7
+     */
+    @NestedConfigurationProperty
+    private DictPropertiesStorePrefixKey storeKey = new DictPropertiesStorePrefixKey();
 }
