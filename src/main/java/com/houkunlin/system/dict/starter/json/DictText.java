@@ -30,6 +30,15 @@ public @interface DictText {
     String value() default "";
 
     /**
+     * 数据字典的代码处理器。
+     * 在配置了 {@link #enums()} 时此配置无法生效，此配置优先于 {@link #value()} 配置
+     *
+     * @return 数据字典代码处理器
+     * @since 1.4.7 beta 不稳定，此选项后期有可能会被删除
+     */
+    Class<? extends DictTypeKeyHandler> dictTypeHandler() default VoidDictTypeKeyHandler.class;
+
+    /**
      * 显示字典文本的字段名称，假如为空字符串则默认为 字典字段名称 + "Text" 作为显示字典文本的字段名称
      *
      * @return 字典文本字段

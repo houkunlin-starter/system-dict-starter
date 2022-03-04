@@ -56,6 +56,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     protected final boolean isCharSequence;
     protected final boolean isNeedSpiltValue;
     protected final Object defaultDictTextResult;
+    protected DictTypeKeyHandler<Object> dictTypeKeyHandler = null;
 
     /**
      * 一般情况下的场景，{@link DictText} 的普通用法
@@ -75,7 +76,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
         this.array = dictText.array();
         this.isNeedSpiltValue = StringUtils.hasText(array.split());
         this.dictType = dictText.value();
-        this.hasDictType = StringUtils.hasText(dictType);
+        this.hasDictType = StringUtils.hasText(dictType) || dictText.dictTypeHandler() != VoidDictTypeKeyHandler.class;
         this.outFieldName = getFieldName(dictText);
         this.hasDictTextFieldName = StringUtils.hasText(dictText.fieldName());
         this.defaultDictTextResult = obtainResult(Collections.emptyList());
@@ -103,7 +104,8 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             return;
         }
         if (hasDictType) {
-            writeFieldValue(gen, fieldValue, defaultNullableValue(obtainDictValueText(fieldValue)));
+            final Object dictValueText = obtainDictValueText(gen.getCurrentValue(), fieldValue);
+            writeFieldValue(gen, fieldValue, defaultNullableValue(dictValueText));
         } else {
             writeFieldValue(gen, fieldValue, defaultNullableValue(defaultDictTextResult));
             logger.warn("{}#{} @DictText annotation not set dictType value", beanClass, beanFieldName);
@@ -116,24 +118,24 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param fieldValue 字段值（可能是一个需要分隔的字符串内容）
      * @return 字典值文本信息
      */
-    protected Object obtainDictValueText(@NonNull Object fieldValue) {
+    protected Object obtainDictValueText(final Object bean, @NonNull Object fieldValue) {
         final String fieldValueString = fieldValue.toString();
 
         if (isIterable) {
-            return processIterableField((Iterable<?>) fieldValue);
+            return processIterableField(bean, (Iterable<?>) fieldValue);
         }
 
         if (isArray) {
-            return processArrayField((Object[]) fieldValue);
+            return processArrayField(bean, (Object[]) fieldValue);
         }
 
         if (!isNeedSpiltValue) {
             // 不需要对值进行分割处理，直接当作一个普通的字典值去获取数据
-            return obtainDictValueText(fieldValueString);
+            return obtainDictValueText(bean, fieldValueString);
         }
 
         if (isCharSequence) {
-            return processStringField(fieldValueString);
+            return processStringField(bean, fieldValueString);
         }
 
         logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClass, beanFieldName, fieldValue);
@@ -147,10 +149,10 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param fieldValues 字段值（集合类型）
      * @return 字典文本结果
      */
-    private Object processIterableField(final Iterable<?> fieldValues) {
+    private Object processIterableField(final Object bean, final Iterable<?> fieldValues) {
         final List<String> texts = new ArrayList<>();
         for (final Object o : fieldValues) {
-            processFieldArrayValue(texts, o);
+            processFieldArrayValue(bean, texts, o);
         }
 
         return obtainResult(texts);
@@ -162,10 +164,10 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param fieldValues 字段值（数组类型）
      * @return 字典文本结果
      */
-    private Object processArrayField(final Object[] fieldValues) {
+    private Object processArrayField(final Object bean, final Object[] fieldValues) {
         final List<String> texts = new ArrayList<>();
         for (final Object o : fieldValues) {
-            processFieldArrayValue(texts, o);
+            processFieldArrayValue(bean, texts, o);
         }
 
         return obtainResult(texts);
@@ -177,12 +179,12 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param fieldValueString 字段值（字符串类型）
      * @return 字典文本结果
      */
-    private Object processStringField(final String fieldValueString) {
+    private Object processStringField(final Object bean, final String fieldValueString) {
         final String splitStr = array.split();
         final List<String> texts = new ArrayList<>();
         final String[] splitValue = fieldValueString.split(splitStr);
         for (final Object o : splitValue) {
-            final String dictValueText = obtainDictValueText(String.valueOf(o));
+            final String dictValueText = obtainDictValueText(bean, String.valueOf(o));
             if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
                 texts.add(dictValueText);
             }
@@ -196,12 +198,12 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param texts          存放字典文本结果的对象
      * @param fieldValueItem 集合、数组 的单个值
      */
-    private void processFieldArrayValue(final List<String> texts, final Object fieldValueItem) {
+    private void processFieldArrayValue(final Object bean, final List<String> texts, final Object fieldValueItem) {
         final String dictValueText;
         if (fieldValueItem instanceof DictEnum) {
-            dictValueText = ((DictEnum) fieldValueItem).getTitle();
+            dictValueText = ((DictEnum<?>) fieldValueItem).getTitle();
         } else {
-            dictValueText = obtainDictValueText(String.valueOf(fieldValueItem));
+            dictValueText = obtainDictValueText(bean, String.valueOf(fieldValueItem));
         }
         if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
             texts.add(dictValueText);
@@ -225,7 +227,8 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @param dictValue 字典值
      * @return 字典值文本
      */
-    protected String obtainDictValueText(String dictValue) {
+    protected String obtainDictValueText(final Object bean, String dictValue) {
+        final String dictTypeKey = getDictTypeByTypeKeyHandler(bean, dictValue);
         // @since 1.4.6 - START
         if (dictText.tree()) {
             int depth = dictText.treeDepth();
@@ -236,11 +239,11 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             final List<String> values = new LinkedList<>();
             String value = dictValue;
             do {
-                final String text = DictUtil.getDictText(dictType, value);
+                final String text = DictUtil.getDictText(dictTypeKey, value);
                 if (text != null) {
                     values.add(0, text);
                 }
-                value = DictUtil.getDictParentValue(dictType, value);
+                value = DictUtil.getDictParentValue(dictTypeKey, value);
             } while (value != null && (depth <= 0 || --depth > 0));
             if (values.isEmpty()) {
                 return null;
@@ -248,7 +251,34 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             return String.join("/", values);
         }
         // @since 1.4.6 - END
-        return DictUtil.getDictText(dictType, dictValue);
+        return DictUtil.getDictText(dictTypeKey, dictValue);
+    }
+
+    /**
+     * 获取字典类型代码
+     *
+     * @param bean      实体类对象
+     * @param dictValue 字段值
+     * @return 字典类型代码
+     * @since 1.4.7
+     */
+    protected String getDictTypeByTypeKeyHandler(final Object bean, String dictValue) {
+        final Class<? extends DictTypeKeyHandler> factoryClass = dictText.dictTypeHandler();
+        if (factoryClass == VoidDictTypeKeyHandler.class) {
+            return dictType;
+        }
+        if (dictTypeKeyHandler == null) {
+            dictTypeKeyHandler = SystemDictStarter.getBean(factoryClass);
+            if (dictTypeKeyHandler == null) {
+                try {
+                    dictTypeKeyHandler = factoryClass.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    logger.error("创建 " + factoryClass.getName() + " 实例失败，请向 SpringBoot 提供此 Bean 对象", e);
+                    return dictType;
+                }
+            }
+        }
+        return dictTypeKeyHandler.getDictType(bean, beanFieldName, dictValue, dictText);
     }
 
     /**
