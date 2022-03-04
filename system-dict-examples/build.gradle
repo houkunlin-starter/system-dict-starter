@@ -39,7 +39,7 @@ allprojects {
 subprojects {
     dependencies {
         // 项目依赖
-        implementation 'com.houkunlin:system-dict-starter:1.4.6-BUILD-SNAPSHOT'
+        implementation 'com.houkunlin:system-dict-starter:1.4.7'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         // implementation 'org.springframework.boot:spring-boot-starter-amqp'
         // implementation 'org.springframework.boot:spring-boot-starter-data-redis'
