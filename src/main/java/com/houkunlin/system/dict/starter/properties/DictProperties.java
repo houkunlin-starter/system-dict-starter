@@ -85,4 +85,10 @@ public class DictProperties {
      */
     @NestedConfigurationProperty
     private DictPropertiesStorePrefixKey storeKey = new DictPropertiesStorePrefixKey();
+    /**
+     * 选择所使用字节码技术。默认会使用 JAVASSIST 字节码技术，单元测试时发现使用 JAVASSIST 时执行完所有单元测试好像比 ASM 耗时更短。
+     *
+     * @since 1.4.8
+     */
+    private BytecodeType bytecode = BytecodeType.JAVASSIST;
 }

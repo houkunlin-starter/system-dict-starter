@@ -7,6 +7,7 @@ import org.springframework.asm.ClassWriter;
 import org.springframework.asm.Label;
 import org.springframework.asm.MethodVisitor;
 import org.springframework.asm.Opcodes;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import static org.springframework.asm.Opcodes.*;
  * @author HouKunLin
  * @since 1.4.8
  */
+@ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "ASM")
 @Slf4j
 @Component
 public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {

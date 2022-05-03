@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
  * 动态生成字典转换器
  *
  * @author HouKunLin
+ * @since 1.4.8
  */
 public interface IDictConverterGenerate {
     Logger logger = LoggerFactory.getLogger(IDictConverterGenerate.class);

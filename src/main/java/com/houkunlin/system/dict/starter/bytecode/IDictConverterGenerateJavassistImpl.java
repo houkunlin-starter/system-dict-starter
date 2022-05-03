@@ -7,6 +7,8 @@ import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.SignatureAttribute;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +17,17 @@ import org.springframework.stereotype.Component;
  *
  * @author HouKunLin
  */
+@ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "JAVASSIST", matchIfMissing = true)
+@ConditionalOnClass(ClassPool.class)
 @Slf4j
 @Component
 public class IDictConverterGenerateJavassistImpl implements IDictConverterGenerate {
     private final ClassPool pool = ClassPool.getDefault();
 
     public IDictConverterGenerateJavassistImpl() {
+        if (log.isDebugEnabled()) {
+            log.debug("使用 javassist 字节码技术动态创建字典转换器实现类");
+        }
         if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9) {
             // 修复 Java 8 环境下 SpringBoot 打包后使用 java -jar 启动异常问题
             pool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
