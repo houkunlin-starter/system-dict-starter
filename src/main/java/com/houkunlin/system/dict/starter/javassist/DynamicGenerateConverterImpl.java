@@ -104,7 +104,10 @@ public class DynamicGenerateConverterImpl {
         // 由于泛型的类型擦除问题，javassist不会自动处理，因此必须手动增加一个桥接方法
         addBridgeMethod(pool, makeClass, interfaceTypeClass1);
 
-        return makeClass.toClass(clazz.getClassLoader(), null);
+        if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9) {
+            return makeClass.toClass(clazz.getClassLoader(), null);
+        }
+        return makeClass.toClass(clazz);
     }
 
     /**
