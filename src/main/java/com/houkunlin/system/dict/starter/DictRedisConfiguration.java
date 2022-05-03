@@ -30,7 +30,7 @@ public class DictRedisConfiguration {
      * 创建一个默认的 DictTypeVo 类型 Redis 客户端
      *
      * @param connectionFactory RedisConnectionFactory
-     * @return RedisTemplate<String, DictTypeVo>
+     * @return RedisTemplate&lt;String, DictTypeVo&gt;
      */
     @ConditionalOnMissingBean(name = DICT_REDIS_BEAN_NAME)
     @Bean(DICT_REDIS_BEAN_NAME)

@@ -37,7 +37,7 @@ public class DictProperties {
     private boolean replaceValue = false;
     /**
      * 为防止陷入死循环，请设置树形结构数据的向访问的最大访问深度，超过最大访问深度则直接返回。
-     * int <= 0 视为不限制深度
+     * int &lt;= 0 视为不限制深度
      *
      * @see DictText#treeDepth()
      * @since 1.4.6.1
