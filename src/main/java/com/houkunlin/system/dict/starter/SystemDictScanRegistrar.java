@@ -26,6 +26,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -136,7 +137,12 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
         final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dictClass.getEnumConstants();
         for (DictEnum<?> enums : enumConstants) {
             if (logger.isDebugEnabled()) {
-                logger.debug("class {} : - {} - {} - {} - {}", dictClass.getName(), dictType, enums.getValue(), enums.getTitle(), enums);
+                final Serializable value = enums.getValue();
+                if (value instanceof String) {
+                    logger.debug("dict enum: {}.{}(\"{}\", \"{}\") by dict type: {}", dictClass.getName(), enums, value, enums.getTitle(), dictType);
+                } else {
+                    logger.debug("dict enum: {}.{}({}, \"{}\") by dict type: {}", dictClass.getName(), enums, value, enums.getTitle(), dictType);
+                }
             }
             list.add(new DictValueVo(dictType, enums.getValue(), enums.getTitle(), 0));
         }
