@@ -1,4 +1,4 @@
-package com.houkunlin.system.dict.starter.javassist;
+package com.houkunlin.system.dict.starter.bytecode;
 
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.DictException;
@@ -23,17 +23,18 @@ import java.lang.reflect.Constructor;
  */
 @Slf4j
 @Component
-public class DynamicGenerateConverterImpl {
+public class IDictConverterGenerateJavassistImpl implements IDictConverterGenerate {
 
     final ClassPool pool = ClassPool.getDefault();
 
-    public DynamicGenerateConverterImpl() {
+    public IDictConverterGenerateJavassistImpl() {
         if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9) {
             // 修复 Java 8 环境下 SpringBoot 打包后使用 java -jar 启动异常问题
             pool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
         }
     }
 
+    @Override
     public void registerBean(final DefaultListableBeanFactory factory, final Class<?> clazz, final DictConverter dictConverter) throws DictException {
         try {
             final String beanName = clazz.getName() + ".SystemDictSpringConverter";

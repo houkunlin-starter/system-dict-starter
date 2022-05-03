@@ -2,7 +2,7 @@ package com.houkunlin.system.dict.starter;
 
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
-import com.houkunlin.system.dict.starter.javassist.DynamicGenerateConverterImpl;
+import com.houkunlin.system.dict.starter.bytecode.IDictConverterGenerate;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import com.houkunlin.system.dict.starter.json.DictType;
 import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
@@ -36,7 +36,7 @@ import java.util.*;
 public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanFactoryAware {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictScanRegistrar.class);
     private final ClassPathScanningCandidateComponentProvider provider;
-    private DynamicGenerateConverterImpl generateConverter;
+    private IDictConverterGenerate generateConverter;
     private ClassLoader classLoader;
     private SystemDictProvider systemDictProvider;
     private String applicationName;
@@ -63,7 +63,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
         final Environment environment = beanFactory.getBean(Environment.class);
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
         this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
-        this.generateConverter = beanFactory.getBean(DynamicGenerateConverterImpl.class);
+        this.generateConverter = beanFactory.getBean(IDictConverterGenerate.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
     }
