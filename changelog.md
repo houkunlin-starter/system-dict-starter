@@ -1,5 +1,22 @@
 # 更改日志
 
+## 1.4.8 版本
+
+- fix: 修复 JDK17 下运行失败问题
+- feat: 重构使用字节码生成 Converter 转换器，增加 ASM 字节码支持
+- feat: 增加配置支持切换字节码工具：ASM/JAVASSIST
+
+## 1.4.7 版本
+
+- feat: 增加 DictText#dictTypeHandler 字典类型代码处理器支持，可以动态设置字段的字典类型代码
+- feat: 支持自定义缓存键前缀
+
+## 1.4.6.3 版本
+
+- feat: 增加树结构数据访问深度限制，防止陷入死循环
+- feat: DictType 注解可重复使用，支持把一个枚举做成多个字典，同时支持把多个枚举字典合并到一个字典中
+- fix: 修复字段值为 null 时被序列化成 "null" 字符串的问题
+
 ## 1.4.6.2 版本
 
 - fix: 修复某些场景下获取不到 RedisTemplate<String, DictTypeVo> 导致启动失败问题
