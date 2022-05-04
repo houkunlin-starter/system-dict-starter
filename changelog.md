@@ -2,6 +2,8 @@
 
 ## 1.4.8 版本
 
+已在 `JDK8` `JDK11` `JDK17` 环境下跑通所有单元测试样例
+
 - fix: 修复 JDK17 下运行失败问题
 - feat: 重构使用字节码生成 Converter 转换器，增加 ASM 字节码支持
 - feat: 增加配置支持切换字节码工具：ASM/JAVASSIST
