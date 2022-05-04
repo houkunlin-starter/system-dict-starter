@@ -15,7 +15,12 @@ import org.springframework.stereotype.Component;
 import static org.springframework.asm.Opcodes.*;
 
 /**
- * 使用 ASM 技术动态创建 {@link Converter} 转换器实现类，并把实现类注入到 Spring 中
+ * 使用 ASM 技术动态创建 {@link Converter} 转换器实现类，并把实现类注入到 Spring 中。
+ * <p>
+ * 实现过程说明：在IDEA中安装 Byte Code Analyze 插件，人为的定义4个枚举对象（测试包中的PeopleType/PeopleType2和Switch/Switch2，四个枚举对象列举了不同的场景）
+ * 然后给这四个枚举对象创建转换器（在测试包test.converter下），通过IDEA插件查看转换器的字节码，以及插件自动根据字节码生成 ASM 源代码，
+ * 通过对比和修改插件生成的 ASM 源代码，由此得到此实现类的功能代码。
+ * </p>
  *
  * @author HouKunLin
  * @since 1.4.8
