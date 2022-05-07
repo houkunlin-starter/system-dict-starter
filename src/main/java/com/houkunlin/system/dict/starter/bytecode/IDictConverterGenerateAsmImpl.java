@@ -140,7 +140,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
         final String converterClassNameDescriptor = "L" + converterClassName + ";";
         final String dictClassNameDescriptor = "L" + dictClassName + ";";
 
-        ClassWriter classWriter = new ClassWriter(0);
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         MethodVisitor methodVisitor;
 
         visitConstruction(classWriter, converterClassName, converterClassNameDescriptor, dictClassNameDescriptor);
