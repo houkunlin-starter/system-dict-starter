@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 字典值信息对象
@@ -53,9 +54,24 @@ public class DictValueVo implements Serializable {
      */
     @ApiModelProperty("排序值（系统不会执行排序后再返回给前端）")
     private int sorted;
+    /**
+     * 子字典值列表
+     *
+     * @since 1.4.8.1
+     */
+    @ApiModelProperty("子字典值列表")
+    private List<DictValueVo> children;
 
     public DictValueVo(final String dictType, final Object value, final String title, final int sorted) {
         this.dictType = dictType;
+        this.value = value;
+        this.title = title;
+        this.sorted = sorted;
+    }
+
+    public DictValueVo(final String dictType, final Object parentValue, final Object value, final String title, final int sorted) {
+        this.dictType = dictType;
+        this.parentValue = parentValue;
         this.value = value;
         this.title = title;
         this.sorted = sorted;
