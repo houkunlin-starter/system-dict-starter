@@ -7,6 +7,7 @@ import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictStarter;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -39,6 +40,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
     /**
      * 字典输出字段名称
      */
+    @Getter
     protected final String outFieldName;
     /**
      * 字典转换注解对象
@@ -109,6 +111,26 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
         } else {
             writeFieldValue(gen, fieldValue, defaultNullableValue(defaultDictTextResult));
             logger.warn("{}#{} @DictText annotation not set dictType value", beanClass, beanFieldName);
+        }
+    }
+
+    /**
+     * 序列化字典值
+     *
+     * @param beanObject 实体类对象
+     * @param fieldValue 这个实体类的某个字段值（不需要确定这个字段，因为这个字段的信息就在当前的序列化器类属性中）
+     * @return 字典文本结果
+     */
+    public Object serialize(final Object beanObject, @Nullable final Object fieldValue) {
+        if (fieldValue == null) {
+            return defaultNullableValue(defaultDictTextResult);
+        }
+        if (hasDictType) {
+            final Object dictValueText = obtainDictValueText(beanObject, fieldValue);
+            return defaultNullableValue(dictValueText);
+        } else {
+            logger.warn("{}#{} @DictText annotation not set dictType value", beanClass, beanFieldName);
+            return defaultNullableValue(defaultDictTextResult);
         }
     }
 

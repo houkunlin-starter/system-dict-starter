@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class DictTextJsonSerializer extends JsonSerializer<Object> implements ContextualSerializer {
     private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializer.class);
-    protected static final ConcurrentHashMap<String, JsonSerializer<Object>> CACHE = new ConcurrentHashMap<>();
+    protected static final ConcurrentHashMap<String, DictTextJsonSerializerDefault> CACHE = new ConcurrentHashMap<>();
 
     /**
      * 默认的构造方法， Jackson 会先调用该构造方法实例化对象，然后再调用 {@link #createContextual(SerializerProvider, BeanProperty)} 方法获取序列化对象
@@ -70,27 +71,30 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
             // 这里的代码实际已经过时，由于在之前的一次次提交中引入了 @DictType 注解来对系统字典进行自定义配置，因此实际上不会执行到这里。执行到这里是表示 @DictText 对整个类起了作用，这是一种错误的情况
             throw new JsonMappingException(null, "无法解析 " + beanClazz.getName() + "#" + fieldName + " 字段的字典信息。请在该对象上使用 @DictText 注解标记");
         }
+        return buildJsonSerializerInstance(beanClazz, javaTypeRawClass, fieldName, annotation);
+    }
 
-        final String cacheKey = cacheKey(javaTypeRawClass, fieldName, annotation);
+    private static DictTextJsonSerializerDefault buildJsonSerializerInstance(final Class<?> beanClazz, final Class<?> fieldTypeRawClass, final String fieldName, final DictText annotation) {
+        final String cacheKey = cacheKey(fieldTypeRawClass, fieldName, annotation);
 
         // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
-        if (DictEnum.class.isAssignableFrom(javaTypeRawClass)) {
-            final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) javaTypeRawClass;
+        if (DictEnum.class.isAssignableFrom(fieldTypeRawClass)) {
+            final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) fieldTypeRawClass;
             // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictTextJsonSerializerEnums(beanClazz, javaTypeRawClass, fieldName, annotation, new Class[]{aClass})
+                new DictTextJsonSerializerEnums(beanClazz, fieldTypeRawClass, fieldName, annotation, new Class[]{aClass})
             );
         }
 
         final Class<? extends DictEnum<?>>[] enums = (Class<? extends DictEnum<?>>[]) annotation.enums();
         if (enums.length > 0) {
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictTextJsonSerializerEnums(beanClazz, javaTypeRawClass, fieldName, annotation, enums)
+                new DictTextJsonSerializerEnums(beanClazz, fieldTypeRawClass, fieldName, annotation, enums)
             );
         }
 
         return CACHE.computeIfAbsent(cacheKey, key ->
-            new DictTextJsonSerializerDefault(beanClazz, javaTypeRawClass, fieldName, annotation)
+            new DictTextJsonSerializerDefault(beanClazz, fieldTypeRawClass, fieldName, annotation)
         );
     }
 
@@ -114,5 +118,16 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
             return null;
         }
         return CACHE.get(cacheKey(property.getType().getRawClass(), property.getName(), annotation));
+    }
+
+    public static DictTextJsonSerializerDefault getJsonSerializer(final Class<?> beanClazz, final Field field) {
+        if (field == null) {
+            return null;
+        }
+        final DictText annotation = field.getDeclaredAnnotation(DictText.class);
+        if (annotation == null) {
+            return null;
+        }
+        return buildJsonSerializerInstance(beanClazz, field.getType(), field.getName(), annotation);
     }
 }
