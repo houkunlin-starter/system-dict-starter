@@ -312,7 +312,7 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      * @throws IOException 异常
      */
     protected void writeFieldValue(JsonGenerator gen, @Nullable Object fieldValue, Object dictValueText) throws IOException {
-        final boolean isReplaceValue = dictText.replace().getValue(SystemDictStarter::isReplaceValue);
+        final boolean isReplaceValue = isReplaceValue();
         if (dictText.mapValue().getValue(SystemDictStarter::isMapValue)) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", fieldValue);
@@ -329,6 +329,15 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
             }
             gen.writeObject(dictValueText);
         }
+    }
+
+    /**
+     * 是否替换字段值
+     *
+     * @return boolean
+     */
+    public boolean isReplaceValue() {
+        return dictText.replace().getValue(SystemDictStarter::isReplaceValue);
     }
 
     /**
