@@ -80,7 +80,7 @@ public class DictController {
         }
         final List<DictValueVo> children = dictType.getChildren();
 
-        final ListMultimap<String, DictValueVo> multimap = handlerTreeDatasource(dictType.getChildren(),
+        final ListMultimap<String, DictValueVo> multimap = handlerTreeDatasource(children,
             "",
             this::getKey,
             vo -> {
@@ -97,11 +97,6 @@ public class DictController {
             DictValueVo::getChildren,
             DictValueVo::setChildren
         );
-        for (final DictValueVo vo : children) {
-            if (vo.getChildren().isEmpty()) {
-                vo.setChildren(null);
-            }
-        }
         dictType.setChildren(new ArrayList<>(multimap.values()));
         return dictType;
     }
