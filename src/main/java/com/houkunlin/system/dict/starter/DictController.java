@@ -35,6 +35,7 @@ public class DictController {
      * 获取字典类型信息
      *
      * @param dict 字典类型代码
+     * @param tree v1.4.9 以字典文本值的代码长度来截取成树结构数据，此值传入分隔长度（树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值）
      * @return 字典类型对象
      */
     @ApiOperation("获取字典类型[PATH]")
@@ -48,6 +49,7 @@ public class DictController {
      * 获取字典类型信息
      *
      * @param dict 字典类型代码
+     * @param tree v1.4.9 以字典文本值的代码长度来截取成树结构数据，此值传入分隔长度（树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值）
      * @return 字典类型对象
      */
     @ApiOperation("获取字典类型[QUERY]")
@@ -71,7 +73,7 @@ public class DictController {
      * @param dict 字典类型代码
      * @param tree 树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值
      * @return 字典信息
-     * @since 1.4.8.1
+     * @since 1.4.9
      */
     private DictTypeVo transform(final String dict, final Integer tree) {
         final DictTypeVo dictType = DictUtil.getDictType(dict);
@@ -158,6 +160,7 @@ public class DictController {
      * 返回处理后的树形结构信息，返回数据的结构为：<br/>
      * 键-值：list中所有顶级父级ID -> 该顶级父级ID的子级列表，一般情况下顶级父级ID为defaultParentKey
      * </p>
+     * @since 1.4.9
      */
     public static <E, K> ListMultimap<K, E> handlerTreeDatasource(@NonNull List<? extends E> list,
                                                                   K defaultParentKey,
@@ -201,6 +204,7 @@ public class DictController {
      * @param setChildren 给 Entity 设置子级列表的方法
      * @param <E>         Entity 实体类对象
      * @param <K>         当前对象ID 与 父级对象ID 关联关系的类型，比如：String 、 Integer 类型数据来做关联
+     * @since 1.4.9
      */
     private static <E, K> void handlerTreeChildren(@NonNull ListMultimap<K, E> multimap,
                                                    E parent,

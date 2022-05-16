@@ -58,13 +58,15 @@ public class DictValueVo implements Serializable {
     /**
      * 是否禁用，禁用的字典文本不会从缓存中删除，因为禁用的字典文本可能在之前的数据中被使用。
      * 并且禁用的字典文本也不会从缓存的字典类型对象中删除，需要在调用 {@link RefreshDictTypeEvent} 时明确的把字典文本移除才能从字典类型缓存中删除。
+     *
+     * @since 1.4.9
      */
     @ApiModelProperty("是否禁用")
     private boolean disabled;
     /**
      * 子字典值列表
      *
-     * @since 1.4.8.1
+     * @since 1.4.9
      */
     @ApiModelProperty("子字典值列表")
     private List<DictValueVo> children;
