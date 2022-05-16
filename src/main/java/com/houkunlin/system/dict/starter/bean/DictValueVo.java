@@ -1,13 +1,14 @@
 package com.houkunlin.system.dict.starter.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 @SuppressWarnings("all")
 @ApiModel("字典值信息")
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class DictValueVo implements Serializable {
@@ -54,6 +55,12 @@ public class DictValueVo implements Serializable {
      */
     @ApiModelProperty("排序值（系统不会执行排序后再返回给前端）")
     private int sorted;
+    /**
+     * 是否禁用，禁用的字典文本不会从缓存中删除，因为禁用的字典文本可能在之前的数据中被使用。
+     * 并且禁用的字典文本也不会从缓存的字典类型对象中删除，需要在调用 {@link RefreshDictTypeEvent} 时明确的把字典文本移除才能从字典类型缓存中删除。
+     */
+    @ApiModelProperty("是否禁用")
+    private boolean disabled;
     /**
      * 子字典值列表
      *

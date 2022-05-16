@@ -4,9 +4,9 @@ import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @ApiModel("字典类型信息")
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class DictTypeVo implements Serializable {
