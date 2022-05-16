@@ -16,8 +16,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -29,6 +32,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class DictUtil {
     private static final Logger logger = LoggerFactory.getLogger(DictUtil.class);
+    /**
+     * 手动处理含有字典注解的对象，对象可能需要动态生成字典，缓存对应的子类对象信息
+     */
+    private static final Map<Class<?>, Class<?>> TRANSFORM_CACHE = new ConcurrentHashMap<>();
     public static String TYPE_PREFIX = "dict:t:";
     public static String VALUE_PREFIX = "dict:v:";
     public static String PARENT_PREFIX = "dict:p:";
@@ -172,6 +179,23 @@ public class DictUtil {
     }
 
     /**
+     * 转换列表的对象中含有字典文本翻译注解的字段信息
+     *
+     * @param objects 对象集合
+     * @param <T>     对象类型
+     * @return 字典处理后的对象
+     * @see DictUtil#transform(Object)
+     * @since 1.4.9
+     */
+    public static <T> List<T> transform(List<T> objects) {
+        final List<T> result = new ArrayList<>();
+        for (final T object : objects) {
+            result.add(transform(object));
+        }
+        return result;
+    }
+
+    /**
      * <p>手动对一个实体类对象进行字典处理。</p>
      * <p>为了与 Jackson 的序列化效果保持一致，返回的对象可能是通过 ASM 字节码技术动态生成的子类对象。</p>
      * <p>默认场景下 Jackson 的表现效果是不需要增加一个字典文本字段，例如：</p>
@@ -188,7 +212,8 @@ public class DictUtil {
      *
      * @param object
      * @param <T>
-     * @return
+     * @return 字典处理后的对象
+     * @since 1.4.9
      */
     public static <T> T transform(T object) {
         final Class<?> objectClass = object.getClass();
@@ -222,14 +247,37 @@ public class DictUtil {
         if (newFields.isEmpty()) {
             return object;
         }
+        return transformChild(objectClass, fields, object, newFields);
+    }
+
+    /**
+     * 设置子类对象的字典文本值
+     *
+     * @param objectClass 父类对象类型
+     * @param fields      父类对象字段
+     * @param object      父类对象
+     * @param newFields   子类对象字段
+     * @param <T>         父类对象类型
+     * @return 子类对象实例
+     * @since 1.4.9
+     */
+    private static <T> T transformChild(final Class<?> objectClass, final Field[] fields, final T object, final Map<String, Object> newFields) {
         final T newObject;
         final Class<?> newObjectClass;
         try {
-            newObjectClass = DictChildrenObjectGenerate.newClass(objectClass, newFields.keySet());
+            if (TRANSFORM_CACHE.containsKey(objectClass)) {
+                // 从缓存中获取子类对象
+                newObjectClass = TRANSFORM_CACHE.get(objectClass);
+            } else {
+                // 动态生成 T 对象继承类，在继承类中添加 outFieldName 字段
+                newObjectClass = DictChildrenObjectGenerate.newClass(objectClass, newFields.keySet());
+                TRANSFORM_CACHE.put(objectClass, newObjectClass);
+            }
             newObject = (T) newObjectClass.getConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException("转换字典文本失败，无法创建对象子类", e);
         }
+        // 从原始对象复制属性值到新对象（子类对象）
         for (final Field field : fields) {
             try {
                 field.set(newObject, field.get(object));
@@ -237,6 +285,7 @@ public class DictUtil {
                 throw new RuntimeException("无法给子类设置字段值", e);
             }
         }
+        // 设置新对象的字典文本值
         newFields.forEach((fieldName, value) -> {
             try {
                 final Field field = newObjectClass.getDeclaredField(fieldName);
@@ -250,6 +299,16 @@ public class DictUtil {
         return newObject;
     }
 
+    /**
+     * 通过反射设置字典文本值
+     *
+     * @param object    对象
+     * @param fields    对象字段列表
+     * @param fieldName 字典文本字段名称
+     * @param value     字典文本（可能是字符串，也有可能是数组）
+     * @return 是否设置成功
+     * @since 1.4.9
+     */
     private static boolean setDictText(final Object object, final Field[] fields, final String fieldName, final Object value) {
         for (final Field field : fields) {
             if (field.getName().equals(fieldName)) {
@@ -259,6 +318,15 @@ public class DictUtil {
         return false;
     }
 
+    /**
+     * 通过反射设置字段值
+     *
+     * @param object 对象
+     * @param field  字段
+     * @param value  字段值
+     * @return 是否设置成功
+     * @since 1.4.9
+     */
     private static boolean setFieldValue(final Object object, final Field field, final Object value) {
         ReflectionUtils.makeAccessible(field);
         try {

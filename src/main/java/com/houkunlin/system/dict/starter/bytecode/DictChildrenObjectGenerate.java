@@ -1,25 +1,24 @@
 package com.houkunlin.system.dict.starter.bytecode;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.asm.ClassWriter;
 import org.springframework.asm.FieldVisitor;
 import org.springframework.asm.Label;
 import org.springframework.asm.MethodVisitor;
 import org.springframework.cglib.core.ReflectUtils;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 import static org.springframework.asm.Opcodes.*;
 
 /**
- * 子类生成
+ * 生成一个简单类的子类对象，动态继承这个简单类，然后给子类添加字段和方法
  *
  * @author HouKunLin
+ * @since 1.4.9
  */
-@Component
-@RequiredArgsConstructor
 public class DictChildrenObjectGenerate {
+    private DictChildrenObjectGenerate() {
+    }
 
     public static Class<?> newClass(final Class<?> supperClazz, final String... fieldNames) throws Exception {
         final String supperClazzName = supperClazz.getName().replace(".", "/");
@@ -105,6 +104,12 @@ public class DictChildrenObjectGenerate {
         methodVisitor.visitEnd();
     }
 
+    /**
+     * 首字母大写
+     *
+     * @param val 字符串
+     * @return 首字母大写的字符串
+     */
     public static String upperCaseFirst(String val) {
         char[] arr = val.toCharArray();
         arr[0] = Character.toUpperCase(arr[0]);
