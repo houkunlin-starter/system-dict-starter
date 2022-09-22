@@ -33,13 +33,14 @@ allprojects {
         maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
         // 项目发布快照仓库地址
         maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+        mavenLocal()
     }
 }
 
 subprojects {
     dependencies {
         // 项目依赖
-        implementation 'com.houkunlin:system-dict-starter:1.4.7'
+        implementation 'com.houkunlin:system-dict-starter:1.4.10'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         // implementation 'org.springframework.boot:spring-boot-starter-amqp'
         // implementation 'org.springframework.boot:spring-boot-starter-data-redis'

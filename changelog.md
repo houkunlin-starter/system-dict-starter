@@ -1,5 +1,9 @@
 # 更改日志
 
+## 1.4.10 版本
+
+- fix(bytecode/javassist): 修复在SpringBoot热加载时重新生成转换器报错问题
+
 ## 1.4.9 版本
 
 - fix: 修复使用 ASM 构建转换器实现类时 ClassWriter 参数错误问题

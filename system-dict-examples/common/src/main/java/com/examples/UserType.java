@@ -2,12 +2,14 @@ package com.examples;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.json.DictConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * @author HouKunLin
  */
+@DictConverter
 @Getter
 @AllArgsConstructor
 public enum UserType implements DictEnum<Integer> {
