@@ -1,7 +1,6 @@
 package com.houkunlin.system.dict.starter.bytecode;
 
 import com.houkunlin.system.dict.starter.DictEnum;
-import com.houkunlin.system.dict.starter.DictException;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +27,8 @@ public interface IDictConverterGenerate {
      * @param factory       容器
      * @param dictEnumClass 字典枚举类
      * @param dictConverter 字典转换器注解
-     * @throws DictException 字典处理异常
      */
-    default void registerBean(final DefaultListableBeanFactory factory, final Class<?> dictEnumClass, final DictConverter dictConverter) throws DictException {
+    default void registerBean(final DefaultListableBeanFactory factory, final Class<?> dictEnumClass, final DictConverter dictConverter) {
         try {
             final String beanName = dictEnumClass.getName() + ".SystemDictSpringConverter";
             if (factory.containsBean(beanName)) {
@@ -42,7 +40,7 @@ public interface IDictConverterGenerate {
                 factory.registerSingleton(beanName, constructors[0].newInstance());
             }
         } catch (Exception e) {
-            throw new DictException("自动创建系统字典枚举的 Converter 转换器失败", e);
+            logger.error("自动创建系统字典枚举 " + dictEnumClass.getName() + " 的 Converter 转换器失败，不影响系统启动，但是会影响此枚举转换器功能", e);
         }
     }
 

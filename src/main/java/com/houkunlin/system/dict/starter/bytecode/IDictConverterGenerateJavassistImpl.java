@@ -59,6 +59,21 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
         final String dictEnumClassNameDescriptor = "L" + dictEnumClassName.replace(".", "/") + ";";
 
         // 创建一个基础的对象信息
+        try {
+            final CtClass ctClass = pool.getCtClass(converterClassName);
+            // https://stackoverflow.com/questions/52763279/getting-class-is-frozen-runtime-exception-while-invoking-webservice-call-and-por
+            // https://stackoverflow.com/a/52833444
+            // https://www.javassist.org/tutorial/tutorial.html
+            // ctClass.defrost();// 新 class 创建后无法进行修改，会提示 frozen class (cannot edit) 错误，调用此方法解除限制
+            if (log.isDebugEnabled()) {
+                log.debug("已找到 {} 转换器对象，延用之前的对象", converterClassName);
+            }
+            return toClass(ctClass, dictEnumClass);
+        } catch (NotFoundException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("首次创建 {} 转换器对象", converterClassName);
+            }
+        }
         final CtClass makeClass = pool.makeClass(converterClassName);
         makeClass.setInterfaces(new CtClass[]{pool.getCtClass(Converter.class.getName())});
 
@@ -81,6 +96,18 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
         // 由于泛型的类型擦除问题，javassist不会自动处理，因此必须手动增加一个桥接方法
         addBridgeMethod(pool, makeClass);
 
+        return toClass(makeClass, dictEnumClass);
+    }
+
+    /**
+     * CtClass 转换成 Class 对象
+     *
+     * @param makeClass     CtClass
+     * @param dictEnumClass 字典枚举 Class
+     * @return 转换器 Class
+     * @throws CannotCompileException 异常
+     */
+    private Class<?> toClass(final CtClass makeClass, final Class<?> dictEnumClass) throws CannotCompileException {
         if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9) {
             return makeClass.toClass(dictEnumClass.getClassLoader(), null);
         }

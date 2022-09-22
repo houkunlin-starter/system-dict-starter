@@ -82,7 +82,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
                 if (loadClass.isEnum()) {
                     handleDict(loadClass);
                 }
-            } catch (ClassNotFoundException | DictException e) {
+            } catch (ClassNotFoundException e) {
                 logger.error("扫描系统字典枚举失败，虽然不影响启动，但是最终会影响 @DictText 注解功能", e);
             }
         }
@@ -93,7 +93,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param dictClass 字典对象
      */
-    private void handleDict(final Class<?> dictClass) throws DictException {
+    private void handleDict(final Class<?> dictClass) {
         final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
         if (converter != null) {
             generateConverter.registerBean(beanFactory, dictClass, converter);
