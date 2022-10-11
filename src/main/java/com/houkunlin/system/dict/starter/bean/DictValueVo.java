@@ -5,6 +5,7 @@ import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @SuppressWarnings("all")
 @ApiModel("字典值信息")
+@Schema(name = "字典值信息")
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -29,6 +31,7 @@ public class DictValueVo implements Serializable {
      * 字典类型代码
      */
     @ApiModelProperty(value = "字典类型代码", hidden = true)
+    @Schema(title = "字典类型代码", hidden = true)
     @JsonIgnore
     private String dictType;
     /**
@@ -38,22 +41,26 @@ public class DictValueVo implements Serializable {
      * @since 1.4.6
      */
     @ApiModelProperty("父级字典值")
+    @Schema(title = "父级字典值")
     private Object parentValue;
     /**
      * 字典值
      */
     @ApiModelProperty("字典值")
+    @Schema(title = "字典值")
     private Object value;
     /**
      * 字典名称。
      * <p>在使用 {@link RefreshDictValueEvent} 事件时，此值为 null 意为删除这个字典值文本信息</p>
      */
     @ApiModelProperty("字典名称")
+    @Schema(title = "字典名称")
     private String title;
     /**
-     * 数据字典值列表排序值
+     * 数据字典值列表排序值（系统不会使用此字段进行排序和维护排序，需要前端根据此字段来自行排序展示）
      */
-    @ApiModelProperty("排序值（系统不会执行排序后再返回给前端）")
+    @ApiModelProperty(value = "排序值", notes = "系统不会执行排序后再返回给前端，系统不会使用此字段进行排序和维护排序，需要前端根据此字段来自行排序展示")
+    @Schema(title = "排序值", description = "系统不会执行排序后再返回给前端，系统不会使用此字段进行排序和维护排序，需要前端根据此字段来自行排序展示")
     private int sorted;
     /**
      * 是否禁用，禁用的字典文本不会从缓存中删除，因为禁用的字典文本可能在之前的数据中被使用。
@@ -62,6 +69,7 @@ public class DictValueVo implements Serializable {
      * @since 1.4.9
      */
     @ApiModelProperty("是否禁用")
+    @Schema(title = "是否禁用")
     private boolean disabled;
     /**
      * 子字典值列表
@@ -69,6 +77,7 @@ public class DictValueVo implements Serializable {
      * @since 1.4.9
      */
     @ApiModelProperty("子字典值列表")
+    @Schema(title = "子字典值列表")
     private List<DictValueVo> children;
 
     public DictValueVo(final String dictType, final Object value, final String title, final int sorted) {

@@ -8,6 +8,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.lang.NonNull;
@@ -27,6 +31,7 @@ import java.util.function.UnaryOperator;
  * @since 1.4.1
  */
 @Api(tags = "系统字典")
+@Tag(name = "系统字典")
 @RestController
 @RequestMapping("${system.dict.controller.prefix:/dict}")
 @ConditionalOnProperty(prefix = "system.dict.controller", name = "enabled", matchIfMissing = true)
@@ -39,7 +44,9 @@ public class DictController {
      * @return 字典类型对象
      */
     @ApiOperation("获取字典类型[PATH]")
+    @Operation(summary = "获取字典类型[PATH]")
     @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "path", dataTypeClass = String.class)
+    @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.PATH)
     @GetMapping("{dict}")
     public DictTypeVo dictType(@PathVariable final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
@@ -53,7 +60,9 @@ public class DictController {
      * @return 字典类型对象
      */
     @ApiOperation("获取字典类型[QUERY]")
+    @Operation(summary = "获取字典类型[QUERY]")
     @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "query", dataTypeClass = String.class)
+    @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.QUERY)
     @GetMapping(params = {"dict"})
     public DictTypeVo dictTypeQuery(final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
@@ -119,10 +128,13 @@ public class DictController {
      * @return 字典值文本信息
      */
     @ApiOperation("获取字典值文本[PATH]")
+    @Operation(summary = "获取字典值文本[PATH]")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "path", dataTypeClass = String.class),
         @ApiImplicitParam(name = "value", value = "字典值代码", required = true, paramType = "path", dataTypeClass = String.class)
     })
+    @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.PATH)
+    @Parameter(name = "value", description = "字典值代码", required = true, in = ParameterIn.PATH)
     @GetMapping("{dict}/{value}")
     public String dictText(@PathVariable String dict, @PathVariable String value) {
         return DictUtil.getDictText(dict, value);
@@ -136,10 +148,13 @@ public class DictController {
      * @return 字典值文本信息
      */
     @ApiOperation("获取字典值文本[QUERY]")
+    @Operation(summary = "获取字典值文本[QUERY]")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "query", dataTypeClass = String.class),
         @ApiImplicitParam(name = "value", value = "字典值代码", required = true, paramType = "query", dataTypeClass = String.class)
     })
+    @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.QUERY)
+    @Parameter(name = "value", description = "字典值代码", required = true, in = ParameterIn.QUERY)
     @GetMapping(params = {"dict", "value"})
     public String dictTextQuery(String dict, String value) {
         return DictUtil.getDictText(dict, value);
