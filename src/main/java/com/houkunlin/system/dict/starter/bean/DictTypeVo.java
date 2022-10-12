@@ -97,8 +97,19 @@ public class DictTypeVo implements Serializable {
             this.remark = null;
         }
 
+        public DictTypeVo.DictTypeBuilder add(final DictValueVo dictValueVo) {
+            dictValueVo.setDictType(type);
+            this.children.add(dictValueVo);
+            return this;
+        }
+
         public DictTypeVo.DictTypeBuilder add(final Object value, final String title) {
             this.children.add(new DictValueVo(type, value, title, 0));
+            return this;
+        }
+
+        public DictTypeVo.DictTypeBuilder add(final Object value, final String title, final int sorted) {
+            this.children.add(new DictValueVo(type, value, title, sorted));
             return this;
         }
 
@@ -113,6 +124,21 @@ public class DictTypeVo implements Serializable {
          */
         public DictTypeVo.DictTypeBuilder add(final Object parentValue, final Object value, final String title) {
             this.children.add(new DictValueVo(type, parentValue, value, title, 0));
+            return this;
+        }
+
+        /**
+         * 树形结构数据
+         *
+         * @param parentValue 字典父级值
+         * @param value       字典值
+         * @param title       字典文本
+         * @param sorted      排序值
+         * @return this
+         * @since 1.4.6
+         */
+        public DictTypeVo.DictTypeBuilder add(final Object parentValue, final Object value, final String title, final int sorted) {
+            this.children.add(new DictValueVo(type, parentValue, value, title, sorted));
             return this;
         }
 
