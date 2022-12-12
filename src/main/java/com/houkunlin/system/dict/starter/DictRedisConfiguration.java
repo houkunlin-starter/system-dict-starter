@@ -4,6 +4,7 @@ import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -48,6 +49,7 @@ public class DictRedisConfiguration {
      * @param connectionFactory RedisConnectionFactory
      * @return RedisMessageListenerContainer
      */
+    @ConditionalOnProperty(prefix = "system.dict", name = "mq-type", havingValue = "REDIS")
     @ConditionalOnMissingBean
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(final RedisConnectionFactory connectionFactory) {
