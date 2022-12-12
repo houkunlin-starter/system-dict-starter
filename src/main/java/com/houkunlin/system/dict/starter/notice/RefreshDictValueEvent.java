@@ -21,7 +21,7 @@ public class RefreshDictValueEvent extends ApplicationEvent {
      * <p>是否需要更新维护字典类型对象里面的字典值列表信息。</p>
      * <p>此值无论为 true 还是 false 都会更新单个字典值文本信息。</p>
      * <p>但是此值为 true 时会去维护对应的 字典类型里面 的字典值列表数据，字典类型的字典值列表数据量大时可能会有一些耗时问题。</p>
-     * <p>此值为 false 时不会去维护字典类型里面的值列表数据（使用 {@link DictUtil#getDictType(java.lang.String)}、{@link DictController#dictType(java.lang.String)}、{@link DictController#dictTypeQuery(java.lang.String)}
+     * <p>此值为 false 时不会去维护字典类型里面的值列表数据（使用 {@link DictUtil#getDictType(java.lang.String)}、{@link DictController#dictType(java.lang.String, java.lang.Integer)}、{@link DictController#dictTypeQuery(java.lang.String, java.lang.Integer)}
      * 得到的数据与最新的字典文本不一致）</p>
      *
      * @since 1.4.5

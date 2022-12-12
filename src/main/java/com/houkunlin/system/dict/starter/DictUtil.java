@@ -111,7 +111,7 @@ public class DictUtil {
      *
      * @param type  字典类型
      * @param value 字典值
-     * @return
+     * @return 字典文本
      */
     public static String getDictText(String type, String value) {
         if (type == null || value == null || store == null) {
