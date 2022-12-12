@@ -8,7 +8,9 @@ import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
 import com.houkunlin.system.dict.starter.json.DictText;
 import com.houkunlin.system.dict.starter.json.DictTextJsonSerializer;
 import com.houkunlin.system.dict.starter.json.DictTextJsonSerializerDefault;
+import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.properties.DictPropertiesStorePrefixKey;
+import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +18,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * 系统字典工具
@@ -39,6 +39,7 @@ public class DictUtil {
     public static String TYPE_PREFIX = "dict:t:";
     public static String VALUE_PREFIX = "dict:v:";
     public static String PARENT_PREFIX = "dict:p:";
+    private static DictRegistrar dictRegistrar;
 
     private static DictStore store;
     /**
@@ -48,11 +49,42 @@ public class DictUtil {
     private static Cache<String, AtomicInteger> missCache;
     private static int missNum = Integer.MAX_VALUE;
 
-    public DictUtil(final DictStore store, final DictCacheFactory cacheFactory) {
+    public DictUtil(final DictRegistrar dictRegistrar, final DictStore store, final DictCacheFactory cacheFactory) {
+        DictUtil.dictRegistrar = dictRegistrar;
         DictUtil.store = store;
         cache = cacheFactory.build();
         missCache = cacheFactory.build();
         missNum = cacheFactory.getDictProperties().getCache().getMissNum();
+    }
+
+    /**
+     * 设置字典数据存储对象。对外提供在运行期间更改 DictStore 存储的方法。
+     * 注意：
+     * <ul>
+     *     <li>1. 调用此接口后请发起 {@link RefreshDictEvent} 事件刷新字典数据，把系统的字典信息写入到新的 {@link DictStore} 存储对象中</li>
+     *     <li>2. （推荐）或者在调用此接口前，请先调用 {@link DictUtil#forEachAllDict(Set, Consumer, Consumer)} 此接口把所有的字典数据写入新的 {@link DictStore} 存储对象中</li>
+     * </ul>
+     *
+     * @param store 字典数据存储对象
+     * @since 1.4.11
+     */
+    public static void setDictStore(final DictStore store) {
+        DictUtil.store = store;
+    }
+
+    /**
+     * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
+     *
+     * @param dictProviderClasses 只获取特定的 {@link DictProvider} 数据，会调用 {@link DictProvider#supportRefresh(Set)} 来判断
+     * @param dictTypeConsumer    保存字典类型的方法
+     * @param dictValueConsumer   保存字典值数据的方法
+     * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer)
+     * @since 1.4.11
+     */
+    public static void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
+        if (dictRegistrar != null) {
+            dictRegistrar.forEachAllDict(dictProviderClasses, dictTypeConsumer, dictValueConsumer);
+        }
     }
 
     /**

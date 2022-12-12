@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Async;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +52,18 @@ public class DictRegistrar implements InitializingBean {
             return;
         }
         lastModified.set(System.currentTimeMillis());
+        forEachAllDict(dictProviderClasses, store::store, store::store);
+    }
+
+    /**
+     * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
+     *
+     * @param dictProviderClasses 只获取特定的 {@link DictProvider} 数据，会调用 {@link DictProvider#supportRefresh(Set)} 来判断
+     * @param dictTypeConsumer    保存字典类型的方法
+     * @param dictValueConsumer   保存字典值数据的方法
+     * @since 1.4.11
+     */
+    public void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
         for (final DictProvider provider : providers) {
             if (!provider.supportRefresh(dictProviderClasses)) {
                 continue;
@@ -59,14 +72,14 @@ public class DictRegistrar implements InitializingBean {
             if (provider.isStoreDictType()) {
                 final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
                 typeIterator.forEachRemaining(dictType -> {
-                    store.store(dictType);
+                    dictTypeConsumer.accept(dictType);
                     final List<DictValueVo> valueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
                     if (valueVos != null) {
-                        store.store(valueVos.iterator());
+                        dictValueConsumer.accept(valueVos.iterator());
                     }
                 });
             } else {
-                store.store(provider.dictValueIterator());
+                dictValueConsumer.accept(provider.dictValueIterator());
             }
         }
     }
