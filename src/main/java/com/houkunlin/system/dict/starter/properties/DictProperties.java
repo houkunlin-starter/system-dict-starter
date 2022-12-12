@@ -60,6 +60,12 @@ public class DictProperties {
      */
     private MqType mqType = MqType.NONE;
     /**
+     * 配置使用 Map 、 Redis 来存储字典数据
+     *
+     * @since 1.4.11
+     */
+    private StoreType storeType = StoreType.AUTO;
+    /**
      * 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到
      */
     private String mqExchangeName = DEFAULT_MQ_EXCHANGE_NAME;

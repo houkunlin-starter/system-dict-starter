@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter.store;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author HouKunLin
  */
-@ConditionalOnMissingClass("org.springframework.data.redis.core.RedisTemplate")
 @Configuration(proxyBeanMethods = false)
 public class LocalDictStoreConfiguration {
     /**
@@ -18,9 +18,23 @@ public class LocalDictStoreConfiguration {
      *
      * @return {@link DictStore}
      */
+    @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "AUTO", matchIfMissing = true)
+    @ConditionalOnMissingClass("org.springframework.data.redis.core.RedisTemplate")
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dictStore(RemoteDict remoteDict) {
+    public DictStore dictStoreAuto(final RemoteDict remoteDict) {
+        return new LocalDictStore(remoteDict);
+    }
+
+    /**
+     * 当环境中不存在 DictStore Bean 的时候创建一个默认的 DictStore Bean 实例
+     *
+     * @return {@link DictStore}
+     */
+    @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "LOCAL")
+    @Bean
+    @ConditionalOnMissingBean
+    public DictStore dictStoreLocal(final RemoteDict remoteDict) {
         return new LocalDictStore(remoteDict);
     }
 }
