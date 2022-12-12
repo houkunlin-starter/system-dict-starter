@@ -47,7 +47,7 @@ public class DictController {
     @Operation(summary = "获取字典类型[PATH]")
     @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "path", dataTypeClass = String.class)
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.PATH)
-    @GetMapping("{dict}")
+    @GetMapping({"{dict}", "{dict}/"})
     public DictTypeVo dictType(@PathVariable final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
     }
@@ -63,7 +63,7 @@ public class DictController {
     @Operation(summary = "获取字典类型[QUERY]")
     @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "query", dataTypeClass = String.class)
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.QUERY)
-    @GetMapping(params = {"dict"})
+    @GetMapping(value = {"/", ""}, params = {"dict"})
     public DictTypeVo dictTypeQuery(final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
     }
@@ -135,7 +135,7 @@ public class DictController {
     })
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.PATH)
     @Parameter(name = "value", description = "字典值代码", required = true, in = ParameterIn.PATH)
-    @GetMapping("{dict}/{value}")
+    @GetMapping({"{dict}/{value}", "{dict}/{value}/"})
     public String dictText(@PathVariable String dict, @PathVariable String value) {
         return DictUtil.getDictText(dict, value);
     }
@@ -155,7 +155,7 @@ public class DictController {
     })
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.QUERY)
     @Parameter(name = "value", description = "字典值代码", required = true, in = ParameterIn.QUERY)
-    @GetMapping(params = {"dict", "value"})
+    @GetMapping(value = {"/", ""}, params = {"dict", "value"})
     public String dictTextQuery(String dict, String value) {
         return DictUtil.getDictText(dict, value);
     }

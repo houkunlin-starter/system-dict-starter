@@ -19,7 +19,7 @@ import java.time.Duration;
 @Data
 @ToString
 @EqualsAndHashCode
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConfigurationProperties("system.dict")
 public class DictProperties {
     public static final String DEFAULT_MQ_EXCHANGE_NAME = "app.dict.fanout.refreshDict";
