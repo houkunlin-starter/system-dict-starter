@@ -1,5 +1,13 @@
 # 更改日志
 
+## 1.4.11 版本
+
+- feat(swagger): 增加 SpringDoc 的注解配置，把 Swagger/SpringDoc 的注解依赖范围从 传递依赖 改为仅在编译时有效
+- fix: 适配 SpringBoot 3.0.0 ，修复在 3.0.0 下启动失败和路径访问效果跟 2.7.x 不一致的问题
+- feat: 支持在已引入 Redis 的场景下通过配置文件指定使用本地 Map 来存储字典数据信息，不强制必须用 Redis 来存储字典数据
+- feat: 字典MQ不指定Redis时，不再自动创建 RedisMessageListenerContainer 对象
+- feat: 增加 DictUtil#setDictStore 方法在运行期间动态设置字典存储对象
+
 ## 1.4.10 版本
 
 - fix(bytecode/javassist): 修复在SpringBoot热加载时重新生成转换器报错问题
