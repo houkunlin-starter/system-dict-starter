@@ -109,7 +109,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
      * @return JsonSerializer
      * @since 1.4.3
      */
-    public static JsonSerializer<Object> getJsonSerializer(BeanProperty property) {
+    public static DictTextJsonSerializerBasic getJsonSerializer(BeanProperty property) {
         if (property == null) {
             return null;
         }
@@ -120,7 +120,7 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         return CACHE.get(cacheKey(property.getType().getRawClass(), property.getName(), annotation));
     }
 
-    public static DictTextJsonSerializerDefault getJsonSerializer(final Class<?> beanClazz, final Field field) {
+    public static DictTextJsonSerializerBasic getJsonSerializer(final Class<?> beanClazz, final Field field) {
         if (field == null) {
             return null;
         }

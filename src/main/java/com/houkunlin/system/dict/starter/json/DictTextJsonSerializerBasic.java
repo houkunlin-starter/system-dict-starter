@@ -25,14 +25,17 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
     /**
      * 使用了这个注解的对象
      */
+    @Getter
     protected final Class<?> beanClass;
     /**
      * 字段的类型
      */
+    @Getter
     protected final Class<?> beanFieldClass;
     /**
      * 使用了这个注解的字段名称
      */
+    @Getter
     protected final String beanFieldName;
     /**
      * 字典输出字段名称
@@ -112,11 +115,11 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
         final String fieldValueString = fieldValue.toString();
 
         if (isIterable) {
-            return processIterableField(bean, (Iterable<?>) fieldValue);
+            return obtainResult(getDictTitles(bean, (Iterable<?>) fieldValue, true));
         }
 
         if (isArray) {
-            return processArrayField(bean, (Object[]) fieldValue);
+            return obtainResult(getDictTitles(bean, Arrays.asList((Object[]) fieldValue), true));
         }
 
         if (!isNeedSpiltValue) {
@@ -125,7 +128,8 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
         }
 
         if (isCharSequence) {
-            return processStringField(bean, fieldValueString);
+            final String[] splitValue = fieldValueString.split(array.split());
+            return obtainResult(getDictTitles(bean, Arrays.asList(splitValue), false));
         }
 
         logger.warn("{}#{} = {} 不是一个字符串类型的字段，无法使用分隔数组功能", beanClass, beanFieldName, fieldValue);
@@ -134,70 +138,29 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
     }
 
     /**
-     * 处理字段是 集合 类型的场景
+     * 获取集合的字典文本列表
      *
-     * @param fieldValues 字段值（集合类型）
-     * @return 字典文本结果
+     * @param bean     数据类对象
+     * @param values   字典值列表
+     * @param isObject 字典值是否可能是一个对象
+     * @return 字典文本列表
      */
-    private Object processIterableField(final Object bean, final Iterable<?> fieldValues) {
+    public List<String> getDictTitles(final Object bean, final Iterable<?> values, final boolean isObject) {
         final List<String> result = new ArrayList<>();
-        for (final Object o : fieldValues) {
-            processFieldArrayValue(bean, result, o);
-        }
 
-        return obtainResult(result);
-    }
-
-    /**
-     * 处理字段是 数据 类型的场景
-     *
-     * @param fieldValues 字段值（数组类型）
-     * @return 字典文本结果
-     */
-    private Object processArrayField(final Object bean, final Object[] fieldValues) {
-        final List<String> result = new ArrayList<>();
-        for (final Object o : fieldValues) {
-            processFieldArrayValue(bean, result, o);
-        }
-
-        return obtainResult(result);
-    }
-
-    /**
-     * 处理字段是 字符串 类型的场景
-     *
-     * @param fieldValueString 字段值（字符串类型）
-     * @return 字典文本结果
-     */
-    private Object processStringField(final Object bean, final String fieldValueString) {
-        final String splitStr = array.split();
-        final List<String> result = new ArrayList<>();
-        final String[] splitValue = fieldValueString.split(splitStr);
-        for (final Object o : splitValue) {
-            final String dictValueText = obtainDictValueText(bean, String.valueOf(o));
+        for (Object fieldValueItem : values) {
+            final String dictValueText;
+            if (isObject && fieldValueItem instanceof DictEnum) {
+                dictValueText = ((DictEnum<?>) fieldValueItem).getTitle();
+            } else {
+                dictValueText = obtainDictValueText(bean, String.valueOf(fieldValueItem));
+            }
             if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
                 result.add(dictValueText);
             }
         }
-        return obtainResult(result);
-    }
 
-    /**
-     * 处理 集合、数组 类型的字段里面的 单个值 信息
-     *
-     * @param result          存放字典文本结果的对象
-     * @param fieldValueItem 集合、数组 的单个值
-     */
-    private void processFieldArrayValue(final Object bean, final List<String> result, final Object fieldValueItem) {
-        final String dictValueText;
-        if (fieldValueItem instanceof DictEnum) {
-            dictValueText = ((DictEnum<?>) fieldValueItem).getTitle();
-        } else {
-            dictValueText = obtainDictValueText(bean, String.valueOf(fieldValueItem));
-        }
-        if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
-            result.add(dictValueText);
-        }
+        return result;
     }
 
     public Object obtainResult(final List<String> dictTexts) {

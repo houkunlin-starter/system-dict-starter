@@ -5,9 +5,7 @@ import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.bytecode.DictChildrenObjectGenerate;
 import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
-import com.houkunlin.system.dict.starter.json.DictText;
-import com.houkunlin.system.dict.starter.json.DictTextJsonSerializer;
-import com.houkunlin.system.dict.starter.json.DictTextJsonSerializerDefault;
+import com.houkunlin.system.dict.starter.json.*;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.properties.DictPropertiesStorePrefixKey;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
@@ -254,7 +252,7 @@ public class DictUtil {
         final Map<String, Object> newFields = new HashMap<>();
         for (final Field field : fields) {
             ReflectionUtils.makeAccessible(field);
-            final DictTextJsonSerializerDefault jsonSerializer = DictTextJsonSerializer.getJsonSerializer(objectClass, field);
+            final DictTextJsonSerializerBasic jsonSerializer = DictTextJsonSerializer.getJsonSerializer(objectClass, field);
             if (jsonSerializer == null) {
                 continue;
             }
