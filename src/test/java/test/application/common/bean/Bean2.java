@@ -1,5 +1,6 @@
 package test.application.common.bean;
 
+import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +21,9 @@ public class Bean2 {
     @DictText(enums = {PeopleType.class})
     private PeopleType peopleType2 = PeopleType.ADMIN;
 
-    @DictText(enums = {PeopleType.class}, mapValue = DictText.Type.YES)
+    @DictText(enums = {PeopleType.class}, mapValue = DictBoolType.YES)
     private PeopleType peopleType3 = PeopleType.ADMIN;
 
-    @DictText(fieldName = "peopleType4-DIC", enums = {PeopleType.class}, mapValue = DictText.Type.YES)
+    @DictText(fieldName = "peopleType4-DIC", enums = {PeopleType.class}, mapValue = DictBoolType.YES)
     private PeopleType peopleType4 = PeopleType.ADMIN;
 }

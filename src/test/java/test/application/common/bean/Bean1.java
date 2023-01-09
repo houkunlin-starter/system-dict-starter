@@ -1,6 +1,7 @@
 package test.application.common.bean;
 
 import com.houkunlin.system.dict.starter.json.Array;
+import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,10 +62,10 @@ public class Bean1 {
     @DictText
     private String accidentType2 = "0";
 
-    @DictText(nullable = DictText.Type.YES, array = @Array)
+    @DictText(nullable = DictBoolType.YES, array = @Array)
     private String accidentType21 = "0";
 
-    @DictText(nullable = DictText.Type.NO, array = @Array(split = "|", joinSeparator = ","))
+    @DictText(nullable = DictBoolType.NO, array = @Array(split = "|", joinSeparator = ","))
     private String accidentType22 = "0";
 
     private PeopleType peopleType = PeopleType.ADMIN;

@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -60,7 +61,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, fieldName = "userTypeTitle", replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("1");
@@ -105,7 +106,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, fieldName = "userTypeTitle", replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -120,7 +121,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, nullable = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, nullable = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -135,7 +136,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, nullable = DictText.Type.NO)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, nullable = DictBoolType.NO)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -150,7 +151,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, nullable = DictBoolType.NO, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -165,7 +166,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.NO)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.NO)
             private String userType;
         }
         final Bean bean = new Bean("1");
@@ -180,7 +181,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("1");
@@ -195,7 +196,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -210,7 +211,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map")
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map")
             private String userType;
         }
         final Bean bean = new Bean("1");
@@ -225,7 +226,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map")
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map")
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -240,7 +241,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map", replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map", replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -255,7 +256,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, nullable = DictText.Type.YES, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, nullable = DictBoolType.YES, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -270,7 +271,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, nullable = DictBoolType.NO, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -285,7 +286,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.YES, replace = DictText.Type.NO)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map", nullable = DictBoolType.YES, replace = DictBoolType.NO)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -300,7 +301,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.NO)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map", nullable = DictBoolType.NO, replace = DictBoolType.NO)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -315,7 +316,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map", nullable = DictBoolType.NO, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("-1");
@@ -330,7 +331,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, nullable = DictText.Type.YES, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, nullable = DictBoolType.YES, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -345,7 +346,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, nullable = DictBoolType.NO, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -360,7 +361,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.YES, replace = DictText.Type.NO)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map", nullable = DictBoolType.YES, replace = DictBoolType.NO)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -375,7 +376,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.NO)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map", nullable = DictBoolType.NO, replace = DictBoolType.NO)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -390,7 +391,7 @@ class DictTypeKeyHandlerUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictText.Type.YES, fieldName = "map", nullable = DictText.Type.NO, replace = DictText.Type.YES)
+            @DictText(dictTypeHandler = DictTypeKeyHandlerImpl.class, mapValue = DictBoolType.YES, fieldName = "map", nullable = DictBoolType.NO, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean(null);

@@ -3,6 +3,7 @@ package com.houkunlin.system.dict.starter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.json.Array;
+import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,7 +62,7 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            @DictText(fieldName = "userTypeTitle", replace = DictBoolType.YES)
             private PeopleType userType;
         }
         final Bean bean = new Bean(PeopleType.ADMIN);
@@ -106,7 +107,7 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(fieldName = "userTypeTitle", replace = DictText.Type.YES)
+            @DictText(fieldName = "userTypeTitle", replace = DictBoolType.YES)
             private PeopleType userType;
         }
         final Bean bean = new Bean(null);
@@ -166,7 +167,7 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictText.Type.YES)
+            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictBoolType.YES)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(Arrays.asList(null, PeopleType.ADMIN, PeopleType.USER));
@@ -226,7 +227,7 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictText.Type.YES)
+            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictBoolType.YES)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(null);

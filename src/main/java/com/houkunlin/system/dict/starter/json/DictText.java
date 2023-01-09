@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.houkunlin.system.dict.starter.DictEnum;
 
 import java.lang.annotation.*;
-import java.util.function.BooleanSupplier;
 
 /**
  * 把数据字典值转换成数据字典文本。
@@ -57,7 +56,7 @@ public @interface DictText {
      *
      * @return Type
      */
-    Type nullable() default Type.GLOBAL;
+    DictBoolType nullable() default DictBoolType.GLOBAL;
 
     /**
      * 此配置将会使 #fieldName 配置失效；用来标记是否使用 Map 对象返回字典值信息
@@ -72,7 +71,7 @@ public @interface DictText {
      *
      * @return mapValue
      */
-    Type mapValue() default Type.GLOBAL;
+    DictBoolType mapValue() default DictBoolType.GLOBAL;
 
     /**
      * 标记是否替换原始值，不使用 {@link #fieldName} 字段输出，直接用字典文本替换原来的字典值输出。
@@ -80,7 +79,7 @@ public @interface DictText {
      *
      * @return 是否替换原始值
      */
-    Type replace() default Type.GLOBAL;
+    DictBoolType replace() default DictBoolType.GLOBAL;
 
     /**
      * 数据字典分割成数组配置。
@@ -113,44 +112,4 @@ public @interface DictText {
      */
     int treeDepth() default -1;
 
-    enum Type {
-        /**
-         * 根据全局参数决定配置
-         */
-        GLOBAL,
-        /**
-         * 强制为 YES
-         */
-        YES,
-        /**
-         * 强制为 NO
-         */
-        NO;
-
-        /**
-         * 获取所需的值
-         *
-         * @param global 全局配置值
-         * @return true or false
-         */
-        public boolean getValue(final boolean global) {
-            if (this == GLOBAL) {
-                return global;
-            }
-            return this == YES;
-        }
-
-        /**
-         * 获取所需的值
-         *
-         * @param booleanSupplier 全局配置值
-         * @return true or false
-         */
-        public boolean getValue(final BooleanSupplier booleanSupplier) {
-            if (this == GLOBAL) {
-                return booleanSupplier.getAsBoolean();
-            }
-            return this == YES;
-        }
-    }
 }

@@ -91,7 +91,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     }
 
     @Override
-    public Object serialize(final Object beanObject, final Object fieldValue) {
+    public Object serialize(final Object bean, final Object fieldValue) {
         if (fieldValue == null) {
             return defaultNullableValue(defaultDictTextResult);
         }
@@ -102,13 +102,13 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
             dictValueText = enums.getTitle();
         } else {
             // 字段是普通类型，但是使用注解标记了来自枚举对象取值
-            dictValueText = obtainDictValueText(beanObject, fieldValue);
+            dictValueText = obtainDictValueText(bean, fieldValue);
         }
         return defaultNullableValue(dictValueText);
     }
 
     @Override
-    protected String obtainDictValueText(final Object bean, final String dictValue) {
+    public String obtainDictValueText(final Object bean, final String dictValue) {
         String cacheTitle;
         for (final Class<? extends DictEnum<?>> aClass : enumsClass) {
             cacheTitle = CACHE_ENUMS.get(aClass, String.valueOf(dictValue));
