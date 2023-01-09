@@ -28,6 +28,9 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * 直接使用系统字典枚举的枚举对象列表
      */
     protected final Class<? extends DictEnum<?>>[] enumsClass;
+    /**
+     * {@link #beanFieldClass} 是否是一个枚举类型
+     */
     protected final boolean isDictEnum;
 
     /**

@@ -47,17 +47,44 @@ public class DictTextJsonSerializerDefault extends JsonSerializer<Object> {
      */
     protected final DictText dictText;
     /**
-     * 字典类型代码
+     * 字典类型代码 {@link #dictText} 字段的 value 属性内容
      */
     protected final String dictType;
+    /**
+     * 字典值内容是否是一个数组内容的配置信息。{@link #dictText} 字段的 array 属性内容
+     */
     protected final Array array;
+    /**
+     * 是否存在字典类型。{@link #dictText} 字段的 value 属性内容是否存在
+     */
     protected final boolean hasDictType;
+    /**
+     * 是否存在字典文本输出字段名称。{@link #dictText} 字段的 fieldName 属性内容是否存在
+     */
     protected final boolean hasDictTextFieldName;
+    /**
+     * {@link #beanFieldClass} 是否是一个集合对象。
+     */
     protected final boolean isIterable;
+    /**
+     * {@link #beanFieldClass} 是否是一个数组对象
+     */
     protected final boolean isArray;
+    /**
+     * {@link #beanFieldClass} 是否是一个字符串对象
+     */
     protected final boolean isCharSequence;
+    /**
+     * 字典值（{@link #beanClass} 的 {@link #beanFieldName} 值）是否需要进行分割成数组
+     */
     protected final boolean isNeedSpiltValue;
+    /**
+     * 如果字典为 null 默认的字典文本结果
+     */
     protected final Object defaultDictTextResult;
+    /**
+     * 自定义的字典类型处理对象
+     */
     protected DictTypeKeyHandler<Object> dictTypeKeyHandler = null;
 
     /**
