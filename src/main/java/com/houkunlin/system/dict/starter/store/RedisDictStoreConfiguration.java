@@ -26,8 +26,8 @@ public class RedisDictStoreConfiguration {
     @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "AUTO", matchIfMissing = true)
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dictStoreAuto(final RedisTemplate<String, DictTypeVo> redisTemplate1, final StringRedisTemplate redisTemplate2, final RemoteDict remoteDict) {
-        return new RedisDictStore(redisTemplate1, redisTemplate2, remoteDict);
+    public DictStore dictStoreAuto(final RedisTemplate<String, DictTypeVo> redisTemplate1, final RemoteDict remoteDict) {
+        return new RedisDictStore(redisTemplate1, remoteDict);
     }
 
     /**
@@ -38,7 +38,7 @@ public class RedisDictStoreConfiguration {
     @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "REDIS")
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dictStoreRedis(final RedisTemplate<String, DictTypeVo> redisTemplate1, final StringRedisTemplate redisTemplate2, final RemoteDict remoteDict) {
-        return new RedisDictStore(redisTemplate1, redisTemplate2, remoteDict);
+    public DictStore dictStoreRedis(final RedisTemplate<String, DictTypeVo> redisTemplate1, final RemoteDict remoteDict) {
+        return new RedisDictStore(redisTemplate1, remoteDict);
     }
 }

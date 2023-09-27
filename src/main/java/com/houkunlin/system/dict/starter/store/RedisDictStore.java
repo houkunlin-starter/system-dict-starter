@@ -3,7 +3,7 @@ package com.houkunlin.system.dict.starter.store;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,11 +21,10 @@ import java.util.stream.Collectors;
  *
  * @author HouKunLin
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RedisDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(RedisDictStore.class);
-    public final RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate;
-    public final RedisTemplate<String, String> dictValueRedisTemplate;
+    private final RedisTemplate<String, DictTypeVo> redisTemplate;
     private final RemoteDict remoteDict;
 
     @Override
@@ -34,7 +33,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
         if (children == null) {
             removeDictType(dictType.getType());
         } else {
-            dictTypeRedisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
+            redisTemplate.opsForValue().set(DictUtil.dictKey(dictType.getType()), dictType);
         }
     }
 
@@ -42,15 +41,15 @@ public class RedisDictStore implements DictStore, InitializingBean {
     public void storeSystemDict(DictTypeVo dictType) {
         final List<DictValueVo> children = dictType.getChildren();
         if (children == null) {
-            dictTypeRedisTemplate.delete(DictUtil.dictSystemKey(dictType.getType()));
+            redisTemplate.delete(DictUtil.dictSystemKey(dictType.getType()));
         } else {
-            dictTypeRedisTemplate.opsForValue().set(DictUtil.dictSystemKey(dictType.getType()), dictType);
+            redisTemplate.opsForValue().set(DictUtil.dictSystemKey(dictType.getType()), dictType);
         }
     }
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
-        HashOperations<String, String, String> opsedForHash = dictValueRedisTemplate.<String, String>opsForHash();
+        HashOperations<String, String, String> opsedForHash = redisTemplate.opsForHash();
 
         iterator.forEachRemaining(valueVo -> {
             String dictKeyHash = DictUtil.dictKeyHash(valueVo);
@@ -78,20 +77,21 @@ public class RedisDictStore implements DictStore, InitializingBean {
 
     @Override
     public void removeDictType(final String dictType) {
-        dictTypeRedisTemplate.delete(DictUtil.dictKey(dictType));
+        String dictKeyType = DictUtil.dictKey(dictType);
+        redisTemplate.delete(dictKeyType);
         if (logger.isDebugEnabled()) {
-            logger.debug("[removeDictType] 字典类型被删除 {}", dictType);
+            logger.debug("[removeDictType] 字典类型被删除 {}", dictKeyType);
         }
-        final String dictKeyHash = DictUtil.dictKeyHash(dictType, null);
-        dictValueRedisTemplate.delete(dictKeyHash);
+        final String dictKeyHashValue = DictUtil.dictKeyHash(dictType);
+        redisTemplate.delete(dictKeyHashValue);
         if (logger.isDebugEnabled()) {
-            logger.debug("[removeDictType] 字典值文本被删除 {}", dictKeyHash);
+            logger.debug("[removeDictType] 字典值文本被删除 {}", dictKeyHashValue);
         }
     }
 
     @Override
     public Set<String> dictTypeKeys() {
-        final Set<String> keys = dictTypeRedisTemplate.keys(DictUtil.TYPE_PREFIX.concat("*"));
+        final Set<String> keys = redisTemplate.keys(DictUtil.TYPE_PREFIX.concat("*"));
         assert keys != null;
         final int length = DictUtil.TYPE_PREFIX.length();
         return keys.stream().map(key -> key.substring(length)).collect(Collectors.toSet());
@@ -99,7 +99,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
 
     @Override
     public Set<String> systemDictTypeKeys() {
-        final Set<String> keys = dictTypeRedisTemplate.keys(DictUtil.TYPE_SYSTEM_PREFIX.concat("*"));
+        final Set<String> keys = redisTemplate.keys(DictUtil.TYPE_SYSTEM_PREFIX.concat("*"));
         assert keys != null;
         final int length = DictUtil.TYPE_SYSTEM_PREFIX.length();
         return keys.stream().map(key -> key.substring(length)).collect(Collectors.toSet());
@@ -110,7 +110,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
         if (type == null) {
             return null;
         }
-        final DictTypeVo o = dictTypeRedisTemplate.opsForValue().get(DictUtil.dictKey(type));
+        final DictTypeVo o = redisTemplate.opsForValue().get(DictUtil.dictKey(type));
         if (o != null) {
             return o;
         }
@@ -123,7 +123,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
         if (type == null || value == null) {
             return null;
         }
-        final String o = dictValueRedisTemplate.<String, String>opsForHash().get(DictUtil.dictKeyHash(type, value), value);
+        final String o = redisTemplate.<String, String>opsForHash().get(DictUtil.dictKeyHash(type), value);
         if (o != null) {
             return o;
         }
@@ -136,7 +136,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
         if (type == null || value == null) {
             return null;
         }
-        return dictValueRedisTemplate.<String, String>opsForHash().get(DictUtil.dictParentKeyHash(type, value), value);
+        return redisTemplate.<String, String>opsForHash().get(DictUtil.dictParentKeyHash(type), value);
     }
 
     @Override

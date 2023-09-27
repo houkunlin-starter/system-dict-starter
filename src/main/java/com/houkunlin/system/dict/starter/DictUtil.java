@@ -253,11 +253,10 @@ public class DictUtil {
     /**
      * Redis Dict Value Hash Key
      *
-     * @param value
      * @return key
      * @since 1.5.0
      */
-    public static String dictKeyHash(String type, Object value) {
+    public static String dictKeyHash(String type) {
         return VALUE_PREFIX + type;
     }
 
@@ -265,11 +264,10 @@ public class DictUtil {
      * 构建字典父级值缓存 KEY
      *
      * @param type  字典类型
-     * @param value 字典值
      * @return 字典父级值缓存 KEY
      * @since 1.5.0
      */
-    public static String dictParentKeyHash(String type, Object value) {
+    public static String dictParentKeyHash(String type) {
         return PARENT_PREFIX + type;
     }
 

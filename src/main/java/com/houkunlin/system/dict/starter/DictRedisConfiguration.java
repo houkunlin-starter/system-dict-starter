@@ -37,9 +37,13 @@ public class DictRedisConfiguration {
     @Bean(DICT_REDIS_BEAN_NAME)
     public RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate(final RedisConnectionFactory connectionFactory) {
         final RedisTemplate<String, DictTypeVo> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setBeanClassLoader(Thread.currentThread().getContextClassLoader());
         redisTemplate.setKeySerializer(RedisSerializer.string());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(DictTypeVo.class));
+        redisTemplate.setHashKeySerializer(RedisSerializer.string());
+        redisTemplate.setHashValueSerializer(RedisSerializer.string());
         redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 
