@@ -136,15 +136,24 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
         List<DictValueVo> list = dictTypeVo.getChildren();
         final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dictClass.getEnumConstants();
         for (DictEnum<?> enums : enumConstants) {
-            if (logger.isDebugEnabled()) {
-                final Serializable value = enums.getValue();
-                if (value instanceof String) {
-                    logger.debug("dict enum: {}.{}(\"{}\", \"{}\") by dict type: {}", dictClass.getName(), enums, value, enums.getTitle(), dictType);
-                } else {
-                    logger.debug("dict enum: {}.{}({}, \"{}\") by dict type: {}", dictClass.getName(), enums, value, enums.getTitle(), dictType);
+            final Serializable value = enums.getValue();
+            boolean exists = false;
+            for (DictValueVo valueVo : list) {
+                if (Objects.equals(valueVo.getValue(), value)) {
+                    exists = true;
+                    break;
                 }
             }
-            list.add(new DictValueVo(dictType, enums.getValue(), enums.getTitle(), 0));
+            if (!exists) {
+                list.add(new DictValueVo(dictType, value, enums.getTitle(), 0));
+            }
+            if (logger.isDebugEnabled()) {
+                if (value instanceof String) {
+                    logger.debug("dict enum: {}.{}(\"{}\", \"{}\") by dict type: {} {}", dictClass.getName(), enums, value, enums.getTitle(), dictType, exists ? "已经存在，忽略处理" : "将写入缓存");
+                } else {
+                    logger.debug("dict enum: {}.{}({}, \"{}\") by dict type: {} {}", dictClass.getName(), enums, value, enums.getTitle(), dictType, exists ? "已经存在，忽略处理" : "将写入缓存");
+                }
+            }
         }
     }
 
