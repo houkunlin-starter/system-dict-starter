@@ -1,5 +1,14 @@
 # 更改日志
 
+## 1.5.0 版本
+
+产生了一些破坏性变更，请谨慎升级
+- refactor: 重构 Jackson 序列化器，抽出一个基类序列化器，把 DictText.Type 提取为 DictBoolType 对象
+- perf: 优化 Jackson 序列化器对于集合字典的处理
+- feat: 防止系统字典值重复加入缓存
+- feat: 系统字典类型完整信息单独存储一份，系统字典不允许通过事件进行更新字典数据
+- feat: 缓存到 Redis 改为存储到 Redis Hash
+
 ## 1.4.11 版本
 
 - feat(swagger): 增加 SpringDoc 的注解配置，把 Swagger/SpringDoc 的注解依赖范围从 传递依赖 改为仅在编译时有效

@@ -18,7 +18,7 @@ import java.util.*;
  * 一般情况下的场景，字典文本转换的基本功能代码
  *
  * @author HouKunLin
- * @since 1.4.12
+ * @since 1.5.0
  */
 public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object> {
     private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializerBasic.class);

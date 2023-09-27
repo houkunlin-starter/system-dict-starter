@@ -6,7 +6,7 @@ import java.util.function.BooleanSupplier;
  * 数据字典配置类型
  *
  * @author HouKunLin
- * @since 1.4.12
+ * @since 1.5.0
  */
 public enum DictBoolType {
     /**
