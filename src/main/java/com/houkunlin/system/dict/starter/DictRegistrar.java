@@ -9,6 +9,7 @@ import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
+import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class DictRegistrar implements InitializingBean {
             return;
         }
         lastModified.set(System.currentTimeMillis());
-        forEachAllDict(dictProviderClasses, store::store, store::store);
+        forEachAllDict(dictProviderClasses, store::store, store::storeSystemDict, store::store);
     }
 
     /**
@@ -63,7 +64,7 @@ public class DictRegistrar implements InitializingBean {
      * @param dictValueConsumer   保存字典值数据的方法
      * @since 1.4.11
      */
-    public void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
+    public void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<DictTypeVo> systemDictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
         for (final DictProvider provider : providers) {
             if (!provider.supportRefresh(dictProviderClasses)) {
                 continue;
@@ -71,8 +72,13 @@ public class DictRegistrar implements InitializingBean {
             // 根据 Provider 参数决定是否存储完整的字典类型信息对象
             if (provider.isStoreDictType()) {
                 final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
+                final boolean isSystemProvider = provider instanceof SystemDictProvider;
                 typeIterator.forEachRemaining(dictType -> {
                     dictTypeConsumer.accept(dictType);
+                    if (isSystemProvider) {
+                        // 系统字典单独存储一份
+                        systemDictTypeConsumer.accept(dictType);
+                    }
                     final List<DictValueVo> valueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
                     if (valueVos != null) {
                         dictValueConsumer.accept(valueVos.iterator());
@@ -118,7 +124,40 @@ public class DictRegistrar implements InitializingBean {
         if (logger.isDebugEnabled()) {
             logger.debug("[RefreshDictValueEvent.value] 刷新字典值文本信息 {}", dictValueVos);
         }
-        store.store(dictValueVos.iterator());
+        Set<String> systemDictTypeKeys = store.systemDictTypeKeys();
+        ArrayList<DictValueVo> list;
+        if (dictValueVos instanceof Collection) {
+            list = new ArrayList<>((Collection<DictValueVo>) dictValueVos);
+        } else {
+            list = new ArrayList<>();
+            for (DictValueVo valueVo : dictValueVos) {
+                list.add(valueVo);
+            }
+        }
+        removeSystemDictValue(list.iterator(), systemDictTypeKeys);
+        if (!list.isEmpty()) {
+            store.store(list.iterator());
+        }
+    }
+
+    /**
+     * 检测需要刷新的字典文本列表，从中移除属于系统字典的文本信息，不允许通过刷新字典的方式修改系统字典文本
+     *
+     * @param iterator           迭代器
+     * @param systemDictTypeKeys 系统字典代码列表
+     * @since 1.5.0
+     */
+    private void removeSystemDictValue(Iterator<DictValueVo> iterator, Set<String> systemDictTypeKeys) {
+        while (iterator.hasNext()) {
+            DictValueVo valueVo = iterator.next();
+            String dictType = valueVo.getDictType();
+            if (systemDictTypeKeys.contains(dictType)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("[RefreshDictValueEvent.value] 刷新字典值涉及的字典类型代码 {}，此类型为系统字典类型，无法通过事件方式刷新字典值，已忽略", dictType);
+                }
+                iterator.remove();
+            }
+        }
     }
 
     /**
@@ -142,7 +181,14 @@ public class DictRegistrar implements InitializingBean {
         if (logger.isDebugEnabled()) {
             logger.debug("[RefreshDictValueEvent.type] 刷新字典值涉及的字典类型代码 {}", keySet);
         }
+        Set<String> systemDictTypeKeys = store.systemDictTypeKeys();
         for (final String dictType : keySet) {
+            if (systemDictTypeKeys.contains(dictType)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("[RefreshDictValueEvent.type] 刷新字典值涉及的字典类型代码 {}，此类型为系统字典类型，无法通过事件方式刷新字典值，已忽略", dictType);
+                }
+                continue;
+            }
             // 处理维护字典类型代码的字典信息
             maintainHandleDictType(dictType, new ArrayList<>(multimap.get(dictType)), removeDictType);
         }

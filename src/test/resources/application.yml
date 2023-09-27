@@ -30,18 +30,21 @@ system:
     raw-value: true
     text-value-default-null: false
     replace-value: false
-    refresh-dict-interval: 20
-    mq-type: redis
+    refresh-dict-interval: 0
+    mq-type: none
     cache:
-      enabled: true
+      enabled: false
       maximum-size: 10
       initial-capacity: 5
     controller:
       enabled: true
     store-key:
-      value-prefix: 'u:myDict:'
-      type-prefix: 'u:aaDict:'
-      parent-prefix: 'u:ppDict:'
+      value-prefix: 'u:value:'
+      type-prefix: 'u:type:'
+      parent-prefix: 'u:parent:'
+      type-system-prefix: 'u:type_system:'
+    store-type: redis
+#    bytecode: asm
 #    map-value: true
 management:
   endpoint:

@@ -21,6 +21,26 @@ public interface DictStore {
     void store(DictTypeVo dictType);
 
     /**
+     * 存储一个完整的数据字典信息（单独为存储系统字典定义一个方法）
+     *
+     * @param dictType 数据字典对象
+     * @since 1.5.0
+     */
+    default void storeSystemDict(DictTypeVo dictType) {
+        store(dictType);
+    }
+
+    /**
+     * 存储一个字典值列表数据
+     *
+     * @param iterable 字典值列表
+     * @since 1.5.0
+     */
+    default void store(Iterable<DictValueVo> iterable) {
+        store(iterable.iterator());
+    }
+
+    /**
      * 存储一个字典值列表数据
      *
      * @param iterator 字典值列表
@@ -35,14 +55,24 @@ public interface DictStore {
     void removeDictType(final String dictType);
 
     /**
-     * 字典类型代码列表。
+     * 字典类型代码列表（涵盖系统字典类型代码）。
      * <p>仅能够得到 {@link DictProvider#isStoreDictType()} 返回 true 的字典类型代码信息。</p>
      * <p>当 {@link DictProvider#isStoreDictType()} 返回 false 时对应的 {@link DictProvider} 提供的字典类型信息对象将不会被存储，也就是当前方法无法获得该字典类型代码</p>
      *
-     * @return 字典类型代码列表
+     * @return 字典类型代码列表（涵盖系统字典类型代码）
      * @since 1.4.0
      */
     Set<String> dictTypeKeys();
+
+    /**
+     * 系统字典类型代码列表。
+     *
+     * @return 字典类型代码列表（仅返回系统字典类型代码）
+     * @since 1.5.0
+     */
+    default Set<String> systemDictTypeKeys() {
+        return dictTypeKeys();
+    }
 
     /**
      * 通过字典类型获取完整的字典信息

@@ -35,6 +35,7 @@ public class DictUtil {
      */
     private static final Map<Class<?>, Class<?>> TRANSFORM_CACHE = new ConcurrentHashMap<>();
     public static String TYPE_PREFIX = "dict:t:";
+    public static String TYPE_SYSTEM_PREFIX = "dict:t_system:";
     public static String VALUE_PREFIX = "dict:v:";
     public static String PARENT_PREFIX = "dict:p:";
     private static DictRegistrar dictRegistrar;
@@ -60,7 +61,7 @@ public class DictUtil {
      * 注意：
      * <ul>
      *     <li>1. 调用此接口后请发起 {@link RefreshDictEvent} 事件刷新字典数据，把系统的字典信息写入到新的 {@link DictStore} 存储对象中</li>
-     *     <li>2. （推荐）或者在调用此接口前，请先调用 {@link DictUtil#forEachAllDict(Set, Consumer, Consumer)} 此接口把所有的字典数据写入新的 {@link DictStore} 存储对象中</li>
+     *     <li>2. （推荐）或者在调用此接口前，请先调用 {@link DictUtil#forEachAllDict(Set, Consumer, Consumer, Consumer)} 此接口把所有的字典数据写入新的 {@link DictStore} 存储对象中</li>
      * </ul>
      *
      * @param store 字典数据存储对象
@@ -73,15 +74,28 @@ public class DictUtil {
     /**
      * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
      *
+     * @param store 字典存储 {@link DictStore} 对象
+     * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
+     * @since 1.5.0
+     */
+    public static void forEachAllDict(final Set<String> dictProviderClasses, final DictStore store) {
+        if (dictRegistrar != null) {
+            dictRegistrar.forEachAllDict(dictProviderClasses, store::store, store::storeSystemDict, store::store);
+        }
+    }
+
+    /**
+     * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
+     *
      * @param dictProviderClasses 只获取特定的 {@link DictProvider} 数据，会调用 {@link DictProvider#supportRefresh(Set)} 来判断
      * @param dictTypeConsumer    保存字典类型的方法
      * @param dictValueConsumer   保存字典值数据的方法
-     * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer)
+     * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.4.11
      */
-    public static void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
+    public static void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<DictTypeVo> systemDictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
         if (dictRegistrar != null) {
-            dictRegistrar.forEachAllDict(dictProviderClasses, dictTypeConsumer, dictValueConsumer);
+            dictRegistrar.forEachAllDict(dictProviderClasses, dictTypeConsumer, systemDictTypeConsumer, dictValueConsumer);
         }
     }
 
@@ -95,6 +109,7 @@ public class DictUtil {
         TYPE_PREFIX = properties.getTypePrefix();
         VALUE_PREFIX = properties.getValuePrefix();
         PARENT_PREFIX = properties.getParentPrefix();
+        TYPE_SYSTEM_PREFIX = properties.getTypeSystemPrefix();
     }
 
     public static DictTypeVo getDictType(String type) {
@@ -175,6 +190,10 @@ public class DictUtil {
 
     public static String dictKey(String type) {
         return TYPE_PREFIX + type;
+    }
+
+    public static String dictSystemKey(String type) {
+        return TYPE_SYSTEM_PREFIX + type;
     }
 
     public static String dictKey(DictValueVo value) {

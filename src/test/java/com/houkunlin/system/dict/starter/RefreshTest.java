@@ -66,8 +66,9 @@ class RefreshTest {
 
         final Optional<DictValueVo> valueVo = dictTypeVo.getChildren().stream().filter(vo -> Objects.equals(vo.getValue(), 2)).findFirst();
         Assertions.assertTrue(valueVo.isPresent());
-        Assertions.assertEquals("修改后的名称", valueVo.get().getTitle());
-        Assertions.assertEquals("修改后的名称", DictUtil.getDictText(dictType, "2"));
+        // 无法通过事件修改系统类型的字典文本，应当直接修改枚举对象重新编译程序
+        Assertions.assertEquals("其他用户", valueVo.get().getTitle());
+        Assertions.assertEquals("其他用户", DictUtil.getDictText(dictType, "2"));
     }
 
     @Test
@@ -81,9 +82,10 @@ class RefreshTest {
         System.out.println(toJson(dictTypeVo));
 
         final Optional<DictValueVo> valueVo = dictTypeVo.getChildren().stream().filter(vo -> Objects.equals(vo.getValue(), 2)).findFirst();
-        Assertions.assertFalse(valueVo.isPresent());
-        Assertions.assertEquals(2, dictTypeVo.getChildren().size());
-        Assertions.assertNull(DictUtil.getDictText(dictType, "2"));
+        // 不允许通过事件的方式变更系统字典数据
+        Assertions.assertTrue(valueVo.isPresent());
+        Assertions.assertEquals(3, dictTypeVo.getChildren().size());
+        Assertions.assertNotNull(DictUtil.getDictText(dictType, "2"));
     }
 
     @Test

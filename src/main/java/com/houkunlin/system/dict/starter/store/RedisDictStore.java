@@ -38,6 +38,16 @@ public class RedisDictStore implements DictStore, InitializingBean {
     }
 
     @Override
+    public void storeSystemDict(DictTypeVo dictType) {
+        final List<DictValueVo> children = dictType.getChildren();
+        if (children == null) {
+            dictTypeRedisTemplate.delete(DictUtil.dictSystemKey(dictType.getType()));
+        } else {
+            dictTypeRedisTemplate.opsForValue().set(DictUtil.dictSystemKey(dictType.getType()), dictType);
+        }
+    }
+
+    @Override
     public void store(final Iterator<DictValueVo> iterator) {
         final ValueOperations<String, String> opsForValue = dictValueRedisTemplate.opsForValue();
         iterator.forEachRemaining(valueVo -> {
@@ -83,6 +93,14 @@ public class RedisDictStore implements DictStore, InitializingBean {
         final Set<String> keys = dictTypeRedisTemplate.keys(DictUtil.TYPE_PREFIX.concat("*"));
         assert keys != null;
         final int length = DictUtil.TYPE_PREFIX.length();
+        return keys.stream().map(key -> key.substring(length)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<String> systemDictTypeKeys() {
+        final Set<String> keys = dictTypeRedisTemplate.keys(DictUtil.TYPE_SYSTEM_PREFIX.concat("*"));
+        assert keys != null;
+        final int length = DictUtil.TYPE_SYSTEM_PREFIX.length();
         return keys.stream().map(key -> key.substring(length)).collect(Collectors.toSet());
     }
 

@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LocalDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(LocalDictStore.class);
     private static final ConcurrentHashMap<String, DictTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, DictTypeVo> CACHE_SYSTEM_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TEXT = new ConcurrentHashMap<>();
     private final RemoteDict remoteDict;
 
@@ -32,6 +33,16 @@ public class LocalDictStore implements DictStore, InitializingBean {
             removeDictType(dictType.getType());
         } else {
             CACHE_TYPE.put(dictType.getType(), dictType);
+        }
+    }
+
+    @Override
+    public void storeSystemDict(DictTypeVo dictType) {
+        final List<DictValueVo> children = dictType.getChildren();
+        if (children == null) {
+            CACHE_SYSTEM_TYPE.remove(dictType.getType());
+        } else {
+            CACHE_SYSTEM_TYPE.put(dictType.getType(), dictType);
         }
     }
 
@@ -80,6 +91,11 @@ public class LocalDictStore implements DictStore, InitializingBean {
     @Override
     public Set<String> dictTypeKeys() {
         return CACHE_TYPE.keySet();
+    }
+
+    @Override
+    public Set<String> systemDictTypeKeys() {
+        return CACHE_SYSTEM_TYPE.keySet();
     }
 
     @Override
