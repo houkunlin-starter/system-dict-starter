@@ -7,8 +7,9 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -49,24 +50,26 @@ public class RedisDictStore implements DictStore, InitializingBean {
 
     @Override
     public void store(final Iterator<DictValueVo> iterator) {
-        final ValueOperations<String, String> opsForValue = dictValueRedisTemplate.opsForValue();
+        HashOperations<String, String, String> opsedForHash = dictValueRedisTemplate.<String, String>opsForHash();
+
         iterator.forEachRemaining(valueVo -> {
-            final String dictKey = DictUtil.dictKey(valueVo);
+            String dictKeyHash = DictUtil.dictKeyHash(valueVo);
+            String value = ObjectUtils.getDisplayString(valueVo.getValue());
             final String title = valueVo.getTitle();
             if (title == null) {
-                dictValueRedisTemplate.delete(dictKey);
+                opsedForHash.delete(dictKeyHash, value);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("[removeDictValue] 字典值文本被删除 {}", dictKey);
+                    logger.debug("[removeDictValue] 字典值文本被删除 {}#{}", dictKeyHash, value);
                 }
             } else {
-                opsForValue.set(dictKey, title);
+                opsedForHash.put(dictKeyHash, value, title);
                 // @since 1.4.6 - START
-                final String dictParentKey = DictUtil.dictParentKey(valueVo);
+                final String dictParentKeyHash = DictUtil.dictParentKeyHash(valueVo);
                 final Object parentValue = valueVo.getParentValue();
                 if (parentValue == null) {
-                    dictValueRedisTemplate.delete(dictParentKey);
+                    opsedForHash.delete(dictParentKeyHash, value);
                 } else {
-                    opsForValue.set(dictParentKey, parentValue.toString());
+                    opsedForHash.put(dictParentKeyHash, value, parentValue.toString());
                 }
                 // @since 1.4.6 - END
             }
@@ -79,12 +82,10 @@ public class RedisDictStore implements DictStore, InitializingBean {
         if (logger.isDebugEnabled()) {
             logger.debug("[removeDictType] 字典类型被删除 {}", dictType);
         }
-        final String prefix = DictUtil.VALUE_PREFIX.concat(dictType);
-        final Set<String> keys = dictValueRedisTemplate.keys(prefix + ":*");
-        logger.debug("[removeDictType] 字典值文本被删除 {}", keys);
-        assert keys != null;
-        if (!keys.isEmpty()) {
-            dictValueRedisTemplate.delete(keys);
+        final String dictKeyHash = DictUtil.dictKeyHash(dictType, null);
+        dictValueRedisTemplate.delete(dictKeyHash);
+        if (logger.isDebugEnabled()) {
+            logger.debug("[removeDictType] 字典值文本被删除 {}", dictKeyHash);
         }
     }
 
@@ -122,7 +123,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
         if (type == null || value == null) {
             return null;
         }
-        final String o = dictValueRedisTemplate.opsForValue().get(DictUtil.dictKey(type, value));
+        final String o = dictValueRedisTemplate.<String, String>opsForHash().get(DictUtil.dictKeyHash(type, value), value);
         if (o != null) {
             return o;
         }
@@ -135,7 +136,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
         if (type == null || value == null) {
             return null;
         }
-        return dictValueRedisTemplate.opsForValue().get(DictUtil.dictParentKey(type, value));
+        return dictValueRedisTemplate.<String, String>opsForHash().get(DictUtil.dictParentKeyHash(type, value), value);
     }
 
     @Override

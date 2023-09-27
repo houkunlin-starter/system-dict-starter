@@ -228,6 +228,52 @@ public class DictUtil {
     }
 
     /**
+     * Redis Dict Value Hash Key
+     *
+     * @param value
+     * @return key
+     * @since 1.5.0
+     */
+    public static String dictKeyHash(DictValueVo value) {
+        return VALUE_PREFIX + value.getDictType();
+    }
+
+    /**
+     * 构建字典父级值缓存 KEY
+     * Redis Dict Value Hash Key
+     *
+     * @param value 字典值对象
+     * @return 字典父级值缓存 KEY
+     * @since 1.5.0
+     */
+    public static String dictParentKeyHash(DictValueVo value) {
+        return PARENT_PREFIX + value.getDictType();
+    }
+
+    /**
+     * Redis Dict Value Hash Key
+     *
+     * @param value
+     * @return key
+     * @since 1.5.0
+     */
+    public static String dictKeyHash(String type, Object value) {
+        return VALUE_PREFIX + type;
+    }
+
+    /**
+     * 构建字典父级值缓存 KEY
+     *
+     * @param type  字典类型
+     * @param value 字典值
+     * @return 字典父级值缓存 KEY
+     * @since 1.5.0
+     */
+    public static String dictParentKeyHash(String type, Object value) {
+        return PARENT_PREFIX + type;
+    }
+
+    /**
      * 转换列表的对象中含有字典文本翻译注解的字段信息
      *
      * @param objects 对象集合
