@@ -13,7 +13,7 @@
 
 **`v1.4.8` 版本已在 `JDK8` `JDK11` `JDK17` 环境下跑通所有单元测试样例**
 
-**`v1.5.0` 版本产生了一些破坏性变更，请谨慎升级**
+**从 `v1.4.11` 到 `v1.5.0` 版本产生了一些破坏性变更，请谨慎升级。移除了 DictText.Type 改为使用 DictBoolType；修改了 Redis 存储字典文本的方式，改为 Redis Hash 存储字典文本内容。**
 
 **Maven**
 
@@ -34,6 +34,7 @@ implementation "com.houkunlin:system-dict-starter:${latest.release}"
 
 
 #### 详细使用文档请点击查看 [基础用法文档](./usage.md) 
+#### 系统更新日志 [系统更新日志](./changelog.md) 
 
 ## 如何启用？
 
@@ -50,7 +51,7 @@ public class Application {
 }
 ```
 
-**`v1.5.0` 版本产生了一些破坏性变更，请谨慎升级**
+**从 `v1.4.11` 到 `v1.5.0` 版本产生了一些破坏性变更，请谨慎升级。移除了 DictText.Type 改为使用 DictBoolType；修改了 Redis 存储字典文本的方式，改为 Redis Hash 存储字典文本内容。**
 
 
 

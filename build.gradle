@@ -32,16 +32,12 @@ configurations {
 }
 
 repositories {
-    maven { url 'https://maven.aliyun.com/repository/public' }
     maven { url 'https://repo.spring.io/release' }
     mavenCentral()
 }
 
 dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
-    compileOnly 'org.springframework.boot:spring-boot-starter-jdbc'
-//    compileOnly 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compileOnly 'com.baomidou:mybatis-plus-boot-starter:3.5.3.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-web'

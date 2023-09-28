@@ -2,7 +2,8 @@
 
 ## 1.5.0 版本
 
-产生了一些破坏性变更，请谨慎升级
+产生了一些破坏性变更，请谨慎升级。移除了 DictText.Type 改为使用 DictBoolType；修改了 Redis 存储字典文本的方式，改为 Redis Hash 存储字典文本内容。
+
 - refactor: 重构 Jackson 序列化器，抽出一个基类序列化器，把 DictText.Type 提取为 DictBoolType 对象
 - perf: 优化 Jackson 序列化器对于集合字典的处理
 - feat: 防止系统字典值重复加入缓存
