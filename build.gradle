@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.5.0'
+version = '1.5.1'
 description = """
 系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
 The system data dictionary is automatically translated into dictionary text.
@@ -50,7 +50,7 @@ dependencies {
     compileOnly 'org.springframework.boot:spring-boot-starter-amqp'
     // testImplementation 'org.springframework.boot:spring-boot-starter-amqp'
     // https://mvnrepository.com/artifact/com.google.guava/guava
-    api 'com.google.guava:guava:31.1-jre'
+    api 'com.google.guava:guava:33.0.0-jre'
     api 'com.github.ben-manes.caffeine:caffeine'
     api 'org.javassist:javassist:3.28.0-GA'
     compileOnly 'io.swagger:swagger-annotations:1.6.6'
