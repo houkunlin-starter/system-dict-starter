@@ -29,6 +29,15 @@ public interface DictEnum<T extends Serializable> {
     }
 
     /**
+     * 父级字典值
+     *
+     * @return 父级字典值
+     */
+    default T getParentValue() {
+        return null;
+    }
+
+    /**
      * 字典值
      *
      * @return 字典值
@@ -42,6 +51,24 @@ public interface DictEnum<T extends Serializable> {
      * @return 字典文本
      */
     String getTitle();
+
+    /**
+     * 排序值
+     *
+     * @return 排序值
+     */
+    default int getSorted() {
+        return 0;
+    }
+
+    /**
+     * 是否禁用
+     *
+     * @return 是否禁用
+     */
+    default boolean isDisabled() {
+        return false;
+    }
 
     /**
      * 判断字典值是否相等

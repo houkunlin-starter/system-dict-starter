@@ -145,7 +145,15 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
                 }
             }
             if (!exists) {
-                list.add(new DictValueVo(dictType, value, enums.getTitle(), 0));
+                DictValueVo vo = DictValueVo.builder()
+                    .dictType(dictType)
+                    .parentValue(enums.getParentValue())
+                    .value(value)
+                    .title(enums.getTitle())
+                    .sorted(enums.getSorted())
+                    .disabled(enums.isDisabled())
+                    .build();
+                list.add(vo);
             }
             if (logger.isDebugEnabled()) {
                 if (value instanceof String) {
