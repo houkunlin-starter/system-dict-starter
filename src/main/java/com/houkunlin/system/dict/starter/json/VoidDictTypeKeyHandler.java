@@ -8,7 +8,7 @@ package com.houkunlin.system.dict.starter.json;
  */
 public class VoidDictTypeKeyHandler implements DictTypeKeyHandler<Object> {
     @Override
-    public String getDictType(final Object bean, final String fieldName, final String fieldValue, final DictText dictText) {
+    public String getDictType(final Object bean, final String fieldName, final String fieldValueItem, final DictText dictText) {
         return null;
     }
 }

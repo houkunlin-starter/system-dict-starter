@@ -38,6 +38,7 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
      * 自定义的字典类型处理对象
      */
     protected DictTypeKeyHandler<Object> dictTypeKeyHandler = null;
+    protected boolean dictTypeKeyHandlerInit = false;
 
     /**
      * 一般情况下的场景，{@link DictText} 的普通用法
@@ -101,11 +102,11 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
             final List<String> values = new LinkedList<>();
             String value = dictValue;
             do {
-                final String text = DictUtil.getDictText(dictTypeKey, value);
+                final String text = getDictTextByTypeKeyHandler(bean, dictValue, dictTypeKey, value);
                 if (text != null) {
                     values.add(0, text);
                 }
-                value = DictUtil.getDictParentValue(dictTypeKey, value);
+                value = getDictParentValueByTypeKeyHandler(bean, dictValue, dictTypeKey, value);
             } while (value != null && (depth <= 0 || --depth > 0));
             if (values.isEmpty()) {
                 return null;
@@ -113,23 +114,24 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
             return String.join("/", values);
         }
         // @since 1.4.6 - END
-        return DictUtil.getDictText(dictTypeKey, dictValue);
+        return getDictTextByTypeKeyHandler(bean, dictValue, dictTypeKey, dictValue);
     }
 
     /**
      * 获取字典类型代码
      *
      * @param bean      实体类对象
-     * @param dictValue 字段值
+     * @param fieldValueItem 字段值
      * @return 字典类型代码
      * @since 1.4.7
      */
-    protected String getDictTypeByTypeKeyHandler(final Object bean, String dictValue) {
+    protected String getDictTypeByTypeKeyHandler(final Object bean, String fieldValueItem) {
         final Class<? extends DictTypeKeyHandler> factoryClass = dictText.dictTypeHandler();
         if (factoryClass == VoidDictTypeKeyHandler.class) {
             return dictType;
         }
-        if (dictTypeKeyHandler == null) {
+        if (dictTypeKeyHandler == null && !dictTypeKeyHandlerInit) {
+            dictTypeKeyHandlerInit = true;
             dictTypeKeyHandler = SystemDictStarter.getBean(factoryClass);
             if (dictTypeKeyHandler == null) {
                 try {
@@ -140,7 +142,44 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
                 }
             }
         }
-        return dictTypeKeyHandler.getDictType(bean, beanFieldName, dictValue, dictText);
+        if (dictTypeKeyHandler == null) {
+            return dictType;
+        }
+        return dictTypeKeyHandler.getDictType(bean, beanFieldName, fieldValueItem, dictText);
+    }
+
+    /**
+     * 获取字典文本
+     *
+     * @param bean           实体类对象
+     * @param fieldValueItem 字段值
+     * @param dictType       字典类型
+     * @param dictValue      字典值
+     * @return 字典文本
+     * @since 1.5.2
+     */
+    private String getDictTextByTypeKeyHandler(final Object bean, final String fieldValueItem, final String dictType, final String dictValue) {
+        if (dictTypeKeyHandler == null) {
+            return DictUtil.getDictText(dictType, dictValue);
+        }
+        return dictTypeKeyHandler.getDictText(bean, beanFieldName, fieldValueItem, dictText, dictType, dictValue);
+    }
+
+    /**
+     * 获取父级字典值
+     *
+     * @param bean           实体类对象
+     * @param fieldValueItem 字段值
+     * @param dictType       字典类型
+     * @param dictValue      字典值
+     * @return 父级字典值
+     * @since 1.5.2
+     */
+    private String getDictParentValueByTypeKeyHandler(final Object bean, final String fieldValueItem, final String dictType, final String dictValue) {
+        if (dictTypeKeyHandler == null) {
+            return DictUtil.getDictText(dictType, dictValue);
+        }
+        return dictTypeKeyHandler.getDictParentValue(bean, beanFieldName, fieldValueItem, dictText, dictType, dictValue);
     }
 
     @Override
