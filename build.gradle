@@ -135,6 +135,24 @@ signing {
 bootJar {
     enabled = false
 }
+bootStartScripts {
+    enabled = false
+}
+bootDistTar {
+    enabled = false
+}
+bootDistZip {
+    enabled = false
+}
+startScripts {
+    enabled = false
+}
+distTar {
+    enabled = false
+}
+distZip {
+    enabled = false
+}
 
 idea {
     module {
