@@ -41,11 +41,33 @@ public interface DictStore {
     }
 
     /**
+     * 存储一个字典值列表数据。
+     * 为 Redis 保留的方法，数据量大时使用批量处理
+     *
+     * @param iterable 字典值列表
+     * @since 1.5.3
+     */
+    default void storeBatch(Iterable<DictValueVo> iterable) {
+        storeBatch(iterable.iterator());
+    }
+
+    /**
      * 存储一个字典值列表数据
      *
      * @param iterator 字典值列表
      */
     void store(Iterator<DictValueVo> iterator);
+
+    /**
+     * 存储一个字典值列表数据。
+     * 为 Redis 保留的方法，数据量大时使用批量处理
+     *
+     * @param iterator 字典值列表
+     * @since 1.5.3
+     */
+    default void storeBatch(Iterator<DictValueVo> iterator) {
+        store(iterator);
+    }
 
     /**
      * 删除一个字典类型（同时删除对应的字典值列表）
