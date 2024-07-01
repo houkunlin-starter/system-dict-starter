@@ -11,7 +11,8 @@ import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
-import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -31,8 +32,9 @@ import java.util.stream.Collectors;
  *
  * @author HouKunLin
  */
+@Data
 @Configuration
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DictRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
     private final List<DictProvider> providers;
@@ -42,6 +44,14 @@ public class DictRegistrar implements InitializingBean {
      * 上一次刷新字典时间
      */
     private final AtomicLong lastModified = new AtomicLong(0);
+    /**
+     * 刷新单个字典事件：数据字典值文本数量超过 5 个就使用批量保存
+     */
+    private int valueEventBatchSize = 5;
+    /**
+     * 刷新整个字典事件：数据字典值文本分批次保存，每批次保存 1000 个
+     */
+    private int typeEventBatchSize = 1000;
 
     public void refreshDict(Set<String> dictProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified.get();
@@ -53,7 +63,13 @@ public class DictRegistrar implements InitializingBean {
             return;
         }
         lastModified.set(System.currentTimeMillis());
-        forEachAllDict(dictProviderClasses, store::store, store::storeSystemDict, store::store);
+        if (!logger.isDebugEnabled()) {
+            forEachAllDict(dictProviderClasses, store::store, store::storeSystemDict, store::storeBatch);
+        } else {
+            long startTime = System.nanoTime();
+            forEachAllDict(dictProviderClasses, store::store, store::storeSystemDict, store::storeBatch);
+            logger.debug("本次刷新数据字典耗时 {} ms，传入刷新范围：{}", (System.nanoTime() - startTime) / 100_0000.0, dictProviderClasses);
+        }
     }
 
     /**
@@ -73,6 +89,7 @@ public class DictRegistrar implements InitializingBean {
             if (provider.isStoreDictType()) {
                 final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
                 final boolean isSystemProvider = provider instanceof SystemDictProvider;
+                final List<DictValueVo> batchSaveDictValueVos = new ArrayList<>(typeEventBatchSize + 50);
                 typeIterator.forEachRemaining(dictType -> {
                     dictTypeConsumer.accept(dictType);
                     if (isSystemProvider) {
@@ -81,9 +98,16 @@ public class DictRegistrar implements InitializingBean {
                     }
                     final List<DictValueVo> valueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
                     if (valueVos != null) {
-                        dictValueConsumer.accept(valueVos.iterator());
+                        batchSaveDictValueVos.addAll(valueVos);
+                        if (batchSaveDictValueVos.size() > typeEventBatchSize) {
+                            dictValueConsumer.accept(batchSaveDictValueVos.iterator());
+                            batchSaveDictValueVos.clear();
+                        }
                     }
                 });
+                if (!batchSaveDictValueVos.isEmpty()) {
+                    dictValueConsumer.accept(batchSaveDictValueVos.iterator());
+                }
             } else {
                 dictValueConsumer.accept(provider.dictValueIterator());
             }
@@ -121,10 +145,6 @@ public class DictRegistrar implements InitializingBean {
     @EventListener
     public void refreshDictValueEvent(final RefreshDictValueEvent event) {
         final Iterable<DictValueVo> dictValueVos = event.getSource();
-        if (logger.isDebugEnabled()) {
-            logger.debug("[RefreshDictValueEvent.value] 刷新字典值文本信息 {}", dictValueVos);
-        }
-        Set<String> systemDictTypeKeys = store.systemDictTypeKeys();
         ArrayList<DictValueVo> list;
         if (dictValueVos instanceof Collection) {
             list = new ArrayList<>((Collection<DictValueVo>) dictValueVos);
@@ -134,9 +154,18 @@ public class DictRegistrar implements InitializingBean {
                 list.add(valueVo);
             }
         }
+        if (logger.isDebugEnabled()) {
+            logger.debug("[RefreshDictValueEvent.value] 刷新字典值文本信息，共有 {} 条数据", list.size());
+        }
+        Set<String> systemDictTypeKeys = store.systemDictTypeKeys();
         removeSystemDictValue(list.iterator(), systemDictTypeKeys);
         if (!list.isEmpty()) {
-            store.store(list.iterator());
+            if (list.size() > valueEventBatchSize) {
+                // 刷新数据字典值文本时，超过5条数据的采用批量写入方式
+                store.storeBatch(list.iterator());
+            } else {
+                store.store(list.iterator());
+            }
         }
     }
 
@@ -161,7 +190,7 @@ public class DictRegistrar implements InitializingBean {
     }
 
     /**
-     * 刷新单个字典值文本信息时根据 {@link RefreshDictValueEvent#updateDictType} 参数决定是否维护的字典类型对象里面的字典值列表信息
+     * 刷新单个字典值文本信息时根据 {@link RefreshDictValueEvent#isUpdateDictType()} 参数决定是否维护的字典类型对象里面的字典值列表信息
      *
      * @param event RefreshDictValueEvent 事件
      * @since 1.4.5
@@ -259,7 +288,7 @@ public class DictRegistrar implements InitializingBean {
 
         dictTypeVo.setChildren(removeDictType && map.isEmpty() ? null : new ArrayList<>(map.values()));
         if (logger.isDebugEnabled()) {
-            logger.debug("[RefreshDictValueEvent.type] 字典类型的字典值列表被更新 {}", dictTypeVo);
+            logger.debug("[RefreshDictValueEvent.type] 字典类型的字典值列表被更新，共有 {} 条数据", dictTypeVo.getChildren().size());
         }
         store.store(dictTypeVo);
     }
