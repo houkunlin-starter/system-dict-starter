@@ -1,5 +1,17 @@
 # 更改日志
 
+## 1.5.3 版本
+
+- feat(store): 增加 DictStore#storeBatch 批量存储数据字典信息方法，Redis 通过使用 Pipeline 方式批量写入字典值文本数据
+
+## 1.5.2 版本
+
+- feat: DictTypeKeyHandler 增加处理字典值的方法
+
+## 1.5.1 版本
+
+- feat: DictEnum 增加 getParentValue/getSorted/isDisabled 字典值参数方法
+
 ## 1.5.0 版本
 
 产生了一些破坏性变更，请谨慎升级。移除了 DictText.Type 改为使用 DictBoolType；修改了 Redis 存储字典文本的方式，改为 Redis Hash 存储字典文本内容。
