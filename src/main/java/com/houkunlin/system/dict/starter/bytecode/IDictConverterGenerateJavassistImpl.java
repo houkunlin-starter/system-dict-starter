@@ -58,6 +58,12 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
         final String converterClassName = dictEnumClassName + "SystemDictSpringConverter";
         final String dictEnumClassNameDescriptor = "L" + dictEnumClassName.replace(".", "/") + ";";
 
+        try {
+            // 尝试直接从已有的数据中加载
+            return Class.forName(converterClassName);
+        } catch (Throwable ignore) {
+        }
+
         // 创建一个基础的对象信息
         try {
             final CtClass ctClass = pool.getCtClass(converterClassName);
@@ -71,7 +77,7 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
             return toClass(ctClass, dictEnumClass);
         } catch (NotFoundException e) {
             if (log.isDebugEnabled()) {
-                log.debug("首次创建 {} 转换器对象", converterClassName);
+                log.debug("首次创建 {} 转换器对象", converterClassName, e);
             }
         }
         final CtClass makeClass = pool.makeClass(converterClassName);

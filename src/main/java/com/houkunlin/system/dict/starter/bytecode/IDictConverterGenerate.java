@@ -39,8 +39,8 @@ public interface IDictConverterGenerate {
                 final Constructor<?>[] constructors = converterClass.getConstructors();
                 factory.registerSingleton(beanName, constructors[0].newInstance());
             }
-        } catch (Exception e) {
-            logger.error("自动创建系统字典枚举 " + dictEnumClass.getName() + " 的 Converter 转换器失败，不影响系统启动，但是会影响此枚举转换器功能", e);
+        } catch (Throwable e) {
+            logger.error("自动创建系统字典枚举 {} 的 Converter 转换器失败，不影响系统启动，但是会影响此枚举转换器功能", dictEnumClass.getName(), e);
         }
     }
 

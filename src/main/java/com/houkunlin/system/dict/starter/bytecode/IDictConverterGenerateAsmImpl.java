@@ -57,6 +57,13 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
         // 系统字典枚举类完全限定名
         final String dictEnumClassName = dictEnumClass.getName().replace(".", "/");
         final String converterClassName = dictEnumClassName + "SystemDictSpringConverter";
+
+        try {
+            // 尝试直接从已有的数据中加载
+            return Class.forName(converterClassName);
+        } catch (Throwable ignore) {
+        }
+
         final byte[] bytecode;
         if (dictConverter.onlyDictValue()) {
             // 只使用字典值转换
