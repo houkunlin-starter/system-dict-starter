@@ -51,9 +51,11 @@ public class DictUtil {
     public DictUtil(final DictRegistrar dictRegistrar, final DictStore store, final DictCacheFactory cacheFactory) {
         DictUtil.dictRegistrar = dictRegistrar;
         DictUtil.store = store;
-        cache = cacheFactory.build();
-        missCache = cacheFactory.build();
+        cache = cacheFactory.build("dict-text");
+        missCache = cacheFactory.build("dict-number-of-miss");
         missNum = cacheFactory.getDictProperties().getCache().getMissNum();
+        cacheFactory.callbackCache("dict-text", cache);
+        cacheFactory.callbackCache("dict-number-of-miss", missCache);
     }
 
     /**

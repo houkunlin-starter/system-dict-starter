@@ -23,7 +23,21 @@ public class DictCacheFactory {
     private final DictProperties dictProperties;
     private final List<DictCacheCustomizer> cacheCustomizers;
 
-    public <K1, V1> Cache<K1, V1> build() {
+    @Deprecated
+    public <K, V> Cache<K, V> build() {
+        return build(null);
+    }
+
+    /**
+     * 构建缓存对象
+     *
+     * @param name 缓存名称
+     * @param <K>  KEY
+     * @param <V>  VALUE
+     * @return 缓存对象
+     * @since 1.5.5
+     */
+    public <K, V> Cache<K, V> build(String name) {
         final DictPropertiesCache propertiesCache = dictProperties.getCache();
         if (!propertiesCache.isEnabled()) {
             return null;
@@ -35,9 +49,24 @@ public class DictCacheFactory {
             .initialCapacity(propertiesCache.getInitialCapacity());
 
         for (final DictCacheCustomizer customizer : cacheCustomizers) {
-            customizer.customize(builder);
+            customizer.customize(name, builder);
         }
 
         return builder.build();
+    }
+
+    /**
+     * 回调构建成功的缓存对象
+     *
+     * @param name  缓存名称
+     * @param cache 缓存对象
+     * @param <K>   KEY
+     * @param <V>   VALUE
+     * @since 1.5.5
+     */
+    public <K, V> void callbackCache(String name, Cache<K, V> cache) {
+        for (final DictCacheCustomizer customizer : cacheCustomizers) {
+            customizer.callbackCache(name, cache);
+        }
     }
 }
