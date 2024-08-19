@@ -303,7 +303,14 @@ public class DictRegistrar implements InitializingBean {
     @EventListener
     public void refreshDictTypeEvent(final RefreshDictTypeEvent event) {
         final Iterable<DictTypeVo> dictTypeVos = event.getSource();
+        Set<String> systemDictTypeKeys = store.systemDictTypeKeys();
         dictTypeVos.forEach(dictType -> {
+            if (systemDictTypeKeys.contains(dictType.getType())) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("[RefreshDictTypeEvent] 刷新字典值涉及的字典类型代码 {}，此类型为系统字典类型，无法通过事件方式刷新字典值，已忽略", dictType.getType());
+                }
+                return;
+            }
             final List<DictValueVo> dictValueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
             if (dictValueVos != null) {
                 store.removeDictType(dictType.getType());
