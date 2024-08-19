@@ -19,7 +19,8 @@ import org.springframework.context.ApplicationEventPublisher;
  * @author HouKunLin
  * @since 1.4.6
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class TreeDataTest {
     public static final String DICT_TYPE = "TreeData";
     @Autowired

@@ -1,0 +1,11 @@
+com.houkunlin.system.dict.starter.SystemDictAutoConfiguration
+com.houkunlin.system.dict.starter.DictRedisConfiguration
+com.houkunlin.system.dict.starter.store.LocalDictStoreConfiguration
+com.houkunlin.system.dict.starter.store.RedisDictStoreConfiguration
+com.houkunlin.system.dict.starter.notice.DictAmqpConfiguration
+com.houkunlin.system.dict.starter.notice.DictRedisSubscribeConfiguration
+com.houkunlin.system.dict.starter.actuator.SystemDictActuatorAutoConfiguration
+com.houkunlin.system.dict.starter.DictRegistrar
+com.houkunlin.system.dict.starter.cache.DictCacheFactory
+com.houkunlin.system.dict.starter.properties.DictProperties
+com.houkunlin.system.dict.starter.SystemDictRegistrarAutoConfiguration

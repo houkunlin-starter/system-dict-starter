@@ -1,33 +1,32 @@
-package test.application.common.bean;
+package com.houkunlin.system.dict.starter.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import com.houkunlin.system.dict.starter.json.DictType;
-import com.houkunlin.system.dict.starter.json.DictTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * @author HouKunLin
  */
-@DictTypes({@DictType(comment = "开关"),
-    @DictType(value = "OPEN", comment = "开关状态")})
-@DictConverter(onlyDictValue = true)
+@DictType(comment = "是否")
+@DictType(value = "OPEN", comment = "开关状态")
+@DictConverter
 @Getter
 @AllArgsConstructor
-public enum Switch2 implements DictEnum<String> {
+public enum Whether implements DictEnum<Boolean> {
     /**
      * 系统管理员
      */
-    ON("on", "开"),
+    YES(true, "是"),
     /**
      * 普通用户
      */
-    OFF("off", "关"),
+    NO(false, "否"),
     ;
     // @JsonValue
-    private final String value;
+    private final Boolean value;
     private final String title;
 
     /**
@@ -37,7 +36,7 @@ public enum Switch2 implements DictEnum<String> {
      * @return 枚举对象
      */
     @JsonCreator
-    public static Switch2 getItem(String code) {
+    public static Whether getItem(Boolean code) {
         return DictEnum.valueOf(values(), code);
     }
 }

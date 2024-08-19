@@ -2,6 +2,8 @@ package com.houkunlin.system.dict.starter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.houkunlin.system.dict.starter.common.bean.Bean1;
+import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +17,9 @@ import org.springframework.expression.*;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import test.application.common.bean.Bean1;
-import test.application.common.bean.PeopleType;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class DictUtilTransformTest {
     private static final Logger logger = LoggerFactory.getLogger(DictUtilTransformTest.class);
     @Autowired

@@ -1,4 +1,4 @@
-package test.application.common.valid;
+package com.houkunlin.system.dict.starter.common.valid;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

@@ -1,4 +1,4 @@
-package test.application.common.bean;
+package com.houkunlin.system.dict.starter.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dict.starter.DictEnum;

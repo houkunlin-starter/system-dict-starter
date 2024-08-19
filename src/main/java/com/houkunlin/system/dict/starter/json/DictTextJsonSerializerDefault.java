@@ -3,7 +3,7 @@ package com.houkunlin.system.dict.starter.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.houkunlin.system.dict.starter.DictUtil;
-import com.houkunlin.system.dict.starter.SystemDictStarter;
+import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +97,7 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
             int depth = dictText.treeDepth();
             if (depth <= 0) {
                 // 使用全局配置
-                depth = SystemDictStarter.get(DictProperties::getTreeDepth).orElse(-1);
+                depth = SystemDictAutoConfiguration.get(DictProperties::getTreeDepth).orElse(-1);
             }
             final List<String> values = new LinkedList<>();
             String value = dictValue;
@@ -132,7 +132,7 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
         }
         if (dictTypeKeyHandler == null && !dictTypeKeyHandlerInit) {
             dictTypeKeyHandlerInit = true;
-            dictTypeKeyHandler = SystemDictStarter.getBean(factoryClass);
+            dictTypeKeyHandler = SystemDictAutoConfiguration.getBean(factoryClass);
             if (dictTypeKeyHandler == null) {
                 try {
                     dictTypeKeyHandler = factoryClass.newInstance();

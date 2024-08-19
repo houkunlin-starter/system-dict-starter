@@ -3,7 +3,7 @@ package com.houkunlin.system.dict.starter.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.houkunlin.system.dict.starter.DictEnum;
-import com.houkunlin.system.dict.starter.SystemDictStarter;
+import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +184,7 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
      */
     protected void writeFieldValue(JsonGenerator gen, @Nullable Object fieldValue, Object dictValueText) throws IOException {
         final boolean isReplaceValue = isReplaceValue();
-        if (mapValue().getValue(SystemDictStarter::isMapValue)) {
+        if (mapValue().getValue(SystemDictAutoConfiguration::isMapValue)) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", fieldValue);
             map.put("text", dictValueText);
@@ -208,7 +208,7 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
      * @return boolean
      */
     public boolean isReplaceValue() {
-        return replace().getValue(SystemDictStarter::isReplaceValue);
+        return replace().getValue(SystemDictAutoConfiguration::isReplaceValue);
     }
 
     /**
@@ -219,7 +219,7 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
      * @throws IOException 异常
      */
     private void writeFieldValue(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
-        if (SystemDictStarter.isRawValue()) {
+        if (SystemDictAutoConfiguration.isRawValue()) {
             gen.writeObject(fieldValue);
         } else {
             gen.writeString(fieldValue == null ? "" : fieldValue.toString());
@@ -233,7 +233,7 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
      * @return 处理结果
      */
     public Object defaultNullableValue(Object dictValueText) {
-        if (nullable().getValue(SystemDictStarter::isTextValueDefaultNull)) {
+        if (nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull)) {
             return dictValueText;
         }
         return dictValueText == null ? "" : dictValueText;

@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.json.Array;
 import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import test.application.common.bean.PeopleType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +21,8 @@ import java.util.List;
  *
  * @author HouKunLin
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class EnumUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired

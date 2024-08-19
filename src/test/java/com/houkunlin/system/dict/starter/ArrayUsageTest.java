@@ -20,7 +20,8 @@ import java.util.List;
  *
  * @author HouKunLin
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class ArrayUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired

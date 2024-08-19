@@ -5,7 +5,6 @@ import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import java.util.function.Supplier;
  * @author HouKunLin
  */
 @Getter
-@Component
 public class SystemDictProvider implements DictProvider {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictProvider.class);
     private final Map<String, DictTypeVo> cache = new HashMap<>();

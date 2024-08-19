@@ -4,11 +4,10 @@ import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import com.houkunlin.system.dict.starter.store.RemoteDict;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +20,8 @@ import java.util.stream.Collectors;
  * @author HouKunLin
  * @since 1.3.0
  */
-@Component
 @Endpoint(id = "dict")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DictEndpoint {
     private final List<DictProvider> providers;
     private final DictStore store;

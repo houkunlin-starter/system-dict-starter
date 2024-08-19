@@ -1,33 +1,35 @@
-package test.application.common.bean;
+package com.houkunlin.system.dict.starter.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import com.houkunlin.system.dict.starter.json.DictType;
-import com.houkunlin.system.dict.starter.json.DictTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * @author HouKunLin
  */
-@DictTypes({@DictType(comment = "开关"),
-    @DictType(value = "OPEN", comment = "开关状态")})
-@DictConverter
+@DictConverter(onlyDictValue = true)
+@DictType(value = "PeopleType", comment = "用户类型")
 @Getter
 @AllArgsConstructor
-public enum Switch implements DictEnum<String> {
+public enum PeopleType2 implements DictEnum<Integer> {
     /**
      * 系统管理员
      */
-    ON("on", "开"),
+    ADMIN(0, "系统管理"),
     /**
      * 普通用户
      */
-    OFF("off", "关"),
+    USER(1, "普通用户"),
+    /**
+     * 其他用户
+     */
+    OTHER(2, "其他用户"),
     ;
     // @JsonValue
-    private final String value;
+    private final Integer value;
     private final String title;
 
     /**
@@ -37,7 +39,7 @@ public enum Switch implements DictEnum<String> {
      * @return 枚举对象
      */
     @JsonCreator
-    public static Switch getItem(String code) {
+    public static PeopleType2 getItem(Integer code) {
         return DictEnum.valueOf(values(), code);
     }
 }

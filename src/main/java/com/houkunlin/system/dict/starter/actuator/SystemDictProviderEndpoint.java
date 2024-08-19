@@ -1,11 +1,10 @@
 package com.houkunlin.system.dict.starter.actuator;
 
 import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +15,8 @@ import java.util.Map;
  * @author HouKunLin
  * @since 1.3.0
  */
-@Component
 @Endpoint(id = "dictSystem")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SystemDictProviderEndpoint {
     private final SystemDictProvider provider;
 

@@ -1,4 +1,4 @@
-package test.application.common;
+package com.houkunlin.system.dict.starter.common;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.houkunlin.system.dict.starter.cache.DictCacheCustomizer;

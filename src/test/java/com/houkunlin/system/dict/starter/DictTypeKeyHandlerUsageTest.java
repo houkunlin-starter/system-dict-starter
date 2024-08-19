@@ -18,7 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * @author HouKunLin
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class DictTypeKeyHandlerUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     private static final Logger logger = LoggerFactory.getLogger(DictTypeKeyHandlerUsageTest.class);

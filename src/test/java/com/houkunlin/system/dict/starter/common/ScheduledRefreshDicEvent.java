@@ -1,4 +1,4 @@
-package test.application.common;
+package com.houkunlin.system.dict.starter.common;
 
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;

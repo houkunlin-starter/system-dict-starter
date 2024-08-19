@@ -1,32 +1,30 @@
-package test.application.common.bean;
+package com.houkunlin.system.dict.starter.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.json.DictConverter;
-import com.houkunlin.system.dict.starter.json.DictType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * @author HouKunLin
  */
-@DictConverter(onlyDictValue = true)
-@DictType(value = "PeopleType", comment = "用户类型")
+@DictConverter
 @Getter
 @AllArgsConstructor
-public enum PeopleType2 implements DictEnum<Integer> {
+public enum SiteType implements DictEnum<Integer> {
     /**
      * 系统管理员
      */
-    ADMIN(0, "系统管理"),
+    SITE1(1, "网站1"),
     /**
      * 普通用户
      */
-    USER(1, "普通用户"),
+    SITE2(2, "网站2"),
     /**
      * 其他用户
      */
-    OTHER(2, "其他用户"),
+    SITE3(3, "网站3"),
     ;
     // @JsonValue
     private final Integer value;
@@ -39,7 +37,7 @@ public enum PeopleType2 implements DictEnum<Integer> {
      * @return 枚举对象
      */
     @JsonCreator
-    public static PeopleType2 getItem(Integer code) {
+    public static SiteType getItem(Integer code) {
         return DictEnum.valueOf(values(), code);
     }
 }

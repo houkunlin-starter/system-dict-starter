@@ -7,20 +7,14 @@ import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.SignatureAttribute;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 /**
  * 使用 javassist 技术动态创建 {@link Converter} 转换器实现类，并把实现类注入到 Spring 中
  *
  * @author HouKunLin
  */
-@ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "JAVASSIST", matchIfMissing = true)
-@ConditionalOnClass(ClassPool.class)
 @Slf4j
-@Component
 public class IDictConverterGenerateJavassistImpl implements IDictConverterGenerate {
     private final ClassPool pool = ClassPool.getDefault();
 

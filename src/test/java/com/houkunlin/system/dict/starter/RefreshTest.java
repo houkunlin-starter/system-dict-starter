@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
-import test.application.common.bean.PeopleType;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +27,8 @@ import java.util.Optional;
  *
  * @author HouKunLin
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class RefreshTest {
     private static final Logger logger = LoggerFactory.getLogger(RefreshTest.class);
     @Autowired

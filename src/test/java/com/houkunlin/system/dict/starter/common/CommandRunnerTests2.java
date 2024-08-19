@@ -1,10 +1,11 @@
-package test.application.common;
+package com.houkunlin.system.dict.starter.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import test.application.common.bean.PeopleType;
 
 import java.util.Objects;
 

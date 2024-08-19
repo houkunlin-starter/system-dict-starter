@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,6 @@ import java.util.function.UnaryOperator;
 @Tag(name = "系统字典")
 @RestController
 @RequestMapping("${system.dict.controller.prefix:/dict}")
-@ConditionalOnProperty(prefix = "system.dict.controller", name = "enabled", matchIfMissing = true)
 public class DictController {
     /**
      * 获取字典类型信息

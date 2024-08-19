@@ -1,17 +1,22 @@
 package com.houkunlin.system.dict.starter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
+import com.houkunlin.system.dict.starter.jackson.DictJackson2ObjectMapperBuilderCustomizer;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
+import com.houkunlin.system.dict.starter.store.DictStore;
 import com.houkunlin.system.dict.starter.store.RemoteDict;
 import com.houkunlin.system.dict.starter.store.RemoteDictDefaultImpl;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Import;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -24,17 +29,22 @@ import java.util.function.Function;
  */
 @Getter
 @Configuration(proxyBeanMethods = false)
-@ComponentScan
-public class SystemDictStarter {
-    private static final Logger logger = LoggerFactory.getLogger(SystemDictStarter.class);
+@Import(DictProperties.class)
+public class SystemDictAutoConfiguration {
+    private static final Logger logger = LoggerFactory.getLogger(SystemDictAutoConfiguration.class);
     private static final String WARNING_MESSAGE = "DictProperties 未找到，请在启动类添加 @SystemDictScan 注解启用相关服务";
     private static DictProperties properties;
     private static ApplicationContext applicationContext;
 
-    public SystemDictStarter(@Lazy final DictProperties properties, @Lazy final ApplicationContext applicationContext) {
-        SystemDictStarter.properties = properties;
-        SystemDictStarter.applicationContext = applicationContext;
+    @Autowired
+    public void setProperties(DictProperties properties) {
+        SystemDictAutoConfiguration.properties = properties;
         DictUtil.initPrefix(properties.getStoreKey());
+    }
+
+    @Autowired
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        SystemDictAutoConfiguration.applicationContext = applicationContext;
     }
 
     public static boolean isRawValue() {
@@ -99,5 +109,41 @@ public class SystemDictStarter {
     @Bean
     public RemoteDict remoteDict() {
         return new RemoteDictDefaultImpl();
+    }
+
+    /**
+     * 初始化工具类
+     *
+     * @param dictRegistrar 系统字典注册器
+     * @param store         系统字典存储器
+     * @param cacheFactory  系统字典缓存构建
+     * @return DictUtil
+     */
+    @Bean
+    public DictUtil dictUtil(final DictRegistrar dictRegistrar, final DictStore store, final DictCacheFactory cacheFactory) {
+        return new DictUtil(dictRegistrar, store, cacheFactory);
+    }
+
+    /**
+     * 处理 ObjectMapper 对象
+     *
+     * @param objectMapper ObjectMapper
+     * @return ObjectMapper 处理器
+     */
+    @Bean
+    public DictJackson2ObjectMapperBuilderCustomizer dictJackson2ObjectMapperBuilderCustomizer(final ObjectMapper objectMapper) {
+        return new DictJackson2ObjectMapperBuilderCustomizer(objectMapper);
+    }
+
+    /**
+     * 获取系统字典的 Controller 层 API 接口
+     *
+     * @return Controller
+     */
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "system.dict.controller", name = "enabled", matchIfMissing = true)
+    @Bean
+    public DictController dictController() {
+        return new DictController();
     }
 }

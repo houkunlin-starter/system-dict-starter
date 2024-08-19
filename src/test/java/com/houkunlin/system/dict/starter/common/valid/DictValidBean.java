@@ -1,9 +1,9 @@
-package test.application.common.valid;
+package com.houkunlin.system.dict.starter.common.valid;
 
+import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import com.houkunlin.system.dict.starter.json.DictValid;
 import lombok.Data;
-import test.application.common.bean.PeopleType;
 
 /**
  * @author HouKunLin

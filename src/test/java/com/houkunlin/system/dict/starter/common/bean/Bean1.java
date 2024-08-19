@@ -1,4 +1,4 @@
-package test.application.common.bean;
+package com.houkunlin.system.dict.starter.common.bean;
 
 import com.houkunlin.system.dict.starter.json.Array;
 import com.houkunlin.system.dict.starter.json.DictBoolType;

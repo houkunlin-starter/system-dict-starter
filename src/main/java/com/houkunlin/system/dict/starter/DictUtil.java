@@ -5,14 +5,15 @@ import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.bytecode.DictChildrenObjectGenerate;
 import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
-import com.houkunlin.system.dict.starter.json.*;
+import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.json.DictTextJsonSerializer;
+import com.houkunlin.system.dict.starter.json.DictTextJsonSerializerBasic;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.properties.DictPropertiesStorePrefixKey;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -27,7 +28,6 @@ import java.util.function.Consumer;
  * @author HouKunLin
  */
 @SuppressWarnings("all")
-@Component
 public class DictUtil {
     private static final Logger logger = LoggerFactory.getLogger(DictUtil.class);
     /**

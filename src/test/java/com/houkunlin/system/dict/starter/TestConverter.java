@@ -1,22 +1,23 @@
 package com.houkunlin.system.dict.starter;
 
+import com.houkunlin.system.dict.starter.common.bean.PeopleType;
+import com.houkunlin.system.dict.starter.common.bean.PeopleType2;
+import com.houkunlin.system.dict.starter.common.bean.Switch;
+import com.houkunlin.system.dict.starter.common.bean.Switch2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConversionService;
-import test.application.common.bean.PeopleType;
-import test.application.common.bean.PeopleType2;
-import test.application.common.bean.Switch;
-import test.application.common.bean.Switch2;
 
 /**
  * 测试转换器
  *
  * @author HouKunLin
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class TestConverter {
     @Autowired
     private ConversionService conversionService;

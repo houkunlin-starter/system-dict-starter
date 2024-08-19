@@ -16,7 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
  *
  * @author HouKunLin
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SystemDictScan
 class BasicUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired

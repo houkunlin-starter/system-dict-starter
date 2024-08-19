@@ -1,13 +1,12 @@
 package com.houkunlin.system.dict.starter.actuator;
 
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -20,9 +19,8 @@ import java.util.Set;
  * @author HouKunLin
  * @since 1.4.4
  */
-@Component
 @Endpoint(id = "dictRefresh")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RefreshDictEndpoint implements InitializingBean {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final Map<String, Object> map = new HashMap<>();

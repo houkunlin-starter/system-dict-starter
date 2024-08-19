@@ -1,33 +1,33 @@
-package test.application.common.bean;
+package com.houkunlin.system.dict.starter.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.json.DictConverter;
+import com.houkunlin.system.dict.starter.json.DictType;
+import com.houkunlin.system.dict.starter.json.DictTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * @author HouKunLin
  */
-@DictConverter
+@DictTypes({@DictType(comment = "开关"),
+    @DictType(value = "OPEN", comment = "开关状态")})
+@DictConverter(onlyDictValue = true)
 @Getter
 @AllArgsConstructor
-public enum SiteType implements DictEnum<Integer> {
+public enum Switch2 implements DictEnum<String> {
     /**
      * 系统管理员
      */
-    SITE1(1, "网站1"),
+    ON("on", "开"),
     /**
      * 普通用户
      */
-    SITE2(2, "网站2"),
-    /**
-     * 其他用户
-     */
-    SITE3(3, "网站3"),
+    OFF("off", "关"),
     ;
     // @JsonValue
-    private final Integer value;
+    private final String value;
     private final String title;
 
     /**
@@ -37,7 +37,7 @@ public enum SiteType implements DictEnum<Integer> {
      * @return 枚举对象
      */
     @JsonCreator
-    public static SiteType getItem(Integer code) {
+    public static Switch2 getItem(String code) {
         return DictEnum.valueOf(values(), code);
     }
 }
