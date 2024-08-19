@@ -1,5 +1,17 @@
 # 更改日志
 
+## 1.5.6 版本
+
+- refactor: 优化启动配置，把扫描包改为自动配置
+
+## 1.5.5 版本
+
+- feat(cache): 增加缓存构建结果自定义处理
+
+## 1.5.4 版本
+
+- fix: 修复使用端点重启系统时出现 java.lang.LinkageError: loader 'app' attempted duplicate class definition for 问题
+
 ## 1.5.3 版本
 
 - feat(store): 增加 DictStore#storeBatch 批量存储数据字典信息方法，Redis 通过使用 Pipeline 方式批量写入字典值文本数据
