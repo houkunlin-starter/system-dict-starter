@@ -1,6 +1,0 @@
-rootProject.name = 'system-dict-examples'
-include 'examples-basic'
-include 'examples-provider'
-include 'examples-refresh-dict'
-include 'examples-tree-dict'
-include 'common'

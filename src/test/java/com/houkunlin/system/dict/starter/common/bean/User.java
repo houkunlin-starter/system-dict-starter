@@ -1,6 +1,7 @@
-package com.examples;
+package com.houkunlin.system.dict.starter.common.bean;
 
 import com.houkunlin.system.dict.starter.json.Array;
+import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,13 +37,13 @@ public class User {
     @DictText(value = "UserType", array = @Array(toText = false))
     private String typeArrays1;
     /** 用户类型 */
-    @DictText(value = "UserType", array = @Array(toText = false), replace = DictText.Type.YES)
+    @DictText(value = "UserType", array = @Array(toText = false), replace = DictBoolType.YES)
     private String typeArrays2;
     /** 用户类型 */
     @DictText(enums = UserType.class)
     private String typeEnum0;
     /** 用户类型 */
-    @DictText(enums = UserType.class, replace = DictText.Type.YES)
+    @DictText(enums = UserType.class, replace = DictBoolType.YES)
     private String typeEnum1;
     /** 用户姓名 */
     private String name;

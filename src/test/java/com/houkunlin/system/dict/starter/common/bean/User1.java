@@ -1,5 +1,6 @@
-package com.examples;
+package com.houkunlin.system.dict.starter.common.bean;
 
+import com.houkunlin.system.dict.starter.common.provider.UserDictProvider;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.*;
 

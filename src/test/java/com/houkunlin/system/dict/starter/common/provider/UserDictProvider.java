@@ -1,4 +1,4 @@
-package com.examples;
+package com.houkunlin.system.dict.starter.common.provider;
 
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
