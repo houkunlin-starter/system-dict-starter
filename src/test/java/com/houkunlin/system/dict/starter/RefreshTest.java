@@ -97,16 +97,32 @@ class RefreshTest {
         final DictTypeVo newDictType = DictTypeVo.newBuilder(dictType, "")
             .add(1, "新的值1")
             .add(2, "新的值2").build();
+        // 不允许通过事件刷新覆盖系统枚举字典内容
         publisher.publishEvent(new RefreshDictTypeEvent(newDictType));
         logger.info("更新了一个完整的对象 耗时 {} ms", (System.nanoTime() - start) / 1000_000.0);
         final DictTypeVo dictTypeVo = DictUtil.getDictType(dictType);
         System.out.println(toJson(dictTypeVo));
 
-        Assertions.assertEquals(2, dictTypeVo.getChildren().size());
-        Assertions.assertEquals("新的值1", dictTypeVo.getChildren().get(0).getTitle());
-        Assertions.assertEquals("新的值2", dictTypeVo.getChildren().get(1).getTitle());
-        Assertions.assertEquals("新的值1", DictUtil.getDictText(dictType, "1"));
-        Assertions.assertEquals("新的值2", DictUtil.getDictText(dictType, "2"));
+        // 不允许通过事件刷新覆盖系统枚举字典内容
+        Assertions.assertEquals(3, dictTypeVo.getChildren().size());
+        Assertions.assertEquals("系统管理", dictTypeVo.getChildren().get(0).getTitle());
+        Assertions.assertEquals("普通用户", dictTypeVo.getChildren().get(1).getTitle());
+        Assertions.assertEquals("其他用户", dictTypeVo.getChildren().get(2).getTitle());
+        Assertions.assertEquals("系统管理", DictUtil.getDictText(dictType, "0"));
+        Assertions.assertEquals("普通用户", DictUtil.getDictText(dictType, "1"));
+        Assertions.assertEquals("其他用户", DictUtil.getDictText(dictType, "2"));
+
+        // 但是可以刷新覆盖自定义的字典数据
+        final DictTypeVo newDictType1 = DictTypeVo.newBuilder("testRefreshDictType", "")
+            .add(1, "新的值1")
+            .add(2, "新的值2").build();
+        publisher.publishEvent(new RefreshDictTypeEvent(newDictType1));
+        final DictTypeVo dictTypeVo1 = DictUtil.getDictType("testRefreshDictType");
+        Assertions.assertEquals(2, dictTypeVo1.getChildren().size());
+        Assertions.assertEquals("新的值1", dictTypeVo1.getChildren().get(0).getTitle());
+        Assertions.assertEquals("新的值2", dictTypeVo1.getChildren().get(1).getTitle());
+        Assertions.assertEquals("新的值1", DictUtil.getDictText("testRefreshDictType", "1"));
+        Assertions.assertEquals("新的值2", DictUtil.getDictText("testRefreshDictType", "2"));
     }
 
     @Test
@@ -120,6 +136,24 @@ class RefreshTest {
         final DictTypeVo dictTypeVo = DictUtil.getDictType(dictType);
         System.out.println(toJson(dictTypeVo));
 
-        Assertions.assertNull(dictTypeVo);
+        // 不允许通过事件刷新覆盖系统枚举字典内容
+        Assertions.assertNotNull(dictTypeVo);
+
+        // 但是可以刷新覆盖自定义的字典数据
+        final DictTypeVo newDictType1 = DictTypeVo.newBuilder("testRefreshDictType", "")
+            .add(1, "新的值1")
+            .add(2, "新的值2").build();
+        publisher.publishEvent(new RefreshDictTypeEvent(newDictType1));
+        final DictTypeVo dictTypeVo1 = DictUtil.getDictType("testRefreshDictType");
+        Assertions.assertNotNull(dictTypeVo1);
+        Assertions.assertEquals(2, dictTypeVo1.getChildren().size());
+        Assertions.assertEquals("新的值1", dictTypeVo1.getChildren().get(0).getTitle());
+        Assertions.assertEquals("新的值2", dictTypeVo1.getChildren().get(1).getTitle());
+        Assertions.assertEquals("新的值1", DictUtil.getDictText("testRefreshDictType", "1"));
+        Assertions.assertEquals("新的值2", DictUtil.getDictText("testRefreshDictType", "2"));
+
+        final DictTypeVo newDictType2 = new DictTypeVo("", "testRefreshDictType", "", null);
+        publisher.publishEvent(new RefreshDictTypeEvent(newDictType2));
+        Assertions.assertNull(DictUtil.getDictType("testRefreshDictType"));
     }
 }
