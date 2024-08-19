@@ -1,7 +1,8 @@
 package com.houkunlin.system.dict.starter.json;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,14 +10,14 @@ import java.lang.annotation.Target;
 
 /**
  * 字典校验，如果找不到字典值文本，则校验失败。
- * SpringBoot 2.x 的校验用法，主要是 javax.validation 包名问题，SpringBoot 3.x 改包名了
+ * SpringBoot 3.x 的校验用法。主要是 javax.validation 包名问题，SpringBoot 3.x 改包名了
  *
  * @author HouKunLin
  */
-@Constraint(validatedBy = {DictValidConstraintValidator.class})
+@Constraint(validatedBy = {DictValid3ConstraintValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DictValid {
+public @interface DictValid3 {
     String message() default "字典参数错误";
 
     Class<?>[] groups() default {};

@@ -1,16 +1,15 @@
 package com.houkunlin.system.dict.starter.json;
 
 import com.houkunlin.system.dict.starter.DictUtil;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * 校验字典信息是否在字典列表中。校验字典信息的填写是否符合需求
  *
  * @author HouKunLin
  */
-public class DictValidConstraintValidator implements ConstraintValidator<DictValid, Object> {
+public class DictValid3ConstraintValidator implements ConstraintValidator<DictValid3, Object> {
     private String dictType;
 
     @Override
@@ -22,7 +21,7 @@ public class DictValidConstraintValidator implements ConstraintValidator<DictVal
     }
 
     @Override
-    public void initialize(final DictValid constraintAnnotation) {
+    public void initialize(final DictValid3 constraintAnnotation) {
         this.dictType = constraintAnnotation.value();
     }
 }
