@@ -1,5 +1,6 @@
 package com.houkunlin.system.dict.starter.bytecode;
 
+import com.houkunlin.system.dict.starter.ClassUtil;
 import org.springframework.asm.ClassWriter;
 import org.springframework.asm.FieldVisitor;
 import org.springframework.asm.Label;
@@ -26,8 +27,7 @@ public class DictChildrenObjectGenerate {
         final byte[] classBytes = getClassBytes(className, classNameDescriptor, supperClazzName, fieldNames);
         // 以下代码在 Java17 下编译运行时，未对启动命令做特殊参数配置时会报错出现异常
         // return ReflectUtils.defineClass(supperClazz.getName() + "$DictChildren", classBytes, Thread.currentThread().getContextClassLoader());
-        BytecodeClassLoader classLoader = new BytecodeClassLoader(Thread.currentThread().getContextClassLoader());
-        return classLoader.define(supperClazz.getName() + "$DictChildren", classBytes);
+        return ClassUtil.define(supperClazz.getName() + "$DictChildren", classBytes);
     }
 
     public static Class<?> newClass(final Class<?> supperClazz, final Set<String> fieldNames) throws Exception {

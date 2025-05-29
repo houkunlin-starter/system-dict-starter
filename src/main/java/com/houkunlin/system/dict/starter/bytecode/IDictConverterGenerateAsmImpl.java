@@ -1,5 +1,6 @@
 package com.houkunlin.system.dict.starter.bytecode;
 
+import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,9 +71,8 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
             // 最大力度尝试转换字典值，优先使用字典枚举名称转换，失败后再尝试使用字典值转换
             bytecode = useTryEnumName(converterClassName, dictEnumClassName, dictValueClass);
         }
-        BytecodeClassLoader classLoader = new BytecodeClassLoader(Thread.currentThread().getContextClassLoader());
         // return ReflectUtils.defineClass(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode, Thread.currentThread().getContextClassLoader());
-        return (Class<T>) classLoader.define(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode);
+        return (Class<T>) ClassUtil.define(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode);
     }
 
     /**

@@ -1,9 +1,17 @@
 package com.houkunlin.system.dict.starter;
 
+import com.houkunlin.system.dict.starter.bytecode.BytecodeClassLoader;
+
 import java.lang.reflect.Constructor;
 
 public class ClassUtil {
     private ClassUtil() {
+    }
+
+    public static final BytecodeClassLoader CLASS_LOADER;
+
+    static {
+        CLASS_LOADER = new BytecodeClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     /**
@@ -21,5 +29,9 @@ public class ClassUtil {
             }
         }
         return null;
+    }
+
+    public static Class<?> define(String name, byte[] b) {
+        return CLASS_LOADER.define(name, b);
     }
 }
