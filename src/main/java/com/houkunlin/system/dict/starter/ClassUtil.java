@@ -34,4 +34,8 @@ public class ClassUtil {
     public static Class<?> define(String name, byte[] b) {
         return CLASS_LOADER.define(name, b);
     }
+
+    public static Class<?> forName(String className) throws ClassNotFoundException {
+        return Class.forName(className, true, CLASS_LOADER);
+    }
 }

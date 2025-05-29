@@ -54,25 +54,27 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
         final Class<?> dictValueClass = getDictEnumInterfaceType(dictEnumClass);
 
         // 系统字典枚举类完全限定名
-        final String dictEnumClassName = dictEnumClass.getName().replace(".", "/");
-        final String converterClassName = dictEnumClassName + "SystemDictSpringConverter";
+        final String dictEnumClassName = dictEnumClass.getName();
+        final String dictEnumClassNamePath = dictEnumClassName.replace(".", "/");
+        final String converterClassNamePath = dictEnumClassNamePath + "$$SystemDictSpringConverter";
+        final String converterClassName = dictEnumClassName + "$$SystemDictSpringConverter";
 
         try {
             // 尝试直接从已有的数据中加载
-            return (Class<T>) Class.forName(converterClassName);
+            return (Class<T>) ClassUtil.forName(converterClassName);
         } catch (Throwable ignore) {
         }
 
         final byte[] bytecode;
         if (dictConverter.onlyDictValue()) {
             // 只使用字典值转换
-            bytecode = useDictValue(converterClassName, dictEnumClassName, dictValueClass);
+            bytecode = useDictValue(converterClassNamePath, dictEnumClassNamePath, dictValueClass);
         } else {
             // 最大力度尝试转换字典值，优先使用字典枚举名称转换，失败后再尝试使用字典值转换
-            bytecode = useTryEnumName(converterClassName, dictEnumClassName, dictValueClass);
+            bytecode = useTryEnumName(converterClassNamePath, dictEnumClassNamePath, dictValueClass);
         }
         // return ReflectUtils.defineClass(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode, Thread.currentThread().getContextClassLoader());
-        return (Class<T>) ClassUtil.define(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode);
+        return (Class<T>) ClassUtil.define(converterClassName, bytecode);
     }
 
     /**

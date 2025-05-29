@@ -52,7 +52,7 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
 
         // 系统字典枚举类完全限定名
         final String dictEnumClassName = dictEnumClass.getName();
-        final String converterClassName = dictEnumClassName + "SystemDictSpringConverter";
+        final String converterClassName = dictEnumClassName + "$$SystemDictSpringConverter";
         final String dictEnumClassNameDescriptor = "L" + dictEnumClassName.replace(".", "/") + ";";
 
         try {

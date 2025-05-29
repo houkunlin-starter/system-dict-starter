@@ -32,7 +32,7 @@ public interface IDictConverterGenerate {
      */
     default <T extends DictEnum<V>, V extends Serializable> void registerBean(final DefaultListableBeanFactory factory, final Class<DictEnum<V>> dictEnumClass, final DictConverter dictConverter) {
         try {
-            final String beanName = dictEnumClass.getName() + ".SystemDictSpringConverter";
+            final String beanName = dictEnumClass.getName() + "$$SystemDictSpringConverter";
             if (factory.containsBean(beanName)) {
                 return;
             }
