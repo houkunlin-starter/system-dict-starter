@@ -4,7 +4,6 @@ import org.springframework.asm.ClassWriter;
 import org.springframework.asm.FieldVisitor;
 import org.springframework.asm.Label;
 import org.springframework.asm.MethodVisitor;
-import org.springframework.cglib.core.ReflectUtils;
 
 import java.util.Set;
 
@@ -25,7 +24,10 @@ public class DictChildrenObjectGenerate {
         final String className = supperClazzName + "$DictChildren";
         final String classNameDescriptor = "L" + className + ";";
         final byte[] classBytes = getClassBytes(className, classNameDescriptor, supperClazzName, fieldNames);
-        return ReflectUtils.defineClass(supperClazz.getName() + "$DictChildren", classBytes, Thread.currentThread().getContextClassLoader());
+        // 以下代码在 Java17 下编译运行时，未对启动命令做特殊参数配置时会报错出现异常
+        // return ReflectUtils.defineClass(supperClazz.getName() + "$DictChildren", classBytes, Thread.currentThread().getContextClassLoader());
+        BytecodeClassLoader classLoader = new BytecodeClassLoader(Thread.currentThread().getContextClassLoader());
+        return classLoader.define(supperClazz.getName() + "$DictChildren", classBytes);
     }
 
     public static Class<?> newClass(final Class<?> supperClazz, final Set<String> fieldNames) throws Exception {
