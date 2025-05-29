@@ -7,8 +7,9 @@ import org.springframework.asm.ClassWriter;
 import org.springframework.asm.Label;
 import org.springframework.asm.MethodVisitor;
 import org.springframework.asm.Opcodes;
-import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.core.convert.converter.Converter;
+
+import java.io.Serializable;
 
 import static org.springframework.asm.Opcodes.*;
 
@@ -40,8 +41,9 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
      * @param dictConverter 枚举转换器配置参数注解
      * @return 转换器对象
      */
+    @SuppressWarnings({"unchecked"})
     @Override
-    public Class<?> getConverterClass(final Class<?> dictEnumClass, final DictConverter dictConverter) throws Exception {
+    public <T extends DictEnum<V>, V extends Serializable> Class<T> getConverterClass(final Class<T> dictEnumClass, final DictConverter dictConverter) throws Exception {
         // 这个 Class 一定是继承一个指定的接口的
         if (!dictEnumClass.isEnum() || !DictEnum.class.isAssignableFrom(dictEnumClass)) {
             return null;
@@ -56,7 +58,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
 
         try {
             // 尝试直接从已有的数据中加载
-            return Class.forName(converterClassName);
+            return (Class<T>) Class.forName(converterClassName);
         } catch (Throwable ignore) {
         }
 
@@ -68,7 +70,9 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
             // 最大力度尝试转换字典值，优先使用字典枚举名称转换，失败后再尝试使用字典值转换
             bytecode = useTryEnumName(converterClassName, dictEnumClassName, dictValueClass);
         }
-        return ReflectUtils.defineClass(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode, Thread.currentThread().getContextClassLoader());
+        BytecodeClassLoader classLoader = new BytecodeClassLoader(Thread.currentThread().getContextClassLoader());
+        // return ReflectUtils.defineClass(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode, Thread.currentThread().getContextClassLoader());
+        return (Class<T>) classLoader.define(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode);
     }
 
     /**

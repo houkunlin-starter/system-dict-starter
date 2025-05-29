@@ -74,13 +74,14 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param basePackage 包名
      */
+    @SuppressWarnings({"unchecked"})
     private void scanPackage(String basePackage) {
         final Set<BeanDefinition> components = provider.findCandidateComponents(basePackage);
         for (BeanDefinition component : components) {
             try {
                 final Class<?> loadClass = classLoader.loadClass(component.getBeanClassName());
                 if (loadClass.isEnum()) {
-                    handleDict(loadClass);
+                    handleDict((Class<DictEnum<Serializable>>) loadClass);
                 }
             } catch (ClassNotFoundException e) {
                 logger.error("扫描系统字典枚举失败，虽然不影响启动，但是最终会影响 @DictText 注解功能", e);
@@ -93,7 +94,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param dictClass 字典对象
      */
-    private void handleDict(final Class<?> dictClass) {
+    private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass) {
         final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
         if (converter != null) {
             generateConverter.registerBean(beanFactory, dictClass, converter);
@@ -113,7 +114,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param dictClass 字典对象
      */
-    private void handleDict(final Class<?> dictClass, final DictType annotation) {
+    private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass, final DictType annotation) {
         final String dictType;
         String dictTitle;
         if (annotation != null) {
@@ -134,7 +135,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
 
         final DictTypeVo dictTypeVo = systemDictProvider.getDict(dictType, () -> new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, new ArrayList<>()));
         List<DictValueVo> list = dictTypeVo.getChildren();
-        final DictEnum<?>[] enumConstants = (DictEnum<?>[]) dictClass.getEnumConstants();
+        final DictEnum<?>[] enumConstants = dictClass.getEnumConstants();
         for (DictEnum<?> enums : enumConstants) {
             final Serializable value = enums.getValue();
             boolean exists = false;

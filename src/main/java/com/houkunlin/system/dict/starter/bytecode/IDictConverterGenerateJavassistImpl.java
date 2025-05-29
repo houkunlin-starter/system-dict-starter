@@ -9,6 +9,8 @@ import javassist.bytecode.SignatureAttribute;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
+import java.io.Serializable;
+
 /**
  * 使用 javassist 技术动态创建 {@link Converter} 转换器实现类，并把实现类注入到 Spring 中
  *
@@ -37,8 +39,9 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
      * @throws NotFoundException      找不到 Class 异常
      * @throws CannotCompileException 修改 Class 异常
      */
+    @SuppressWarnings({"unchecked"})
     @Override
-    public Class<?> getConverterClass(final Class<?> dictEnumClass, final DictConverter dictConverter) throws Exception {
+    public <T extends DictEnum<V>, V extends Serializable> Class<T> getConverterClass(final Class<T> dictEnumClass, final DictConverter dictConverter) throws Exception {
         // 这个 Class 一定是继承一个指定的接口的
         if (!dictEnumClass.isEnum() || !DictEnum.class.isAssignableFrom(dictEnumClass)) {
             return null;
@@ -54,7 +57,7 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
 
         try {
             // 尝试直接从已有的数据中加载
-            return Class.forName(converterClassName);
+            return (Class<T>) Class.forName(converterClassName);
         } catch (Throwable ignore) {
         }
 
@@ -107,11 +110,12 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
      * @return 转换器 Class
      * @throws CannotCompileException 异常
      */
-    private Class<?> toClass(final CtClass makeClass, final Class<?> dictEnumClass) throws CannotCompileException {
+    @SuppressWarnings({"unchecked"})
+    private <T extends DictEnum<?>, V extends Serializable> Class<T> toClass(final CtClass makeClass, final Class<T> dictEnumClass) throws CannotCompileException {
         if (javassist.bytecode.ClassFile.MAJOR_VERSION < javassist.bytecode.ClassFile.JAVA_9) {
-            return makeClass.toClass(dictEnumClass.getClassLoader(), null);
+            return (Class<T>) makeClass.toClass(dictEnumClass.getClassLoader(), null);
         }
-        return makeClass.toClass(dictEnumClass);
+        return (Class<T>) makeClass.toClass(dictEnumClass);
     }
 
     /**
