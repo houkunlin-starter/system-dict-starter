@@ -85,7 +85,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
         } else {
             // 字段是普通类型，但是使用注解标记了来自枚举对象取值
             outFieldValue = fieldValue;
-            dictValueText = obtainDictValueText(gen.getCurrentValue(), outFieldValue);
+            dictValueText = obtainDictValueText(gen.currentValue(), outFieldValue);
         }
         writeFieldValue(gen, outFieldValue, defaultNullableValue(dictValueText));
     }

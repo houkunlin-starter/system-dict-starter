@@ -61,7 +61,7 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
             return;
         }
         if (hasDictType) {
-            final Object dictValueText = obtainDictValueText(gen.getCurrentValue(), fieldValue);
+            final Object dictValueText = obtainDictValueText(gen.currentValue(), fieldValue);
             writeFieldValue(gen, fieldValue, defaultNullableValue(dictValueText));
         } else {
             writeFieldValue(gen, fieldValue, defaultNullableValue(defaultDictTextResult));
