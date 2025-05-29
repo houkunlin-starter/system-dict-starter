@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
@@ -11,6 +12,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -125,6 +128,7 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
      * @return 字典类型代码
      * @since 1.4.7
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected String getDictTypeByTypeKeyHandler(final Object bean, String fieldValueItem) {
         final Class<? extends DictTypeKeyHandler> factoryClass = dictText.dictTypeHandler();
         if (factoryClass == VoidDictTypeKeyHandler.class) {
@@ -135,9 +139,14 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
             dictTypeKeyHandler = SystemDictAutoConfiguration.getBean(factoryClass);
             if (dictTypeKeyHandler == null) {
                 try {
-                    dictTypeKeyHandler = factoryClass.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
-                    logger.error("创建 " + factoryClass.getName() + " 实例失败，请向 SpringBoot 提供此 Bean 对象", e);
+                    Constructor<?> defaultConstructor = ClassUtil.getDefaultConstructor(factoryClass);
+                    if (defaultConstructor != null) {
+                        dictTypeKeyHandler = (DictTypeKeyHandler<Object>) defaultConstructor.newInstance();
+                    } else {
+                        logger.error("创建 {} 实例失败，没有有效的默认构造方法，请向 SpringBoot 提供此 Bean 对象", factoryClass.getName());
+                    }
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    logger.error("创建 {} 实例失败，请向 SpringBoot 提供此 Bean 对象", factoryClass.getName(), e);
                     return dictType;
                 }
             }

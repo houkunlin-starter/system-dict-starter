@@ -1,5 +1,6 @@
 package com.houkunlin.system.dict.starter.bytecode;
 
+import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import org.slf4j.Logger;
@@ -36,8 +37,12 @@ public interface IDictConverterGenerate {
             }
             final Class<?> converterClass = getConverterClass(dictEnumClass, dictConverter);
             if (converterClass != null) {
-                final Constructor<?>[] constructors = converterClass.getConstructors();
-                factory.registerSingleton(beanName, constructors[0].newInstance());
+                Constructor<?> defaultConstructor = ClassUtil.getDefaultConstructor(converterClass);
+                if (defaultConstructor != null) {
+                    factory.registerSingleton(beanName, defaultConstructor.newInstance());
+                } else {
+                    logger.error("自动创建系统字典枚举 {} 的 Converter 没有默认构造方法，请联系开发者修复bug", dictEnumClass.getName());
+                }
             }
         } catch (Throwable e) {
             logger.error("自动创建系统字典枚举 {} 的 Converter 转换器失败，不影响系统启动，但是会影响此枚举转换器功能", dictEnumClass.getName(), e);
