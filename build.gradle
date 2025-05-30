@@ -110,13 +110,13 @@ publishing {
         maven {
             name = "sonatype"
             credentials {
-                username = findProperty("ossrhUsername") ?: System.getenv("ossrhUsername")
-                password = findProperty("ossrhPassword") ?: System.getenv("ossrhPassword")
+                username = findProperty("sonatype_username") ?: System.getenv("sonatype_username")
+                password = findProperty("sonatype_password") ?: System.getenv("sonatype_password")
             }
             // 正式环境
-            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def releasesRepoUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
             // 非正式环境库
-            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            def snapshotsRepoUrl = 'https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/'
             url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
         }
         maven {

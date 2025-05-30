@@ -23,7 +23,7 @@ jobs:
         env: # Or as an environment variable
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg_password: ${{ secrets.GPG_PASSWORD }}
-          ossrhUsername: ${{ secrets.OSSRH_USERNAME }}
-          ossrhPassword: ${{ secrets.OSSRH_PASSWORD }}
+          sonatype_username: ${{ secrets.SONATYPE_USERNAME }}
+          sonatype_password: ${{ secrets.SONATYPE_PASSWORD }}
         # build.gradle 脚本中已支持直接从环境变量中读取相关配置信息，因此这里可以不显式传递相关机密参数
         run: ./gradlew publish
