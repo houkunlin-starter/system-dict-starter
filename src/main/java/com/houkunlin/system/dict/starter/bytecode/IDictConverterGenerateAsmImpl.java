@@ -74,7 +74,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
             bytecode = useTryEnumName(converterClassNamePath, dictEnumClassNamePath, dictValueClass);
         }
         // return ReflectUtils.defineClass(dictEnumClass.getName() + "SystemDictSpringConverter", bytecode, Thread.currentThread().getContextClassLoader());
-        return (Class<T>) ClassUtil.define(converterClassName, bytecode);
+        return (Class<T>) ClassUtil.define(dictEnumClass, converterClassName, bytecode);
     }
 
     /**

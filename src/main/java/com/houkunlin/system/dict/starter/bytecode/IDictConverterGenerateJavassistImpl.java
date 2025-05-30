@@ -1,5 +1,6 @@
 package com.houkunlin.system.dict.starter.bytecode;
 
+import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import javassist.*;
@@ -98,8 +99,8 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
 
         // 由于泛型的类型擦除问题，javassist不会自动处理，因此必须手动增加一个桥接方法
         addBridgeMethod(pool, makeClass);
-
-        return toClass(makeClass, dictEnumClass);
+        byte[] bytecode = makeClass.toBytecode();
+        return (Class<T>) ClassUtil.define(dictEnumClass, converterClassName, bytecode);
     }
 
     /**
