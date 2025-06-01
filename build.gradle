@@ -2,9 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.7.18'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "io.freefair.lombok" version "6.6.3"
-//    id 'org.springframework.boot' version '3.4.0'
-//    id 'io.spring.dependency-management' version '1.1.7'
-//    id "io.freefair.lombok" version "8.13.1"
     id 'maven-publish'
     id 'signing'
     id 'java-library'
@@ -13,7 +10,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.5.7'
+version = '1.5.6'
 description = """
 系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
 The system data dictionary is automatically translated into dictionary text.
@@ -40,8 +37,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.springframework.boot:spring-boot-starter-jdbc'
-    compileOnly 'com.baomidou:mybatis-plus-core:3.5.7'
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
@@ -58,7 +53,6 @@ dependencies {
     api 'com.google.guava:guava:33.0.0-jre'
     api 'com.github.ben-manes.caffeine:caffeine'
     api 'org.javassist:javassist:3.28.0-GA'
-    api 'net.bytebuddy:byte-buddy'
     compileOnly 'javax.validation:validation-api:2.0.1.Final'
     compileOnly 'jakarta.validation:jakarta.validation-api:3.0.2'
     compileOnly 'io.swagger:swagger-annotations:1.6.6'
