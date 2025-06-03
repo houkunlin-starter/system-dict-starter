@@ -21,6 +21,7 @@ jobs:
         run: chmod +x gradlew
       - name: Release Jar To Maven
         env: # Or as an environment variable
+          gpg_public_key: ${{ secrets.GPG_PUBLIC_KEY }}
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg_password: ${{ secrets.GPG_PASSWORD }}
           sonatype_username: ${{ secrets.SONATYPE_USERNAME }}

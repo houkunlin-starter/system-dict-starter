@@ -142,6 +142,7 @@ jreleaser {
         active = 'ALWAYS'
         armored = true
         mode = 'MEMORY'
+        publicKey = GETGPGKEY("gpg_public_key")
         secretKey = GETGPGKEY("gpg_private_key")
         passphrase = GETENV("gpg_password")
     }
