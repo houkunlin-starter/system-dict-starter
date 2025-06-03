@@ -5,6 +5,7 @@ import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * @author HouKunLin
  */
+@ConditionalOnProperty("system.dict.test.scheduled")
 @Configuration
 public class ScheduledRefreshDicEvent {
     private static final Logger logger = LoggerFactory.getLogger(ScheduledRefreshDicEvent.class);
