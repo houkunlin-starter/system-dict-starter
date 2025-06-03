@@ -39,6 +39,16 @@ public class DictDefaultSerializerProviderImpl extends DefaultSerializerProvider
     }
 
     /**
+     * 构造方法
+     *
+     * @param src 序列化提供商
+     * @param cp  缓存提供商
+     */
+    protected DictDefaultSerializerProviderImpl(DefaultSerializerProvider src, com.fasterxml.jackson.databind.cfg.CacheProvider cp) {
+        super(src, cp);
+    }
+
+    /**
      * 创建序列化提供商实例对象
      *
      * @param config 序列化配置
@@ -48,6 +58,17 @@ public class DictDefaultSerializerProviderImpl extends DefaultSerializerProvider
     @Override
     public DefaultSerializerProvider createInstance(final SerializationConfig config, final SerializerFactory jsf) {
         return new DictDefaultSerializerProviderImpl(this, config, jsf);
+    }
+
+    /**
+     * 使用缓存再创建一个
+     *
+     * @param cacheProvider 缓存提供商
+     * @return 默认序列化提供商
+     */
+    @Override
+    public DefaultSerializerProvider withCaches(com.fasterxml.jackson.databind.cfg.CacheProvider cacheProvider) {
+        return new DictDefaultSerializerProviderImpl(this, cacheProvider);
     }
 
     /**

@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.18'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '3.4.6'
+    id 'io.spring.dependency-management' version '1.1.7'
     id "io.freefair.lombok" version '8.13.1'
     id 'org.jreleaser' version '1.18.0'
     id 'maven-publish'
@@ -11,9 +11,11 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.5.7.2'
+version = '1.6.0'
 description = """
 系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
+SpringBoot 2.7.18 和 Java 8 请使用 1.5.7.2 版本.
+SpringBoot 2.7.18 AND Java 8 Please use 1.5.7.2 version.
 The system data dictionary is automatically translated into dictionary text.
 The user data dictionary stored in the system database can be aggregated, and the enumeration can also be used as the system data dictionary.
 It is mainly used to automatically translate dictionary values into dictionary text information when returning data to the front end.
@@ -103,18 +105,25 @@ publishing {
     }
     repositories {
         maven {
+            name = 'buildDir'
             // 发布到本地路径，在发布到正式仓库时会用到这个步骤的输出内容
             url = layout.buildDirectory.dir('staging-deploy')
         }
         maven {
             // 发布快照版本
             // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
-            name = 'sonatypeSnapshots'
-            credentials {
-                username = GETENV("sonatype_username")
-                password = GETENV("sonatype_password")
+            name = 'snapshots'
+            if (isSnapshot) {
+                // 确定版本号是快照版本号
+                credentials {
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                }
+                url = 'https://central.sonatype.com/repository/maven-snapshots/'
+            } else {
+                // 不是快照版本，继续发布到本地路径
+                url = layout.buildDirectory.dir('staging-deploy-snapshots')
             }
-            url = 'https://central.sonatype.com/repository/maven-snapshots/'
         }
     }
 }
@@ -226,7 +235,7 @@ java {
     withJavadocJar()
     withSourcesJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 

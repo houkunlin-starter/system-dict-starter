@@ -29,4 +29,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_MAVENCENTRAL_STAGE: UPLOAD
         # build.gradle 脚本中已支持直接从环境变量中读取相关配置信息，因此这里可以不显式传递相关机密参数
-        run: ./gradlew publishAllPublicationsToMavenRepository jreleaserRelease
+        run: ./gradlew publishAllPublicationsToBuildDirRepository jreleaserRelease
