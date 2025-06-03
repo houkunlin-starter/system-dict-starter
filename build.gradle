@@ -103,7 +103,18 @@ publishing {
     }
     repositories {
         maven {
+            // 发布到本地路径，在发布到正式仓库时会用到这个步骤的输出内容
             url = layout.buildDirectory.dir('staging-deploy')
+        }
+        maven {
+            // 发布快照版本
+            // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
+            name = 'sonatypeSnapshots'
+            credentials {
+                username = GETENV("sonatype_username")
+                password = GETENV("sonatype_password")
+            }
+            url = 'https://central.sonatype.com/repository/maven-snapshots/'
         }
     }
 }
@@ -149,12 +160,12 @@ jreleaser {
     deploy {
         maven {
             mavenCentral {
-                'release-deploy' {
+                releaseDeployToCentral {
                     active = 'ALWAYS'
                     snapshotSupported = true
-                    applyMavenCentralRules = false
-                    username = findProperty("sonatype_username") ?: System.getenv("sonatype_username")
-                    password = findProperty("sonatype_password") ?: System.getenv("sonatype_password")
+                    applyMavenCentralRules = true
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
                     url = 'https://central.sonatype.com/api/v1/publisher'
                     stagingRepository('build/staging-deploy')
                 }
