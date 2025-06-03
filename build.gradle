@@ -77,6 +77,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+dependencyManagement {
+    generatedPomCustomization {
+        enabled = false
+    }
+}
+
 // 获取环境变量信息
 def GETENV(name) {
     return findProperty(name) ?: System.getenv(name)
