@@ -23,8 +23,8 @@ import java.lang.annotation.*;
 public @interface DictConverter {
     /**
      * 是否只支持字典值转换。SpringBoot默认支持枚举名称转换；
-     * 是：只支持字典值转换 DictEnum.valueOf(DictEnumObject.values(), VALUE)；
-     * 否：优先使用枚举名称转换（DictEnumObject.valueOf(VALUE)），枚举名称转换失败时使用字典值转换（DictEnum.valueOf(DictEnumObject.values(), VALUE)）；
+     * <p>是：只支持字典值转换 DictEnum.valueOf(DictEnumObject.values(), VALUE)；</p>
+     * <p>否：优先使用枚举名称转换（DictEnumObject.valueOf(VALUE)），枚举名称转换失败时使用字典值转换（DictEnum.valueOf(DictEnumObject.values(), VALUE)）；</p>
      *
      * @return 是否
      */
