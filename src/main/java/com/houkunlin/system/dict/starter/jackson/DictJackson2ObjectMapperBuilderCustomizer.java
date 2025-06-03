@@ -12,6 +12,9 @@ import org.springframework.beans.factory.InitializingBean;
  */
 @RequiredArgsConstructor
 public class DictJackson2ObjectMapperBuilderCustomizer implements InitializingBean {
+    /**
+     * JSON 序列化和反序列化工具
+     */
     private final ObjectMapper objectMapper;
 
     @Override
