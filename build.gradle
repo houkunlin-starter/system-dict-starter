@@ -35,8 +35,13 @@ configurations {
 }
 
 repositories {
-    maven { url 'https://repo.spring.io/release' }
     mavenCentral()
+    maven {
+        url = "https://repo.spring.io/artifactory/libs-milestone-local/"
+    }
+    maven {
+        url = "https://repo.spring.io/artifactory/libs-release-local/"
+    }
 }
 
 dependencies {
@@ -70,6 +75,24 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+// 获取环境变量信息
+def GETENV(name) {
+    return findProperty(name) ?: System.getenv(name)
+}
+
+// 获取 GPG KEY 信息，并尝试判断是否需要使用 Base64 进行解码数据
+def GETGPGKEY(name) {
+    String value = GETENV(name)
+    if (value == null) {
+        return null
+    }
+    // value.startsWith("-----BEGIN PGP")
+    if (value.startsWith("LS0tLS1CRUdJTiBQR1Ag")) {
+        return new String(java.util.Base64.getDecoder().decode(value))
+    }
+    return value
 }
 
 publishing {
@@ -126,24 +149,6 @@ publishing {
             }
         }
     }
-}
-
-// 获取环境变量信息
-def GETENV(name) {
-    return findProperty(name) ?: System.getenv(name)
-}
-
-// 获取 GPG KEY 信息，并尝试判断是否需要使用 Base64 进行解码数据
-def GETGPGKEY(name) {
-    String value = GETENV(name)
-    if (value == null) {
-        return null
-    }
-    // value.startsWith("-----BEGIN PGP")
-    if (value.startsWith("LS0tLS1CRUdJTiBQR1Ag")) {
-        return new String(java.util.Base64.getDecoder().decode(value))
-    }
-    return value
 }
 
 signing {
