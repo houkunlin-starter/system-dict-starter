@@ -3,8 +3,6 @@ package com.houkunlin.system.dict.starter.common.provider;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -43,9 +41,3 @@ public class MyProvider implements DictProvider {
     }
 }
 
-@Data
-@AllArgsConstructor
-class DictUser {
-    private int id;
-    private String name;
-}
