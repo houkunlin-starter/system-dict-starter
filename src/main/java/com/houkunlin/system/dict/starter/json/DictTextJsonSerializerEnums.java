@@ -19,9 +19,6 @@ import java.io.Serializable;
  * @since 1.4.3
  */
 public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
-    /**
-     * 日志
-     */
     protected static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializerEnums.class);
     /**
      * 缓存了直接使用系统字典枚举来渲染数据字典文本的所有数据

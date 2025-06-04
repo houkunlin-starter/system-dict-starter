@@ -17,20 +17,9 @@ import static org.springframework.asm.Opcodes.*;
  * @since 1.4.9
  */
 public class DictChildrenObjectGenerate {
-    /**
-     * 私有构造方法
-     */
     private DictChildrenObjectGenerate() {
     }
 
-    /**
-     * 动态新建一个子类
-     *
-     * @param supperClazz 基本 bean 对象类
-     * @param fieldNames  需要动态新增的字段名称
-     * @return 新的子类对象
-     * @throws Exception 异常
-     */
     public static Class<?> newClass(final Class<?> supperClazz, final String... fieldNames) throws Exception {
         final String supperClazzName = supperClazz.getName().replace(".", "/");
         final String className = supperClazzName + "$DictChildren";
@@ -41,14 +30,6 @@ public class DictChildrenObjectGenerate {
         return ClassUtil.define(supperClazz, supperClazz.getName() + "$DictChildren", classBytes);
     }
 
-    /**
-     * 动态新建一个子类
-     *
-     * @param supperClazz 基本 bean 对象类
-     * @param fieldNames  需要动态新增的字段名称
-     * @return 新的子类对象
-     * @throws Exception 异常
-     */
     public static Class<?> newClass(final Class<?> supperClazz, final Set<String> fieldNames) throws Exception {
         return newClass(supperClazz, fieldNames.toArray(new String[0]));
     }

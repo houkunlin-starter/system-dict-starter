@@ -14,6 +14,8 @@ group = 'com.houkunlin'
 version = '1.5.7.2'
 description = """
 系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
+SpringBoot 2.7.18 和 Java 8 请使用 1.5.7.2 版本.
+SpringBoot 2.7.18 AND Java 8 Please use 1.5.7.2 version.
 The system data dictionary is automatically translated into dictionary text.
 The user data dictionary stored in the system database can be aggregated, and the enumeration can also be used as the system data dictionary.
 It is mainly used to automatically translate dictionary values into dictionary text information when returning data to the front end.
@@ -126,18 +128,9 @@ publishing {
     }
     repositories {
         maven {
+            name = 'buildDir'
             // 发布到本地路径，在发布到正式仓库时会用到这个步骤的输出内容
             url = layout.buildDirectory.dir('staging-deploy')
-        }
-        maven {
-            // 发布快照版本
-            // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
-            name = 'sonatypeSnapshots'
-            credentials {
-                username = GETENV("sonatype_username")
-                password = GETENV("sonatype_password")
-            }
-            url = 'https://central.sonatype.com/repository/maven-snapshots/'
         }
     }
 }
@@ -166,13 +159,26 @@ jreleaser {
         maven {
             mavenCentral {
                 releaseDeployToCentral {
-                    active = 'ALWAYS'
-                    snapshotSupported = true
+                    active = 'RELEASE'
                     applyMavenCentralRules = true
                     username = GETENV("sonatype_username")
                     password = GETENV("sonatype_password")
                     url = 'https://central.sonatype.com/api/v1/publisher'
                     stagingRepository('build/staging-deploy')
+                }
+            }
+            nexus2 {
+                snapshotDeployToCentral {
+                    // 发布快照版本
+                    // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
+                    active = 'SNAPSHOT'
+                    url = 'https://central.sonatype.com/repository/maven-snapshots/'
+                    snapshotUrl = 'https://central.sonatype.com/repository/maven-snapshots/'
+                    snapshotSupported = true
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                    stagingRepository('build/staging-deploy')
+                    verifyUrl = "https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/{{path}}/{{filename}}"
                 }
             }
         }
@@ -183,6 +189,7 @@ jreleaser {
             repoOwner = "houkunlin-starter"
             skipTag = true
             overwrite = true
+            skipRelease = isSnapshot
             username = "houkunlin"
             token = GETENV("GITHUB_TOKEN")
             commitAuthor {

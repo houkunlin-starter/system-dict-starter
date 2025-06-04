@@ -31,14 +31,6 @@ public class DictAmqpConfiguration {
     private final String applicationName;
     private final String exchangeName;
 
-    /**
-     * 构造方法
-     *
-     * @param dictRegistrar   数据字典注册器
-     * @param amqpTemplate    AmqpTemplate 对象
-     * @param applicationName 当前应用名称
-     * @param dictProperties  数据字典配置参数信息
-     */
     public DictAmqpConfiguration(final DictRegistrar dictRegistrar,
                                  final AmqpTemplate amqpTemplate,
                                  @Value("${spring.application.name:'system-dict'}") final String applicationName,
@@ -83,8 +75,6 @@ public class DictAmqpConfiguration {
 
     /**
      * 监听刷新数据字典消息队列广播通知
-     *
-     * @param noticeData 刷新通知数据
      */
     @RabbitListener(queues = "#{dictQueue.name}")
     public void refreshDict(@Payload final RefreshNoticeData noticeData) {
@@ -99,8 +89,6 @@ public class DictAmqpConfiguration {
 
     /**
      * 处理系统内部发起的刷新数据字典事件
-     *
-     * @param event 刷新字典通知事件
      */
     @EventListener
     public void refreshDict(RefreshDictEvent event) {

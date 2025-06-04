@@ -13,10 +13,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DictTypes {
-    /**
-     * 数据字典类型注解
-     *
-     * @return 数据字典类型注解
-     */
     DictType[] value() default {};
 }

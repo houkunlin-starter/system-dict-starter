@@ -37,17 +37,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DictRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
-    /**
-     * 数据字典信息提供商
-     */
     private final List<DictProvider> providers;
-    /**
-     * 数据字典信息存储器
-     */
     private final DictStore store;
-    /**
-     * 数据字典配置信息对象
-     */
     private final DictProperties properties;
     /**
      * 上一次刷新字典时间
@@ -62,11 +53,6 @@ public class DictRegistrar implements InitializingBean {
      */
     private int typeEventBatchSize = 1000;
 
-    /**
-     * 刷新数据字典信息
-     *
-     * @param dictProviderClasses 需要刷新的数据字典提供商类限定名
-     */
     public void refreshDict(Set<String> dictProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified.get();
         final Duration refreshDictInterval = properties.getRefreshDictInterval();
@@ -334,13 +320,6 @@ public class DictRegistrar implements InitializingBean {
         });
     }
 
-    /**
-     * 修复数据字典类型的字典项列表信息
-     *
-     * @param dictType     数据字典类型代码
-     * @param dictValueVos 字典值列表
-     * @return 字典值列表
-     */
     @Nullable
     private List<DictValueVo> fixDictTypeChildren(final String dictType, final List<DictValueVo> dictValueVos) {
         if (dictValueVos == null) {

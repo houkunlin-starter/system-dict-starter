@@ -20,9 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class DictTextJsonSerializer extends JsonSerializer<Object> implements ContextualSerializer {
     private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializer.class);
-    /**
-     * bean 字段对于的序列化对象缓存
-     */
     protected static final ConcurrentHashMap<String, DictTextJsonSerializerDefault> CACHE = new ConcurrentHashMap<>();
 
     /**
@@ -123,13 +120,6 @@ public class DictTextJsonSerializer extends JsonSerializer<Object> implements Co
         return CACHE.get(cacheKey(property.getType().getRawClass(), property.getName(), annotation));
     }
 
-    /**
-     * 获取数据字典缓存的序列化器
-     *
-     * @param beanClazz bean 对象
-     * @param field     字段
-     * @return JsonSerializer
-     */
     public static DictTextJsonSerializerBasic getJsonSerializer(final Class<?> beanClazz, final Field field) {
         if (field == null) {
             return null;

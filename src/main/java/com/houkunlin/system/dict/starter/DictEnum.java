@@ -17,7 +17,6 @@ public interface DictEnum<T extends Serializable> {
      * @param values 枚举对象列表
      * @param value  枚举值
      * @param <T>    枚举值类型
-     * @param <E>    枚举对象类型
      * @return 枚举对象
      */
     static <T extends Serializable, E extends Enum<E> & DictEnum<T>> E valueOf(E[] values, T value) {

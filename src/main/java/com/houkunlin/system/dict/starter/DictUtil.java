@@ -76,7 +76,6 @@ public class DictUtil {
     /**
      * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
      *
-     * @param dictProviderClasses 需要刷新的字典提供商类限定名
      * @param store 字典存储 {@link DictStore} 对象
      * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.5.0
@@ -115,12 +114,6 @@ public class DictUtil {
         TYPE_SYSTEM_PREFIX = properties.getTypeSystemPrefix();
     }
 
-    /**
-     * 通过字典类型代码获取一个字典类型对象
-     *
-     * @param type 字典类型代码
-     * @return 字典类型
-     */
     public static DictTypeVo getDictType(String type) {
         if (type == null || store == null) {
             return null;
@@ -239,7 +232,7 @@ public class DictUtil {
     /**
      * Redis Dict Value Hash Key
      *
-     * @param value 字典值对象
+     * @param value
      * @return key
      * @since 1.5.0
      */
@@ -262,7 +255,7 @@ public class DictUtil {
     /**
      * Redis Dict Value Hash Key
      *
-     * @return key 字典类型
+     * @return key
      * @since 1.5.0
      */
     public static String dictKeyHash(String type) {
@@ -306,11 +299,11 @@ public class DictUtil {
      * <p>此方式经过 Spring SpEL 表达式验证，在 SpEL 表达式中可以取到 userTypeText 字段内容（请查看 DictUtilTransformTest 测试类）。</p>
      * <p>
      * 如果需要在 Java 代码中硬编码获取 userTypeText 字典文本信息，可采取以下方式：
-     * </p>
      * <ul>
      *     <li>方式一：字段使用 Object 类型，然后注解设置 {@link DictText#replace()} 替换字段值</li>
      *     <li>方式二：明确硬编码所有字典文本字段</li>
      * </ul>
+     * </p>
      *
      * @param object
      * @param <T>

@@ -251,60 +251,18 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
     /**
      * 从数据字典中获取字典值对应的文本信息
      *
-     * @param bean 实体类对象
      * @param dictValue 字典值
      * @return 字典值文本
      */
     public abstract String obtainDictValueText(final Object bean, String dictValue);
 
-    /**
-     * 设置当没有获取到数据时是否为 null。
-     *
-     * @return 是否需要返回 null
-     * @see DictText#nullable()
-     */
     public abstract DictBoolType nullable();
 
-    /**
-     * 标记是否替换原始值，不使用 {@link DictText#fieldName()} 字段输出，直接用字典文本替换原来的字典值输出。
-     * 默认使用 全局配置 配置参数
-     *
-     * @return 是否替换原始值
-     * @see DictText#replace()
-     */
     public abstract DictBoolType replace();
 
-    /**
-     * 此配置将会使 #fieldName 配置失效；用来标记是否使用 Map 对象返回字典值信息
-     * <pre>
-     * {
-     *   "peopleType" : {
-     *     "value" : 0,
-     *     "text" : "系统管理"
-     *   }
-     * }
-     * </pre>
-     *
-     * @return 是否返回 map 值
-     * @see DictText#mapValue()
-     */
     public abstract DictBoolType mapValue();
 
-    /**
-     * 是否是树形结构数据；
-     *
-     * @return boolean <ul>
-     * <li>true 是树形结构数据，加载父级信息（采用递归加载，可能会多次加载父级信息）；</li>
-     * <li>false 不是树形结构数据，不加载父级信息；</li>
-     * </ul>
-     * @see DictText#tree()
-     */
     public abstract boolean tree();
 
-    /**
-     * 为防止陷入死循环，请设置树形结构数据的向访问的最大访问深度，超过最大访问深度则直接返回。
-     *
-     * @return int &lt;= 0 视为不限制深度
-     */
     public abstract int treeDepth();
 }
