@@ -33,14 +33,45 @@ import java.util.Objects;
 @ConditionalOnClass(StringRedisTemplate.class)
 @Configuration(proxyBeanMethods = false)
 public class DictRedisSubscribeConfiguration implements InitializingBean {
+    /**
+     * 日志
+     */
     private static final Logger logger = LoggerFactory.getLogger(DictRedisSubscribeConfiguration.class);
+    /**
+     * Redis 消息侦听器容器
+     */
     private final RedisMessageListenerContainer redisMessageListenerContainer;
+    /**
+     * 数据字典注册器
+     */
     private final DictRegistrar dictRegistrar;
+    /**
+     * String Redis 连接器
+     */
     private final StringRedisTemplate stringRedisTemplate;
+    /**
+     * JSON 序列化和反序列化
+     */
     private final ObjectMapper objectMapper;
+    /**
+     * 当前应用名称
+     */
     private final String applicationName;
+    /**
+     * 交换器名称
+     */
     private final String exchangeName;
 
+    /**
+     * 构造方法
+     *
+     * @param redisMessageListenerContainer Redis 消息侦听器容器
+     * @param dictRegistrar                 数据字典注册器
+     * @param stringRedisTemplate           String Redis 连接器
+     * @param objectMapper                  JSON 序列化和反序列化
+     * @param applicationName               当前应用名称
+     * @param dictProperties                数据字典配置信息
+     */
     public DictRedisSubscribeConfiguration(final RedisMessageListenerContainer redisMessageListenerContainer,
                                            final DictRegistrar dictRegistrar,
                                            final StringRedisTemplate stringRedisTemplate,
@@ -57,6 +88,8 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
 
     /**
      * 处理系统内部发起的刷新数据字典事件
+     *
+     * @param event 刷新字典事件对象
      */
     @EventListener
     public void refreshDict(RefreshDictEvent event) throws JsonProcessingException {
@@ -79,6 +112,9 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
         redisMessageListenerContainer.addMessageListener(messageListener, new ChannelTopic(exchangeName));
     }
 
+    /**
+     * 数据字典 Redis 消息监听器
+     */
     @RequiredArgsConstructor
     public static class DictRedisMessageListener implements MessageListener {
         private final DictRegistrar dictRegistrar;

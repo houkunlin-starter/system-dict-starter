@@ -41,6 +41,9 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
      * 自定义的字典类型处理对象
      */
     protected DictTypeKeyHandler<Object> dictTypeKeyHandler = null;
+    /**
+     * 自定义数据字典类型KEY是否初始化完毕
+     */
     protected boolean dictTypeKeyHandlerInit = false;
 
     /**

@@ -12,17 +12,39 @@ import com.houkunlin.system.dict.starter.json.DictTextJsonSerializer;
  * @since 1.4.3
  */
 public class DictDefaultSerializerProviderImpl extends DefaultSerializerProvider {
+    /**
+     * 构造方法
+     */
     public DictDefaultSerializerProviderImpl() {
     }
 
+    /**
+     * 构造方法
+     *
+     * @param src    序列化提供商
+     * @param config 序列化配置
+     * @param f      序列化工厂
+     */
     public DictDefaultSerializerProviderImpl(final SerializerProvider src, final SerializationConfig config, final SerializerFactory f) {
         super(src, config, f);
     }
 
+    /**
+     * 构造方法
+     *
+     * @param src 序列化提供商
+     */
     public DictDefaultSerializerProviderImpl(final DefaultSerializerProvider src) {
         super(src);
     }
 
+    /**
+     * 创建序列化提供商实例对象
+     *
+     * @param config 序列化配置
+     * @param jsf    序列化工厂
+     * @return 默认序列化提供商
+     */
     @Override
     public DefaultSerializerProvider createInstance(final SerializationConfig config, final SerializerFactory jsf) {
         return new DictDefaultSerializerProviderImpl(this, config, jsf);

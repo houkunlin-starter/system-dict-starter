@@ -20,9 +20,27 @@ import java.util.List;
 @Configuration(proxyBeanMethods = false)
 @AllArgsConstructor
 public class DictCacheFactory {
+    /**
+     * 数据字典配置信息
+     *
+     * @return 数据字典配置信息
+     */
     private final DictProperties dictProperties;
+    /**
+     * 数据字典自定义缓存定制器
+     *
+     * @return 数据字典自定义缓存定制器
+     */
     private final List<DictCacheCustomizer> cacheCustomizers;
 
+    /**
+     * 构建缓存对象
+     *
+     * @param <K> KEY
+     * @param <V> VALUE
+     * @return 缓存对象
+     * @deprecated 已过时
+     */
     @Deprecated
     public <K, V> Cache<K, V> build() {
         return build(null);
