@@ -41,7 +41,8 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private ClassLoader classLoader;
     private SystemDictProvider systemDictProvider;
     private String applicationName;
-    private DefaultListableBeanFactory beanFactory;
+    private BeanFactory beanFactory;
+    private BeanDefinitionRegistry registry;
 
     public SystemDictScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
@@ -63,6 +64,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     public void registerBeanDefinitions(@NonNull AnnotationMetadata annotationMetadata, @NonNull BeanDefinitionRegistry registry) {
         final Environment environment = beanFactory.getBean(Environment.class);
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
+        this.registry = registry;
         this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
         this.generateConverter = beanFactory.getBean(IDictConverterGenerate.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
@@ -97,7 +99,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass) {
         final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
         if (converter != null) {
-            generateConverter.registerBean(beanFactory, dictClass, converter);
+            generateConverter.registerBean(registry, dictClass, converter);
         }
         final DictType[] annotation = dictClass.getDeclaredAnnotationsByType(DictType.class);
         if (annotation.length > 0) {
