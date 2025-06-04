@@ -11,11 +11,11 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.5.7.2'
+version = '1.5.8'
 description = """
 系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
-SpringBoot 2.7.18 和 Java 8 请使用 1.5.7.2 版本.
-SpringBoot 2.7.18 AND Java 8 Please use 1.5.7.2 version.
+SpringBoot 2.7.18 和 Java 8 请使用 1.5.8 版本.
+SpringBoot 2.7.18 AND Java 8 Please use 1.5.8 version.
 The system data dictionary is automatically translated into dictionary text.
 The user data dictionary stored in the system database can be aggregated, and the enumeration can also be used as the system data dictionary.
 It is mainly used to automatically translate dictionary values into dictionary text information when returning data to the front end.
