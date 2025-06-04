@@ -132,22 +132,6 @@ publishing {
             // 发布到本地路径，在发布到正式仓库时会用到这个步骤的输出内容
             url = layout.buildDirectory.dir('staging-deploy')
         }
-        maven {
-            // 发布快照版本
-            // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
-            name = 'snapshots'
-            if (isSnapshot) {
-                // 确定版本号是快照版本号
-                credentials {
-                    username = GETENV("sonatype_username")
-                    password = GETENV("sonatype_password")
-                }
-                url = 'https://central.sonatype.com/repository/maven-snapshots/'
-            } else {
-                // 不是快照版本，继续发布到本地路径
-                url = layout.buildDirectory.dir('staging-deploy-snapshots')
-            }
-        }
     }
 }
 
@@ -175,13 +159,26 @@ jreleaser {
         maven {
             mavenCentral {
                 releaseDeployToCentral {
-                    active = 'ALWAYS'
-                    snapshotSupported = true
+                    active = 'RELEASE'
                     applyMavenCentralRules = true
                     username = GETENV("sonatype_username")
                     password = GETENV("sonatype_password")
                     url = 'https://central.sonatype.com/api/v1/publisher'
                     stagingRepository('build/staging-deploy')
+                }
+            }
+            nexus2 {
+                snapshotDeployToCentral {
+                    // 发布快照版本
+                    // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
+                    active = 'SNAPSHOT'
+                    url = 'https://central.sonatype.com/repository/maven-snapshots/'
+                    snapshotUrl = 'https://central.sonatype.com/repository/maven-snapshots/'
+                    snapshotSupported = true
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                    stagingRepository('build/staging-deploy')
+                    verifyUrl = "https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/{{path}}/{{filename}}"
                 }
             }
         }
@@ -192,6 +189,7 @@ jreleaser {
             repoOwner = "houkunlin-starter"
             skipTag = true
             overwrite = true
+            skipRelease = isSnapshot
             username = "houkunlin"
             token = GETENV("GITHUB_TOKEN")
             commitAuthor {
