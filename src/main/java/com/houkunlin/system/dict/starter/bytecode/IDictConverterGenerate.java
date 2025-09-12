@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter.bytecode;
 
 import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.SystemDictConverterWebMvcConfigurer;
 import com.houkunlin.system.dict.starter.json.DictConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,9 @@ public interface IDictConverterGenerate {
      * @param registry      bean 注册
      * @param dictEnumClass 字典枚举类
      * @param dictConverter 字典转换器注解
+     * @deprecated 请查阅 {@link SystemDictConverterWebMvcConfigurer}
      */
+    @Deprecated
     default <T extends DictEnum<V>, V extends Serializable> void registerBean(final BeanDefinitionRegistry registry, final Class<T> dictEnumClass, final DictConverter dictConverter) {
         try {
             final String beanName = dictEnumClass.getName() + "$$SystemDictSpringConverter";

@@ -58,4 +58,14 @@ public class SystemDictRegistrarAutoConfiguration {
     public IDictConverterGenerate dictConverterGenerateJavassist() {
         return new IDictConverterGenerateJavassistImpl();
     }
+
+    /**
+     * 使用 MvcConfigurer 来处理枚举字典转换器，防止在 debug 日志级别下 SpringBoot Context 打印：ConfigurationClassUtils: Could not find class file for introspecting configuration annotations:  异常信息
+     *
+     * @return MvcConfigurer
+     */
+    @Bean("systemDictConverterWebMvcConfigurer")
+    public SystemDictConverterWebMvcConfigurer systemDictConverterWebMvcConfigurer() {
+        return new SystemDictConverterWebMvcConfigurer();
+    }
 }

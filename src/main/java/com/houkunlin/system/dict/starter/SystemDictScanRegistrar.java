@@ -43,6 +43,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private String applicationName;
     private BeanFactory beanFactory;
     private BeanDefinitionRegistry registry;
+    private SystemDictConverterWebMvcConfigurer webMvcConfigurer;
 
     public SystemDictScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
@@ -67,6 +68,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
         this.registry = registry;
         this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
         this.generateConverter = beanFactory.getBean(IDictConverterGenerate.class);
+        this.webMvcConfigurer = beanFactory.getBean(SystemDictConverterWebMvcConfigurer.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
     }
@@ -99,7 +101,13 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass) {
         final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
         if (converter != null) {
-            generateConverter.registerBean(registry, dictClass, converter);
+            try {
+                final Class<DictEnum<T>> converterClass = generateConverter.getConverterClass(dictClass, converter);
+                webMvcConfigurer.addConverterClass(converterClass);
+            } catch (Exception e) {
+                logger.error("自动创建系统字典枚举 {} 的 Converter 转换器失败，不影响系统启动，但是会影响此枚举转换器功能", dictClass.getName(), e);
+            }
+            // generateConverter.registerBean(registry, dictClass, converter);
         }
         final DictType[] annotation = dictClass.getDeclaredAnnotationsByType(DictType.class);
         if (annotation.length > 0) {
