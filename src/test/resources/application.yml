@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 0
   servlet:
     context-path: '/api/system'
 spring:
@@ -22,8 +22,12 @@ logging:
   level:
     root: warn
     web: warn
-    com:
-      houkunlin: debug
+    sql: debug
+    p6spy: info
+    org.springframework: info
+    org.springframework.context: debug
+    org.springframework.boot.context: debug
+    com.houkunlin: debug
     test: debug
 system:
   dict:
