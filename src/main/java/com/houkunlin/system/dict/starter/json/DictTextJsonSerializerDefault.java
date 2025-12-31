@@ -1,15 +1,16 @@
 package com.houkunlin.system.dict.starter.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -61,7 +62,7 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
     }
 
     @Override
-    public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializationContext ctxt) throws JacksonException {
         if (fieldValue == null) {
             writeFieldValue(gen, null, defaultNullableValue(defaultDictTextResult));
             return;

@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.common;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.common.bean.Bean1;
 import com.houkunlin.system.dict.starter.common.bean.Bean2;
@@ -39,7 +39,7 @@ public class CommandRunnerTests1 implements CommandLineRunner {
         publisher.publishEvent(new RefreshDictEvent("CommandRunnerTests1 刷新", true, false));
     }
 
-    private String toJson(Object o) throws JsonProcessingException {
+    private String toJson(Object o) throws JacksonException {
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(o);
     }
 }

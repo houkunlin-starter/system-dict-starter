@@ -21,7 +21,7 @@ public class ExamplesController {
     public ResponseEntity<User> get(final User user) {
         return ResponseEntity.ok()
             // MockMvc 遇到调用结果编码为 ISO-8859-1 的问题
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .body(user);
     }
 

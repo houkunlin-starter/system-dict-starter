@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.json.Array;
 import com.houkunlin.system.dict.starter.json.DictText;
@@ -50,11 +50,11 @@ class TreeDataTest {
     /**
      * 基础测试
      *
-     * @throws JsonProcessingException 序列化异常
+     * @throws JacksonException 序列化异常
      * @since 1.4.6
      */
     @Test
-    void testBasic1() throws JsonProcessingException {
+    void testBasic1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {

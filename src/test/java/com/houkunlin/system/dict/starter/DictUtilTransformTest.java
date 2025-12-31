@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.common.bean.Bean1;
 import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.json.DictBoolType;
@@ -30,7 +30,7 @@ class DictUtilTransformTest {
     private final ExpressionParser parser = new SpelExpressionParser();
 
     @Test
-    void testA() throws JsonProcessingException {
+    void testA() throws JacksonException {
         final Bean1 bean = new Bean1();
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)

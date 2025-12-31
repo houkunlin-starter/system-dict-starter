@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.json.Array;
 import com.houkunlin.system.dict.starter.json.DictBoolType;
@@ -29,7 +29,7 @@ class EnumUsageTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void testBasic1() throws JsonProcessingException {
+    void testBasic1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -44,7 +44,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testBasic2() throws JsonProcessingException {
+    void testBasic2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -59,7 +59,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testBasic3() throws JsonProcessingException {
+    void testBasic3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -74,7 +74,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testBasicNull1() throws JsonProcessingException {
+    void testBasicNull1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -89,7 +89,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testBasicNull2() throws JsonProcessingException {
+    void testBasicNull2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -104,7 +104,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testBasicNull3() throws JsonProcessingException {
+    void testBasicNull3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -119,7 +119,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testString1() throws JsonProcessingException {
+    void testString1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -134,7 +134,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testString2() throws JsonProcessingException {
+    void testString2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -149,7 +149,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testString3() throws JsonProcessingException {
+    void testString3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -164,7 +164,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testString4() throws JsonProcessingException {
+    void testString4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -179,7 +179,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testStringNull1() throws JsonProcessingException {
+    void testStringNull1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -194,7 +194,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testStringNull2() throws JsonProcessingException {
+    void testStringNull2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -209,7 +209,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testStringNull3() throws JsonProcessingException {
+    void testStringNull3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -224,7 +224,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testStringNull4() throws JsonProcessingException {
+    void testStringNull4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -239,7 +239,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArray1() throws JsonProcessingException {
+    void testArray1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -254,7 +254,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArray2() throws JsonProcessingException {
+    void testArray2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -269,7 +269,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArray3() throws JsonProcessingException {
+    void testArray3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -284,7 +284,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArray4() throws JsonProcessingException {
+    void testArray4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -299,7 +299,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArrayNull1() throws JsonProcessingException {
+    void testArrayNull1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -314,7 +314,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArrayNull2() throws JsonProcessingException {
+    void testArrayNull2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -329,7 +329,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArrayNull3() throws JsonProcessingException {
+    void testArrayNull3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -344,7 +344,7 @@ class EnumUsageTest {
     }
 
     @Test
-    void testArrayNull4() throws JsonProcessingException {
+    void testArrayNull4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {

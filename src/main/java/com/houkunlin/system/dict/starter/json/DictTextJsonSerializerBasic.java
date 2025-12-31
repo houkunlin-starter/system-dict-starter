@@ -1,15 +1,16 @@
 package com.houkunlin.system.dict.starter.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ValueSerializer;
 
 import java.io.IOException;
 import java.util.*;
@@ -20,7 +21,7 @@ import java.util.*;
  * @author HouKunLin
  * @since 1.5.0
  */
-public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object> {
+public abstract class DictTextJsonSerializerBasic extends ValueSerializer<Object> {
     private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializerBasic.class);
     /**
      * 使用了这个注解的对象
@@ -182,7 +183,7 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
      * @param dictValueText 字典文本值
      * @throws IOException 异常
      */
-    protected void writeFieldValue(JsonGenerator gen, @Nullable Object fieldValue, Object dictValueText) throws IOException {
+    protected void writeFieldValue(JsonGenerator gen, @Nullable Object fieldValue, Object dictValueText) throws JacksonException {
         final boolean isReplaceValue = isReplaceValue();
         if (mapValue().getValue(SystemDictAutoConfiguration::isMapValue)) {
             final Map<String, Object> map = new HashMap<>();
@@ -190,15 +191,71 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
             map.put("text", dictValueText);
             if (!isReplaceValue) {
                 writeFieldValue(fieldValue, gen);
-                gen.writeFieldName(outFieldName);
+                gen.writeName(outFieldName);
             }
-            gen.writeObject(map);
+            gen.writeStartObject(map);
+            gen.writeName("text");
+            if (dictValueText instanceof Collection<?> list) {
+                gen.writeStartArray();
+                for (Object item : list) {
+                    gen.writeString(item == null ? "" : item.toString());
+                }
+                gen.writeEndArray();
+            } else {
+                if (nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull)) {
+                    if (dictValueText == null) {
+                        gen.writeNull();
+                    } else {
+                        gen.writeString(dictValueText.toString());
+                    }
+                } else {
+                    gen.writeString(dictValueText == null ? "" : dictValueText.toString());
+                }
+            }
+            gen.writeName("value");
+            if (fieldValue == null) {
+                gen.writeNull();
+            } else {
+                if (fieldValue instanceof Collection<?> list) {
+                    gen.writeStartArray();
+                    for (Object item : list) {
+                        gen.writeString(item == null ? "" : item.toString());
+                    }
+                    gen.writeEndArray();
+                } else if (fieldValue.getClass().isArray()) {
+                    gen.writeStartArray();
+                    for (Object item : (Object[]) fieldValue) {
+                        gen.writeString(item == null ? "" : item.toString());
+                    }
+                    gen.writeEndArray();
+                } else {
+                    gen.writeString(fieldValue.toString());
+                }
+            }
+            gen.writeEndObject();
+            // gen.writeStartObject(map);
         } else {
             if (!isReplaceValue) {
                 writeFieldValue(fieldValue, gen);
-                gen.writeFieldName(outFieldName);
+                gen.writeName(outFieldName);
             }
-            gen.writeObject(dictValueText);
+            if (dictValueText instanceof Collection<?> list) {
+                gen.writeStartArray();
+                for (Object item : list) {
+                    gen.writeString(item == null ? "" : item.toString());
+                }
+                gen.writeEndArray();
+            } else {
+                if (nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull)) {
+                    if (dictValueText == null) {
+                        gen.writeNull();
+                    } else {
+                        gen.writeString(dictValueText.toString());
+                    }
+                } else {
+                    gen.writeString(dictValueText == null ? "" : dictValueText.toString());
+                }
+            }
         }
     }
 
@@ -218,9 +275,61 @@ public abstract class DictTextJsonSerializerBasic extends JsonSerializer<Object>
      * @param gen        JsonGenerator
      * @throws IOException 异常
      */
-    private void writeFieldValue(@Nullable Object fieldValue, JsonGenerator gen) throws IOException {
+    private void writeFieldValue(@Nullable Object fieldValue, JsonGenerator gen) throws JacksonException {
         if (SystemDictAutoConfiguration.isRawValue()) {
-            gen.writeObject(fieldValue);
+            if (fieldValue == null) {
+                gen.writeNull();
+            } else {
+                if (fieldValue instanceof Collection<?> list) {
+                    gen.writeStartArray();
+                    for (Object item : list) {
+                        if (item == null) {
+                            gen.writeNull();
+                            continue;
+                        }
+                        if (item instanceof DictEnum<?> dictEnum) {
+                            if (dictEnum.getValue() instanceof String s) {
+                                gen.writeString(s);
+                            } else {
+                                gen.writeRawValue(dictEnum.getValue().toString());
+                            }
+                        } else {
+                            if (item instanceof String s) {
+                                gen.writeString(s);
+                            } else {
+                                gen.writeRawValue(item.toString());
+                            }
+                        }
+                    }
+                    gen.writeEndArray();
+                } else if (fieldValue.getClass().isArray()) {
+                    gen.writeStartArray();
+                    for (Object item : (Object[]) fieldValue) {
+                        if (item == null) {
+                            gen.writeNull();
+                            continue;
+                        }
+                        if (item instanceof DictEnum<?> dictEnum) {
+                            if (dictEnum.getValue() instanceof String s) {
+                                gen.writeString(s);
+                            } else {
+                                gen.writeRawValue(dictEnum.getValue().toString());
+                            }
+                        } else {
+                            if (item instanceof String s) {
+                                gen.writeString(s);
+                            } else {
+                                gen.writeRawValue(item.toString());
+                            }
+                        }
+                    }
+                    gen.writeEndArray();
+                } else if (fieldValue instanceof String s) {
+                    gen.writeString(s);
+                } else {
+                    gen.writeRawValue(fieldValue.toString());
+                }
+            }
         } else {
             gen.writeString(fieldValue == null ? "" : fieldValue.toString());
         }

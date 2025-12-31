@@ -1,16 +1,17 @@
 package com.houkunlin.system.dict.starter.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.houkunlin.system.dict.starter.DictEnum;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.lang.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
 
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * 字段是枚举的情况，或者注解使用了枚举的情况
@@ -73,7 +74,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
     }
 
     @Override
-    public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializerProvider serializers) throws IOException {
+    public void serialize(@Nullable final Object fieldValue, final JsonGenerator gen, final SerializationContext ctxt) throws JacksonException {
         if (fieldValue == null) {
             writeFieldValue(gen, null, defaultNullableValue(defaultDictTextResult));
             return;

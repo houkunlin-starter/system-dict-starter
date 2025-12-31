@@ -1,10 +1,9 @@
 package com.houkunlin.system.dict.starter.notice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.DictRegistrar;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,9 +17,9 @@ import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.lang.NonNull;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -92,7 +91,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
      * @param event 刷新字典事件对象
      */
     @EventListener
-    public void refreshDict(RefreshDictEvent event) throws JsonProcessingException {
+    public void refreshDict(RefreshDictEvent event) throws JacksonException {
         final Object source = event.getSource();
         if (event.isNotifyOtherSystem()) {
             logger.debug("接收到刷新数据字典事件，使用 Redis 通知其他协同系统刷新数据字典内容。事件内容：{}", source);
@@ -132,7 +131,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
             final RefreshNoticeData noticeData;
             try {
                 noticeData = objectMapper.readValue(message.getBody(), RefreshNoticeData.class);
-            } catch (IOException e) {
+            } catch (JacksonException e) {
                 logger.error("订阅来自 Redis 的字典刷新事件在解析Json时出现错误", e);
                 return;
             }

@@ -1,7 +1,6 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
 import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * 默认注解使用测试
@@ -24,7 +24,7 @@ class BasicUsageTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void testBasic1() throws JsonProcessingException {
+    void testBasic1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -40,7 +40,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasic2() throws JsonProcessingException {
+    void testBasic2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -55,7 +55,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasic3() throws JsonProcessingException {
+    void testBasic3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -70,7 +70,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasicNull1() throws JsonProcessingException {
+    void testBasicNull1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -85,7 +85,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasicNull2() throws JsonProcessingException {
+    void testBasicNull2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -100,7 +100,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasicNull3() throws JsonProcessingException {
+    void testBasicNull3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -115,7 +115,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasicNullable1() throws JsonProcessingException {
+    void testBasicNullable1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -130,7 +130,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasicNullable2() throws JsonProcessingException {
+    void testBasicNullable2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -145,7 +145,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testBasicNullable3() throws JsonProcessingException {
+    void testBasicNullable3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -160,7 +160,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValue1() throws JsonProcessingException {
+    void testMapValue1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -175,7 +175,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValue2() throws JsonProcessingException {
+    void testMapValue2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -190,7 +190,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValue3() throws JsonProcessingException {
+    void testMapValue3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -205,7 +205,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValue4() throws JsonProcessingException {
+    void testMapValue4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -220,7 +220,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValue5() throws JsonProcessingException {
+    void testMapValue5() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -235,7 +235,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValue6() throws JsonProcessingException {
+    void testMapValue6() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -250,7 +250,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullable1() throws JsonProcessingException {
+    void testMapValueNullable1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -265,7 +265,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullable2() throws JsonProcessingException {
+    void testMapValueNullable2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -280,7 +280,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullable3() throws JsonProcessingException {
+    void testMapValueNullable3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -295,7 +295,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullable4() throws JsonProcessingException {
+    void testMapValueNullable4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -310,7 +310,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullable5() throws JsonProcessingException {
+    void testMapValueNullable5() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -325,7 +325,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullableNull1() throws JsonProcessingException {
+    void testMapValueNullableNull1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -340,7 +340,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullableNull2() throws JsonProcessingException {
+    void testMapValueNullableNull2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -355,7 +355,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullableNull3() throws JsonProcessingException {
+    void testMapValueNullableNull3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -370,7 +370,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullableNull4() throws JsonProcessingException {
+    void testMapValueNullableNull4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -385,7 +385,7 @@ class BasicUsageTest {
     }
 
     @Test
-    void testMapValueNullableNull5() throws JsonProcessingException {
+    void testMapValueNullableNull5() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {

@@ -1,7 +1,5 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.json.Array;
 import com.houkunlin.system.dict.starter.json.DictBoolType;
 import com.houkunlin.system.dict.starter.json.DictText;
@@ -11,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +28,7 @@ class ArrayUsageTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void testString1() throws JsonProcessingException {
+    void testString1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -43,7 +43,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testString2() throws JsonProcessingException {
+    void testString2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -58,7 +58,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testString3() throws JsonProcessingException {
+    void testString3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -73,7 +73,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testString4() throws JsonProcessingException {
+    void testString4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -88,7 +88,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testStringNull1() throws JsonProcessingException {
+    void testStringNull1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -103,7 +103,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testStringNull2() throws JsonProcessingException {
+    void testStringNull2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -118,7 +118,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testStringNull3() throws JsonProcessingException {
+    void testStringNull3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -133,7 +133,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testStringNull4() throws JsonProcessingException {
+    void testStringNull4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -148,7 +148,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArray1() throws JsonProcessingException {
+    void testArray1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -163,7 +163,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArray2() throws JsonProcessingException {
+    void testArray2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -178,7 +178,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArray3() throws JsonProcessingException {
+    void testArray3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -193,7 +193,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArray4() throws JsonProcessingException {
+    void testArray4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -208,7 +208,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArrayNull1() throws JsonProcessingException {
+    void testArrayNull1() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -223,7 +223,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArrayNull2() throws JsonProcessingException {
+    void testArrayNull2() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -238,7 +238,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArrayNull3() throws JsonProcessingException {
+    void testArrayNull3() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -253,7 +253,7 @@ class ArrayUsageTest {
     }
 
     @Test
-    void testArrayNull4() throws JsonProcessingException {
+    void testArrayNull4() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {

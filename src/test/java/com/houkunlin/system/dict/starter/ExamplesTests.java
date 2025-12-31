@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.common.bean.User;
@@ -17,7 +17,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
@@ -74,7 +74,7 @@ class ExamplesTests {
         mockMvc.perform(get("/test/user-get?id=1&gender=0&sex=1&type=0&typeArrays0=0,1&typeArrays1=0,1&typeArrays2=0,1&typeEnum0=0&typeEnum1=0&name=用户姓名"))
             .andDo(log())
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(content().string(expect));
         // mockMvc.perform(post("/test/user-post").characterEncoding(StandardCharsets.UTF_8).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(expect))
         //     .andDo(log())
