@@ -1,8 +1,7 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
-import com.houkunlin.system.dict.starter.jackson.DictJackson2ObjectMapperBuilderCustomizer;
+import com.houkunlin.system.dict.starter.jackson.DictJacksonModule;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.store.DictStore;
 import com.houkunlin.system.dict.starter.store.RemoteDict;
@@ -125,14 +124,13 @@ public class SystemDictAutoConfiguration {
     }
 
     /**
-     * 处理 ObjectMapper 对象
+     * 数据字典 JacksonModule
      *
-     * @param objectMapper ObjectMapper
-     * @return ObjectMapper 处理器
+     * @return DictJacksonModule
      */
     @Bean
-    public DictJackson2ObjectMapperBuilderCustomizer dictJackson2ObjectMapperBuilderCustomizer(final ObjectMapper objectMapper) {
-        return new DictJackson2ObjectMapperBuilderCustomizer(objectMapper);
+    public DictJacksonModule dictJacksonModule() {
+        return new DictJacksonModule();
     }
 
     /**
