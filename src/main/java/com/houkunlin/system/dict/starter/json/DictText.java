@@ -2,7 +2,6 @@ package com.houkunlin.system.dict.starter.json;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.houkunlin.system.dict.starter.DictEnum;
-import tools.jackson.databind.annotation.JsonSerialize;
 
 import java.lang.annotation.*;
 
@@ -16,7 +15,6 @@ import java.lang.annotation.*;
  * @author HouKunLin
  */
 @JacksonAnnotationsInside
-// @JsonSerialize(using = DictTextJsonSerializer.class)
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
