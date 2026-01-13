@@ -9,7 +9,7 @@ import jakarta.validation.ConstraintValidatorContext;
  *
  * @author HouKunLin
  */
-public class DictValid3ConstraintValidator implements ConstraintValidator<DictValid3, Object> {
+public class DictValidConstraintValidator implements ConstraintValidator<DictValid, Object> {
     private String dictType;
 
     @Override
@@ -21,7 +21,7 @@ public class DictValid3ConstraintValidator implements ConstraintValidator<DictVa
     }
 
     @Override
-    public void initialize(final DictValid3 constraintAnnotation) {
+    public void initialize(final DictValid constraintAnnotation) {
         this.dictType = constraintAnnotation.value();
     }
 }
