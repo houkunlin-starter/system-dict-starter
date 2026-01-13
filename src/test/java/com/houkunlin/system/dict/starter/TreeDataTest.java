@@ -1,5 +1,6 @@
 package com.houkunlin.system.dict.starter;
 
+import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
@@ -20,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisher;
  * @since 1.4.6
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SystemDictScan
 class TreeDataTest {
     public static final String DICT_TYPE = "TreeData";

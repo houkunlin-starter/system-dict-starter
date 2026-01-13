@@ -13,7 +13,10 @@ import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.ValueSerializer;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 一般情况下的场景，字典文本转换的基本功能代码
@@ -23,6 +26,7 @@ import java.util.*;
  */
 public abstract class DictTextJsonSerializerBasic extends ValueSerializer<Object> {
     private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializerBasic.class);
+    public static final DictWriter dictWriter = new DictWriter();
     /**
      * 使用了这个注解的对象
      */
@@ -186,76 +190,22 @@ public abstract class DictTextJsonSerializerBasic extends ValueSerializer<Object
     protected void writeFieldValue(JsonGenerator gen, @Nullable Object fieldValue, Object dictValueText) throws JacksonException {
         final boolean isReplaceValue = isReplaceValue();
         if (mapValue().getValue(SystemDictAutoConfiguration::isMapValue)) {
-            final Map<String, Object> map = new HashMap<>();
-            map.put("value", fieldValue);
-            map.put("text", dictValueText);
             if (!isReplaceValue) {
-                writeFieldValue(fieldValue, gen);
+                dictWriter.writeDictValue(gen, fieldValue, getDictText());
                 gen.writeName(outFieldName);
             }
-            gen.writeStartObject(map);
-            gen.writeName("text");
-            if (dictValueText instanceof Collection<?> list) {
-                gen.writeStartArray();
-                for (Object item : list) {
-                    gen.writeString(item == null ? "" : item.toString());
-                }
-                gen.writeEndArray();
-            } else {
-                if (nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull)) {
-                    if (dictValueText == null) {
-                        gen.writeNull();
-                    } else {
-                        gen.writeString(dictValueText.toString());
-                    }
-                } else {
-                    gen.writeString(dictValueText == null ? "" : dictValueText.toString());
-                }
-            }
+            gen.writeStartObject();
             gen.writeName("value");
-            if (fieldValue == null) {
-                gen.writeNull();
-            } else {
-                if (fieldValue instanceof Collection<?> list) {
-                    gen.writeStartArray();
-                    for (Object item : list) {
-                        gen.writeString(item == null ? "" : item.toString());
-                    }
-                    gen.writeEndArray();
-                } else if (fieldValue.getClass().isArray()) {
-                    gen.writeStartArray();
-                    for (Object item : (Object[]) fieldValue) {
-                        gen.writeString(item == null ? "" : item.toString());
-                    }
-                    gen.writeEndArray();
-                } else {
-                    gen.writeString(fieldValue.toString());
-                }
-            }
+            dictWriter.writeDictValue(gen, fieldValue, getDictText());
+            gen.writeName("text");
+            dictWriter.writeDictText(gen, dictValueText, getDictText());
             gen.writeEndObject();
-            // gen.writeStartObject(map);
         } else {
             if (!isReplaceValue) {
-                writeFieldValue(fieldValue, gen);
+                dictWriter.writeDictValue(gen, fieldValue, getDictText());
                 gen.writeName(outFieldName);
             }
-            if (dictValueText instanceof Collection<?> list) {
-                gen.writeStartArray();
-                for (Object item : list) {
-                    gen.writeString(item == null ? "" : item.toString());
-                }
-                gen.writeEndArray();
-            } else {
-                if (nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull)) {
-                    if (dictValueText == null) {
-                        gen.writeNull();
-                    } else {
-                        gen.writeString(dictValueText.toString());
-                    }
-                } else {
-                    gen.writeString(dictValueText == null ? "" : dictValueText.toString());
-                }
-            }
+            dictWriter.writeDictText(gen, dictValueText, getDictText());
         }
     }
 
@@ -266,73 +216,6 @@ public abstract class DictTextJsonSerializerBasic extends ValueSerializer<Object
      */
     public boolean isReplaceValue() {
         return replace().getValue(SystemDictAutoConfiguration::isReplaceValue);
-    }
-
-    /**
-     * 把字段字典值写入到JSON数据中
-     *
-     * @param fieldValue 字段值
-     * @param gen        JsonGenerator
-     * @throws IOException 异常
-     */
-    private void writeFieldValue(@Nullable Object fieldValue, JsonGenerator gen) throws JacksonException {
-        if (SystemDictAutoConfiguration.isRawValue()) {
-            if (fieldValue == null) {
-                gen.writeNull();
-            } else {
-                if (fieldValue instanceof Collection<?> list) {
-                    gen.writeStartArray();
-                    for (Object item : list) {
-                        if (item == null) {
-                            gen.writeNull();
-                            continue;
-                        }
-                        if (item instanceof DictEnum<?> dictEnum) {
-                            if (dictEnum.getValue() instanceof String s) {
-                                gen.writeString(s);
-                            } else {
-                                gen.writeRawValue(dictEnum.getValue().toString());
-                            }
-                        } else {
-                            if (item instanceof String s) {
-                                gen.writeString(s);
-                            } else {
-                                gen.writeRawValue(item.toString());
-                            }
-                        }
-                    }
-                    gen.writeEndArray();
-                } else if (fieldValue.getClass().isArray()) {
-                    gen.writeStartArray();
-                    for (Object item : (Object[]) fieldValue) {
-                        if (item == null) {
-                            gen.writeNull();
-                            continue;
-                        }
-                        if (item instanceof DictEnum<?> dictEnum) {
-                            if (dictEnum.getValue() instanceof String s) {
-                                gen.writeString(s);
-                            } else {
-                                gen.writeRawValue(dictEnum.getValue().toString());
-                            }
-                        } else {
-                            if (item instanceof String s) {
-                                gen.writeString(s);
-                            } else {
-                                gen.writeRawValue(item.toString());
-                            }
-                        }
-                    }
-                    gen.writeEndArray();
-                } else if (fieldValue instanceof String s) {
-                    gen.writeString(s);
-                } else {
-                    gen.writeRawValue(fieldValue.toString());
-                }
-            }
-        } else {
-            gen.writeString(fieldValue == null ? "" : fieldValue.toString());
-        }
     }
 
     /**
@@ -416,4 +299,6 @@ public abstract class DictTextJsonSerializerBasic extends ValueSerializer<Object
      * @return int &lt;= 0 视为不限制深度
      */
     public abstract int treeDepth();
+
+    public abstract DictText getDictText();
 }

@@ -219,4 +219,9 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
     public int treeDepth() {
         return dictText.treeDepth();
     }
+
+    @Override
+    public DictText getDictText() {
+        return dictText;
+    }
 }
