@@ -1,6 +1,6 @@
 package com.houkunlin.dict.common.bean;
 
-import com.houkunlin.dict.json.DictBoolType;
+import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.annotation.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;

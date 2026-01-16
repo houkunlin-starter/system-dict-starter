@@ -1,4 +1,4 @@
-package com.houkunlin.dict.properties;
+package com.houkunlin.dict.enums;
 
 /**
  * 存储字典数据的存储类型

@@ -2,7 +2,7 @@ package com.houkunlin.dict.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.houkunlin.dict.DictEnum;
-import com.houkunlin.dict.json.DictBoolType;
+import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.json.DictTypeKeyHandler;
 import com.houkunlin.dict.json.VoidDictTypeKeyHandler;
 

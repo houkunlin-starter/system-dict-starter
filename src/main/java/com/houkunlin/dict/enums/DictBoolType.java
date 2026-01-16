@@ -1,4 +1,4 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict.enums;
 
 import java.util.function.BooleanSupplier;
 

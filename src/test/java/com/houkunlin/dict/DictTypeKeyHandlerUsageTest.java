@@ -2,7 +2,7 @@ package com.houkunlin.dict;
 
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
-import com.houkunlin.dict.json.DictBoolType;
+import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.annotation.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;

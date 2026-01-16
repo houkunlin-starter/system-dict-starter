@@ -4,6 +4,7 @@ import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.Array;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.enums.DictBoolType;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

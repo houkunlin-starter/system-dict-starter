@@ -1,6 +1,9 @@
 package com.houkunlin.dict.properties;
 
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.enums.BytecodeType;
+import com.houkunlin.dict.enums.MqType;
+import com.houkunlin.dict.enums.StoreType;
 import com.houkunlin.dict.notice.RefreshDictEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package com.houkunlin.dict.properties;
+package com.houkunlin.dict.enums;
 
 import com.houkunlin.dict.bytecode.IDictConverterGenerate;
 

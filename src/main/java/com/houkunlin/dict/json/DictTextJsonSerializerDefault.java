@@ -4,6 +4,7 @@ import com.houkunlin.dict.ClassUtil;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.properties.DictProperties;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
