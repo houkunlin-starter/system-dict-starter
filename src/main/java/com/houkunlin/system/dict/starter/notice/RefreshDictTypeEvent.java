@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.notice;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Collections;
@@ -15,19 +15,19 @@ public class RefreshDictTypeEvent extends ApplicationEvent {
     /**
      * 刷新单个字典类型信息
      *
-     * @param dictTypeVo 字典类型（包含完整字典值列表信息）
+     * @param dictType 字典类型（包含完整字典值列表信息）
      */
-    public RefreshDictTypeEvent(final DictTypeVo dictTypeVo) {
-        super(Collections.singletonList(dictTypeVo));
+    public RefreshDictTypeEvent(final DictType dictType) {
+        super(Collections.singletonList(dictType));
     }
 
-    public RefreshDictTypeEvent(final Iterable<DictTypeVo> source) {
+    public RefreshDictTypeEvent(final Iterable<DictType> source) {
         super(source);
     }
 
     @SuppressWarnings("all")
     @Override
-    public Iterable<DictTypeVo> getSource() {
-        return (Iterable<DictTypeVo>) super.getSource();
+    public Iterable<DictType> getSource() {
+        return (Iterable<DictType>) super.getSource();
     }
 }

@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.store;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 
 /**
  * RemoteDict 默认实现
@@ -10,7 +10,7 @@ import com.houkunlin.system.dict.starter.bean.DictTypeVo;
  */
 public class RemoteDictDefaultImpl implements RemoteDict {
     @Override
-    public DictTypeVo getDictType(final String type) {
+    public DictType getDictType(final String type) {
         return null;
     }
 

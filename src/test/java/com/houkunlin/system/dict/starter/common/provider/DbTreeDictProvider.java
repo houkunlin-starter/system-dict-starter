@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.common.provider;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +15,10 @@ import java.util.List;
 public class DbTreeDictProvider implements DictProvider {
 
     @Override
-    public Iterator<DictTypeVo> dictTypeIterator() {
+    public Iterator<DictType> dictTypeIterator() {
         // 模拟从数据库读取数据
-        final List<DictTypeVo> list = new ArrayList<>();
-        final DictTypeVo typeVo1 = DictTypeVo.newBuilder("TreeData", "树形结构数据测试")
+        final List<DictType> list = new ArrayList<>();
+        final DictType typeVo1 = DictType.newBuilder("TreeData", "树形结构数据测试")
             .add("", "1", "节点1")
             .add("", "2", "节点2")
             .add("", "3", "节点3")
@@ -33,7 +33,7 @@ public class DbTreeDictProvider implements DictProvider {
             .add("3", "3-3", "节点3-3")
             .build();
         // http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html
-        final DictTypeVo typeVo2 = DictTypeVo.newBuilder("City", "城市")
+        final DictType typeVo2 = DictType.newBuilder("City", "城市")
             .add("", "110000", "北京市")
             .add("110000", "110101", "东城区")
             .add("110000", "110102", "西城区")

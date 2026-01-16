@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.common;
 
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
 import org.slf4j.Logger;
@@ -35,15 +35,15 @@ public class ScheduledRefreshDicEvent {
 
         long startTime = System.nanoTime();
         for (int i = 0; i < 1000; i++) {
-            publisher.publishEvent(new RefreshDictValueEvent(DictValueVo.builder().dictType("DictUser").value("" + i).title("昵称" + i).build(), false));
+            publisher.publishEvent(new RefreshDictValueEvent(DictValue.builder().dictType("DictUser").value("" + i).title("昵称" + i).build(), false));
         }
         logger.info("单条数据刷新1000次耗时：{} ms", (System.nanoTime() - startTime) / 100_0000.0);
 
 
         startTime = System.nanoTime();
-        List<DictValueVo> list = new ArrayList<>();
+        List<DictValue> list = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            list.add(DictValueVo.builder().dictType("DictUser").value("" + i).title("昵称" + i).build());
+            list.add(DictValue.builder().dictType("DictUser").value("" + i).title("昵称" + i).build());
         }
         publisher.publishEvent(new RefreshDictValueEvent(list, false));
         logger.info("批量数据刷新1000次耗时：{} ms", (System.nanoTime() - startTime) / 100_0000.0);
@@ -51,7 +51,7 @@ public class ScheduledRefreshDicEvent {
 
         list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            list.add(DictValueVo.builder().dictType("DictUser").value("" + i).title("昵称" + i).build());
+            list.add(DictValue.builder().dictType("DictUser").value("" + i).title("昵称" + i).build());
         }
         startTime = System.nanoTime();
         int x = 1000 / list.size() + 1;
@@ -62,7 +62,7 @@ public class ScheduledRefreshDicEvent {
 
 
         for (int i = 10; i < 20; i++) {
-            list.add(DictValueVo.builder().dictType("DictUser").value("" + i).title("昵称" + i).build());
+            list.add(DictValue.builder().dictType("DictUser").value("" + i).title("昵称" + i).build());
         }
         startTime = System.nanoTime();
         for (int i = 0; i < x; i++) {

@@ -2,8 +2,8 @@ package com.houkunlin.system.dict.starter;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -46,7 +46,7 @@ public class DictController {
     @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "path", dataTypeClass = String.class)
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.PATH)
     @GetMapping({"{dict}", "{dict}/"})
-    public DictTypeVo dictType(@PathVariable final String dict, @RequestParam(required = false) final Integer tree) {
+    public DictType dictType(@PathVariable final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
     }
 
@@ -62,7 +62,7 @@ public class DictController {
     @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "query", dataTypeClass = String.class)
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.QUERY)
     @GetMapping(value = {"/", ""}, params = {"dict"})
-    public DictTypeVo dictTypeQuery(final String dict, @RequestParam(required = false) final Integer tree) {
+    public DictType dictTypeQuery(final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
     }
 
@@ -82,14 +82,14 @@ public class DictController {
      * @return 字典信息
      * @since 1.4.9
      */
-    private DictTypeVo transform(final String dict, final Integer tree) {
-        final DictTypeVo dictType = DictUtil.getDictType(dict);
+    private DictType transform(final String dict, final Integer tree) {
+        final DictType dictType = DictUtil.getDictType(dict);
         if (tree == null || tree <= 0) {
             return dictType;
         }
-        final List<DictValueVo> children = dictType.getChildren();
+        final List<DictValue> children = dictType.getChildren();
 
-        final ListMultimap<String, DictValueVo> multimap = handlerTreeDatasource(children,
+        final ListMultimap<String, DictValue> multimap = handlerTreeDatasource(children,
             "",
             this::getKey,
             vo -> {
@@ -103,14 +103,14 @@ public class DictController {
                 }
                 return "";
             },
-            DictValueVo::getChildren,
-            DictValueVo::setChildren
+            DictValue::getChildren,
+            DictValue::setChildren
         );
         dictType.setChildren(new ArrayList<>(multimap.values()));
         return dictType;
     }
 
-    private String getKey(final DictValueVo vo) {
+    private String getKey(final DictValue vo) {
         final Object object = vo.getValue();
         if (object instanceof String) {
             return (String) object;

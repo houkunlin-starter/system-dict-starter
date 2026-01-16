@@ -1,8 +1,6 @@
 package com.houkunlin.system.dict.starter.bean;
 
 import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,36 +16,31 @@ import java.util.List;
  *
  * @author HouKunLin
  */
-@ApiModel("字典类型信息")
 @Schema(name = "字典类型信息")
 @Data
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DictTypeVo implements Serializable {
+public class DictType implements Serializable {
     /**
      * 数据字典名称
      *
      * @return 数据字典名称
      */
-    @ApiModelProperty("数据字典名称")
-    @Schema(title = "数据字典名称")
+    @Schema(description = "数据字典名称")
     private String title;
     /**
      * 数据字典类型（唯一值）
      *
      * @return 数据字典类型（唯一值）
      */
-    @ApiModelProperty("数据字典类型（唯一值）")
-    @Schema(title = "数据字典类型（唯一值）")
+    @Schema(description = "数据字典类型（唯一值）")
     private String type;
     /**
      * 备注信息
      *
      * @return 备注信息
      */
-    @ApiModelProperty("备注信息")
-    @Schema(title = "备注信息")
+    @Schema(description = "备注信息")
     private String remark;
     /**
      * 字典值列表
@@ -55,20 +48,19 @@ public class DictTypeVo implements Serializable {
      *
      * @return 字典值列表
      */
-    @ApiModelProperty("字典值列表")
-    @Schema(title = "字典值列表")
-    private List<DictValueVo> children;
+    @Schema(description = "字典值列表")
+    private List<DictValue> children;
 
     /**
      * 构造字典类型信息
      *
      * @param type  字典类型代码
      * @param title 字典类型名称
-     * @return DictTypeVo.DictTypeBuilder
+     * @return DictType.DictTypeBuilder
      * @since 1.4.3
      */
-    public static DictTypeVo.DictTypeBuilder newBuilder(final String type, final String title) {
-        return new DictTypeVo.DictTypeBuilder(type, title);
+    public static DictType.DictTypeBuilder newBuilder(final String type, final String title) {
+        return new DictType.DictTypeBuilder(type, title);
     }
 
     /**
@@ -77,11 +69,11 @@ public class DictTypeVo implements Serializable {
      * @param type   字典类型代码
      * @param title  字典类型名称
      * @param remark 备注信息
-     * @return DictTypeVo.DictTypeBuilder
+     * @return DictType.DictTypeBuilder
      * @since 1.4.3
      */
-    public static DictTypeVo.DictTypeBuilder newBuilder(final String type, final String title, final String remark) {
-        return new DictTypeVo.DictTypeBuilder(type, title, remark);
+    public static DictType.DictTypeBuilder newBuilder(final String type, final String title, final String remark) {
+        return new DictType.DictTypeBuilder(type, title, remark);
     }
 
     /**
@@ -104,7 +96,7 @@ public class DictTypeVo implements Serializable {
         /**
          * 字典值列表
          */
-        private final List<DictValueVo> children = new ArrayList<>();
+        private final List<DictValue> children = new ArrayList<>();
 
         /**
          * 构造方法
@@ -134,12 +126,12 @@ public class DictTypeVo implements Serializable {
         /**
          * 增加一个字典值信息
          *
-         * @param dictValueVo 字典值对象
+         * @param dictValue 字典值对象
          * @return Builder
          */
-        public DictTypeVo.DictTypeBuilder add(final DictValueVo dictValueVo) {
-            dictValueVo.setDictType(type);
-            this.children.add(dictValueVo);
+        public DictType.DictTypeBuilder add(final DictValue dictValue) {
+            dictValue.setDictType(type);
+            this.children.add(dictValue);
             return this;
         }
 
@@ -150,8 +142,8 @@ public class DictTypeVo implements Serializable {
          * @param title 字典值文本
          * @return Builder
          */
-        public DictTypeVo.DictTypeBuilder add(final Object value, final String title) {
-            this.children.add(new DictValueVo(type, value, title, 0));
+        public DictType.DictTypeBuilder add(final Object value, final String title) {
+            this.children.add(new DictValue(type, value, title, 0));
             return this;
         }
 
@@ -162,8 +154,8 @@ public class DictTypeVo implements Serializable {
          * @param sorted 字典值排序
          * @return Builder
          */
-        public DictTypeVo.DictTypeBuilder add(final Object value, final String title, final int sorted) {
-            this.children.add(new DictValueVo(type, value, title, sorted));
+        public DictType.DictTypeBuilder add(final Object value, final String title, final int sorted) {
+            this.children.add(new DictValue(type, value, title, sorted));
             return this;
         }
 
@@ -176,8 +168,8 @@ public class DictTypeVo implements Serializable {
          * @return this
          * @since 1.4.6
          */
-        public DictTypeVo.DictTypeBuilder add(final Object parentValue, final Object value, final String title) {
-            this.children.add(new DictValueVo(type, parentValue, value, title, 0));
+        public DictType.DictTypeBuilder add(final Object parentValue, final Object value, final String title) {
+            this.children.add(new DictValue(type, parentValue, value, title, 0));
             return this;
         }
 
@@ -191,8 +183,8 @@ public class DictTypeVo implements Serializable {
          * @return this
          * @since 1.4.6
          */
-        public DictTypeVo.DictTypeBuilder add(final Object parentValue, final Object value, final String title, final int sorted) {
-            this.children.add(new DictValueVo(type, parentValue, value, title, sorted));
+        public DictType.DictTypeBuilder add(final Object parentValue, final Object value, final String title, final int sorted) {
+            this.children.add(new DictValue(type, parentValue, value, title, sorted));
             return this;
         }
 
@@ -200,15 +192,15 @@ public class DictTypeVo implements Serializable {
          * 构建一个字典类型对象
          * @return 字典类型对象
          */
-        public DictTypeVo build() {
-            return new DictTypeVo(title, type, remark, children);
+        public DictType build() {
+            return new DictType(title, type, remark, children);
         }
 
         /**
          * 字典值列表
          * @return 字典值列表
          */
-        public List<DictValueVo> dictValues() {
+        public List<DictValue> dictValues() {
             return children;
         }
     }

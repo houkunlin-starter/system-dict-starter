@@ -16,10 +16,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class Config {
 
     /**
-     * 创建一个默认的 DictTypeVo 类型 Redis 客户端
+     * 创建一个默认的 DictType 类型 Redis 客户端
      *
      * @param connectionFactory RedisConnectionFactory
-     * @return RedisTemplate<String, DictTypeVo>
+     * @return RedisTemplate<String, DictType>
      */
     @ConditionalOnMissingBean
     @Bean

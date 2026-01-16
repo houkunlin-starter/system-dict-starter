@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.provider;
 
 import com.houkunlin.system.dict.starter.SystemDictScan;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 @Getter
 public class SystemDictProvider implements DictProvider {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictProvider.class);
-    private final Map<String, DictTypeVo> cache = new HashMap<>();
+    private final Map<String, DictType> cache = new HashMap<>();
 
     /**
      * 系统字典的字典类型信息（含字典值列表）一定要存储到缓存中，否则无法给前端页面提供完整可用字典值列表数据
@@ -41,13 +41,13 @@ public class SystemDictProvider implements DictProvider {
      * @param creator  创建一个新的字典类型对象
      * @since 1.4.7
      */
-    public DictTypeVo getDict(final String dictType, final Supplier<DictTypeVo> creator) {
+    public DictType getDict(final String dictType, final Supplier<DictType> creator) {
         return cache.computeIfAbsent(dictType, s -> creator.get());
     }
 
     @Override
-    public Iterator<DictTypeVo> dictTypeIterator() {
-        final Collection<DictTypeVo> values = cache.values();
+    public Iterator<DictType> dictTypeIterator() {
+        final Collection<DictType> values = cache.values();
         if (logger.isDebugEnabled()) {
             logger.debug("当前系统共有 {} 个系统字典类型信息", values.size());
         }

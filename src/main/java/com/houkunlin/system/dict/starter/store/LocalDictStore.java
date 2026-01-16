@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter.store;
 
 import com.houkunlin.system.dict.starter.DictUtil;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @AllArgsConstructor
 public class LocalDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(LocalDictStore.class);
-    private static final ConcurrentHashMap<String, DictTypeVo> CACHE_TYPE = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<String, DictTypeVo> CACHE_SYSTEM_TYPE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, DictType> CACHE_TYPE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, DictType> CACHE_SYSTEM_TYPE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> CACHE_TEXT = new ConcurrentHashMap<>();
     private final RemoteDict remoteDict;
 
     @Override
-    public void store(final DictTypeVo dictType) {
-        final List<DictValueVo> children = dictType.getChildren();
+    public void store(final DictType dictType) {
+        final List<DictValue> children = dictType.getChildren();
         if (children == null) {
             removeDictType(dictType.getType());
         } else {
@@ -37,8 +37,8 @@ public class LocalDictStore implements DictStore, InitializingBean {
     }
 
     @Override
-    public void storeSystemDict(DictTypeVo dictType) {
-        final List<DictValueVo> children = dictType.getChildren();
+    public void storeSystemDict(DictType dictType) {
+        final List<DictValue> children = dictType.getChildren();
         if (children == null) {
             CACHE_SYSTEM_TYPE.remove(dictType.getType());
         } else {
@@ -47,7 +47,7 @@ public class LocalDictStore implements DictStore, InitializingBean {
     }
 
     @Override
-    public void store(final Iterator<DictValueVo> iterator) {
+    public void store(final Iterator<DictValue> iterator) {
         iterator.forEachRemaining(valueVo -> {
             final String dictKey = DictUtil.dictKey(valueVo);
             final String title = valueVo.getTitle();
@@ -99,8 +99,8 @@ public class LocalDictStore implements DictStore, InitializingBean {
     }
 
     @Override
-    public DictTypeVo getDictType(final String type) {
-        final DictTypeVo typeVo = CACHE_TYPE.get(type);
+    public DictType getDictType(final String type) {
+        final DictType typeVo = CACHE_TYPE.get(type);
         if (typeVo != null) {
             return typeVo;
         }

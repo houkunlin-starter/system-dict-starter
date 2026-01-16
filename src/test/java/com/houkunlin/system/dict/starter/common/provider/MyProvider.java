@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.common.provider;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class MyProvider implements DictProvider {
     }
 
     @Override
-    public Iterator<DictTypeVo> dictTypeIterator() {
+    public Iterator<DictType> dictTypeIterator() {
         long startTime = System.nanoTime();
         List<DictUser> users = new ArrayList<>();
         for (int i = 0; i < 1586; i++) {
@@ -29,11 +29,11 @@ public class MyProvider implements DictProvider {
         }
         System.out.println("加载用户数据耗时：" + (System.nanoTime() - startTime) / 100_0000.0 + "ms");
         startTime = System.nanoTime();
-        final DictTypeVo typeVo = DictTypeVo.newBuilder("DictUser", "DictUser")
+        final DictType typeVo = DictType.newBuilder("DictUser", "DictUser")
             .build();
-        List<DictValueVo> children = typeVo.getChildren();
+        List<DictValue> children = typeVo.getChildren();
         users.forEach(dictUser -> {
-            DictValueVo valueVo = new DictValueVo("DictUser", dictUser.getId(), dictUser.getName(), 0);
+            DictValue valueVo = new DictValue("DictUser", dictUser.getId(), dictUser.getName(), 0);
             children.add(valueVo);
         });
         System.out.println("转换用户数据耗时：" + (System.nanoTime() - startTime) / 100_0000.0 + "ms");

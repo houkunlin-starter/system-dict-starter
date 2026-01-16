@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,18 +28,18 @@ public class DictRedisConfiguration {
     public static final String DICT_REDIS_BEAN_NAME = "DictTypeRedisTemplate";
 
     /**
-     * 创建一个默认的 DictTypeVo 类型 Redis 客户端
+     * 创建一个默认的 DictType 类型 Redis 客户端
      *
      * @param connectionFactory RedisConnectionFactory
-     * @return RedisTemplate&lt;String, DictTypeVo&gt;
+     * @return RedisTemplate&lt;String, DictType&gt;
      */
     @ConditionalOnMissingBean(name = DICT_REDIS_BEAN_NAME)
     @Bean(DICT_REDIS_BEAN_NAME)
-    public RedisTemplate<String, DictTypeVo> dictTypeRedisTemplate(final RedisConnectionFactory connectionFactory) {
-        final RedisTemplate<String, DictTypeVo> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, DictType> dictTypeRedisTemplate(final RedisConnectionFactory connectionFactory) {
+        final RedisTemplate<String, DictType> redisTemplate = new RedisTemplate<>();
         redisTemplate.setBeanClassLoader(Thread.currentThread().getContextClassLoader());
         redisTemplate.setKeySerializer(RedisSerializer.string());
-        redisTemplate.setValueSerializer(new JacksonJsonRedisSerializer<>(DictTypeVo.class));
+        redisTemplate.setValueSerializer(new JacksonJsonRedisSerializer<>(DictType.class));
         redisTemplate.setHashKeySerializer(RedisSerializer.string());
         redisTemplate.setHashValueSerializer(RedisSerializer.string());
         redisTemplate.setConnectionFactory(connectionFactory);

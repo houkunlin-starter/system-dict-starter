@@ -1,10 +1,9 @@
 package com.houkunlin.system.dict.starter;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.bytecode.IDictConverterGenerate;
 import com.houkunlin.system.dict.starter.annotation.DictConverter;
-import com.houkunlin.system.dict.starter.annotation.DictType;
 import com.houkunlin.system.dict.starter.provider.SystemDictProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,9 +108,9 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             }
             // generateConverter.registerBean(registry, dictClass, converter);
         }
-        final DictType[] annotation = dictClass.getDeclaredAnnotationsByType(DictType.class);
+        final com.houkunlin.system.dict.starter.annotation.DictType[] annotation = dictClass.getDeclaredAnnotationsByType(com.houkunlin.system.dict.starter.annotation.DictType.class);
         if (annotation.length > 0) {
-            for (final DictType dictType : annotation) {
+            for (final com.houkunlin.system.dict.starter.annotation.DictType dictType : annotation) {
                 handleDict(dictClass, dictType);
             }
         } else {
@@ -124,7 +123,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      *
      * @param dictClass 字典对象
      */
-    private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass, final DictType annotation) {
+    private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass, final com.houkunlin.system.dict.starter.annotation.DictType annotation) {
         final String dictType;
         String dictTitle;
         if (annotation != null) {
@@ -143,20 +142,20 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             dictTitle = dictClass.getSimpleName();
         }
 
-        final DictTypeVo dictTypeVo = systemDictProvider.getDict(dictType, () -> new DictTypeVo(dictTitle, dictType, "From Application: " + applicationName, new ArrayList<>()));
-        List<DictValueVo> list = dictTypeVo.getChildren();
+        final DictType dictTypeVo = systemDictProvider.getDict(dictType, () -> new DictType(dictTitle, dictType, "From Application: " + applicationName, new ArrayList<>()));
+        List<DictValue> list = dictTypeVo.getChildren();
         final DictEnum<?>[] enumConstants = dictClass.getEnumConstants();
         for (DictEnum<?> enums : enumConstants) {
             final Serializable value = enums.getValue();
             boolean exists = false;
-            for (DictValueVo valueVo : list) {
+            for (DictValue valueVo : list) {
                 if (Objects.equals(valueVo.getValue(), value)) {
                     exists = true;
                     break;
                 }
             }
             if (!exists) {
-                DictValueVo vo = DictValueVo.builder()
+                DictValue vo = DictValue.builder()
                     .dictType(dictType)
                     .parentValue(enums.getParentValue())
                     .value(value)

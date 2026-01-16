@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.store;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 
 import java.util.Iterator;
@@ -18,7 +18,7 @@ public interface DictStore {
      *
      * @param dictType 数据字典对象
      */
-    void store(DictTypeVo dictType);
+    void store(DictType dictType);
 
     /**
      * 存储一个完整的数据字典信息（单独为存储系统字典定义一个方法）
@@ -26,7 +26,7 @@ public interface DictStore {
      * @param dictType 数据字典对象
      * @since 1.5.0
      */
-    default void storeSystemDict(DictTypeVo dictType) {
+    default void storeSystemDict(DictType dictType) {
         store(dictType);
     }
 
@@ -36,7 +36,7 @@ public interface DictStore {
      * @param iterable 字典值列表
      * @since 1.5.0
      */
-    default void store(Iterable<DictValueVo> iterable) {
+    default void store(Iterable<DictValue> iterable) {
         store(iterable.iterator());
     }
 
@@ -47,7 +47,7 @@ public interface DictStore {
      * @param iterable 字典值列表
      * @since 1.5.3
      */
-    default void storeBatch(Iterable<DictValueVo> iterable) {
+    default void storeBatch(Iterable<DictValue> iterable) {
         storeBatch(iterable.iterator());
     }
 
@@ -56,7 +56,7 @@ public interface DictStore {
      *
      * @param iterator 字典值列表
      */
-    void store(Iterator<DictValueVo> iterator);
+    void store(Iterator<DictValue> iterator);
 
     /**
      * 存储一个字典值列表数据。
@@ -65,7 +65,7 @@ public interface DictStore {
      * @param iterator 字典值列表
      * @since 1.5.3
      */
-    default void storeBatch(Iterator<DictValueVo> iterator) {
+    default void storeBatch(Iterator<DictValue> iterator) {
         store(iterator);
     }
 
@@ -104,7 +104,7 @@ public interface DictStore {
      * @param type 字典类型
      * @return 字典对象信息
      */
-    DictTypeVo getDictType(String type);
+    DictType getDictType(String type);
 
     /**
      * 通过字典值获取字典文本信息

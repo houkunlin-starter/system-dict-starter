@@ -1,9 +1,9 @@
 package com.houkunlin.system.dict.starter;
 
+import com.houkunlin.system.dict.starter.bean.DictType;
 import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.annotation.Array;
 import com.houkunlin.system.dict.starter.annotation.DictText;
 import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
@@ -32,7 +32,7 @@ class TreeDataTest {
 
     @Autowired
     public void setPublisher(final ApplicationEventPublisher publisher) {
-        final DictTypeVo typeVo = DictTypeVo.newBuilder(DICT_TYPE, "树形结构数据测试")
+        final DictType typeVo = DictType.newBuilder(DICT_TYPE, "树形结构数据测试")
             .add("", "1", "节点1")
             .add("", "2", "节点2")
             .add("", "3", "节点3")

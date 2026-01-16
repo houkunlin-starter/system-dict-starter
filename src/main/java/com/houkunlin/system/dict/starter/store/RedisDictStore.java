@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter.store;
 
 import com.houkunlin.system.dict.starter.DictUtil;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RedisDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(RedisDictStore.class);
-    private final RedisTemplate<String, DictTypeVo> redisTemplate;
+    private final RedisTemplate<String, DictType> redisTemplate;
     private final RemoteDict remoteDict;
     /**
      * Redis 批量数据写入时，每 1000 条字典数据提交一次
@@ -38,8 +38,8 @@ public class RedisDictStore implements DictStore, InitializingBean {
     private int batchSize = 1000;
 
     @Override
-    public void store(final DictTypeVo dictType) {
-        final List<DictValueVo> children = dictType.getChildren();
+    public void store(final DictType dictType) {
+        final List<DictValue> children = dictType.getChildren();
         if (children == null) {
             removeDictType(dictType.getType());
         } else {
@@ -48,8 +48,8 @@ public class RedisDictStore implements DictStore, InitializingBean {
     }
 
     @Override
-    public void storeSystemDict(DictTypeVo dictType) {
-        final List<DictValueVo> children = dictType.getChildren();
+    public void storeSystemDict(DictType dictType) {
+        final List<DictValue> children = dictType.getChildren();
         if (children == null) {
             redisTemplate.delete(DictUtil.dictSystemKey(dictType.getType()));
         } else {
@@ -58,7 +58,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
     }
 
     @Override
-    public void store(final Iterator<DictValueVo> iterator) {
+    public void store(final Iterator<DictValue> iterator) {
         HashOperations<String, String, String> opsedForHash = redisTemplate.opsForHash();
 
         iterator.forEachRemaining(valueVo -> {
@@ -86,7 +86,7 @@ public class RedisDictStore implements DictStore, InitializingBean {
     }
 
     @Override
-    public void storeBatch(final Iterator<DictValueVo> iterator) {
+    public void storeBatch(final Iterator<DictValue> iterator) {
         RedisSerializer<String> keySerializer = (RedisSerializer<String>) redisTemplate.getKeySerializer();
         RedisSerializer<String> hashKeySerializer = (RedisSerializer<String>) redisTemplate.getHashKeySerializer();
         RedisSerializer<String> hashValueSerializer = (RedisSerializer<String>) redisTemplate.getHashValueSerializer();
@@ -190,11 +190,11 @@ public class RedisDictStore implements DictStore, InitializingBean {
     }
 
     @Override
-    public DictTypeVo getDictType(final String type) {
+    public DictType getDictType(final String type) {
         if (type == null) {
             return null;
         }
-        final DictTypeVo o = redisTemplate.opsForValue().get(DictUtil.dictKey(type));
+        final DictType o = redisTemplate.opsForValue().get(DictUtil.dictKey(type));
         if (o != null) {
             return o;
         }

@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.store;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -25,7 +25,7 @@ public class RedisDictStoreConfiguration {
     @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "AUTO", matchIfMissing = true)
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dictStoreAuto(final RedisTemplate<String, DictTypeVo> redisTemplate1, final RemoteDict remoteDict) {
+    public DictStore dictStoreAuto(final RedisTemplate<String, DictType> redisTemplate1, final RemoteDict remoteDict) {
         return new RedisDictStore(redisTemplate1, remoteDict);
     }
 
@@ -37,7 +37,7 @@ public class RedisDictStoreConfiguration {
     @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "REDIS")
     @Bean
     @ConditionalOnMissingBean
-    public DictStore dictStoreRedis(final RedisTemplate<String, DictTypeVo> redisTemplate1, final RemoteDict remoteDict) {
+    public DictStore dictStoreRedis(final RedisTemplate<String, DictType> redisTemplate1, final RemoteDict remoteDict) {
         return new RedisDictStore(redisTemplate1, remoteDict);
     }
 }

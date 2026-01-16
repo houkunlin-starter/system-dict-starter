@@ -2,7 +2,7 @@ package com.houkunlin.system.dict.starter.notice;
 
 import com.houkunlin.system.dict.starter.DictController;
 import com.houkunlin.system.dict.starter.DictUtil;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -10,7 +10,7 @@ import java.util.Collections;
 
 /**
  * 刷新单个字典文本信息。仅会刷新字典文本值，不会刷新和更新整个字典信息。
- * 使用此事件时 {@link DictValueVo#dictType} 字段值为必填项，否则会导致数据更新失败。
+ * 使用此事件时 {@link DictValue#dictType} 字段值为必填项，否则会导致数据更新失败。
  *
  * @author HouKunLin
  * @since 1.4.4
@@ -39,10 +39,10 @@ public class RefreshDictValueEvent extends ApplicationEvent {
     /**
      * 刷新单个字典值文本信息
      *
-     * @param dictValueVo 字典值对象（必须要有 {@link DictValueVo#dictType} 字典类型值）
+     * @param dictValue 字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      */
-    public RefreshDictValueEvent(final DictValueVo dictValueVo) {
-        super(Collections.singletonList(dictValueVo));
+    public RefreshDictValueEvent(final DictValue dictValue) {
+        super(Collections.singletonList(dictValue));
         this.updateDictType = true;
         this.removeDictType = true;
     }
@@ -50,9 +50,9 @@ public class RefreshDictValueEvent extends ApplicationEvent {
     /**
      * 刷新单个字典值文本信息
      *
-     * @param dictValueVos 多个字典值对象（必须要有 {@link DictValueVo#dictType} 字典类型值）
+     * @param dictValueVos 多个字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      */
-    public RefreshDictValueEvent(final Iterable<DictValueVo> dictValueVos) {
+    public RefreshDictValueEvent(final Iterable<DictValue> dictValueVos) {
         super(dictValueVos);
         this.updateDictType = true;
         this.removeDictType = true;
@@ -61,11 +61,11 @@ public class RefreshDictValueEvent extends ApplicationEvent {
     /**
      * 刷新单个字典值文本信息
      *
-     * @param dictValueVo    字典值对象（必须要有 {@link DictValueVo#dictType} 字典类型值）
+     * @param dictValue    字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      * @param updateDictType 是否更新维护字典类型对象里面的字典值列表信息
      */
-    public RefreshDictValueEvent(final DictValueVo dictValueVo, final boolean updateDictType) {
-        super(Collections.singletonList(dictValueVo));
+    public RefreshDictValueEvent(final DictValue dictValue, final boolean updateDictType) {
+        super(Collections.singletonList(dictValue));
         this.updateDictType = updateDictType;
         this.removeDictType = false;
     }
@@ -73,10 +73,10 @@ public class RefreshDictValueEvent extends ApplicationEvent {
     /**
      * 刷新单个字典值文本信息
      *
-     * @param dictValueVos   多个字典值对象（必须要有 {@link DictValueVo#dictType} 字典类型值）
+     * @param dictValueVos   多个字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      * @param updateDictType 是否更新维护字典类型对象里面的字典值列表信息
      */
-    public RefreshDictValueEvent(final Iterable<DictValueVo> dictValueVos, final boolean updateDictType) {
+    public RefreshDictValueEvent(final Iterable<DictValue> dictValueVos, final boolean updateDictType) {
         super(dictValueVos);
         this.updateDictType = updateDictType;
         this.removeDictType = false;
@@ -84,7 +84,7 @@ public class RefreshDictValueEvent extends ApplicationEvent {
 
     @SuppressWarnings("all")
     @Override
-    public Iterable<DictValueVo> getSource() {
-        return (Iterable<DictValueVo>) super.getSource();
+    public Iterable<DictValue> getSource() {
+        return (Iterable<DictValue>) super.getSource();
     }
 }

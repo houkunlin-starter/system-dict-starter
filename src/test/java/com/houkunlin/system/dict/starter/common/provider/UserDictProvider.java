@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.common.provider;
 
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,8 +24,8 @@ public class UserDictProvider implements DictProvider {
     }
 
     @Override
-    public Iterator<DictValueVo> dictValueIterator() {
-        return new Iterator<DictValueVo>() {
+    public Iterator<DictValue> dictValueIterator() {
+        return new Iterator<DictValue>() {
             private int page = 0;
             private int index = 0;
             private List<UserEntity> currentPage = null;
@@ -40,12 +40,12 @@ public class UserDictProvider implements DictProvider {
             }
 
             @Override
-            public DictValueVo next() {
+            public DictValue next() {
                 if (index >= currentPage.size()) {
                     throw new NoSuchElementException("没有更多的字典值对象");
                 }
                 final UserEntity userEntity = currentPage.get(index++);
-                return DictValueVo.builder()
+                return DictValue.builder()
                     .dictType(DICT_TYPE)
                     .value(userEntity.getId())
                     .title(userEntity.getName())

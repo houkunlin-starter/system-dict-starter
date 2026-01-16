@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.store;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 
 /**
  * 用来获取不存在系统字典的字典数据。例如从远程获取数据字典数据。当从 DictStore 对象中获取不到数据的时候，尝试由 RemoteDict 发起远程请求获取数据字典数据。
@@ -15,7 +15,7 @@ public interface RemoteDict {
      * @param type 字典雷系
      * @return 字典对象信息
      */
-    DictTypeVo getDictType(String type);
+    DictType getDictType(String type);
 
     /**
      * 通过字典值获取字典文本信息

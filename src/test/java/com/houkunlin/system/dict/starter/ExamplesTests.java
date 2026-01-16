@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter;
 
 import tools.jackson.databind.ObjectMapper;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.common.bean.User;
 import com.houkunlin.system.dict.starter.common.bean.User1;
 import com.houkunlin.system.dict.starter.common.bean.UserType;
@@ -111,81 +111,81 @@ class ExamplesTests {
     @Test
     void testRefreshDict() throws Exception {
         final String dictType = UserType.class.getSimpleName();
-        DictTypeVo dictTypeVo1 = DictUtil.getDictType(dictType);
-        assertEquals(2, dictTypeVo1.getChildren().size());
-        assertEquals(0, dictTypeVo1.getChildren().get(0).getValue());
-        assertEquals(1, dictTypeVo1.getChildren().get(1).getValue());
-        assertEquals("系统管理员", dictTypeVo1.getChildren().get(0).getTitle());
-        assertEquals("普通用户", dictTypeVo1.getChildren().get(1).getTitle());
+        DictType dictType1 = DictUtil.getDictType(dictType);
+        assertEquals(2, dictType1.getChildren().size());
+        assertEquals(0, dictType1.getChildren().get(0).getValue());
+        assertEquals(1, dictType1.getChildren().get(1).getValue());
+        assertEquals("系统管理员", dictType1.getChildren().get(0).getTitle());
+        assertEquals("普通用户", dictType1.getChildren().get(1).getTitle());
         assertEquals("普通用户", DictUtil.getDictText(dictType, "1"));
 
         // 枚举字典不允许通过刷新变更数据
-        publisher.publishEvent(new RefreshDictValueEvent(DictValueVo.builder()
+        publisher.publishEvent(new RefreshDictValueEvent(DictValue.builder()
             .dictType(dictType)
             .value(1)
             .title("刷新单个字典值")
             .build()));
-        dictTypeVo1 = DictUtil.getDictType(dictType);
-        assertEquals(2, dictTypeVo1.getChildren().size());
-        assertEquals(0, dictTypeVo1.getChildren().get(0).getValue());
-        assertEquals(1, dictTypeVo1.getChildren().get(1).getValue());
-        assertEquals("系统管理员", dictTypeVo1.getChildren().get(0).getTitle());
-        assertEquals("普通用户", dictTypeVo1.getChildren().get(1).getTitle());
+        dictType1 = DictUtil.getDictType(dictType);
+        assertEquals(2, dictType1.getChildren().size());
+        assertEquals(0, dictType1.getChildren().get(0).getValue());
+        assertEquals(1, dictType1.getChildren().get(1).getValue());
+        assertEquals("系统管理员", dictType1.getChildren().get(0).getTitle());
+        assertEquals("普通用户", dictType1.getChildren().get(1).getTitle());
         assertEquals("普通用户", DictUtil.getDictText(dictType, "1"));
 
         // 枚举字典不允许通过刷新变更数据
-        publisher.publishEvent(new RefreshDictTypeEvent(DictTypeVo.newBuilder(dictType, "刷新一个完整的字典类型")
+        publisher.publishEvent(new RefreshDictTypeEvent(DictType.newBuilder(dictType, "刷新一个完整的字典类型")
             .add(0, "刷新一个完整的字典类型0")
             .add(1, "刷新一个完整的字典类型1")
             .add(2, "刷新一个完整的字典类型2")
             .build()));
-        dictTypeVo1 = DictUtil.getDictType(dictType);
-        assertEquals(2, dictTypeVo1.getChildren().size());
-        assertEquals(0, dictTypeVo1.getChildren().get(0).getValue());
-        assertEquals(1, dictTypeVo1.getChildren().get(1).getValue());
-        assertEquals("系统管理员", dictTypeVo1.getChildren().get(0).getTitle());
-        assertEquals("普通用户", dictTypeVo1.getChildren().get(1).getTitle());
+        dictType1 = DictUtil.getDictType(dictType);
+        assertEquals(2, dictType1.getChildren().size());
+        assertEquals(0, dictType1.getChildren().get(0).getValue());
+        assertEquals(1, dictType1.getChildren().get(1).getValue());
+        assertEquals("系统管理员", dictType1.getChildren().get(0).getTitle());
+        assertEquals("普通用户", dictType1.getChildren().get(1).getTitle());
         assertEquals("普通用户", DictUtil.getDictText(dictType, "1"));
 
-        DictTypeVo dictTypeVo4 = DictUtil.getDictType("dictNation");
-        assertEquals(6, dictTypeVo4.getChildren().size());
-        assertEquals(1, dictTypeVo4.getChildren().get(0).getValue());
-        assertEquals(2, dictTypeVo4.getChildren().get(1).getValue());
-        assertEquals(3, dictTypeVo4.getChildren().get(2).getValue());
-        assertEquals(4, dictTypeVo4.getChildren().get(3).getValue());
-        assertEquals(5, dictTypeVo4.getChildren().get(4).getValue());
-        assertEquals(6, dictTypeVo4.getChildren().get(5).getValue());
-        assertEquals("汉族", dictTypeVo4.getChildren().get(0).getTitle());
-        assertEquals("回族", dictTypeVo4.getChildren().get(1).getTitle());
-        assertEquals("瑶族", dictTypeVo4.getChildren().get(2).getTitle());
-        assertEquals("壮族", dictTypeVo4.getChildren().get(3).getTitle());
-        assertEquals("藏族", dictTypeVo4.getChildren().get(4).getTitle());
-        assertEquals("蒙古族", dictTypeVo4.getChildren().get(5).getTitle());
+        DictType dictType4 = DictUtil.getDictType("dictNation");
+        assertEquals(6, dictType4.getChildren().size());
+        assertEquals(1, dictType4.getChildren().get(0).getValue());
+        assertEquals(2, dictType4.getChildren().get(1).getValue());
+        assertEquals(3, dictType4.getChildren().get(2).getValue());
+        assertEquals(4, dictType4.getChildren().get(3).getValue());
+        assertEquals(5, dictType4.getChildren().get(4).getValue());
+        assertEquals(6, dictType4.getChildren().get(5).getValue());
+        assertEquals("汉族", dictType4.getChildren().get(0).getTitle());
+        assertEquals("回族", dictType4.getChildren().get(1).getTitle());
+        assertEquals("瑶族", dictType4.getChildren().get(2).getTitle());
+        assertEquals("壮族", dictType4.getChildren().get(3).getTitle());
+        assertEquals("藏族", dictType4.getChildren().get(4).getTitle());
+        assertEquals("蒙古族", dictType4.getChildren().get(5).getTitle());
         assertEquals("汉族", DictUtil.getDictText("dictNation", "1"));
 
         // 非枚举字典可以通过刷新变更字典数据
-        publisher.publishEvent(new RefreshDictValueEvent(DictValueVo.builder()
+        publisher.publishEvent(new RefreshDictValueEvent(DictValue.builder()
             .dictType("dictNation")
             .value(1)
             .title("刷新单个字典值")
             .build()));
-        dictTypeVo4 = DictUtil.getDictType("dictNation");
-        assertEquals(6, dictTypeVo4.getChildren().size());
-        assertEquals(1, dictTypeVo4.getChildren().get(0).getValue());
-        assertEquals(2, dictTypeVo4.getChildren().get(1).getValue());
-        assertEquals(3, dictTypeVo4.getChildren().get(2).getValue());
-        assertEquals(4, dictTypeVo4.getChildren().get(3).getValue());
-        assertEquals(5, dictTypeVo4.getChildren().get(4).getValue());
-        assertEquals(6, dictTypeVo4.getChildren().get(5).getValue());
-        assertEquals("刷新单个字典值", dictTypeVo4.getChildren().get(0).getTitle());
-        assertEquals("回族", dictTypeVo4.getChildren().get(1).getTitle());
-        assertEquals("瑶族", dictTypeVo4.getChildren().get(2).getTitle());
-        assertEquals("壮族", dictTypeVo4.getChildren().get(3).getTitle());
-        assertEquals("藏族", dictTypeVo4.getChildren().get(4).getTitle());
-        assertEquals("蒙古族", dictTypeVo4.getChildren().get(5).getTitle());
+        dictType4 = DictUtil.getDictType("dictNation");
+        assertEquals(6, dictType4.getChildren().size());
+        assertEquals(1, dictType4.getChildren().get(0).getValue());
+        assertEquals(2, dictType4.getChildren().get(1).getValue());
+        assertEquals(3, dictType4.getChildren().get(2).getValue());
+        assertEquals(4, dictType4.getChildren().get(3).getValue());
+        assertEquals(5, dictType4.getChildren().get(4).getValue());
+        assertEquals(6, dictType4.getChildren().get(5).getValue());
+        assertEquals("刷新单个字典值", dictType4.getChildren().get(0).getTitle());
+        assertEquals("回族", dictType4.getChildren().get(1).getTitle());
+        assertEquals("瑶族", dictType4.getChildren().get(2).getTitle());
+        assertEquals("壮族", dictType4.getChildren().get(3).getTitle());
+        assertEquals("藏族", dictType4.getChildren().get(4).getTitle());
+        assertEquals("蒙古族", dictType4.getChildren().get(5).getTitle());
         assertEquals("刷新单个字典值", DictUtil.getDictText("dictNation", "1"));
 
-        publisher.publishEvent(new RefreshDictTypeEvent(DictTypeVo.newBuilder("dictNation", "民族")
+        publisher.publishEvent(new RefreshDictTypeEvent(DictType.newBuilder("dictNation", "民族")
             .add(1, "汉族1")
             .add(2, "回族1")
             .add(3, "瑶族1")
@@ -193,37 +193,37 @@ class ExamplesTests {
             .add(5, "藏族1")
             .add(6, "蒙古族1")
             .build()));
-        dictTypeVo4 = DictUtil.getDictType("dictNation");
-        assertEquals(6, dictTypeVo4.getChildren().size());
-        assertEquals(1, dictTypeVo4.getChildren().get(0).getValue());
-        assertEquals(2, dictTypeVo4.getChildren().get(1).getValue());
-        assertEquals(3, dictTypeVo4.getChildren().get(2).getValue());
-        assertEquals(4, dictTypeVo4.getChildren().get(3).getValue());
-        assertEquals(5, dictTypeVo4.getChildren().get(4).getValue());
-        assertEquals(6, dictTypeVo4.getChildren().get(5).getValue());
-        assertEquals("汉族1", dictTypeVo4.getChildren().get(0).getTitle());
-        assertEquals("回族1", dictTypeVo4.getChildren().get(1).getTitle());
-        assertEquals("瑶族1", dictTypeVo4.getChildren().get(2).getTitle());
-        assertEquals("壮族1", dictTypeVo4.getChildren().get(3).getTitle());
-        assertEquals("藏族1", dictTypeVo4.getChildren().get(4).getTitle());
-        assertEquals("蒙古族1", dictTypeVo4.getChildren().get(5).getTitle());
+        dictType4 = DictUtil.getDictType("dictNation");
+        assertEquals(6, dictType4.getChildren().size());
+        assertEquals(1, dictType4.getChildren().get(0).getValue());
+        assertEquals(2, dictType4.getChildren().get(1).getValue());
+        assertEquals(3, dictType4.getChildren().get(2).getValue());
+        assertEquals(4, dictType4.getChildren().get(3).getValue());
+        assertEquals(5, dictType4.getChildren().get(4).getValue());
+        assertEquals(6, dictType4.getChildren().get(5).getValue());
+        assertEquals("汉族1", dictType4.getChildren().get(0).getTitle());
+        assertEquals("回族1", dictType4.getChildren().get(1).getTitle());
+        assertEquals("瑶族1", dictType4.getChildren().get(2).getTitle());
+        assertEquals("壮族1", dictType4.getChildren().get(3).getTitle());
+        assertEquals("藏族1", dictType4.getChildren().get(4).getTitle());
+        assertEquals("蒙古族1", dictType4.getChildren().get(5).getTitle());
         assertEquals("汉族1", DictUtil.getDictText("dictNation", "1"));
 
         publisher.publishEvent(new RefreshDictEvent("从系统中重新读取字典信息，所有系统字典信息将被还原成系统启动时的最初版本", true, true));
-        dictTypeVo4 = DictUtil.getDictType("dictNation");
-        assertEquals(6, dictTypeVo4.getChildren().size());
-        assertEquals(1, dictTypeVo4.getChildren().get(0).getValue());
-        assertEquals(2, dictTypeVo4.getChildren().get(1).getValue());
-        assertEquals(3, dictTypeVo4.getChildren().get(2).getValue());
-        assertEquals(4, dictTypeVo4.getChildren().get(3).getValue());
-        assertEquals(5, dictTypeVo4.getChildren().get(4).getValue());
-        assertEquals(6, dictTypeVo4.getChildren().get(5).getValue());
-        assertEquals("汉族", dictTypeVo4.getChildren().get(0).getTitle());
-        assertEquals("回族", dictTypeVo4.getChildren().get(1).getTitle());
-        assertEquals("瑶族", dictTypeVo4.getChildren().get(2).getTitle());
-        assertEquals("壮族", dictTypeVo4.getChildren().get(3).getTitle());
-        assertEquals("藏族", dictTypeVo4.getChildren().get(4).getTitle());
-        assertEquals("蒙古族", dictTypeVo4.getChildren().get(5).getTitle());
+        dictType4 = DictUtil.getDictType("dictNation");
+        assertEquals(6, dictType4.getChildren().size());
+        assertEquals(1, dictType4.getChildren().get(0).getValue());
+        assertEquals(2, dictType4.getChildren().get(1).getValue());
+        assertEquals(3, dictType4.getChildren().get(2).getValue());
+        assertEquals(4, dictType4.getChildren().get(3).getValue());
+        assertEquals(5, dictType4.getChildren().get(4).getValue());
+        assertEquals(6, dictType4.getChildren().get(5).getValue());
+        assertEquals("汉族", dictType4.getChildren().get(0).getTitle());
+        assertEquals("回族", dictType4.getChildren().get(1).getTitle());
+        assertEquals("瑶族", dictType4.getChildren().get(2).getTitle());
+        assertEquals("壮族", dictType4.getChildren().get(3).getTitle());
+        assertEquals("藏族", dictType4.getChildren().get(4).getTitle());
+        assertEquals("蒙古族", dictType4.getChildren().get(5).getTitle());
         assertEquals("汉族", DictUtil.getDictText("dictNation", "1"));
     }
 

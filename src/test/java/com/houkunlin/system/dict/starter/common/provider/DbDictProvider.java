@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.common.provider;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
 import com.houkunlin.system.dict.starter.provider.DictProvider;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +20,16 @@ public class DbDictProvider implements DictProvider {
     }
 
     @Override
-    public Iterator<DictTypeVo> dictTypeIterator() {
-        final List<DictTypeVo> typeVos = new ArrayList<>();
+    public Iterator<DictType> dictTypeIterator() {
+        final List<DictType> typeVos = new ArrayList<>();
         // 模拟从数据库读取数据
         typeVos.add(getHobby());
         typeVos.add(getNation());
         return typeVos.iterator();
     }
 
-    private DictTypeVo getHobby() {
-        return DictTypeVo.newBuilder("dictHobby", "爱好")
+    private DictType getHobby() {
+        return DictType.newBuilder("dictHobby", "爱好")
             .add(1, "打篮球")
             .add(2, "踢足球")
             .add(3, "打羽毛球")
@@ -39,8 +39,8 @@ public class DbDictProvider implements DictProvider {
             .build();
     }
 
-    private DictTypeVo getNation() {
-        return DictTypeVo.newBuilder("dictNation", "民族")
+    private DictType getNation() {
+        return DictType.newBuilder("dictNation", "民族")
             .add(1, "汉族")
             .add(2, "回族")
             .add(3, "瑶族")

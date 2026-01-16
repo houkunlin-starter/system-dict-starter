@@ -2,8 +2,8 @@ package com.houkunlin.system.dict.starter;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictTypeEvent;
 import com.houkunlin.system.dict.starter.notice.RefreshDictValueEvent;
@@ -94,33 +94,33 @@ public class DictRegistrar implements InitializingBean {
      * @param dictValueConsumer   保存字典值数据的方法
      * @since 1.4.11
      */
-    public void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<DictTypeVo> systemDictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
+    public void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictType> dictTypeConsumer, final Consumer<DictType> systemDictTypeConsumer, final Consumer<Iterator<DictValue>> dictValueConsumer) {
         for (final DictProvider provider : providers) {
             if (!provider.supportRefresh(dictProviderClasses)) {
                 continue;
             }
             // 根据 Provider 参数决定是否存储完整的字典类型信息对象
             if (provider.isStoreDictType()) {
-                final Iterator<? extends DictTypeVo> typeIterator = provider.dictTypeIterator();
+                final Iterator<? extends DictType> typeIterator = provider.dictTypeIterator();
                 final boolean isSystemProvider = provider instanceof SystemDictProvider;
-                final List<DictValueVo> batchSaveDictValueVos = new ArrayList<>(typeEventBatchSize + 50);
+                final List<DictValue> batchSaveDictValues = new ArrayList<>(typeEventBatchSize + 50);
                 typeIterator.forEachRemaining(dictType -> {
                     dictTypeConsumer.accept(dictType);
                     if (isSystemProvider) {
                         // 系统字典单独存储一份
                         systemDictTypeConsumer.accept(dictType);
                     }
-                    final List<DictValueVo> valueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
+                    final List<DictValue> valueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
                     if (valueVos != null) {
-                        batchSaveDictValueVos.addAll(valueVos);
-                        if (batchSaveDictValueVos.size() > typeEventBatchSize) {
-                            dictValueConsumer.accept(batchSaveDictValueVos.iterator());
-                            batchSaveDictValueVos.clear();
+                        batchSaveDictValues.addAll(valueVos);
+                        if (batchSaveDictValues.size() > typeEventBatchSize) {
+                            dictValueConsumer.accept(batchSaveDictValues.iterator());
+                            batchSaveDictValues.clear();
                         }
                     }
                 });
-                if (!batchSaveDictValueVos.isEmpty()) {
-                    dictValueConsumer.accept(batchSaveDictValueVos.iterator());
+                if (!batchSaveDictValues.isEmpty()) {
+                    dictValueConsumer.accept(batchSaveDictValues.iterator());
                 }
             } else {
                 dictValueConsumer.accept(provider.dictValueIterator());
@@ -158,13 +158,13 @@ public class DictRegistrar implements InitializingBean {
     @Async
     @EventListener
     public void refreshDictValueEvent(final RefreshDictValueEvent event) {
-        final Iterable<DictValueVo> dictValueVos = event.getSource();
-        ArrayList<DictValueVo> list;
+        final Iterable<DictValue> dictValueVos = event.getSource();
+        ArrayList<DictValue> list;
         if (dictValueVos instanceof Collection) {
-            list = new ArrayList<>((Collection<DictValueVo>) dictValueVos);
+            list = new ArrayList<>((Collection<DictValue>) dictValueVos);
         } else {
             list = new ArrayList<>();
-            for (DictValueVo valueVo : dictValueVos) {
+            for (DictValue valueVo : dictValueVos) {
                 list.add(valueVo);
             }
         }
@@ -190,9 +190,9 @@ public class DictRegistrar implements InitializingBean {
      * @param systemDictTypeKeys 系统字典代码列表
      * @since 1.5.0
      */
-    private void removeSystemDictValue(Iterator<DictValueVo> iterator, Set<String> systemDictTypeKeys) {
+    private void removeSystemDictValue(Iterator<DictValue> iterator, Set<String> systemDictTypeKeys) {
         while (iterator.hasNext()) {
-            DictValueVo valueVo = iterator.next();
+            DictValue valueVo = iterator.next();
             String dictType = valueVo.getDictType();
             if (systemDictTypeKeys.contains(dictType)) {
                 if (logger.isDebugEnabled()) {
@@ -215,10 +215,10 @@ public class DictRegistrar implements InitializingBean {
         if (!event.isUpdateDictType()) {
             return;
         }
-        final Iterable<DictValueVo> dictValueVos = event.getSource();
+        final Iterable<DictValue> dictValueVos = event.getSource();
         final boolean removeDictType = event.isRemoveDictType();
         // 把字典值列表通过字典类型收集起来
-        Multimap<String, DictValueVo> multimap = ArrayListMultimap.create();
+        Multimap<String, DictValue> multimap = ArrayListMultimap.create();
         dictValueVos.forEach(valueVo -> multimap.put(valueVo.getDictType(), valueVo));
         final Set<String> keySet = multimap.keySet();
         if (logger.isDebugEnabled()) {
@@ -245,19 +245,19 @@ public class DictRegistrar implements InitializingBean {
      * @param removeDictType 没有字典值列表时是否删除字典类型
      * @since 1.4.5
      */
-    private void maintainHandleDictType(final String dictType, final List<DictValueVo> valueVos, final boolean removeDictType) {
-        final DictTypeVo dictTypeVo = store.getDictType(dictType);
-        final List<DictValueVo> valueVosUpdate = valueVos.stream().filter(vo -> vo.getTitle() != null).collect(Collectors.toList());
+    private void maintainHandleDictType(final String dictType, final List<DictValue> valueVos, final boolean removeDictType) {
+        final DictType dictTypeVo = store.getDictType(dictType);
+        final List<DictValue> valueVosUpdate = valueVos.stream().filter(vo -> vo.getTitle() != null).collect(Collectors.toList());
         if (dictTypeVo == null) {
             // 不存在字典类型信息，新增一个字典类型信息
-            final DictTypeVo newType = new DictTypeVo("RefreshDictValueEvent Add", dictType, "RefreshDictValueEvent Add", valueVosUpdate);
+            final DictType newType = new DictType("RefreshDictValueEvent Add", dictType, "RefreshDictValueEvent Add", valueVosUpdate);
             store.store(newType);
             if (logger.isDebugEnabled()) {
                 logger.debug("[RefreshDictValueEvent.type] 有一个新的字典类型被加入到缓存中 {}", newType);
             }
             return;
         }
-        final List<DictValueVo> children = dictTypeVo.getChildren();
+        final List<DictValue> children = dictTypeVo.getChildren();
         if (children == null || children.isEmpty()) {
             // 原字典类型无字典值列表，增加新的字典值列表
             dictTypeVo.setChildren(valueVosUpdate);
@@ -267,28 +267,28 @@ public class DictRegistrar implements InitializingBean {
             }
             return;
         }
-        final List<DictValueVo> valueVosRemove = valueVos.stream().filter(vo -> vo.getTitle() == null).collect(Collectors.toList());
+        final List<DictValue> valueVosRemove = valueVos.stream().filter(vo -> vo.getTitle() == null).collect(Collectors.toList());
         maintainHandleDictTypeDiffUpdate(dictTypeVo, valueVosUpdate, valueVosRemove, removeDictType);
     }
 
     /**
      * 维护处理字典类型信息（处理字典值列表差异合并）
      *
-     * @param dictTypeVo     字典类型对象
+     * @param dictType     字典类型对象
      * @param valueVosUpdate 需要更新或新增的字典值列表
      * @param valueVosRemove 需要删除的字典值类别
      * @param removeDictType 没有字典值列表时是否删除字典类型
      * @since 1.4.5.1
      */
-    private void maintainHandleDictTypeDiffUpdate(final DictTypeVo dictTypeVo, final List<DictValueVo> valueVosUpdate,
-                                                  final List<DictValueVo> valueVosRemove, final boolean removeDictType) {
-        final List<DictValueVo> children = dictTypeVo.getChildren();
+    private void maintainHandleDictTypeDiffUpdate(final DictType dictType, final List<DictValue> valueVosUpdate,
+                                                  final List<DictValue> valueVosRemove, final boolean removeDictType) {
+        final List<DictValue> children = dictType.getChildren();
         // 从列表移除需要删除的字典列表
         children.removeIf(vo1 -> {
-            for (final DictValueVo vo2 : valueVosRemove) {
+            for (final DictValue vo2 : valueVosRemove) {
                 if (Objects.equals(vo1.getValue(), vo2.getValue())) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("[RefreshDictValueEvent.type] 字典类型 {} 的 {} = {} 字典值被删除", dictTypeVo.getType(), vo1.getValue(), vo1.getTitle());
+                        logger.debug("[RefreshDictValueEvent.type] 字典类型 {} 的 {} = {} 字典值被删除", dictType.getType(), vo1.getValue(), vo1.getTitle());
                     }
                     return true;
                 }
@@ -297,14 +297,14 @@ public class DictRegistrar implements InitializingBean {
         });
         // 维护需要替换的字典值列表信息
         children.addAll(valueVosUpdate);
-        Map<Object, DictValueVo> map = new LinkedHashMap<>();
+        Map<Object, DictValue> map = new LinkedHashMap<>();
         children.forEach(valueVo -> map.put(valueVo.getValue(), valueVo));
 
-        dictTypeVo.setChildren(removeDictType && map.isEmpty() ? null : new ArrayList<>(map.values()));
+        dictType.setChildren(removeDictType && map.isEmpty() ? null : new ArrayList<>(map.values()));
         if (logger.isDebugEnabled()) {
-            logger.debug("[RefreshDictValueEvent.type] 字典类型的字典值列表被更新，共有 {} 条数据", dictTypeVo.getChildren().size());
+            logger.debug("[RefreshDictValueEvent.type] 字典类型的字典值列表被更新，共有 {} 条数据", dictType.getChildren().size());
         }
-        store.store(dictTypeVo);
+        store.store(dictType);
     }
 
     /**
@@ -316,7 +316,7 @@ public class DictRegistrar implements InitializingBean {
     @Async
     @EventListener
     public void refreshDictTypeEvent(final RefreshDictTypeEvent event) {
-        final Iterable<DictTypeVo> dictTypeVos = event.getSource();
+        final Iterable<DictType> dictTypeVos = event.getSource();
         Set<String> systemDictTypeKeys = store.systemDictTypeKeys();
         dictTypeVos.forEach(dictType -> {
             if (systemDictTypeKeys.contains(dictType.getType())) {
@@ -325,10 +325,10 @@ public class DictRegistrar implements InitializingBean {
                 }
                 return;
             }
-            final List<DictValueVo> dictValueVos = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
-            if (dictValueVos != null) {
+            final List<DictValue> dictValues = fixDictTypeChildren(dictType.getType(), dictType.getChildren());
+            if (dictValues != null) {
                 store.removeDictType(dictType.getType());
-                store.store(dictValueVos.iterator());
+                store.store(dictValues.iterator());
             }
             store.store(dictType);
         });
@@ -338,17 +338,17 @@ public class DictRegistrar implements InitializingBean {
      * 修复数据字典类型的字典项列表信息
      *
      * @param dictType     数据字典类型代码
-     * @param dictValueVos 字典值列表
+     * @param dictValues 字典值列表
      * @return 字典值列表
      */
     @Nullable
-    private List<DictValueVo> fixDictTypeChildren(final String dictType, final List<DictValueVo> dictValueVos) {
-        if (dictValueVos == null) {
+    private List<DictValue> fixDictTypeChildren(final String dictType, final List<DictValue> dictValues) {
+        if (dictValues == null) {
             return null;
         }
-        for (final DictValueVo valueVo : dictValueVos) {
+        for (final DictValue valueVo : dictValues) {
             valueVo.setDictType(dictType);
         }
-        return dictValueVos;
+        return dictValues;
     }
 }

@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.bytecode.DictChildrenObjectGenerate;
 import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
 import com.houkunlin.system.dict.starter.annotation.DictText;
@@ -96,7 +96,7 @@ public class DictUtil {
      * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.4.11
      */
-    public static void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictTypeVo> dictTypeConsumer, final Consumer<DictTypeVo> systemDictTypeConsumer, final Consumer<Iterator<DictValueVo>> dictValueConsumer) {
+    public static void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictType> dictTypeConsumer, final Consumer<DictType> systemDictTypeConsumer, final Consumer<Iterator<DictValue>> dictValueConsumer) {
         if (dictRegistrar != null) {
             dictRegistrar.forEachAllDict(dictProviderClasses, dictTypeConsumer, systemDictTypeConsumer, dictValueConsumer);
         }
@@ -121,7 +121,7 @@ public class DictUtil {
      * @param type 字典类型代码
      * @return 字典类型
      */
-    public static DictTypeVo getDictType(String type) {
+    public static DictType getDictType(String type) {
         if (type == null || store == null) {
             return null;
         }
@@ -205,7 +205,7 @@ public class DictUtil {
         return TYPE_SYSTEM_PREFIX + type;
     }
 
-    public static String dictKey(DictValueVo value) {
+    public static String dictKey(DictValue value) {
         return VALUE_PREFIX + value.getDictType() + ":" + value.getValue();
     }
 
@@ -216,7 +216,7 @@ public class DictUtil {
      * @return 字典父级值缓存 KEY
      * @since 1.4.6
      */
-    public static String dictParentKey(DictValueVo value) {
+    public static String dictParentKey(DictValue value) {
         return PARENT_PREFIX + value.getDictType() + ":" + value.getValue();
     }
 
@@ -243,7 +243,7 @@ public class DictUtil {
      * @return key
      * @since 1.5.0
      */
-    public static String dictKeyHash(DictValueVo value) {
+    public static String dictKeyHash(DictValue value) {
         return VALUE_PREFIX + value.getDictType();
     }
 
@@ -255,7 +255,7 @@ public class DictUtil {
      * @return 字典父级值缓存 KEY
      * @since 1.5.0
      */
-    public static String dictParentKeyHash(DictValueVo value) {
+    public static String dictParentKeyHash(DictValue value) {
         return PARENT_PREFIX + value.getDictType();
     }
 

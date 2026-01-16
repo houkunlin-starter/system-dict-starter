@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter.provider;
 
 import com.houkunlin.system.dict.starter.DictRegistrar;
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.bean.DictValueVo;
+import com.houkunlin.system.dict.starter.bean.DictType;
+import com.houkunlin.system.dict.starter.bean.DictValue;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import com.houkunlin.system.dict.starter.store.DictStore;
 
@@ -46,7 +46,7 @@ public interface DictProvider {
      *
      * @return 迭代器对象
      */
-    default Iterator<DictTypeVo> dictTypeIterator() {
+    default Iterator<DictType> dictTypeIterator() {
         return Collections.emptyIterator();
     }
 
@@ -57,10 +57,10 @@ public interface DictProvider {
      *
      * @return 迭代器对象
      */
-    default Iterator<DictValueVo> dictValueIterator() {
-        final Iterator<DictTypeVo> iterator = dictTypeIterator();
-        return new Iterator<DictValueVo>() {
-            List<DictValueVo> valueVos = null;
+    default Iterator<DictValue> dictValueIterator() {
+        final Iterator<DictType> iterator = dictTypeIterator();
+        return new Iterator<DictValue>() {
+            List<DictValue> valueVos = null;
             int index = 0;
             int size = 0;
 
@@ -75,7 +75,7 @@ public interface DictProvider {
             }
 
             @Override
-            public DictValueVo next() {
+            public DictValue next() {
                 if (index >= size) {
                     throw new NoSuchElementException("没有更多的字典值对象");
                 }
