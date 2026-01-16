@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author HouKunLin
  */
-@Schema(name = "字典类型信息")
+@Schema(description = "字典类型信息")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -18,7 +18,7 @@ import java.util.List;
  * @author HouKunLin
  */
 @SuppressWarnings("all")
-@Schema(name = "字典值信息")
+@Schema(description = "字典值信息")
 @Data
 @SuperBuilder
 @AllArgsConstructor

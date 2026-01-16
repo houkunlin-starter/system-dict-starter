@@ -4,16 +4,12 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.houkunlin.system.dict.starter.bean.DictType;
 import com.houkunlin.system.dict.starter.bean.DictValue;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.jspecify.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,7 +25,6 @@ import java.util.function.UnaryOperator;
  * @author HouKunLin
  * @since 1.4.1
  */
-@Api(tags = "系统字典")
 @Tag(name = "系统字典")
 @RestController
 @RequestMapping("${system.dict.controller.prefix:/dict}")
@@ -41,11 +36,9 @@ public class DictController {
      * @param tree v1.4.9 以字典文本值的代码长度来截取成树结构数据，此值传入分隔长度（树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值）
      * @return 字典类型对象
      */
-    @ApiOperation("获取字典类型[PATH]")
     @Operation(summary = "获取字典类型[PATH]")
-    @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "path", dataTypeClass = String.class)
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.PATH)
-    @GetMapping({"{dict}", "{dict}/"})
+    @GetMapping("{dict}")
     public DictType dictType(@PathVariable final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
     }
@@ -57,11 +50,9 @@ public class DictController {
      * @param tree v1.4.9 以字典文本值的代码长度来截取成树结构数据，此值传入分隔长度（树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值）
      * @return 字典类型对象
      */
-    @ApiOperation("获取字典类型[QUERY]")
     @Operation(summary = "获取字典类型[QUERY]")
-    @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "query", dataTypeClass = String.class)
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.QUERY)
-    @GetMapping(value = {"/", ""}, params = {"dict"})
+    @GetMapping(value = "", params = {"dict"})
     public DictType dictTypeQuery(final String dict, @RequestParam(required = false) final Integer tree) {
         return transform(dict, tree);
     }
@@ -125,15 +116,10 @@ public class DictController {
      * @param value 字典值代码
      * @return 字典值文本信息
      */
-    @ApiOperation("获取字典值文本[PATH]")
     @Operation(summary = "获取字典值文本[PATH]")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "path", dataTypeClass = String.class),
-        @ApiImplicitParam(name = "value", value = "字典值代码", required = true, paramType = "path", dataTypeClass = String.class)
-    })
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.PATH)
     @Parameter(name = "value", description = "字典值代码", required = true, in = ParameterIn.PATH)
-    @GetMapping({"{dict}/{value}", "{dict}/{value}/"})
+    @GetMapping("{dict}/{value}")
     public String dictText(@PathVariable String dict, @PathVariable String value) {
         return DictUtil.getDictText(dict, value);
     }
@@ -145,15 +131,10 @@ public class DictController {
      * @param value 字典值代码
      * @return 字典值文本信息
      */
-    @ApiOperation("获取字典值文本[QUERY]")
     @Operation(summary = "获取字典值文本[QUERY]")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "dict", value = "字典类型代码", required = true, paramType = "query", dataTypeClass = String.class),
-        @ApiImplicitParam(name = "value", value = "字典值代码", required = true, paramType = "query", dataTypeClass = String.class)
-    })
     @Parameter(name = "dict", description = "字典类型代码", required = true, in = ParameterIn.QUERY)
     @Parameter(name = "value", description = "字典值代码", required = true, in = ParameterIn.QUERY)
-    @GetMapping(value = {"/", ""}, params = {"dict", "value"})
+    @GetMapping(value = "", params = {"dict", "value"})
     public String dictTextQuery(String dict, String value) {
         return DictUtil.getDictText(dict, value);
     }
