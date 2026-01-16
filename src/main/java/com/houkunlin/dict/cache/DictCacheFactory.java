@@ -36,19 +36,6 @@ public class DictCacheFactory {
     /**
      * 构建缓存对象
      *
-     * @param <K> KEY
-     * @param <V> VALUE
-     * @return 缓存对象
-     * @deprecated 已过时
-     */
-    @Deprecated
-    public <K, V> Cache<K, V> build() {
-        return build(null);
-    }
-
-    /**
-     * 构建缓存对象
-     *
      * @param name 缓存名称
      * @param <K>  KEY
      * @param <V>  VALUE
