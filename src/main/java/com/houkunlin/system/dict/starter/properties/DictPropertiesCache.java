@@ -1,13 +1,14 @@
 package com.houkunlin.system.dict.starter.properties;
 
 import com.houkunlin.system.dict.starter.DictUtil;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import lombok.*;
 
 import java.time.Duration;
 
 /**
  * <p>获取字典值缓存配置。配置在使用 {@link DictUtil} 获取字典文本时是否使用缓存。</p>
- * <p>{@link com.houkunlin.system.dict.starter.json.DictText} 最后的处理实际也会调用 {@link DictUtil} 来获取字典文本信息。</p>
+ * <p>{@link DictText} 最后的处理实际也会调用 {@link DictUtil} 来获取字典文本信息。</p>
  * <p>在使用 {@link com.houkunlin.system.dict.starter.store.LocalDictStore} 存储时是否启用缓存影响不大，</p>
  * <p>
  * 但是在使用 {@link com.houkunlin.system.dict.starter.store.RedisDictStore} 存储时，列表页场景可能会有较大的影响，

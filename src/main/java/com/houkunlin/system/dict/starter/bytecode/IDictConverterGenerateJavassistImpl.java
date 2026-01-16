@@ -2,7 +2,7 @@ package com.houkunlin.system.dict.starter.bytecode;
 
 import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictEnum;
-import com.houkunlin.system.dict.starter.json.DictConverter;
+import com.houkunlin.system.dict.starter.annotation.DictConverter;
 import javassist.*;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;

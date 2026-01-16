@@ -2,6 +2,8 @@ package com.houkunlin.system.dict.starter.json;
 
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
+import com.houkunlin.system.dict.starter.annotation.Array;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

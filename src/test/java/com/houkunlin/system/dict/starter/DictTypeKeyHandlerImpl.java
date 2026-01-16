@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter;
 
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import com.houkunlin.system.dict.starter.json.DictTypeKeyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

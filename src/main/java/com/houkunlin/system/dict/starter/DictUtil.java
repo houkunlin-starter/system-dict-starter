@@ -5,7 +5,7 @@ import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.bean.DictValueVo;
 import com.houkunlin.system.dict.starter.bytecode.DictChildrenObjectGenerate;
 import com.houkunlin.system.dict.starter.cache.DictCacheFactory;
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import com.houkunlin.system.dict.starter.json.DictTextJsonSerializer;
 import com.houkunlin.system.dict.starter.json.DictTextJsonSerializerBasic;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;

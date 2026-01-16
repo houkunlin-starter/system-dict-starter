@@ -5,7 +5,7 @@ import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.common.bean.Bean1;
 import com.houkunlin.system.dict.starter.common.bean.PeopleType;
 import com.houkunlin.system.dict.starter.json.DictBoolType;
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

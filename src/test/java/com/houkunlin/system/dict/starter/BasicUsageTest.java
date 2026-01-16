@@ -2,7 +2,7 @@ package com.houkunlin.system.dict.starter;
 
 import tools.jackson.core.JacksonException;
 import com.houkunlin.system.dict.starter.json.DictBoolType;
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.jupiter.api.Assertions;

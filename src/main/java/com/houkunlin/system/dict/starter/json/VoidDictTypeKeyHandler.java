@@ -1,5 +1,7 @@
 package com.houkunlin.system.dict.starter.json;
 
+import com.houkunlin.system.dict.starter.annotation.DictText;
+
 /**
  * DictTypeKeyHandler 默认实现
  *

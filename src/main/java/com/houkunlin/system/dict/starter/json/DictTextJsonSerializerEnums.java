@@ -3,6 +3,7 @@ package com.houkunlin.system.dict.starter.json;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * 字段是枚举的情况，或者注解使用了枚举的情况

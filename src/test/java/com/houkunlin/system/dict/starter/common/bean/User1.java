@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.common.bean;
 
 import com.houkunlin.system.dict.starter.common.provider.UserDictProvider;
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import lombok.*;
 
 /**

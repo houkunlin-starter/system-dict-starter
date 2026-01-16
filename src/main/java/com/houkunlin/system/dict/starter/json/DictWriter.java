@@ -2,6 +2,7 @@ package com.houkunlin.system.dict.starter.json;
 
 import com.houkunlin.system.dict.starter.DictEnum;
 import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 

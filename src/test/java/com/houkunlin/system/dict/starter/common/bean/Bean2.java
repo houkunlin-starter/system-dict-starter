@@ -1,7 +1,7 @@
 package com.houkunlin.system.dict.starter.common.bean;
 
 import com.houkunlin.system.dict.starter.json.DictBoolType;
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

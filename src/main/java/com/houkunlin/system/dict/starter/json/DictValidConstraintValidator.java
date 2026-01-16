@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter.json;
 
 import com.houkunlin.system.dict.starter.DictUtil;
+import com.houkunlin.system.dict.starter.annotation.DictValid;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

@@ -1,4 +1,4 @@
-package com.houkunlin.system.dict.starter.json;
+package com.houkunlin.system.dict.starter.annotation;
 
 import org.springframework.core.convert.converter.Converter;
 

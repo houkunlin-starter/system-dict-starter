@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.jackson;
 
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import com.houkunlin.system.dict.starter.json.DictTextJsonSerializerDefault;
 import tools.jackson.databind.BeanDescription;
 import tools.jackson.databind.JavaType;

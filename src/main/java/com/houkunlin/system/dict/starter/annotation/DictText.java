@@ -1,7 +1,10 @@
-package com.houkunlin.system.dict.starter.json;
+package com.houkunlin.system.dict.starter.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.json.DictBoolType;
+import com.houkunlin.system.dict.starter.json.DictTypeKeyHandler;
+import com.houkunlin.system.dict.starter.json.VoidDictTypeKeyHandler;
 
 import java.lang.annotation.*;
 

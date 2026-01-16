@@ -1,8 +1,8 @@
 package com.houkunlin.system.dict.starter.common.valid;
 
 import com.houkunlin.system.dict.starter.common.bean.PeopleType;
-import com.houkunlin.system.dict.starter.json.DictText;
-import com.houkunlin.system.dict.starter.json.DictValid;
+import com.houkunlin.system.dict.starter.annotation.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictValid;
 import lombok.Data;
 
 /**

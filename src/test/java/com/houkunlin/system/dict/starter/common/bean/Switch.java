@@ -2,9 +2,9 @@ package com.houkunlin.system.dict.starter.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.system.dict.starter.DictEnum;
-import com.houkunlin.system.dict.starter.json.DictConverter;
-import com.houkunlin.system.dict.starter.json.DictType;
-import com.houkunlin.system.dict.starter.json.DictTypes;
+import com.houkunlin.system.dict.starter.annotation.DictConverter;
+import com.houkunlin.system.dict.starter.annotation.DictType;
+import com.houkunlin.system.dict.starter.annotation.DictTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

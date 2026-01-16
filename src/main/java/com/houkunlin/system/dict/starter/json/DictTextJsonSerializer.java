@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter.json;
 
 import com.houkunlin.system.dict.starter.DictEnum;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import lombok.Getter;
 import tools.jackson.databind.BeanProperty;
 

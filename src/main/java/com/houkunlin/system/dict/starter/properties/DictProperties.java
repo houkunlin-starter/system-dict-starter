@@ -1,6 +1,6 @@
 package com.houkunlin.system.dict.starter.properties;
 
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import com.houkunlin.system.dict.starter.notice.RefreshDictEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -3,6 +3,7 @@ package com.houkunlin.system.dict.starter.json;
 import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictUtil;
 import com.houkunlin.system.dict.starter.SystemDictAutoConfiguration;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 import com.houkunlin.system.dict.starter.properties.DictProperties;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;

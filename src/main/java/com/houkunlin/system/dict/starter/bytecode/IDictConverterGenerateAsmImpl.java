@@ -2,7 +2,7 @@ package com.houkunlin.system.dict.starter.bytecode;
 
 import com.houkunlin.system.dict.starter.ClassUtil;
 import com.houkunlin.system.dict.starter.DictEnum;
-import com.houkunlin.system.dict.starter.json.DictConverter;
+import com.houkunlin.system.dict.starter.annotation.DictConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.asm.ClassWriter;
 import org.springframework.asm.Label;

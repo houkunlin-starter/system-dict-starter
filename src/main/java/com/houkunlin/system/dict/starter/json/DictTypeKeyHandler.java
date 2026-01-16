@@ -1,6 +1,7 @@
 package com.houkunlin.system.dict.starter.json;
 
 import com.houkunlin.system.dict.starter.DictUtil;
+import com.houkunlin.system.dict.starter.annotation.DictText;
 
 /**
  * 自定义字典类型代码处理器。
