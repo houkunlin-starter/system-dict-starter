@@ -13,10 +13,11 @@
 
 **`v1.5.8` 将成为最后一个基于 Java 8 字节码发布的版本（基于 Spring Boot 2.7）**
 
-| 版本           | 基于 SpringBoot 版本 | 测试兼容 SpringBoot 版本 |
-|--------------|------------------|--------------------|
-| `v1.5.8` 及以下 | `2.7.18`         | `3.4.5`            |
-| `v1.6.0` 及以上 | `3.4.6`          | `3.4.6`            |
+| 版本                  | 基于 SpringBoot 版本 | 测试兼容 SpringBoot 版本 |
+|---------------------|------------------|--------------------|
+| `v1.5.8` 及以下        | `2.7.18`         | `3.4.5`            |
+| `v1.6.0` - `v1.6.2` | `3.4.6`          | `3.4.6`            |
+| `v1.7.0` 及以上        | `4.0.1`          | `4.0.1`            |
 
 **Maven**
 
@@ -180,7 +181,7 @@ public class MyRemoteDict implements RemoteDict {
 public class CommandRunnerTests implements CommandLineRunner {
     @Override
     public void run(final String... args) throws Exception {
-        System.out.println(DictUtil.getDictText("PeopleType", "1"))
+        System.out.println(DictUtil.getDictText("PeopleType", "1"));
     }
 }
 ```

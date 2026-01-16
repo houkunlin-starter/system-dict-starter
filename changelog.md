@@ -1,5 +1,21 @@
 # 更改日志
 
+## 1.7.0 版本
+
+- 适配 SpringBoot 4.x 版本
+- 重构数据字典 Jackson 的配置方式
+- 优化字典值、字典文本的JSON输出代码
+- 删除 SpringBoot 2 版本的 DictValid 注解（使用了 javax 包名）
+- 把 DictValid3 更名为 DictValid
+
+## 1.6.2 版本
+
+重构字典枚举转换器的初始化方式，由 Spring Bean 注册，改为在 WebMvcConfigurer#addFormatters 中注册
+
+## 1.6.1 版本
+
+重构数据字典转换器Bean注册，修复 SpringBoot 3.5.0 启动失败问题
+
 ## 1.6.0 版本
 
 基于 Java 17 和 Spring Boot 3.4.6 进行开发构建，删除了 Java 8 的动态生成类加载方式，其他的与 1.5.7.2 版本一致
