@@ -1,7 +1,7 @@
 package test.converter;
 
-import com.houkunlin.system.dict.starter.DictEnum;
-import com.houkunlin.system.dict.starter.common.bean.Switch;
+import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.common.bean.Switch;
 import org.springframework.core.convert.converter.Converter;
 
 public class Switch1Converter implements Converter<String, Switch> {

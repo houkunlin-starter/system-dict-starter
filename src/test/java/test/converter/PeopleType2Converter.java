@@ -1,7 +1,7 @@
 package test.converter;
 
-import com.houkunlin.system.dict.starter.DictEnum;
-import com.houkunlin.system.dict.starter.common.bean.PeopleType2;
+import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.common.bean.PeopleType2;
 import org.springframework.core.convert.converter.Converter;
 
 public class PeopleType2Converter implements Converter<String, PeopleType2> {
