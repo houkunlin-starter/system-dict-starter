@@ -106,7 +106,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
             } catch (Exception e) {
                 logger.error("自动创建系统字典枚举 {} 的 Converter 转换器失败，不影响系统启动，但是会影响此枚举转换器功能", dictClass.getName(), e);
             }
-            // generateConverter.registerBean(registry, dictClass, converter);
         }
         final DictType[] annotation = dictClass.getDeclaredAnnotationsByType(DictType.class);
         if (annotation.length > 0) {
