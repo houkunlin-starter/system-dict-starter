@@ -189,7 +189,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)
         System.out.println(value); // {"userType":{"text":"普通用户","value":"1"}}
-        Assertions.assertEquals("{\"userType\":{\"text\":\"普通用户\",\"value\":\"1\"}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
     }
 
     @Test
@@ -204,7 +204,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -219,7 +219,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)
         System.out.println(value); // {"userType":"1","map":{"text":"普通用户","value":"1"}}
-        Assertions.assertEquals("{\"userType\":\"1\",\"map\":{\"text\":\"普通用户\",\"value\":\"1\"}}", value);
+        Assertions.assertEquals("{\"userType\":\"1\",\"map\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
     }
 
     @Test
@@ -234,7 +234,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","map":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -249,7 +249,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -264,7 +264,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":null,"value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"text\":null,\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":null}}", value);
     }
 
     @Test
@@ -279,7 +279,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -294,7 +294,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","map":{"text":null,"value":"-1"}}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"text\":null,\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":null}}", value);
     }
 
     @Test
@@ -309,7 +309,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","map":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -324,7 +324,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":\"-1\"}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -339,7 +339,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":{"text":null,"value":null}}
-        Assertions.assertEquals("{\"userType\":{\"text\":null,\"value\":null}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":null,\"text\":null}}", value);
     }
 
     @Test
@@ -354,7 +354,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":{"text":"","value":null}}
-        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":null}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":null,\"text\":\"\"}}", value);
     }
 
     @Test
@@ -369,7 +369,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"map":{"text":null,"value":null}}
-        Assertions.assertEquals("{\"userType\":null,\"map\":{\"text\":null,\"value\":null}}", value);
+        Assertions.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":null}}", value);
     }
 
     @Test
@@ -384,7 +384,7 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"map":{"text":"","value":null}}
-        Assertions.assertEquals("{\"userType\":null,\"map\":{\"text\":\"\",\"value\":null}}", value);
+        Assertions.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":\"\"}}", value);
     }
 
     @Test
@@ -399,6 +399,6 @@ class DictTypeKeyHandlerUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":{"text":"","value":null}}
-        Assertions.assertEquals("{\"userType\":{\"text\":\"\",\"value\":null}}", value);
+        Assertions.assertEquals("{\"userType\":{\"value\":null,\"text\":\"\"}}", value);
     }
 }
