@@ -1,4 +1,4 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict.jackson;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -19,11 +19,11 @@ import java.io.Serializable;
  * @author HouKunLin
  * @since 1.4.3
  */
-public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
+public class DictValueSerializerEnumsImpl extends DictValueSerializerDefaultImpl {
     /**
      * 日志
      */
-    protected static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializerEnums.class);
+    protected static final Logger logger = LoggerFactory.getLogger(DictValueSerializerEnumsImpl.class);
     /**
      * 缓存了直接使用系统字典枚举来渲染数据字典文本的所有数据
      */
@@ -45,7 +45,7 @@ public class DictTextJsonSerializerEnums extends DictTextJsonSerializerDefault {
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      * @param enumsClass    实体类字段是一个特定枚举对象
      */
-    public DictTextJsonSerializerEnums(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
+    public DictValueSerializerEnumsImpl(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
         super(beanClass, beanFieldClass, beanFieldName, dictText);
         this.enumsClass = enumsClass;
         this.isDictEnum = DictEnum.class.isAssignableFrom(beanFieldClass);

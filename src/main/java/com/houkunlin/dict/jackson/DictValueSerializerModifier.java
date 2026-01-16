@@ -1,7 +1,6 @@
 package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.annotation.DictText;
-import com.houkunlin.dict.json.DictTextJsonSerializerDefault;
 import tools.jackson.databind.BeanDescription;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.SerializationConfig;
@@ -10,14 +9,14 @@ import tools.jackson.databind.ser.ValueSerializerModifier;
 
 import java.util.List;
 
-import static com.houkunlin.dict.json.DictTextJsonSerializer.buildJsonSerializerInstance;
+import static com.houkunlin.dict.jackson.DictValueSerializerUtil.getDictTextValueSerializer;
 
 /**
  * 数据字典值序列化对象编辑
  *
  * @author HouKunLin
  */
-public class DictBeanSerializerModifier extends ValueSerializerModifier {
+public class DictValueSerializerModifier extends ValueSerializerModifier {
     @Override
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription.Supplier beanDesc, List<BeanPropertyWriter> beanProperties) {
         for (BeanPropertyWriter beanProperty : beanProperties) {
@@ -28,9 +27,9 @@ public class DictBeanSerializerModifier extends ValueSerializerModifier {
 
             final DictText annotation = beanProperty.getAnnotation(DictText.class);
             if (annotation != null) {
-                DictTextJsonSerializerDefault dictTextJsonSerializerDefault = buildJsonSerializerInstance(beanClazz, javaTypeRawClass, fieldName, annotation);
-                beanProperty.assignSerializer(dictTextJsonSerializerDefault);
-                beanProperty.assignNullSerializer(dictTextJsonSerializerDefault);
+                DictValueSerializerDefaultImpl valueSerializer = getDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation);
+                beanProperty.assignSerializer(valueSerializer);
+                beanProperty.assignNullSerializer(valueSerializer);
             }
         }
         return super.changeProperties(config, beanDesc, beanProperties);

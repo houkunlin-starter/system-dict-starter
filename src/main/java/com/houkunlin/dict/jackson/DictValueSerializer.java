@@ -1,10 +1,11 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.Array;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.DictBoolType;
+import com.houkunlin.dict.json.DictWriter;
 import lombok.Getter;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -27,8 +28,8 @@ import java.util.List;
  * @author HouKunLin
  * @since 1.5.0
  */
-public abstract class DictTextJsonSerializerBasic extends ValueSerializer<Object> {
-    private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializerBasic.class);
+public abstract class DictValueSerializer extends ValueSerializer<Object> {
+    private static final Logger logger = LoggerFactory.getLogger(DictValueSerializer.class);
     public static final DictWriter dictWriter = new DictWriter();
     /**
      * 使用了这个注解的对象
@@ -84,7 +85,7 @@ public abstract class DictTextJsonSerializerBasic extends ValueSerializer<Object
      * @param array               字典值的数组分割配置
      * @param annotationFieldName 注解配置的输出字段名称
      */
-    public DictTextJsonSerializerBasic(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, Array array, String annotationFieldName) {
+    public DictValueSerializer(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, Array array, String annotationFieldName) {
         this.beanClass = beanClass;
         this.beanFieldClass = beanFieldClass;
         this.isIterable = Iterable.class.isAssignableFrom(beanFieldClass);

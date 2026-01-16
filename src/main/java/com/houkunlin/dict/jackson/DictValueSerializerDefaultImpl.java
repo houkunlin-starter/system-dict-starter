@@ -1,10 +1,12 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.ClassUtil;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.DictBoolType;
+import com.houkunlin.dict.json.DictTypeKeyHandler;
+import com.houkunlin.dict.json.VoidDictTypeKeyHandler;
 import com.houkunlin.dict.properties.DictProperties;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -25,8 +27,8 @@ import java.util.List;
  * @author HouKunLin
  * @since 1.4.3
  */
-public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
-    private static final Logger logger = LoggerFactory.getLogger(DictTextJsonSerializerDefault.class);
+public class DictValueSerializerDefaultImpl extends DictValueSerializer {
+    private static final Logger logger = LoggerFactory.getLogger(DictValueSerializerDefaultImpl.class);
     /**
      * 字典转换注解对象
      */
@@ -55,7 +57,7 @@ public class DictTextJsonSerializerDefault extends DictTextJsonSerializerBasic {
      * @param beanFieldName 实体类字段名称
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      */
-    public DictTextJsonSerializerDefault(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText) {
+    public DictValueSerializerDefaultImpl(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText) {
         super(beanClass, beanFieldClass, beanFieldName, dictText.array(), dictText.fieldName());
         this.dictText = dictText;
         this.dictType = dictText.value();

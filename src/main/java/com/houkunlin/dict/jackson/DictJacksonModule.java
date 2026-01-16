@@ -16,6 +16,6 @@ public class DictJacksonModule extends SimpleModule {
 
     @Override
     public void setupModule(SetupContext context) {
-        context.addSerializerModifier(new DictBeanSerializerModifier());
+        context.addSerializerModifier(new DictValueSerializerModifier());
     }
 }

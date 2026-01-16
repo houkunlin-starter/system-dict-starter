@@ -1,9 +1,8 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.annotation.DictText;
 import lombok.Getter;
-import tools.jackson.databind.BeanProperty;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,13 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author HouKunLin
  */
 @Getter
-public class DictTextJsonSerializer {
+public class DictValueSerializerUtil {
     /**
      * bean 字段对于的序列化对象缓存
      */
-    protected static final ConcurrentHashMap<String, DictTextJsonSerializerDefault> CACHE = new ConcurrentHashMap<>();
+    protected static final ConcurrentHashMap<String, DictValueSerializerDefaultImpl> CACHE = new ConcurrentHashMap<>();
 
-    public static DictTextJsonSerializerDefault buildJsonSerializerInstance(final Class<?> beanClazz, final Class<?> fieldTypeRawClass, final String fieldName, final DictText annotation) {
+    public static DictValueSerializerDefaultImpl getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> fieldTypeRawClass, final String fieldName, final DictText annotation) {
         final String cacheKey = cacheKey(fieldTypeRawClass, fieldName, annotation);
 
         // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
@@ -28,19 +27,19 @@ public class DictTextJsonSerializer {
             final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) fieldTypeRawClass;
             // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictTextJsonSerializerEnums(beanClazz, fieldTypeRawClass, fieldName, annotation, new Class[]{aClass})
+                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, new Class[]{aClass})
             );
         }
 
         final Class<? extends DictEnum<?>>[] enums = (Class<? extends DictEnum<?>>[]) annotation.enums();
         if (enums.length > 0) {
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictTextJsonSerializerEnums(beanClazz, fieldTypeRawClass, fieldName, annotation, enums)
+                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, enums)
             );
         }
 
         return CACHE.computeIfAbsent(cacheKey, key ->
-            new DictTextJsonSerializerDefault(beanClazz, fieldTypeRawClass, fieldName, annotation)
+            new DictValueSerializerDefaultImpl(beanClazz, fieldTypeRawClass, fieldName, annotation)
         );
     }
 
@@ -51,29 +50,11 @@ public class DictTextJsonSerializer {
     /**
      * 获取数据字典缓存的序列化器
      *
-     * @param property BeanProperty
-     * @return JsonSerializer
-     * @since 1.4.3
-     */
-    public static DictTextJsonSerializerBasic getJsonSerializer(BeanProperty property) {
-        if (property == null) {
-            return null;
-        }
-        final DictText annotation = property.getAnnotation(DictText.class);
-        if (annotation == null) {
-            return null;
-        }
-        return CACHE.get(cacheKey(property.getType().getRawClass(), property.getName(), annotation));
-    }
-
-    /**
-     * 获取数据字典缓存的序列化器
-     *
      * @param beanClazz bean 对象
      * @param field     字段
      * @return JsonSerializer
      */
-    public static DictTextJsonSerializerBasic getJsonSerializer(final Class<?> beanClazz, final Field field) {
+    public static DictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Field field) {
         if (field == null) {
             return null;
         }
@@ -81,6 +62,6 @@ public class DictTextJsonSerializer {
         if (annotation == null) {
             return null;
         }
-        return buildJsonSerializerInstance(beanClazz, field.getType(), field.getName(), annotation);
+        return getDictTextValueSerializer(beanClazz, field.getType(), field.getName(), annotation);
     }
 }
