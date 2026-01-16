@@ -39,7 +39,7 @@ public class SystemDictRegistrarAutoConfiguration {
      *
      * @return IDictConverterGenerate
      */
-    @ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "ASM")
+    @ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "ASM", matchIfMissing = true)
     @ConditionalOnMissingBean
     @Bean
     public IDictConverterGenerate dictConverterGenerateAsm() {
@@ -51,7 +51,7 @@ public class SystemDictRegistrarAutoConfiguration {
      *
      * @return IDictConverterGenerate
      */
-    @ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "JAVASSIST", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "JAVASSIST")
     @ConditionalOnClass(ClassPool.class)
     @ConditionalOnMissingBean
     @Bean
