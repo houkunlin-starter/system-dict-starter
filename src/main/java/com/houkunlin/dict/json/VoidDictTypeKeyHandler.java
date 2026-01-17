@@ -10,7 +10,7 @@ import com.houkunlin.dict.annotation.DictText;
  */
 public class VoidDictTypeKeyHandler implements DictTypeKeyHandler<Object> {
     @Override
-    public String getDictType(final Object bean, final String fieldName, final String fieldValueItem, final DictText dictText) {
+    public String getDictType(final Object bean, final String fieldName, final DictText dictText) {
         return null;
     }
 }

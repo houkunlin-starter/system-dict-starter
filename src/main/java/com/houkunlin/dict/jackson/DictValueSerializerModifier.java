@@ -3,9 +3,11 @@ package com.houkunlin.dict.jackson;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.BeanDescription;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.SerializationConfig;
+import tools.jackson.databind.ValueSerializer;
 import tools.jackson.databind.ser.BeanPropertyWriter;
 import tools.jackson.databind.ser.ValueSerializerModifier;
 
@@ -30,11 +32,8 @@ public class DictValueSerializerModifier extends ValueSerializerModifier {
             final DictText annotation = beanProperty.getAnnotation(DictText.class);
             if (annotation != null) {
                 DictArray dictArray = beanProperty.getAnnotation(DictArray.class);
-                if (dictArray != null && dictArray.split().isEmpty()) {
-                    dictArray = null;
-                }
                 DictTree dictTree = beanProperty.getAnnotation(DictTree.class);
-                DictValueSerializerDefaultImpl valueSerializer = getDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation, dictArray, dictTree);
+                ValueSerializer<Object> valueSerializer = getDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation, dictArray, dictTree);
                 beanProperty.assignSerializer(valueSerializer);
                 beanProperty.assignNullSerializer(valueSerializer);
             }

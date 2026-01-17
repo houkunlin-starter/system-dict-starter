@@ -1,6 +1,5 @@
 package com.houkunlin.dict.jackson;
 
-import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
@@ -19,29 +18,13 @@ public class DictValueSerializerUtil {
     /**
      * bean 字段对于的序列化对象缓存
      */
-    protected static final ConcurrentHashMap<String, DictValueSerializerDefaultImpl> CACHE = new ConcurrentHashMap<>();
+    protected static final ConcurrentHashMap<String, DictValueSerializerV2Impl> CACHE = new ConcurrentHashMap<>();
 
-    public static DictValueSerializerDefaultImpl getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> fieldTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
-        final String cacheKey = cacheKey(fieldTypeRawClass, fieldName, annotation, dictArray, dictTree);
-
-        // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
-        if (DictEnum.class.isAssignableFrom(fieldTypeRawClass)) {
-            final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) fieldTypeRawClass;
-            // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
-            return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, dictArray, dictTree, new Class[]{aClass})
-            );
-        }
-
-        final Class<? extends DictEnum<?>>[] enums = (Class<? extends DictEnum<?>>[]) annotation.enums();
-        if (enums.length > 0) {
-            return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, dictArray, dictTree, enums)
-            );
-        }
+    public static DictValueSerializerV2Impl getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
+        final String cacheKey = cacheKey(javaTypeRawClass, fieldName, annotation, dictArray, dictTree);
 
         return CACHE.computeIfAbsent(cacheKey, key ->
-            new DictValueSerializerDefaultImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, dictArray, dictTree)
+            new DictValueSerializerV2Impl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
         );
     }
 
@@ -56,7 +39,7 @@ public class DictValueSerializerUtil {
      * @param field     字段
      * @return JsonSerializer
      */
-    public static DictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Field field) {
+    public static DictValueSerializerV2Impl getDictTextValueSerializer(final Class<?> beanClazz, final Field field) {
         if (field == null) {
             return null;
         }
@@ -65,9 +48,6 @@ public class DictValueSerializerUtil {
             return null;
         }
         DictArray dictArray = field.getAnnotation(DictArray.class);
-        if (dictArray != null && dictArray.split().isEmpty()) {
-            dictArray = null;
-        }
         DictTree dictTree = field.getAnnotation(DictTree.class);
         return getDictTextValueSerializer(beanClazz, field.getType(), field.getName(), annotation, dictArray, dictTree);
     }

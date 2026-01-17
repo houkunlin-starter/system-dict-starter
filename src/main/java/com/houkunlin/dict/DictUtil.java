@@ -1,13 +1,13 @@
 package com.houkunlin.dict;
 
 import com.github.benmanes.caffeine.cache.Cache;
+import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.bean.DictValue;
 import com.houkunlin.dict.bytecode.DictChildrenObjectGenerate;
 import com.houkunlin.dict.cache.DictCacheFactory;
-import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.jackson.DictValueSerializerUtil;
-import com.houkunlin.dict.jackson.DictValueSerializer;
+import com.houkunlin.dict.jackson.DictValueSerializerV2Impl;
 import com.houkunlin.dict.notice.RefreshDictEvent;
 import com.houkunlin.dict.properties.DictPropertiesStorePrefixKey;
 import com.houkunlin.dict.provider.DictProvider;
@@ -324,7 +324,7 @@ public class DictUtil {
         final Map<String, Object> newFields = new HashMap<>();
         for (final Field field : fields) {
             ReflectionUtils.makeAccessible(field);
-            final DictValueSerializer jsonSerializer = DictValueSerializerUtil.getDictTextValueSerializer(objectClass, field);
+            final DictValueSerializerV2Impl jsonSerializer = DictValueSerializerUtil.getDictTextValueSerializer(objectClass, field);
             if (jsonSerializer == null) {
                 continue;
             }
@@ -334,10 +334,10 @@ public class DictUtil {
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("无法获取对象字段值", e);
             }
-            if (jsonSerializer.isReplaceValue()) {
+            if (jsonSerializer.isUseReplaceFieldValue()) {
                 setFieldValue(object, field, serialize);
             } else {
-                final String outFieldName = jsonSerializer.getOutFieldName();
+                final String outFieldName = jsonSerializer.getOutputFieldName();
                 if (!setDictText(object, fields, outFieldName, serialize)) {
                     // 设置字典文本值失败，这个类需要建立子类，然后在子类中加入此字段
                     // 动态生成 T 对象继承类，在继承类中添加 outFieldName 字段

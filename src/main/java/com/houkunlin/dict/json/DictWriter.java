@@ -33,24 +33,25 @@ public class DictWriter {
      * @param gen      JSON生成器
      * @param value    要序列化的字典值，支持null、数组、集合、DictEnum、字符串、数值等类型
      * @param dictText 字典文本配置信息
+     * @param useRawValueType 是否使用原始值模式，true表示保留数值类型的原始格式，false表示转换为字符串格式
      * @throws JacksonException JSON序列化异常
      */
-    public void writeDictValue(JsonGenerator gen, Object value, DictText dictText) throws JacksonException {
+    public void writeDictValue(JsonGenerator gen, Object value, DictText dictText, boolean useRawValueType) throws JacksonException {
         if (value == null) {
-            if (SystemDictAutoConfiguration.isRawValue()) {
+            if (useRawValueType) {
                 gen.writeNull();
             } else {
                 gen.writeString("");
             }
             return;
         }
-        if (SystemDictAutoConfiguration.isRawValue()) {
+        if (useRawValueType) {
             if (value.getClass().isArray()) {
-                writeDictValue(gen, (Object[]) value, dictText);
+                writeDictValue(gen, (Object[]) value, dictText, true);
             } else if (value instanceof Collection<?> v) {
-                writeDictValue(gen, v, dictText);
+                writeDictValue(gen, v, dictText, true);
             } else if (value instanceof DictEnum<?> v) {
-                writeDictValue(gen, v.getValue(), dictText);
+                writeDictValue(gen, v.getValue(), dictText, true);
             } else if (value instanceof String v) {
                 gen.writeString(v);
             } else if (value instanceof BigDecimal v) {
@@ -64,9 +65,9 @@ public class DictWriter {
             }
         } else {
             if (value.getClass().isArray()) {
-                writeDictValue(gen, (Object[]) value, dictText);
+                writeDictValue(gen, (Object[]) value, dictText, false);
             } else if (value instanceof Collection<?> v) {
-                writeDictValue(gen, v, dictText);
+                writeDictValue(gen, v, dictText, false);
             } else if (value instanceof DictEnum<?> v) {
                 gen.writeString(v.getValue().toString());
             } else if (value instanceof String v) {
@@ -88,10 +89,10 @@ public class DictWriter {
      * @param dictText 字典文本配置信息
      * @throws JacksonException JSON序列化异常
      */
-    private void writeDictValue(JsonGenerator gen, Object[] value, DictText dictText) throws JacksonException {
+    private void writeDictValue(JsonGenerator gen, Object[] value, DictText dictText, boolean useRawValueType) throws JacksonException {
         gen.writeStartArray(value);
         for (Object o : value) {
-            writeDictValue(gen, o, dictText);
+            writeDictValue(gen, o, dictText, useRawValueType);
         }
         gen.writeEndArray();
     }
@@ -107,10 +108,10 @@ public class DictWriter {
      * @param dictText 字典文本配置信息
      * @throws JacksonException JSON序列化异常
      */
-    private void writeDictValue(JsonGenerator gen, Collection<?> value, DictText dictText) throws JacksonException {
+    private void writeDictValue(JsonGenerator gen, Collection<?> value, DictText dictText, boolean useRawValueType) throws JacksonException {
         gen.writeStartArray(value);
         for (Object o : value) {
-            writeDictValue(gen, o, dictText);
+            writeDictValue(gen, o, dictText, useRawValueType);
         }
         gen.writeEndArray();
     }

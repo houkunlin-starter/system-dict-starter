@@ -14,7 +14,7 @@ import com.houkunlin.dict.annotation.DictText;
  *  }
  *  public class BeanDictTypeKeyHandler implements DictTypeKeyHandler&lt;Bean&gt; {
  *      @ Override
- *      public String getDictType(final Bean bean, final String fieldName, final String fieldValue, final DictText dictText) {
+ *      public String getDictType(final Bean bean, final String fieldName, final DictText dictText) {
  *          if (!"key".equals(fieldName)) {
  *              // 只有 BeanDictTypeKeyHandler 被重复使用时才需要判断 fieldName， 否则的话 fieldName 就是注解所在的字段
  *              return null;
@@ -40,25 +40,24 @@ public interface DictTypeKeyHandler<T> {
      *
      * @param bean       实体类对象
      * @param fieldName  字段名称
-     * @param fieldValueItem 字段值，或者集合字段的单项值，或者分割字符串的单项值
      * @param dictText   字段上的注解对象
      * @return 字典类型代码
      */
-    String getDictType(final T bean, final String fieldName, final String fieldValueItem, final DictText dictText);
+    String getDictType(final T bean, final String fieldName, final DictText dictText);
 
     /**
      * 获取字典文本
      *
      * @param bean           实体类对象
      * @param fieldName      字段名称
-     * @param fieldValueItem 字段值，或者集合字段的单项值
+     * @param value 字段值，或者集合字段的单项值
      * @param dictText       字段上的注解对象
      * @param dictType       字典类型 {@link DictTypeKeyHandler#getDictType(Object, String, String, DictText)} 返回值
-     * @param dictValue      字典值：字段值，或者集合字段的单项值，或者分割字符串的单项值，或者父级字典值
+     * @param arrayItemValue      字典值：字段值，或者集合字段的单项值，或者分割字符串的单项值，或者父级字典值
      * @return 字典文本
      */
-    default String getDictText(final T bean, final String fieldName, final String fieldValueItem, final DictText dictText, final String dictType, final String dictValue) {
-        return DictUtil.getDictText(dictType, dictValue);
+    default String getDictText(final T bean, final String fieldName, final Object value, final DictText dictText, final String dictType, final String arrayItemValue) {
+        return DictUtil.getDictText(dictType, arrayItemValue);
     }
 
     /**
@@ -66,13 +65,13 @@ public interface DictTypeKeyHandler<T> {
      *
      * @param bean           实体类对象
      * @param fieldName      字段名称
-     * @param fieldValueItem 字段值，或者集合字段的单项值
+     * @param value 字段值，或者集合字段的单项值
      * @param dictText       字段上的注解对象
      * @param dictType       字典类型 {@link DictTypeKeyHandler#getDictType(Object, String, String, DictText)} 返回值
-     * @param dictValue      字典值：字段值，或者集合字段的单项值，或者分割字符串的单项值，或者父级字典值
+     * @param arrayItemValue      字典值：字段值，或者集合字段的单项值，或者分割字符串的单项值，或者父级字典值
      * @return 父级字典值
      */
-    default String getDictParentValue(final T bean, final String fieldName, final String fieldValueItem, final DictText dictText, final String dictType, final String dictValue) {
-        return DictUtil.getDictParentValue(dictType, dictValue);
+    default String getDictParentValue(final T bean, final String fieldName, final Object value, final DictText dictText, final String dictType, final String arrayItemValue) {
+        return DictUtil.getDictParentValue(dictType, arrayItemValue);
     }
 }

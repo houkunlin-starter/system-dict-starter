@@ -1,5 +1,7 @@
 package com.houkunlin.dict.annotation;
 
+import com.houkunlin.dict.enums.NullStrategy;
+
 import java.lang.annotation.*;
 
 /**
@@ -19,4 +21,25 @@ public @interface DictTree {
      * @since 2.0.0
      */
     int maxDepth() default -1;
+
+    /**
+     * 是否转换为字符串显示。true：字符串显示。false：数组显示
+     *
+     * @return 是否转换为数组显示
+     */
+    boolean toText() default false;
+
+    /**
+     * 此参数仅当 {@link #toText()} 设置为 true 时有效（使用字符串显示），此参数将用作每个字典文本值之间的分隔符
+     *
+     * @return 字符串分隔符
+     */
+    String delimiter() default "/";
+
+    /**
+     * 空值处理策略
+     *
+     * @return 空值处理策略
+     */
+    NullStrategy nullStrategy() default NullStrategy.IGNORE;
 }
