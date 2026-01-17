@@ -17,7 +17,6 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
@@ -147,12 +146,9 @@ public class DictValueSerializerDefaultImpl extends DictValueSerializer {
             dictTypeKeyHandler = SystemDictAutoConfiguration.getBean(factoryClass);
             if (dictTypeKeyHandler == null) {
                 try {
-                    Constructor<?> defaultConstructor = ClassUtil.getDefaultConstructor(factoryClass);
-                    if (defaultConstructor != null) {
-                        dictTypeKeyHandler = (DictTypeKeyHandler<Object>) defaultConstructor.newInstance();
-                    } else {
-                        logger.error("创建 {} 实例失败，没有有效的默认构造方法，请向 SpringBoot 提供此 Bean 对象", factoryClass.getName());
-                    }
+                    dictTypeKeyHandler = ClassUtil.newInstance(factoryClass);
+                } catch (NoSuchMethodException e) {
+                    logger.error("创建 {} 实例失败，没有有效的默认构造方法，请向 SpringBoot 提供此 Bean 对象", factoryClass.getName(), e);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     logger.error("创建 {} 实例失败，请向 SpringBoot 提供此 Bean 对象", factoryClass.getName(), e);
                     return dictType;

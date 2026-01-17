@@ -1,5 +1,6 @@
 package com.houkunlin.dict;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,19 +23,18 @@ public class SystemDictConverterWebMvcConfigurer implements WebMvcConfigurer {
     }
 
     @Override
-    public void addFormatters(FormatterRegistry registry) {
+    public void addFormatters(@NonNull FormatterRegistry registry) {
         for (Class<?> aClass : this.classes) {
-            for (Constructor<?> constructor : aClass.getConstructors()) {
-                if (constructor.getParameterCount() == 0) {
-                    try {
-                        Object o = constructor.newInstance();
-                        if (o instanceof Converter converter) {
-                            registry.addConverter(converter);
-                        }
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
+            try {
+                Object instance = ClassUtil.newInstance(aClass);
+                if (instance instanceof Converter converter) {
+                    registry.addConverter(converter);
                 }
+            } catch (NoSuchMethodException ignore) {
+                // 忽略无参构造函数异常
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                // 其他异常直接抛出
+                throw new RuntimeException(e);
             }
         }
     }

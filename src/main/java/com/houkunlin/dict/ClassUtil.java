@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * 自定义类工具
@@ -35,6 +36,31 @@ public class ClassUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * 通过默认构造方法创建类的新实例
+     * <p>
+     * 该方法会查找并调用类的无参构造方法来创建对象实例。
+     * 如果类没有默认构造方法，将抛出 NoSuchMethodException 异常。
+     * </p>
+     *
+     * @param <T>   要创建的实例类型
+     * @param clazz 要实例化的类对象
+     * @return 类的新实例
+     * @throws InstantiationException    如果类是一个抽象类、接口、数组类、基本类型或void
+     * @throws IllegalAccessException    如果构造方法不可访问
+     * @throws IllegalArgumentException  如果构造方法的参数数量或类型不匹配
+     * @throws InvocationTargetException 如果底层构造方法抛出异常
+     * @throws NoSuchMethodException     如果类没有默认构造方法
+     * @throws SecurityException         如果安全管理器拒绝访问构造方法
+     */
+    public static <T> T newInstance(Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        Constructor<T> constructor = getDefaultConstructor(clazz);
+        if (constructor == null) {
+            throw new NoSuchMethodException("Class " + clazz.getName() + " has no default constructor");
+        }
+        return constructor.newInstance();
     }
 
     /**
