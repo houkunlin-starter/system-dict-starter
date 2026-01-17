@@ -1,8 +1,6 @@
 package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.ClassUtil;
-import com.houkunlin.dict.DictEnum;
-import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
@@ -11,18 +9,13 @@ import com.houkunlin.dict.enums.NullStrategy;
 import com.houkunlin.dict.json.DictTypeKeyHandler;
 import com.houkunlin.dict.json.DictWriter;
 import com.houkunlin.dict.json.VoidDictTypeKeyHandler;
-import com.houkunlin.dict.properties.DictProperties;
 import lombok.Getter;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import tools.jackson.databind.ValueSerializer;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 自定义字典值序列化器基类
@@ -35,12 +28,12 @@ import java.util.List;
  * @since 1.0
  */
 @Getter
-public abstract class DictValueSerializerV2 extends ValueSerializer<Object> {
+public abstract class DictValueSerializer extends ValueSerializer<Object> {
     /**
      * 字典值写入器
      */
     public static final DictWriter DICT_WRITER = new DictWriter();
-    private static final Logger logger = LoggerFactory.getLogger(DictValueSerializerV2.class);
+    private static final Logger logger = LoggerFactory.getLogger(DictValueSerializer.class);
 
     // ==== Bean 基本信息
     /**
@@ -153,13 +146,13 @@ public abstract class DictValueSerializerV2 extends ValueSerializer<Object> {
      */
     protected final DictTypeKeyHandler<Object> dictTypeKeyHandler;
 
-    public DictValueSerializerV2(String fieldName, Class<?> javaTypeRawClass, DictText dictText, DictArray dictArray, DictTree dictTree) {
+    public DictValueSerializer(String fieldName, Class<?> javaTypeRawClass, DictText dictText, DictArray dictArray, DictTree dictTree) {
         this.fieldName = fieldName;
         this.javaTypeRawClass = javaTypeRawClass;
         this.dictText = dictText;
         this.dictArray = dictArray;
         this.dictTree = dictTree;
-        this.outputFieldName = StringUtils.hasText(dictText.fieldName()) ? dictText.fieldName() : fieldName + "Text";
+        this.outputFieldName = dictText.fieldName().isBlank() ? fieldName + "Text" : dictText.fieldName();
         this.useMap = dictText.mapValue().getValue(SystemDictAutoConfiguration::isMapValue);
         this.useArray = dictArray != null && !dictArray.toText();
         this.useRawValueType = SystemDictAutoConfiguration.isRawValue();
@@ -216,90 +209,6 @@ public abstract class DictValueSerializerV2 extends ValueSerializer<Object> {
         return null;
     }
 
-    public String getDictText(final Object bean, final Object value, final String dictType, final String arrayItemValue) {
-        String text = getDictTextByEnums(arrayItemValue);
-        if (text != null) {
-            return text;
-        }
-        if (dictTypeKeyHandler == null) {
-            return DictUtil.getDictText(dictType, arrayItemValue);
-        }
-        return dictTypeKeyHandler.getDictText(bean, fieldName, value, dictText, dictType, arrayItemValue);
-    }
-
-    public String getDictParentValue(final Object bean, final Object value, final String dictType, final String arrayItemValue) {
-        if (dictTypeKeyHandler == null) {
-            return DictUtil.getDictParentValue(dictType, arrayItemValue);
-        }
-        return dictTypeKeyHandler.getDictParentValue(bean, fieldName, value, dictText, dictType, arrayItemValue);
-    }
-
-    /**
-     * 获取实际的字典类型
-     * <p>
-     * 根据字典处理器动态获取字典类型，支持运行时字典类型计算
-     * </p>
-     *
-     * @param bean 包含字典字段的Bean对象
-     * @return 实际的字典类型
-     */
-    public String getDictType(Object bean) {
-        if (dictTypeKeyHandler == null) {
-            return dictText.value();
-        }
-        return dictTypeKeyHandler.getDictType(bean, fieldName, dictText);
-    }
-
-    public String getDictTextByEnums(Object arrayItemValue) {
-        for (Class<? extends DictEnum> dictEnum : dictText.enums()) {
-            if (!dictEnum.isEnum()) {
-                continue;
-            }
-            DictEnum<?>[] enumConstants = dictEnum.getEnumConstants();
-            for (DictEnum<?> enumConstant : enumConstants) {
-                if (enumConstant.eq(arrayItemValue) || ObjectUtils.getDisplayString(enumConstant.getValue()).equals(ObjectUtils.getDisplayString(arrayItemValue))) {
-                    return enumConstant.getTitle();
-                }
-            }
-        }
-        return null;
-    }
-
-    public List<String> getTreeDictText(Object bean, Object value, final String dictType, String arrayItemValue) {
-        assert dictTree != null;
-        int depth = dictTree.maxDepth();
-        if (depth <= 0) {
-            // 使用全局配置
-            depth = SystemDictAutoConfiguration.get(DictProperties::getTreeDepth).orElse(-1);
-        }
-        final List<String> values = new LinkedList<>();
-        String itemValue = arrayItemValue;
-        do {
-            final String text = getDictText(bean, value, dictType, itemValue);
-            if (text != null) {
-                values.add(text);
-            } else if (dictTree.nullStrategy() != NullStrategy.IGNORE) {
-                if (dictTree.nullStrategy() == NullStrategy.NULL) {
-                    values.add(null);
-                } else if (dictTree.nullStrategy() == NullStrategy.EMPTY) {
-                    values.add("");
-                }
-            }
-            itemValue = getDictParentValue(bean, value, dictType, itemValue);
-        } while (itemValue != null && (depth <= 0 || --depth > 0));
-        Collections.reverse(values);
-        return values;
-    }
-
-    public void appendDictText(List<String> values, String dictText) {
-        if (dictText != null) {
-            values.add(dictText);
-        } else if (dictTreeNullStrategy == NullStrategy.NULL) {
-            values.add(null);
-        } else if (dictTreeNullStrategy == NullStrategy.EMPTY) {
-            values.add("");
-        }
-    }
-
+    public abstract Object transform(final Object bean, @Nullable final Object fieldValue);
 
 }

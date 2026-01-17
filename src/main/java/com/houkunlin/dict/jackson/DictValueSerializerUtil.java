@@ -3,9 +3,12 @@ package com.houkunlin.dict.jackson;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
+import com.houkunlin.dict.enums.NullStrategy;
 import lombok.Getter;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -18,13 +21,29 @@ public class DictValueSerializerUtil {
     /**
      * bean 字段对于的序列化对象缓存
      */
-    protected static final ConcurrentHashMap<String, DictValueSerializerV2Impl> CACHE = new ConcurrentHashMap<>();
+    protected static final ConcurrentHashMap<String, DictValueSerializer> CACHE = new ConcurrentHashMap<>();
+    public static final DictArray DEFAULT_DICT_ARRAY = AnnotationUtils.synthesizeAnnotation(Map.of(
+        "split", "",
+        "toText", true,
+        "delimiter", "、",
+        "nullStrategy", NullStrategy.IGNORE
+    ), DictArray.class, null);
 
-    public static DictValueSerializerV2Impl getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
-        final String cacheKey = cacheKey(javaTypeRawClass, fieldName, annotation, dictArray, dictTree);
+    public static DictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
+        final String cacheKey = cacheKey(javaTypeRawClass, fieldName, annotation, dictArray == null ? DEFAULT_DICT_ARRAY : dictArray, dictTree);
+
+        if (dictArray == null) {
+            return CACHE.computeIfAbsent(cacheKey, key ->
+                new DictValueSerializerArrayTextTrueImpl(fieldName, javaTypeRawClass, annotation, DEFAULT_DICT_ARRAY, dictTree)
+            );
+        } else if (dictArray.toText()) {
+            return CACHE.computeIfAbsent(cacheKey, key ->
+                new DictValueSerializerArrayTextTrueImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
+            );
+        }
 
         return CACHE.computeIfAbsent(cacheKey, key ->
-            new DictValueSerializerV2Impl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
+            new DictValueSerializerArrayTextFalseImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
         );
     }
 
@@ -39,7 +58,7 @@ public class DictValueSerializerUtil {
      * @param field     字段
      * @return JsonSerializer
      */
-    public static DictValueSerializerV2Impl getDictTextValueSerializer(final Class<?> beanClazz, final Field field) {
+    public static DictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Field field) {
         if (field == null) {
             return null;
         }

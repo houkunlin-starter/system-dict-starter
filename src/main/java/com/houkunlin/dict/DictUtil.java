@@ -6,8 +6,8 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.bean.DictValue;
 import com.houkunlin.dict.bytecode.DictChildrenObjectGenerate;
 import com.houkunlin.dict.cache.DictCacheFactory;
+import com.houkunlin.dict.jackson.DictValueSerializer;
 import com.houkunlin.dict.jackson.DictValueSerializerUtil;
-import com.houkunlin.dict.jackson.DictValueSerializerV2Impl;
 import com.houkunlin.dict.notice.RefreshDictEvent;
 import com.houkunlin.dict.properties.DictPropertiesStorePrefixKey;
 import com.houkunlin.dict.provider.DictProvider;
@@ -324,13 +324,13 @@ public class DictUtil {
         final Map<String, Object> newFields = new HashMap<>();
         for (final Field field : fields) {
             ReflectionUtils.makeAccessible(field);
-            final DictValueSerializerV2Impl jsonSerializer = DictValueSerializerUtil.getDictTextValueSerializer(objectClass, field);
+            final DictValueSerializer jsonSerializer = DictValueSerializerUtil.getDictTextValueSerializer(objectClass, field);
             if (jsonSerializer == null) {
                 continue;
             }
             final Object serialize;
             try {
-                serialize = jsonSerializer.serialize(object, field.get(object));
+                serialize = jsonSerializer.transform(object, field.get(object));
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("无法获取对象字段值", e);
             }
