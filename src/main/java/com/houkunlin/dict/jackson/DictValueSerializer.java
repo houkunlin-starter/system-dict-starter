@@ -4,6 +4,7 @@ import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.json.DictWriter;
 import lombok.Getter;
@@ -75,6 +76,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
      * 如果字典为 null 默认的字典文本结果
      */
     protected final Object defaultDictTextResult;
+    protected final DictTree dictTree;
 
     /**
      * 一般情况下的普通用法
@@ -85,7 +87,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
      * @param dictArray               字典值的数组分割配置
      * @param annotationFieldName 注解配置的输出字段名称
      */
-    public DictValueSerializer(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictArray dictArray, String annotationFieldName) {
+    public DictValueSerializer(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictArray dictArray, DictTree dictTree, String annotationFieldName) {
         this.beanClass = beanClass;
         this.beanFieldClass = beanFieldClass;
         this.isIterable = Iterable.class.isAssignableFrom(beanFieldClass);
@@ -96,6 +98,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         this.isNeedSpiltValue = dictArray != null && StringUtils.hasText(dictArray.split());
         this.outFieldName = getOutFieldName(annotationFieldName, beanFieldName);
         this.defaultDictTextResult = obtainResult(Collections.emptyList());
+        this.dictTree = dictTree;
     }
 
     /**
@@ -295,24 +298,6 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
      * @see DictText#mapValue()
      */
     public abstract DictBoolType mapValue();
-
-    /**
-     * 是否是树形结构数据；
-     *
-     * @return boolean <ul>
-     * <li>true 是树形结构数据，加载父级信息（采用递归加载，可能会多次加载父级信息）；</li>
-     * <li>false 不是树形结构数据，不加载父级信息；</li>
-     * </ul>
-     * @see DictText#tree()
-     */
-    public abstract boolean tree();
-
-    /**
-     * 为防止陷入死循环，请设置树形结构数据的向访问的最大访问深度，超过最大访问深度则直接返回。
-     *
-     * @return int &lt;= 0 视为不限制深度
-     */
-    public abstract int treeDepth();
 
     public abstract DictText getDictText();
 }

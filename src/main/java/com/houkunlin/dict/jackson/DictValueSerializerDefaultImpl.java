@@ -5,6 +5,7 @@ import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.json.DictTypeKeyHandler;
 import com.houkunlin.dict.json.VoidDictTypeKeyHandler;
@@ -57,8 +58,8 @@ public class DictValueSerializerDefaultImpl extends DictValueSerializer {
      * @param beanFieldName 实体类字段名称
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      */
-    public DictValueSerializerDefaultImpl(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, DictArray dictArray) {
-        super(beanClass, beanFieldClass, beanFieldName, dictArray, dictText.fieldName());
+    public DictValueSerializerDefaultImpl(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, DictArray dictArray, DictTree dictTree) {
+        super(beanClass, beanFieldClass, beanFieldName, dictArray, dictTree, dictText.fieldName());
         this.dictText = dictText;
         this.dictType = dictText.value();
         this.hasDictType = StringUtils.hasText(dictType) || dictText.dictTypeHandler() != VoidDictTypeKeyHandler.class;
@@ -103,8 +104,8 @@ public class DictValueSerializerDefaultImpl extends DictValueSerializer {
     public String obtainDictValueText(final Object bean, String dictValue) {
         final String dictTypeKey = getDictTypeByTypeKeyHandler(bean, dictValue);
         // @since 1.4.6 - START
-        if (dictText.tree()) {
-            int depth = dictText.treeDepth();
+        if (dictTree != null) {
+            int depth = dictTree.maxDepth();
             if (depth <= 0) {
                 // 使用全局配置
                 depth = SystemDictAutoConfiguration.get(DictProperties::getTreeDepth).orElse(-1);
@@ -208,16 +209,6 @@ public class DictValueSerializerDefaultImpl extends DictValueSerializer {
     @Override
     public DictBoolType mapValue() {
         return dictText.mapValue();
-    }
-
-    @Override
-    public boolean tree() {
-        return dictText.tree();
-    }
-
-    @Override
-    public int treeDepth() {
-        return dictText.treeDepth();
     }
 
     @Override

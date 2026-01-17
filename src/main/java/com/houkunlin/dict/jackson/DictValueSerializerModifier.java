@@ -2,6 +2,7 @@ package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.annotation.DictTree;
 import tools.jackson.databind.BeanDescription;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.SerializationConfig;
@@ -32,7 +33,8 @@ public class DictValueSerializerModifier extends ValueSerializerModifier {
                 if (dictArray != null && dictArray.split().isEmpty()) {
                     dictArray = null;
                 }
-                DictValueSerializerDefaultImpl valueSerializer = getDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation, dictArray);
+                DictTree dictTree = beanProperty.getAnnotation(DictTree.class);
+                DictValueSerializerDefaultImpl valueSerializer = getDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation, dictArray, dictTree);
                 beanProperty.assignSerializer(valueSerializer);
                 beanProperty.assignNullSerializer(valueSerializer);
             }

@@ -82,23 +82,4 @@ public @interface DictText {
      */
     DictBoolType replace() default DictBoolType.GLOBAL;
 
-    /**
-     * 是否是树形结构数据；
-     *
-     * @return boolean <ul>
-     * <li>true 是树形结构数据，加载父级信息（采用递归加载，可能会多次加载父级信息）；</li>
-     * <li>false 不是树形结构数据，不加载父级信息；</li>
-     * </ul>
-     * @since 1.4.6
-     */
-    boolean tree() default false;
-
-    /**
-     * 为防止陷入死循环，请设置树形结构数据的向访问的最大访问深度，超过最大访问深度则直接返回。
-     *
-     * @return int &lt;= 0 视为不限制深度
-     * @since 1.4.6.1
-     */
-    int treeDepth() default -1;
-
 }

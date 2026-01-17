@@ -2,6 +2,7 @@ package com.houkunlin.dict;
 
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.bean.DictValue;
 import com.houkunlin.dict.common.bean.User;
@@ -231,16 +232,21 @@ class ExamplesTests {
     @Builder
     @AllArgsConstructor
     static class Bean {
-        @DictText(value = "TreeData", tree = true)
+        @DictTree
+        @DictText(value = "TreeData")
         private String treeData1;
-        @DictText(value = "TreeData", tree = true)
+        @DictTree
+        @DictText(value = "TreeData")
         private String treeData2;
-        @DictText(value = "City", tree = true)
+        @DictTree
+        @DictText(value = "City")
         private String city1;
-        @DictText(value = "City", tree = true)
+        @DictTree
+        @DictText(value = "City")
         private String city2;
+        @DictTree
         @DictArray(toText = false)
-        @DictText(value = "City", tree = true)
+        @DictText(value = "City")
         private String city3;
     }
 }

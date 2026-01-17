@@ -1,6 +1,7 @@
 package com.houkunlin.dict;
 
 import com.houkunlin.dict.annotation.DictArray;
+import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.bean.DictType;
 import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.core.JacksonException;
@@ -60,12 +61,15 @@ class TreeDataTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, tree = true)
+            @DictTree
+            @DictText(value = DICT_TYPE)
             private String userType;
-            @DictText(value = DICT_TYPE, tree = true)
+            @DictTree
+            @DictText(value = DICT_TYPE)
             private String userType1;
+            @DictTree
             @DictArray(toText = false)
-            @DictText(value = DICT_TYPE, tree = true)
+            @DictText(value = DICT_TYPE)
             private String userType3;
         }
         final Bean bean = new Bean("1", "3-3", "1-1,1-2,1-3,2-1,2-2,2-3,3-1,3-2,3-3,3-4");
