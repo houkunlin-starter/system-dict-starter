@@ -1,8 +1,8 @@
 package com.houkunlin.dict.common.bean;
 
-import com.houkunlin.dict.annotation.Array;
-import com.houkunlin.dict.enums.DictBoolType;
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.enums.DictBoolType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,13 +31,16 @@ public class User {
     @DictText("UserType")
     private Integer type;
     /** 用户类型 */
-    @DictText(value = "UserType", array = @Array)
+    @DictArray
+    @DictText(value = "UserType")
     private String typeArrays0;
     /** 用户类型 */
-    @DictText(value = "UserType", array = @Array(toText = false))
+    @DictArray(toText = false)
+    @DictText(value = "UserType")
     private String typeArrays1;
     /** 用户类型 */
-    @DictText(value = "UserType", array = @Array(toText = false), replace = DictBoolType.YES)
+    @DictArray(toText = false)
+    @DictText(value = "UserType", replace = DictBoolType.YES)
     private String typeArrays2;
     /** 用户类型 */
     @DictText(enums = UserType.class)

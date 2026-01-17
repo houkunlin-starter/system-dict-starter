@@ -2,7 +2,7 @@ package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.SystemDictAutoConfiguration;
-import com.houkunlin.dict.annotation.Array;
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.json.DictWriter;
@@ -52,9 +52,9 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
     @Getter
     protected final String outFieldName;
     /**
-     * 字典值内容是否是一个数组内容的配置信息。字典注解对象的 array 字段属性内容
+     * 字典值内容是否是一个数组内容的配置信息。字典注解对象的 dictArray 字段属性内容
      */
-    protected final Array array;
+    protected final DictArray dictArray;
     /**
      * {@link #beanFieldClass} 是否是一个集合对象。
      */
@@ -82,18 +82,18 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
      * @param beanClass           数据类 class
      * @param beanFieldClass      数据类的字段类型 class
      * @param beanFieldName       数据类字段名称
-     * @param array               字典值的数组分割配置
+     * @param dictArray               字典值的数组分割配置
      * @param annotationFieldName 注解配置的输出字段名称
      */
-    public DictValueSerializer(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, Array array, String annotationFieldName) {
+    public DictValueSerializer(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictArray dictArray, String annotationFieldName) {
         this.beanClass = beanClass;
         this.beanFieldClass = beanFieldClass;
         this.isIterable = Iterable.class.isAssignableFrom(beanFieldClass);
         this.isArray = beanFieldClass.isArray();
         this.isCharSequence = CharSequence.class.isAssignableFrom(beanFieldClass);
         this.beanFieldName = beanFieldName;
-        this.array = array;
-        this.isNeedSpiltValue = StringUtils.hasText(array.split());
+        this.dictArray = dictArray;
+        this.isNeedSpiltValue = dictArray != null && StringUtils.hasText(dictArray.split());
         this.outFieldName = getOutFieldName(annotationFieldName, beanFieldName);
         this.defaultDictTextResult = obtainResult(Collections.emptyList());
     }
@@ -137,7 +137,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         }
 
         if (isCharSequence) {
-            final String[] splitValue = fieldValueString.split(array.split());
+            final String[] splitValue = dictArray != null ? fieldValueString.split(dictArray.split()) : new String[]{fieldValueString};
             return obtainResult(getDictTitles(bean, Arrays.asList(splitValue), false));
         }
 
@@ -164,7 +164,11 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
             } else {
                 dictValueText = obtainDictValueText(bean, String.valueOf(fieldValueItem));
             }
-            if (!array.ignoreNull() || StringUtils.hasText(dictValueText)) {
+            if (dictArray == null) {
+                if (StringUtils.hasText(dictValueText)) {
+                    result.add(dictValueText);
+                }
+            } else if (!dictArray.ignoreNull() || StringUtils.hasText(dictValueText)) {
                 result.add(dictValueText);
             }
         }
@@ -173,11 +177,17 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
     }
 
     public Object obtainResult(final List<String> dictTexts) {
-        if (array.toText()) {
+        if (dictArray == null) {
             if (dictTexts.isEmpty()) {
                 return null;
             }
-            return String.join(array.joinSeparator(), dictTexts);
+            return String.join("、", dictTexts);
+        }
+        if (dictArray.toText()) {
+            if (dictTexts.isEmpty()) {
+                return null;
+            }
+            return String.join(dictArray.joinSeparator(), dictTexts);
         }
 
         return dictTexts;

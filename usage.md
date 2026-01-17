@@ -242,7 +242,8 @@ System.out.println(value); // {"userType":"1","typeText":"普通用户"}
 @Data
 @AllArgsConstructor
 class Bean {
-    @DictText(value = "PeopleType", array = @Array(split = ","))
+    @DictArray(split = ",")
+    @DictText(value = "PeopleType")
     private String userType;
 }
 final Bean bean = new Bean("0,1");
@@ -272,7 +273,8 @@ System.out.println(value); // {"userType":["0","1"],"userTypeText":"系统管理
 @Data
 @AllArgsConstructor
 class Bean {
-    @DictText(value = "PeopleType", array = @Array(toText = false))
+    @DictArray(toText = false)
+    @DictText(value = "PeopleType")
     private List<String> userType;
 }
 final Bean bean = new Bean(Arrays.asList("0", "1"));

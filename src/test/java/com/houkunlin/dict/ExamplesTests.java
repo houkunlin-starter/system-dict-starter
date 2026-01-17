@@ -1,13 +1,12 @@
 package com.houkunlin.dict;
 
-import tools.jackson.databind.ObjectMapper;
+import com.houkunlin.dict.annotation.DictArray;
+import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.bean.DictValue;
 import com.houkunlin.dict.common.bean.User;
 import com.houkunlin.dict.common.bean.User1;
 import com.houkunlin.dict.common.bean.UserType;
-import com.houkunlin.dict.annotation.Array;
-import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.notice.RefreshDictEvent;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import com.houkunlin.dict.notice.RefreshDictValueEvent;
@@ -17,11 +16,12 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -239,7 +239,8 @@ class ExamplesTests {
         private String city1;
         @DictText(value = "City", tree = true)
         private String city2;
-        @DictText(value = "City", tree = true, array = @Array(toText = false))
+        @DictArray(toText = false)
+        @DictText(value = "City", tree = true)
         private String city3;
     }
 }

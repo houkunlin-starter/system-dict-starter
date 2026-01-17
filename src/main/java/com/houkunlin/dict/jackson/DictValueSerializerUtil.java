@@ -1,6 +1,7 @@
 package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import lombok.Getter;
 
@@ -19,32 +20,32 @@ public class DictValueSerializerUtil {
      */
     protected static final ConcurrentHashMap<String, DictValueSerializerDefaultImpl> CACHE = new ConcurrentHashMap<>();
 
-    public static DictValueSerializerDefaultImpl getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> fieldTypeRawClass, final String fieldName, final DictText annotation) {
-        final String cacheKey = cacheKey(fieldTypeRawClass, fieldName, annotation);
+    public static DictValueSerializerDefaultImpl getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> fieldTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray) {
+        final String cacheKey = cacheKey(fieldTypeRawClass, fieldName, annotation, dictArray);
 
         // 直接使用系统字典对象作为字段类型，需要进行一个特殊的处理
         if (DictEnum.class.isAssignableFrom(fieldTypeRawClass)) {
             final Class<? extends DictEnum<?>> aClass = (Class<? extends DictEnum<?>>) fieldTypeRawClass;
             // @DictText 注解目前仅对 字段、方法 起作用，因此这个条件判断的内容一定是会执行的
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, new Class[]{aClass})
+                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, dictArray, new Class[]{aClass})
             );
         }
 
         final Class<? extends DictEnum<?>>[] enums = (Class<? extends DictEnum<?>>[]) annotation.enums();
         if (enums.length > 0) {
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, enums)
+                new DictValueSerializerEnumsImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, dictArray, enums)
             );
         }
 
         return CACHE.computeIfAbsent(cacheKey, key ->
-            new DictValueSerializerDefaultImpl(beanClazz, fieldTypeRawClass, fieldName, annotation)
+            new DictValueSerializerDefaultImpl(beanClazz, fieldTypeRawClass, fieldName, annotation, dictArray)
         );
     }
 
-    private static String cacheKey(final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation) {
-        return javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode();
+    private static String cacheKey(final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray) {
+        return javaTypeRawClass.getName() + ":" + fieldName + annotation.hashCode() + (dictArray == null ? "" : dictArray.hashCode());
     }
 
     /**
@@ -62,6 +63,10 @@ public class DictValueSerializerUtil {
         if (annotation == null) {
             return null;
         }
-        return getDictTextValueSerializer(beanClazz, field.getType(), field.getName(), annotation);
+        DictArray dictArray = field.getAnnotation(DictArray.class);
+        if (dictArray != null && dictArray.split().isEmpty()) {
+            dictArray = null;
+        }
+        return getDictTextValueSerializer(beanClazz, field.getType(), field.getName(), annotation, dictArray);
     }
 }

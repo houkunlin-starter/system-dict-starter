@@ -3,15 +3,20 @@ package com.houkunlin.dict.annotation;
 import java.lang.annotation.*;
 
 /**
- * 字典字段的字符串分隔
+ * 字典字段的字符串分隔，数据字典分割成数组配置。
+ * 用在字段是字符串时，并且字段使用了特定的分隔符来存储多个字典值。
+ * 例如：
+ * <p>userType = "1,2,3,4" 可配置 {@link DictArray#split()} = "," 进行分割</p>
+ * <p>userType301 = Arrays.asList("0", "1", "3", "0", "0", "2") 可配置 {@link DictArray#toText()} = false 字典文本输出成数组</p>
+ *
  *
  * @author HouKunLin
- * @since 1.4.3
+ * @since 2.0.0
  */
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Array {
+public @interface DictArray {
     /**
      * 是否分隔字段值来转换字典。此值只对字段为字符串类型的生效，当此值为 空字符串 的时候不生效（即字符串不分割）
      *

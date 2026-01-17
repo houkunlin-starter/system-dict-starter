@@ -1,9 +1,9 @@
 package com.houkunlin.dict;
 
+import com.houkunlin.dict.annotation.DictArray;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import com.houkunlin.dict.common.bean.PeopleType;
-import com.houkunlin.dict.annotation.Array;
 import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.annotation.DictText;
 import lombok.AllArgsConstructor;
@@ -123,7 +123,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array)
+            @DictArray
+            @DictText(enums = PeopleType.class)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(Arrays.asList(PeopleType.ADMIN, PeopleType.USER));
@@ -138,7 +139,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(ignoreNull = false))
+            @DictArray(ignoreNull = false)
+            @DictText(enums = PeopleType.class)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(Arrays.asList(null, PeopleType.ADMIN, PeopleType.USER));
@@ -153,7 +155,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(toText = false))
+            @DictArray(toText = false)
+            @DictText(enums = PeopleType.class)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(Arrays.asList(null, PeopleType.ADMIN, PeopleType.USER));
@@ -168,7 +171,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictBoolType.YES)
+            @DictArray(toText = false)
+            @DictText(enums = PeopleType.class, replace = DictBoolType.YES)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(Arrays.asList(null, PeopleType.ADMIN, PeopleType.USER));
@@ -183,7 +187,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array)
+            @DictArray
+            @DictText(enums = PeopleType.class)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(null);
@@ -198,7 +203,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(ignoreNull = false))
+            @DictArray(ignoreNull = false)
+            @DictText(enums = PeopleType.class)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(null);
@@ -213,7 +219,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(toText = false))
+            @DictArray(toText = false)
+            @DictText(enums = PeopleType.class)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(null);
@@ -228,7 +235,8 @@ class DictEnumUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(enums = PeopleType.class, array = @Array(toText = false), replace = DictBoolType.YES)
+            @DictArray(toText = false)
+            @DictText(enums = PeopleType.class, replace = DictBoolType.YES)
             private List<PeopleType> userType;
         }
         final Bean bean = new Bean(null);

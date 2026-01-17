@@ -1,6 +1,6 @@
 package com.houkunlin.dict;
 
-import com.houkunlin.dict.annotation.Array;
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.annotation.DictText;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SystemDictScan
-class ArrayUsageTest {
+class DictArrayUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired
     private ObjectMapper objectMapper;
@@ -32,7 +32,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array)
+            @DictArray
+            @DictText(value = DICT_TYPE)
             private String userType;
         }
         final Bean bean = new Bean("0,1");
@@ -47,7 +48,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(split = "|"))
+            @DictArray(split = "|")
+            @DictText(value = DICT_TYPE)
             private String userType;
         }
         final Bean bean = new Bean("0|1");
@@ -62,7 +64,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false))
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE)
             private String userType;
         }
         final Bean bean = new Bean("0,1");
@@ -77,7 +80,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictBoolType.YES)
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean("0,1");
@@ -92,7 +96,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array)
+            @DictArray
+            @DictText(value = DICT_TYPE)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -107,7 +112,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(split = "|"))
+            @DictArray(split = "|")
+            @DictText(value = DICT_TYPE)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -122,7 +128,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false))
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -137,7 +144,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictBoolType.YES)
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE, replace = DictBoolType.YES)
             private String userType;
         }
         final Bean bean = new Bean(null);
@@ -152,7 +160,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array)
+            @DictArray
+            @DictText(value = DICT_TYPE)
             private List<String> userType;
         }
         final Bean bean = new Bean(Arrays.asList("0", "1"));
@@ -167,7 +176,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(ignoreNull = false))
+            @DictArray(ignoreNull = false)
+            @DictText(value = DICT_TYPE)
             private List<String> userType;
         }
         final Bean bean = new Bean(Arrays.asList("-1", "0", "1"));
@@ -182,7 +192,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false))
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE)
             private List<String> userType;
         }
         final Bean bean = new Bean(Arrays.asList("-1", "0", "1"));
@@ -197,7 +208,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictBoolType.YES)
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE, replace = DictBoolType.YES)
             private List<String> userType;
         }
         final Bean bean = new Bean(Arrays.asList("-1", "0", "1"));
@@ -212,7 +224,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array)
+            @DictArray
+            @DictText(value = DICT_TYPE)
             private List<String> userType;
         }
         final Bean bean = new Bean(null);
@@ -227,7 +240,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(ignoreNull = false))
+            @DictArray(ignoreNull = false)
+            @DictText(value = DICT_TYPE)
             private List<String> userType;
         }
         final Bean bean = new Bean(null);
@@ -242,7 +256,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false))
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE)
             private List<String> userType;
         }
         final Bean bean = new Bean(null);
@@ -257,7 +272,8 @@ class ArrayUsageTest {
         @Data
         @AllArgsConstructor
         class Bean {
-            @DictText(value = DICT_TYPE, array = @Array(toText = false), replace = DictBoolType.YES)
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE, replace = DictBoolType.YES)
             private List<String> userType;
         }
         final Bean bean = new Bean(null);

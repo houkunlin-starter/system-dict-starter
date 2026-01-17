@@ -1,10 +1,10 @@
 package com.houkunlin.dict;
 
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.bean.DictType;
 import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
-import com.houkunlin.dict.annotation.Array;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import lombok.AllArgsConstructor;
@@ -64,7 +64,8 @@ class TreeDataTest {
             private String userType;
             @DictText(value = DICT_TYPE, tree = true)
             private String userType1;
-            @DictText(value = DICT_TYPE, tree = true, array = @Array(toText = false))
+            @DictArray(toText = false)
+            @DictText(value = DICT_TYPE, tree = true)
             private String userType3;
         }
         final Bean bean = new Bean("1", "3-3", "1-1,1-2,1-3,2-1,2-2,2-3,3-1,3-2,3-3,3-4");

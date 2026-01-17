@@ -1,5 +1,6 @@
 package com.houkunlin.dict.jackson;
 
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import tools.jackson.databind.BeanDescription;
 import tools.jackson.databind.JavaType;
@@ -27,7 +28,11 @@ public class DictValueSerializerModifier extends ValueSerializerModifier {
 
             final DictText annotation = beanProperty.getAnnotation(DictText.class);
             if (annotation != null) {
-                DictValueSerializerDefaultImpl valueSerializer = getDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation);
+                DictArray dictArray = beanProperty.getAnnotation(DictArray.class);
+                if (dictArray != null && dictArray.split().isEmpty()) {
+                    dictArray = null;
+                }
+                DictValueSerializerDefaultImpl valueSerializer = getDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation, dictArray);
                 beanProperty.assignSerializer(valueSerializer);
                 beanProperty.assignNullSerializer(valueSerializer);
             }

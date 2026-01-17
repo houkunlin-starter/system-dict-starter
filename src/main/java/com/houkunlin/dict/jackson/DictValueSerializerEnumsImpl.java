@@ -3,6 +3,7 @@ package com.houkunlin.dict.jackson;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -45,8 +46,8 @@ public class DictValueSerializerEnumsImpl extends DictValueSerializerDefaultImpl
      * @param dictText      实体类字段上的 {@link DictText} 注解对象
      * @param enumsClass    实体类字段是一个特定枚举对象
      */
-    public DictValueSerializerEnumsImpl(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, Class<? extends DictEnum<?>>[] enumsClass) {
-        super(beanClass, beanFieldClass, beanFieldName, dictText);
+    public DictValueSerializerEnumsImpl(Class<?> beanClass, Class<?> beanFieldClass, String beanFieldName, DictText dictText, DictArray dictArray, Class<? extends DictEnum<?>>[] enumsClass) {
+        super(beanClass, beanFieldClass, beanFieldName, dictText, dictArray);
         this.enumsClass = enumsClass;
         this.isDictEnum = DictEnum.class.isAssignableFrom(beanFieldClass);
         if (this.enumsClass.length == 0) {

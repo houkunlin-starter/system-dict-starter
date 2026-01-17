@@ -110,10 +110,12 @@ class Bean {
     @DictText("PeopleType")
     private String userType1 = "1";
 
-    @DictText(value = "PeopleType", array = @Array)
+    @DictArray
+    @DictText(value = "PeopleType")
     private String userType2 = "1,2,3";
 
-    @DictText(value = "PeopleType", array = @Array(toText = false))
+    @DictArray(toText = false)
+    @DictText(value = "PeopleType")
     private List<String> userType3 = Arrays.asList("1", "2", "3");
 }
 ```

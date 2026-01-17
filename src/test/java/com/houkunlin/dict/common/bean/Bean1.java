@@ -1,8 +1,8 @@
 package com.houkunlin.dict.common.bean;
 
-import com.houkunlin.dict.annotation.Array;
-import com.houkunlin.dict.enums.DictBoolType;
+import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.enums.DictBoolType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,34 +17,41 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Bean1 {
-    @DictText(value = "PeopleType", array = @Array)
+    @DictArray
+    @DictText(value = "PeopleType")
     private String userType = "0,1";
 
     @DictText("PeopleType")
     private String userType1 = "1";
 
-    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array)
+    @DictArray
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
     private String userType3 = "0,1,3,0,0,2";
 
     @DictText(value = "PeopleType", enums = {PeopleType.class})
     private List<String> userType301 = Arrays.asList("0", "1", "3", "0", "0", "2");
 
-    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array)
+    @DictArray
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
     private List<String> userType302 = Arrays.asList("0", "1", "3", "0", "0", "2");
 
-    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array(toText = false))
+    @DictArray(toText = false)
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
     private List<String> userType303 = Arrays.asList("0", "1", "3", "0", "0", "2");
 
     @DictText(value = "PeopleType", enums = {PeopleType.class})
     private String[] userType304 = new String[]{"0", "1", "3", "0", "0", "2"};
 
-    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array)
+    @DictArray
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
     private String[] userType305 = new String[]{"0", "1", "3", "0", "0", "2"};
 
-    @DictText(value = "PeopleType", enums = {PeopleType.class}, array = @Array(toText = false))
+    @DictArray(toText = false)
+    @DictText(value = "PeopleType", enums = {PeopleType.class})
     private String[] userType306 = new String[]{"0", "1", "3", "0", "0", "2"};
 
-    @DictText(enums = {PeopleType.class}, array = @Array)
+    @DictArray
+    @DictText(enums = {PeopleType.class})
     private int userType31 = 11;
 
     @DictText(enums = {PeopleType.class})
@@ -62,10 +69,12 @@ public class Bean1 {
     @DictText
     private String accidentType2 = "0";
 
-    @DictText(nullable = DictBoolType.YES, array = @Array)
+    @DictArray
+    @DictText(nullable = DictBoolType.YES)
     private String accidentType21 = "0";
 
-    @DictText(nullable = DictBoolType.NO, array = @Array(split = "|", joinSeparator = ","))
+    @DictArray(split = "|", joinSeparator = ",")
+    @DictText(nullable = DictBoolType.NO)
     private String accidentType22 = "0";
 
     private PeopleType peopleType = PeopleType.ADMIN;
