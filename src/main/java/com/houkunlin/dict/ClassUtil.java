@@ -1,8 +1,8 @@
 package com.houkunlin.dict;
 
-import com.houkunlin.dict.bytecode.BytecodeClassLoader;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 
 /**
@@ -12,19 +12,11 @@ import java.lang.reflect.Constructor;
  */
 @Slf4j
 public class ClassUtil {
-    /**
-     * 自定义的字节码类加载器
-     */
-    public static final BytecodeClassLoader CLASS_LOADER;
 
     /**
      * 私有构造方法
      */
     private ClassUtil() {
-    }
-
-    static {
-        CLASS_LOADER = new BytecodeClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     /**
@@ -53,12 +45,11 @@ public class ClassUtil {
      * @param b        字节码
      * @return 类对象
      */
-    public static Class<?> define(Class<?> neighbor, String name, byte[] b) {
-        Class<?> re = ClassUtilJava11.define(neighbor, name, b);
-        if (re != null) {
-            return re;
-        }
-        return CLASS_LOADER.define(name, b);
+    public static Class<?> define(Class<?> neighbor, String name, byte[] b) throws IllegalAccessException {
+        ClassUtil.class.getModule().addReads(neighbor.getModule());
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandles.Lookup prvlookup = MethodHandles.privateLookupIn(neighbor, lookup);
+        return prvlookup.defineClass(b);
     }
 
     /**
@@ -69,10 +60,6 @@ public class ClassUtil {
      * @throws ClassNotFoundException 加载类失败异常
      */
     public static Class<?> forName(String className) throws ClassNotFoundException {
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException ignore) {
-        }
-        return Class.forName(className, true, CLASS_LOADER);
+        return Class.forName(className);
     }
 }
