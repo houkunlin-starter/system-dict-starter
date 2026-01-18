@@ -4,7 +4,6 @@ import com.houkunlin.dict.bytecode.IDictConverterGenerate;
 import com.houkunlin.dict.bytecode.IDictConverterGenerateAsmImpl;
 import com.houkunlin.dict.bytecode.IDictConverterGenerateJavassistImpl;
 import com.houkunlin.dict.provider.SystemDictProvider;
-import javassist.ClassPool;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -52,7 +51,7 @@ public class SystemDictRegistrarAutoConfiguration {
      * @return IDictConverterGenerate
      */
     @ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "JAVASSIST")
-    @ConditionalOnClass(ClassPool.class)
+    @ConditionalOnClass(name = "javassist.ClassPool")
     @ConditionalOnMissingBean
     @Bean
     public IDictConverterGenerate dictConverterGenerateJavassist() {
