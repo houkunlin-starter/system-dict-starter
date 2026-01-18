@@ -71,6 +71,7 @@ public interface IDictValueSerializer {
         if (dictTypeKeyHandler == null) {
             return dictText.value();
         }
+        // 框架不考虑这个值为 null 的问题了，如果你没有数据，请自己直接返回 dictText.value() 值做回退处理
         return dictTypeKeyHandler.getDictType(bean, fieldName, dictText);
     }
 
