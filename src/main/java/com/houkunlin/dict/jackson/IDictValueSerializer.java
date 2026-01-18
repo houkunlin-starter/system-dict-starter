@@ -57,21 +57,33 @@ public interface IDictValueSerializer {
     /**
      * 获取字典类型
      * <p>
-     * 该方法用于获取字典类型代码，优先使用字典类型键处理器来动态计算字典类型，
-     * 如果字典类型键处理器为 null，则直接使用 DictText 注解中指定的字典类型。
+     * 该方法用于获取字典类型代码，实现逻辑如下：
+     * 1. 首先获取字典类型键处理器（DictTypeKeyHandler）
+     * 2. 如果字典类型键处理器为 null，则直接使用 DictText 注解中指定的字典类型
+     * 3. 如果字典类型键处理器不为 null，则调用其 getDictType 方法动态计算字典类型
+     * 4. 如果字典类型键处理器返回 null，则回退到使用 DictText 注解中指定的字典类型
+     * </p>
+     * <p>
+     * 该方法支持运行时动态计算字典类型，当字典类型需要根据上下文信息确定时，
+     * 可以通过实现自定义的 DictTypeKeyHandler 来实现动态计算逻辑。同时，
+     * 该方法还提供了回退机制，确保即使动态计算失败也能使用默认的字典类型。
      * </p>
      *
-     * @param bean      目标对象
-     * @param fieldName 字段名称
-     * @param dictText  字典文本注解
-     * @return 字典类型代码
+     * @param bean      目标对象，用于动态计算字典类型时提供上下文信息
+     * @param fieldName 字段名称，用于动态计算字典类型时提供字段信息
+     * @param dictText  字典文本注解，包含默认的字典类型配置
+     * @return 字典类型代码，可能是动态计算的或默认的
      */
     default String getDictType(Object bean, String fieldName, DictText dictText) {
         DictTypeKeyHandler<Object> dictTypeKeyHandler = getDictTypeKeyHandler();
         if (dictTypeKeyHandler == null) {
             return dictText.value();
         }
-        return dictTypeKeyHandler.getDictType(bean, fieldName, dictText);
+        String dictType = dictTypeKeyHandler.getDictType(bean, fieldName, dictText);
+        if (dictType != null) {
+            return dictType;
+        }
+        return dictText.value();
     }
 
     /**
