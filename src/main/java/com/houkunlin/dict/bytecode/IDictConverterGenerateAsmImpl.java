@@ -193,7 +193,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
     private void visitConstruction(final ClassWriter classWriter,
                                    final String converterClassName, final String converterClassNameDescriptor,
                                    final String dictEnumClassNameDescriptor) {
-        classWriter.visit(V1_8, ACC_PUBLIC | ACC_SUPER, converterClassName, "Ljava/lang/Object;L" + CONVERTER_CLASS_NAME + "<Ljava/lang/String;" + dictEnumClassNameDescriptor + ">;", "java/lang/Object", new String[]{CONVERTER_CLASS_NAME});
+        classWriter.visit(V17, ACC_PUBLIC | ACC_SUPER, converterClassName, "Ljava/lang/Object;L" + CONVERTER_CLASS_NAME + "<Ljava/lang/String;" + dictEnumClassNameDescriptor + ">;", "java/lang/Object", new String[]{CONVERTER_CLASS_NAME});
         // 构造方法
         final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
         methodVisitor.visitCode();

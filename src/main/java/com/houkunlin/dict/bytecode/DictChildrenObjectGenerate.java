@@ -56,7 +56,7 @@ public class DictChildrenObjectGenerate {
     private static byte[] getClassBytes(final String className, final String classNameDescriptor, final String supperClazzName, final String... fieldNames) throws Exception {
         final ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
-        classWriter.visit(V1_8, ACC_PUBLIC | ACC_SUPER, className, null, supperClazzName, null);
+        classWriter.visit(V17, ACC_PUBLIC | ACC_SUPER, className, null, supperClazzName, null);
 
         final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
         methodVisitor.visitCode();

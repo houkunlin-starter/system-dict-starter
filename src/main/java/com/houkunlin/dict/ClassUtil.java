@@ -86,6 +86,10 @@ public class ClassUtil {
      * @throws ClassNotFoundException 加载类失败异常
      */
     public static Class<?> forName(String className) throws ClassNotFoundException {
+        Class<?> aClass = Class.forName(ClassUtil.class.getModule(), className);
+        if (aClass != null) {
+            return aClass;
+        }
         return Class.forName(className);
     }
 }
