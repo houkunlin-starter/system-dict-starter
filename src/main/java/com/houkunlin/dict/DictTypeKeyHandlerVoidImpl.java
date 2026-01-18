@@ -1,4 +1,4 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict;
 
 import com.houkunlin.dict.annotation.DictText;
 
@@ -12,7 +12,7 @@ import com.houkunlin.dict.annotation.DictText;
  * @author HouKunLin
  * @since 1.4.7
  */
-public class VoidDictTypeKeyHandler implements DictTypeKeyHandler<Object> {
+public class DictTypeKeyHandlerVoidImpl implements DictTypeKeyHandler<Object> {
     /**
      * 获取字典类型。
      * <p>

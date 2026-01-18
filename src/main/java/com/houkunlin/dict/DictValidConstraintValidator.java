@@ -1,6 +1,5 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict;
 
-import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.annotation.DictValid;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

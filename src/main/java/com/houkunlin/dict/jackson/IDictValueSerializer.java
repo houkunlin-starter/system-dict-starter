@@ -1,11 +1,11 @@
 package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.DictTypeKeyHandler;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.NullStrategy;
-import com.houkunlin.dict.json.DictTypeKeyHandler;
 import org.springframework.util.ObjectUtils;
 import tools.jackson.core.JsonGenerator;
 

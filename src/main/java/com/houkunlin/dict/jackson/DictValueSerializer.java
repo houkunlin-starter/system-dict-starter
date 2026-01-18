@@ -1,13 +1,9 @@
 package com.houkunlin.dict.jackson;
 
-import com.houkunlin.dict.ClassUtil;
-import com.houkunlin.dict.SystemDictAutoConfiguration;
+import com.houkunlin.dict.*;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.json.DictTypeKeyHandler;
-import com.houkunlin.dict.json.DictWriter;
-import com.houkunlin.dict.json.VoidDictTypeKeyHandler;
 import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -30,10 +26,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 @Getter
 public abstract class DictValueSerializer extends ValueSerializer<Object> {
-    /**
-     * 字典值写入器，用于将字典值写入到JSON生成器
-     */
-    public static final DictWriter DICT_WRITER = new DictWriter();
     /**
      * 日志对象
      */
@@ -153,7 +145,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         this.useRawValueType = SystemDictAutoConfiguration.isRawValue();
         this.useReplaceFieldValue = dictText.replace().getValue(SystemDictAutoConfiguration::isReplaceValue);
         this.textNullable = dictText.nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull);
-        if (dictText.dictTypeHandler() == VoidDictTypeKeyHandler.class) {
+        if (dictText.dictTypeHandler() == DictTypeKeyHandlerVoidImpl.class) {
             this.dictTypeKeyHandler = null;
         } else {
             this.dictTypeKeyHandler = getDictTypeKeyHandler(dictText);
@@ -172,7 +164,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static DictTypeKeyHandler<Object> getDictTypeKeyHandler(DictText dictText) {
         Class<? extends DictTypeKeyHandler> dictTypeHandlerClazz = dictText.dictTypeHandler();
-        if (dictTypeHandlerClazz == VoidDictTypeKeyHandler.class) {
+        if (dictTypeHandlerClazz == DictTypeKeyHandlerVoidImpl.class) {
             return null;
         }
         DictTypeKeyHandler<Object> dictTypeKeyHandler = SystemDictAutoConfiguration.getBean(dictTypeHandlerClazz);
@@ -210,7 +202,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
             if (useRawValueType) {
                 gen.writePOJO(value);
             } else {
-                DICT_WRITER.writeDictValueToText(gen, value, dictText);
+                DictValueWriter.writeDictValueToText(gen, value, dictText);
             }
             gen.writeName(outputFieldName);
         }
@@ -220,7 +212,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
             if (useRawValueType) {
                 gen.writePOJO(value);
             } else {
-                DICT_WRITER.writeDictValueToText(gen, value, dictText);
+                DictValueWriter.writeDictValueToText(gen, value, dictText);
             }
             gen.writeName("text");
         }

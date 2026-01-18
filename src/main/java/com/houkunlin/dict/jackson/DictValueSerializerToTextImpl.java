@@ -1,9 +1,9 @@
 package com.houkunlin.dict.jackson;
 
+import com.houkunlin.dict.DictTypeKeyHandler;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.json.DictTypeKeyHandler;
 import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;

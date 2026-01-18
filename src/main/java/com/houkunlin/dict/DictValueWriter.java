@@ -1,6 +1,5 @@
-package com.houkunlin.dict.json;
+package com.houkunlin.dict;
 
-import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.annotation.DictText;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
@@ -31,7 +30,13 @@ import java.util.Collection;
  * @author HouKunLin
  * @since 1.7.0
  */
-public class DictWriter {
+public class DictValueWriter {
+
+    /**
+     * 私有构造方法，防止实例化
+     */
+    private DictValueWriter() {
+    }
 
     /**
      * 写入字典值到JSON生成器
@@ -55,7 +60,7 @@ public class DictWriter {
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
      * @throws JacksonException JSON序列化异常
      */
-    public void writeDictValueToText(JsonGenerator gen, Object value, DictText dictText) throws JacksonException {
+    public static void writeDictValueToText(JsonGenerator gen, Object value, DictText dictText) throws JacksonException {
         if (value == null) {
             gen.writeString("");
         } else if (value.getClass().isArray()) {
@@ -89,7 +94,7 @@ public class DictWriter {
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
      * @throws JacksonException JSON序列化异常
      */
-    private void writeDictValueToText(JsonGenerator gen, Object[] value, DictText dictText) throws JacksonException {
+    private static void writeDictValueToText(JsonGenerator gen, Object[] value, DictText dictText) throws JacksonException {
         gen.writeStartArray(value);
         for (Object o : value) {
             writeDictValueToText(gen, o, dictText);
@@ -109,7 +114,7 @@ public class DictWriter {
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
      * @throws JacksonException JSON序列化异常
      */
-    private void writeDictValueToText(JsonGenerator gen, Collection<?> value, DictText dictText) throws JacksonException {
+    private static void writeDictValueToText(JsonGenerator gen, Collection<?> value, DictText dictText) throws JacksonException {
         gen.writeStartArray(value);
         for (Object o : value) {
             writeDictValueToText(gen, o, dictText);
@@ -129,7 +134,7 @@ public class DictWriter {
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
      * @throws JacksonException JSON序列化异常
      */
-    private void writeDictValueToText(JsonGenerator gen, Iterable<?> value, DictText dictText) throws JacksonException {
+    private static void writeDictValueToText(JsonGenerator gen, Iterable<?> value, DictText dictText) throws JacksonException {
         gen.writeStartArray(value);
         for (Object o : value) {
             writeDictValueToText(gen, o, dictText);
