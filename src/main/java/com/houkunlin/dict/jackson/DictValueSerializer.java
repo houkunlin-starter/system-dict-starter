@@ -5,7 +5,6 @@ import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.enums.NullStrategy;
 import com.houkunlin.dict.json.DictTypeKeyHandler;
 import com.houkunlin.dict.json.DictWriter;
 import com.houkunlin.dict.json.VoidDictTypeKeyHandler;
@@ -25,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
  * </p>
  *
  * @author HouKunLin
- * @since 1.0
+ * @since 2.0.0
  */
 @Getter
 public abstract class DictValueSerializer extends ValueSerializer<Object> {
@@ -80,42 +79,6 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
      */
     protected final DictTree dictTree;
 
-    // ==== DictArray 默认配置，这个 DictArray 可能为空，但是一些场景需要预设默认值
-    /**
-     * 字典数组分隔符，用于分割字符串形式的数组值
-     */
-    protected final String dictArraySplit;
-    /**
-     * 字典数组是否转换为文本
-     */
-    protected final boolean dictArrayToText;
-    /**
-     * 字典数组文本分隔符，用于连接多个字典文本
-     */
-    protected final String dictArrayDelimiter;
-    /**
-     * 字典数组空值处理策略
-     */
-    protected final NullStrategy dictArrayNullStrategy;
-
-    // ==== DictTree 默认配置，这个 DictTree 可能为空，但是一些场景需要预设默认值
-    /**
-     * 字典树最大深度
-     */
-    protected final int dictTreeMaxDepth;
-    /**
-     * 字典树是否转换为文本
-     */
-    protected final boolean dictTreeToText;
-    /**
-     * 字典树文本分隔符，用于连接字典树的层级文本
-     */
-    protected final String dictTreeDelimiter;
-    /**
-     * 字典树空值处理策略
-     */
-    protected final NullStrategy dictTreeNullStrategy;
-
     // ==== 输出配置
     /**
      * 输出字段名称
@@ -132,14 +95,6 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
      * </p>
      */
     protected final boolean useMap;
-
-    /**
-     * 是否使用数组格式输出
-     * <p>
-     * 如果为true，字典值将以数组格式输出，适用于多值情况
-     * </p>
-     */
-    protected final boolean useArray;
 
     /**
      * 是否使用原始值类型
@@ -193,7 +148,6 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         this.dictTree = dictTree;
         this.outputFieldName = dictText.fieldName().isBlank() ? fieldName + "Text" : dictText.fieldName();
         this.useMap = dictText.mapValue().getValue(SystemDictAutoConfiguration::isMapValue);
-        this.useArray = dictArray != null && !dictArray.toText();
         this.useRawValueType = SystemDictAutoConfiguration.isRawValue();
         this.useReplaceFieldValue = dictText.replace().getValue(SystemDictAutoConfiguration::isReplaceValue);
         this.textNullable = dictText.nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull);
@@ -201,30 +155,6 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
             this.dictTypeKeyHandler = null;
         } else {
             this.dictTypeKeyHandler = getDictTypeKeyHandler(dictText);
-        }
-        if (dictArray == null) {
-            // 与 DictArray 注解的默认值保持一致
-            this.dictArraySplit = "";
-            this.dictArrayToText = false;
-            this.dictArrayDelimiter = "、";
-            this.dictArrayNullStrategy = NullStrategy.NULL;
-        } else {
-            this.dictArraySplit = dictArray.split();
-            this.dictArrayToText = dictArray.toText();
-            this.dictArrayDelimiter = dictArray.delimiter();
-            this.dictArrayNullStrategy = dictArray.nullStrategy();
-        }
-        if (dictTree == null) {
-            // 与 DictTree 注解的默认值保持一致
-            this.dictTreeMaxDepth = -1;
-            this.dictTreeToText = false;
-            this.dictTreeDelimiter = "/";
-            this.dictTreeNullStrategy = NullStrategy.NULL;
-        } else {
-            this.dictTreeMaxDepth = dictTree.maxDepth();
-            this.dictTreeToText = dictTree.toText();
-            this.dictTreeDelimiter = dictTree.delimiter();
-            this.dictTreeNullStrategy = dictTree.nullStrategy();
         }
     }
 
@@ -258,16 +188,22 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
     }
 
     /**
-     * 转换字典值。
+     * 转换字典字段值，获取值对应字典文本。
      * <p>
      * 抽象方法，子类需要实现具体的字典值转换逻辑。
-     * 该方法将字段值转换为对应的字典文本值。
+     * 该方法将字段值转换为对应的字典文本值，支持处理各种类型的字段值，
+     * 包括基本类型、数组、集合、可迭代对象等。
+     * </p>
+     * <p>
+     * 在 {@link com.houkunlin.dict.DictUtil#transform(Object)} 方法中，
+     * 该方法被用于转换对象中含有字典文本翻译注解的字段值，
+     * 将原始字段值转换为对应的字典文本值。
      * </p>
      *
-     * @param bean       Bean 对象
-     * @param fieldValue 字段值
-     * @return 转换后的字典值
+     * @param bean       Bean 对象，用于提供上下文信息，例如在动态计算字典类型时使用
+     * @param fieldValue 字段值，需要进行字典转换的原始值
+     * @return 转换后的字典值，可能是字典文本、字典文本数组或其他转换后的形式
      */
-    public abstract Object transform(final Object bean, @Nullable final Object fieldValue);
+    public abstract Object transformFieldValue(final Object bean, @Nullable final Object fieldValue);
 
 }

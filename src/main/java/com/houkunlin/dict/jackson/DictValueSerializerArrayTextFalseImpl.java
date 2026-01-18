@@ -98,18 +98,23 @@ public class DictValueSerializerArrayTextFalseImpl extends DictValueSerializer i
     }
 
     /**
-     * 转换字典值。
+     * 转换字典字段值，获取值对应字典文本。
      * <p>
-     * 将字段值转换为字典文本数组，支持处理null值和各种类型的字段值。
+     * 实现方法，将字段值转换为对应的字典文本数组，支持处理null值和各种类型的字段值。
      * 当值为null时，根据配置返回null或空列表。
-     *</p>
+     * </p>
+     * <p>
+     * 在 {@link com.houkunlin.dict.DictUtil#transform(Object)} 方法中，
+     * 该方法被用于转换对象中含有字典文本翻译注解的字段值，
+     * 将原始字段值转换为对应的字典文本数组。
+     * </p>
      *
-     * @param bean       Bean 对象
-     * @param fieldValue 字段值
-     * @return 转换后的字典值
+     * @param bean       Bean 对象，用于提供上下文信息，例如在动态计算字典类型时使用
+     * @param fieldValue 字段值，需要进行字典转换的原始值
+     * @return 转换后的字典值，可能是字典文本数组或空列表
      */
     @Override
-    public Object transform(final Object bean, @Nullable final Object fieldValue) {
+    public Object transformFieldValue(final Object bean, @Nullable final Object fieldValue) {
         if (fieldValue == null) {
             if (textNullable) {
                 return null;

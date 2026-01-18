@@ -500,7 +500,7 @@ public class DictUtil {
             }
             final Object serialize;
             try {
-                serialize = jsonSerializer.transform(object, field.get(object));
+                serialize = jsonSerializer.transformFieldValue(object, field.get(object));
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("无法获取对象字段值", e);
             }
