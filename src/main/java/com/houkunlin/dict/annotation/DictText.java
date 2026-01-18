@@ -3,7 +3,6 @@ package com.houkunlin.dict.annotation;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.DictTypeKeyHandler;
-import com.houkunlin.dict.DictTypeKeyHandlerVoidImpl;
 import com.houkunlin.dict.enums.DictBoolType;
 
 import java.lang.annotation.*;
@@ -54,7 +53,7 @@ public @interface DictText {
      * @return 数据字典代码处理器
      * @since 1.4.7 beta 不稳定，此选项后期有可能会被删除
      */
-    Class<? extends DictTypeKeyHandler> dictTypeHandler() default DictTypeKeyHandlerVoidImpl.class;
+    Class<? extends DictTypeKeyHandler> dictTypeHandler() default DictTypeKeyHandler.class;
 
     /**
      * 显示字典文本的字段名称。

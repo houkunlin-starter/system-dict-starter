@@ -9,6 +9,7 @@ import com.houkunlin.dict.store.RemoteDictDefaultImpl;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -97,6 +98,10 @@ public class SystemDictAutoConfiguration {
             return null;
         }
         return applicationContext.getBean(beanNamesForType[0], clazz);
+    }
+
+    public static <T> ObjectProvider<T> getBeanOfType(final Class<T> clazz) {
+        return applicationContext.getBeanProvider(clazz);
     }
 
     /**

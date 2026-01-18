@@ -1,6 +1,9 @@
 package com.houkunlin.dict.jackson;
 
-import com.houkunlin.dict.*;
+import com.houkunlin.dict.ClassUtil;
+import com.houkunlin.dict.DictTypeKeyHandler;
+import com.houkunlin.dict.DictValueWriter;
+import com.houkunlin.dict.SystemDictAutoConfiguration;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
@@ -8,6 +11,7 @@ import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueSerializer;
@@ -145,7 +149,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         this.useRawValueType = SystemDictAutoConfiguration.isRawValue();
         this.useReplaceFieldValue = dictText.replace().getValue(SystemDictAutoConfiguration::isReplaceValue);
         this.textNullable = dictText.nullable().getValue(SystemDictAutoConfiguration::isTextValueDefaultNull);
-        if (dictText.dictTypeHandler() == DictTypeKeyHandlerVoidImpl.class) {
+        if (dictText.dictTypeHandler() == DictTypeKeyHandler.class) {
             this.dictTypeKeyHandler = null;
         } else {
             this.dictTypeKeyHandler = getDictTypeKeyHandler(dictText);
@@ -164,10 +168,8 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static DictTypeKeyHandler<Object> getDictTypeKeyHandler(DictText dictText) {
         Class<? extends DictTypeKeyHandler> dictTypeHandlerClazz = dictText.dictTypeHandler();
-        if (dictTypeHandlerClazz == DictTypeKeyHandlerVoidImpl.class) {
-            return null;
-        }
-        DictTypeKeyHandler<Object> dictTypeKeyHandler = SystemDictAutoConfiguration.getBean(dictTypeHandlerClazz);
+        ObjectProvider<? extends DictTypeKeyHandler> objectProvider = SystemDictAutoConfiguration.getBeanOfType(dictTypeHandlerClazz);
+        DictTypeKeyHandler<Object> dictTypeKeyHandler = objectProvider.getIfAvailable();
         if (dictTypeKeyHandler != null) {
             return dictTypeKeyHandler;
         }
