@@ -55,16 +55,16 @@ public class DictValueSerializerUtil {
 
         if (dictArray == null) {
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerArrayTextTrueImpl(fieldName, javaTypeRawClass, annotation, DEFAULT_DICT_ARRAY, dictTree)
+                new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, DEFAULT_DICT_ARRAY, dictTree)
             );
         } else if (dictArray.toText()) {
             return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerArrayTextTrueImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
+                new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
             );
         }
 
         return CACHE.computeIfAbsent(cacheKey, key ->
-            new DictValueSerializerArrayTextFalseImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
+            new DictValueSerializerToArrayImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
         );
     }
 

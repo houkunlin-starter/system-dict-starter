@@ -17,11 +17,11 @@ import java.util.*;
  * @author HouKunLin
  * @since 2.0.0
  */
-public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
+public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
     /**
      * 日志对象
      */
-    Logger logger = LoggerFactory.getLogger(IDictTransformArrayTextFalse.class);
+    Logger logger = LoggerFactory.getLogger(IDictBeanTransformToArray.class);
 
     /**
      * 转换数组文本为 false 的字典值。
@@ -35,14 +35,14 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalse(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
+    default Object transformBeanFieldValueToArray(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
-            return transformArrayTextFalse(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArray(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Collection<?> v) {
-            return transformArrayTextFalse(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Iterable<?> v) {
-            return transformArrayTextFalse(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof DictEnum<?> v) {
             return Collections.singleton(v.getTitle());
         } else if (value.getClass().isEnum()) {
@@ -53,13 +53,13 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
             return Collections.singleton("");
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
-                return transformArrayTextFalse(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+                return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
                 String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
-                return transformArrayTextFalse(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
+                return transformBeanFieldValueToArray(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
-            return transformArrayTextFalse(bean, value.toString(), fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArray(bean, value.toString(), fieldName, dictText, dictArray, dictTree, dictType);
         }
     }
 
@@ -76,16 +76,16 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalseFor(Object bean, Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArrayForFunc(Object bean, Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (value == null) {
             return null;
         }
         if (value.getClass().isArray()) {
-            return transformArrayTextFalse(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArray(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Collection<?> v) {
-            return transformArrayTextFalse(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Iterable<?> v) {
-            return transformArrayTextFalse(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof DictEnum<?> v) {
             return v.getTitle();
         } else if (value.getClass().isEnum()) {
@@ -96,13 +96,13 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
             return "";
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
-                return transformArrayTextFalseFor(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+                return transformBeanFieldValueToArrayForFunc(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
                 String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
-                return transformArrayTextFalse(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
+                return transformBeanFieldValueToArray(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
-            return transformArrayTextFalseFor(bean, value.toString(), fieldName, dictText, dictArray, dictTree, dictType);
+            return transformBeanFieldValueToArrayForFunc(bean, value.toString(), fieldName, dictText, dictArray, dictTree, dictType);
         }
     }
 
@@ -119,10 +119,11 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalse(Object bean, Object[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, Object[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
-            list.add(transformArrayTextFalseFor(bean, o, fieldName, dictText, dictArray, dictTree, dictType));
+            Object result = transformBeanFieldValueToArrayForFunc(bean, o, fieldName, dictText, dictArray, dictTree, dictType);
+            appendObjectToList(list, result, dictArray);
         }
         return list;
     }
@@ -140,10 +141,11 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalse(Object bean, Collection<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, Collection<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
-            list.add(transformArrayTextFalseFor(bean, o, fieldName, dictText, dictArray, dictTree, dictType));
+            Object result = transformBeanFieldValueToArrayForFunc(bean, o, fieldName, dictText, dictArray, dictTree, dictType);
+            appendObjectToList(list, result, dictArray);
         }
         return list;
     }
@@ -161,10 +163,11 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalse(Object bean, Iterable<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, Iterable<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
-            list.add(transformArrayTextFalseFor(bean, o, fieldName, dictText, dictArray, dictTree, dictType));
+            Object result = transformBeanFieldValueToArrayForFunc(bean, o, fieldName, dictText, dictArray, dictTree, dictType);
+            appendObjectToList(list, result, dictArray);
         }
         return list;
     }
@@ -181,7 +184,7 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @param dictType  字典类型
      * @throws JacksonException Jackson 异常
      */
-    default void transformArrayTextFalse(Object bean, DictEnum<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default void transformBeanFieldValueToArray(Object bean, DictEnum<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
@@ -197,7 +200,7 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @param dictType  字典类型
      * @throws JacksonException Jackson 异常
      */
-    default void transformArrayTextFalse(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default void transformBeanFieldValueToArray(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
@@ -214,10 +217,11 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalse(Object bean, CharSequence[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, CharSequence[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (CharSequence charSequence : value) {
-            list.add(transformArrayTextFalseFor(bean, charSequence, fieldName, dictText, dictArray, dictTree, dictType));
+            Object result = transformBeanFieldValueToArrayForFunc(bean, charSequence, fieldName, dictText, dictArray, dictTree, dictType);
+            appendObjectToList(list, result, dictArray);
         }
         return list;
     }
@@ -235,14 +239,14 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalse(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
-            list.add(text);
+            appendObjectToList(list, text, dictArray);
         } else if (dictTree.toText()) {
             String text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            list.add(text);
+            appendObjectToList(list, text, dictArray);
         } else {
             Collection<String> treeDictTextList = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
             list.add(treeDictTextList);
@@ -263,7 +267,7 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
      * @return 转换后的字典值
      * @throws JacksonException Jackson 异常
      */
-    default Object transformArrayTextFalseFor(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArrayForFunc(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (dictTree == null) {
             return getDictText(bean, fieldName, value, dictText, dictType, value.toString());
         } else if (dictTree.toText()) {

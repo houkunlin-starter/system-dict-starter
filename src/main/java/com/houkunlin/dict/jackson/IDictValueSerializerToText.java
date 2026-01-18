@@ -4,7 +4,6 @@ import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.enums.NullStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
@@ -27,11 +26,11 @@ import java.util.Map;
  * @author HouKunLin
  * @since 2.0.0
  */
-public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerTree {
+public interface IDictValueSerializerToText extends IDictValueSerializerTree {
     /**
      * 日志对象
      */
-    Logger logger = LoggerFactory.getLogger(IDictValueSerializerArrayTextTrue.class);
+    Logger logger = LoggerFactory.getLogger(IDictValueSerializerToText.class);
 
     /**
      * 序列化字典数组值为文本字符串。
@@ -48,16 +47,16 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @param dictTree  字典树注解配置
      * @throws JacksonException Jackson 异常
      */
-    default void serializeArrayTextTrue(Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
+    default void serializeValueToText(Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
         Object bean = gen.currentValue();
         String dictType = getDictType(bean, fieldName, dictText);
         String text;
         if (value.getClass().isArray()) {
-            text = serializeArrayTextTrue(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            text = serializeValueToText(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Collection<?> v) {
-            text = serializeArrayTextTrue(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            text = serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Iterable<?> v) {
-            text = serializeArrayTextTrue(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            text = serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof DictEnum<?> v) {
             text = v.getTitle();
         } else if (value.getClass().isEnum()) {
@@ -68,13 +67,13 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
             text = "";
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
-                text = serializeArrayTextTrue(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                text = serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
                 String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
-                text = serializeArrayTextTrue(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                text = serializeValueToText(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
-            text = serializeArrayTextTrue(bean, value.toString(), gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            text = serializeValueToText(bean, value.toString(), gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         }
         if (text != null) {
             gen.writeString(text);
@@ -103,16 +102,16 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @return 序列化后的文本字符串
      * @throws JacksonException Jackson 异常
      */
-    default String serializeArrayTextTrueFor(Object bean, Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToTextForFunc(Object bean, Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (value == null) {
             return null;
         }
         if (value.getClass().isArray()) {
-            return serializeArrayTextTrue(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            return serializeValueToText(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Collection<?> v) {
-            return serializeArrayTextTrue(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            return serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Iterable<?> v) {
-            return serializeArrayTextTrue(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            return serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof DictEnum<?> v) {
             return v.getTitle();
         } else if (value.getClass().isEnum()) {
@@ -123,13 +122,13 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
             return "";
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
-                return serializeArrayTextTrue(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                return serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
                 String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
-                return serializeArrayTextTrue(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                return serializeValueToText(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
-            return serializeArrayTextTrue(bean, value.toString(), gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            return serializeValueToText(bean, value.toString(), gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
         }
     }
 
@@ -151,10 +150,10 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @return 序列化后的文本字符串
      * @throws JacksonException Jackson 异常
      */
-    default String serializeArrayTextTrue(Object bean, Object[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, Object[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
-            String text = serializeArrayTextTrueFor(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            String text = serializeValueToTextForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             appendTextToList(textList, text, dictArray);
         }
         return String.join(dictArray.delimiter(), textList);
@@ -178,10 +177,10 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @return 序列化后的文本字符串
      * @throws JacksonException Jackson 异常
      */
-    default String serializeArrayTextTrue(Object bean, Collection<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, Collection<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
-            String text = serializeArrayTextTrueFor(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            String text = serializeValueToTextForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             appendTextToList(textList, text, dictArray);
         }
         return String.join(dictArray.delimiter(), textList);
@@ -205,10 +204,10 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @return 序列化后的文本字符串
      * @throws JacksonException Jackson 异常
      */
-    default String serializeArrayTextTrue(Object bean, Iterable<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, Iterable<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
-            String text = serializeArrayTextTrueFor(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            String text = serializeValueToTextForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             appendTextToList(textList, text, dictArray);
         }
         return String.join(dictArray.delimiter(), textList);
@@ -231,7 +230,7 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @param dictType  字典类型
      * @throws JacksonException Jackson 异常
      */
-    default void serializeArrayTextTrue(Object bean, DictEnum<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default void serializeValueToText(Object bean, DictEnum<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
@@ -252,7 +251,7 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @param dictType  字典类型
      * @throws JacksonException Jackson 异常
      */
-    default void serializeArrayTextTrue(Object bean, Map<?, ?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default void serializeValueToText(Object bean, Map<?, ?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
@@ -274,7 +273,7 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @return 序列化后的文本字符串
      * @throws JacksonException Jackson 异常
      */
-    default String serializeArrayTextTrue(Object bean, CharSequence[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, CharSequence[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (CharSequence charSequence : value) {
             String text;
@@ -283,15 +282,7 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
             } else {
                 text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, charSequence.toString());
             }
-            if (text != null) {
-                textList.add(text);
-            } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {
-                if (dictArray.nullStrategy() == NullStrategy.NULL) {
-                    textList.add(null);
-                } else {
-                    textList.add("");
-                }
-            }
+            appendTextToList(textList, text, dictArray);
         }
         return String.join(dictArray.delimiter(), textList);
     }
@@ -314,7 +305,7 @@ public interface IDictValueSerializerArrayTextTrue extends IDictValueSerializerT
      * @return 序列化后的文本字符串
      * @throws JacksonException Jackson 异常
      */
-    default String serializeArrayTextTrue(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (dictTree == null) {
             return getDictText(bean, fieldName, value, dictText, dictType, value.toString());
         } else {

@@ -103,6 +103,7 @@ public interface IDictValueSerializer {
      * @param arrayItemValue 数组项值
      * @return 字典文本
      */
+    @SuppressWarnings({"rawtypes"})
     default String getDictText(final Object bean, String fieldName, final Object value, DictText dictText, final String dictType, final String arrayItemValue) {
         Class<? extends DictEnum>[] enums = dictText.enums();
         if (enums.length > 0) {
@@ -153,6 +154,7 @@ public interface IDictValueSerializer {
      * @param arrayItemValue 数组项值
      * @return 字典文本，如果未找到则返回 null
      */
+    @SuppressWarnings({"rawtypes"})
     default String getDictTextByEnums(Class<? extends DictEnum>[] enums, String arrayItemValue) {
         for (Class<? extends DictEnum> dictEnum : enums) {
             if (!dictEnum.isEnum()) {
@@ -191,6 +193,37 @@ public interface IDictValueSerializer {
                 textList.add(null);
             } else {
                 textList.add("");
+            }
+        }
+    }
+
+    /**
+     * 将对象添加到列表中
+     * <p>
+     * 该方法用于处理数组类型的字典值，根据配置的空值策略将对象添加到列表中：
+     * 1. 如果对象不为 null，则直接添加到列表中
+     * 2. 如果对象为 null，则根据 DictArray 注解中的 nullStrategy 处理：
+     * - IGNORE：忽略该值，不添加到列表中
+     * - NULL：添加 null 到列表中
+     * - EMPTY：添加空字符串到列表中
+     * </p>
+     * <p>
+     * 与 {@link #appendTextToList(List, String, DictArray)} 方法类似，
+     * 但该方法支持添加任意类型的对象，而不仅仅是字符串。
+     * </p>
+     *
+     * @param objectList 对象列表，用于存储添加的对象
+     * @param textOrList 文本或列表对象，需要添加到列表中的对象
+     * @param dictArray  字典数组注解，包含空值策略配置
+     */
+    default void appendObjectToList(List<Object> objectList, Object textOrList, DictArray dictArray) {
+        if (textOrList != null) {
+            objectList.add(textOrList);
+        } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {
+            if (dictArray.nullStrategy() == NullStrategy.NULL) {
+                objectList.add(null);
+            } else {
+                objectList.add("");
             }
         }
     }
