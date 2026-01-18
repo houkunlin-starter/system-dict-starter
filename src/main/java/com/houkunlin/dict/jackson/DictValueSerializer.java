@@ -12,6 +12,8 @@ import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueSerializer;
 
 import java.lang.reflect.InvocationTargetException;
@@ -185,6 +187,60 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
             logger.error("创建 {} 实例失败，请向 SpringBoot 提供此 Bean 对象", dictTypeHandlerClazz.getName(), e);
         }
         return null;
+    }
+
+    /**
+     * 开始序列化字典值。
+     * <p>
+     * 该方法在字典值序列化开始时调用，处理字段值的序列化逻辑。
+     * 根据配置决定是否保留原字段值，以及是否使用Map格式输出。
+     * </p>
+     * <p>
+     * 处理流程：
+     * 1. 如果不替换原字段值，则先写入原字段值，再写入字典文本字段名
+     * 2. 如果使用Map格式输出，则开始一个Map对象，写入value字段和对应值
+     * </p>
+     *
+     * @param value 字段值，需要进行序列化的原始值
+     * @param gen   JSON生成器，用于写入JSON数据
+     * @param ctxt  序列化上下文，提供序列化相关的上下文信息
+     */
+    public void startSerialize(Object value, JsonGenerator gen, SerializationContext ctxt) {
+        if (!useReplaceFieldValue) {
+            if (useRawValueType) {
+                gen.writePOJO(value);
+            } else {
+                DICT_WRITER.writeDictValueToText(gen, value, dictText);
+            }
+            gen.writeName(outputFieldName);
+        }
+        if (useMap) {
+            gen.writeStartObject();
+            gen.writeName("value");
+            if (useRawValueType) {
+                gen.writePOJO(value);
+            } else {
+                DICT_WRITER.writeDictValueToText(gen, value, dictText);
+            }
+            gen.writeName("text");
+        }
+    }
+
+    /**
+     * 结束序列化字典值。
+     * <p>
+     * 该方法在字典值序列化结束时调用，主要用于清理资源和完成序列化操作。
+     * 目前主要处理Map格式输出的结束标记。
+     * </p>
+     *
+     * @param value 字段值，需要进行序列化的原始值
+     * @param gen   JSON生成器，用于写入JSON数据
+     * @param ctxt  序列化上下文，提供序列化相关的上下文信息
+     */
+    public void endSerialize(Object value, JsonGenerator gen, SerializationContext ctxt) {
+        if (useMap) {
+            gen.writeEndObject();
+        }
     }
 
     /**

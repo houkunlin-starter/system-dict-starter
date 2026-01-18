@@ -69,16 +69,7 @@ public class DictValueSerializerToArrayImpl extends DictValueSerializer implemen
      */
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
-        if (!useReplaceFieldValue) {
-            DICT_WRITER.writeDictValue(gen, value, dictText, useRawValueType);
-            gen.writeName(outputFieldName);
-        }
-        if (useMap) {
-            gen.writeStartObject();
-            gen.writeName("value");
-            DICT_WRITER.writeDictValue(gen, value, dictText, useRawValueType);
-            gen.writeName("text");
-        }
+        startSerialize(value, gen, ctxt);
         if (value != null) {
             serializeValueToArray(value, gen, ctxt, fieldName, dictText, dictArray, dictTree);
         } else {
@@ -97,9 +88,7 @@ public class DictValueSerializerToArrayImpl extends DictValueSerializer implemen
                 gen.writeEndArray();
             }
         }
-        if (useMap) {
-            gen.writeEndObject();
-        }
+        endSerialize(value, gen, ctxt);
     }
 
     /**
