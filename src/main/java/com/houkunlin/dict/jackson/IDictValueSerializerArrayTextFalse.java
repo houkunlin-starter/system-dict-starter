@@ -14,9 +14,37 @@ import tools.jackson.databind.SerializationContext;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * 字典数组文本为 false 的序列化接口，用于处理字典数组文本为 false 时的序列化逻辑。
+ * <p>
+ * 该接口提供了将字典数组值序列化为文本数组的方法，支持将多个字典文本转换为一个数组。
+ * 例如：当数组值为 ["1", "2"] 时，会转换为 ["字典1", "字典2"] 这样的格式。
+ * </p>
+ *
+ * @author HouKunLin
+ * @since 2.0.0
+ */
 public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializerTree {
+    /**
+     * 日志对象
+     */
     Logger logger = LoggerFactory.getLogger(IDictValueSerializerArrayTextFalse.class);
 
+    /**
+     * 序列化字典数组值为文本数组。
+     * <p>
+     * 根据字段值类型，将字典数组值转换为文本数组，每个字典值对应一个文本元素。
+     * </p>
+     *
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
         Object bean = gen.currentValue();
         String dictType = getDictType(bean, fieldName, dictText);
@@ -52,6 +80,23 @@ public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializer
         }
     }
 
+    /**
+     * 序列化字典数组值为文本数组（内部方法）。
+     * <p>
+     * 处理单个字典值的序列化，根据值类型将其转换为对应的文本并写入数组。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalseFor(Object bean, Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (value == null) {
             writeArrayText(gen, null, dictArray);
@@ -83,6 +128,23 @@ public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializer
         }
     }
 
+    /**
+     * 序列化对象数组为文本数组。
+     * <p>
+     * 将对象数组中的每个元素转换为字典文本，然后写入到一个数组中。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object bean, Object[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         gen.writeStartArray();
         for (Object o : value) {
@@ -91,6 +153,23 @@ public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializer
         gen.writeEndArray();
     }
 
+    /**
+     * 序列化集合为文本数组。
+     * <p>
+     * 将集合中的每个元素转换为字典文本，然后写入到一个数组中。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object bean, Collection<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         gen.writeStartArray();
         for (Object o : value) {
@@ -99,6 +178,23 @@ public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializer
         gen.writeEndArray();
     }
 
+    /**
+     * 序列化可迭代对象为文本数组。
+     * <p>
+     * 将可迭代对象中的每个元素转换为字典文本，然后写入到一个数组中。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object bean, Iterable<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         gen.writeStartArray();
         for (Object o : value) {
@@ -107,14 +203,65 @@ public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializer
         gen.writeEndArray();
     }
 
+    /**
+     * 序列化字典枚举为文本数组。
+     * <p>
+     * 处理字典枚举类型的序列化，将枚举的标题写入数组。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object bean, DictEnum<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
+    /**
+     * 序列化Map为文本数组。
+     * <p>
+     * 处理Map类型的序列化，目前不支持Map类型的字典数组序列化。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object bean, Map<?, ?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
+    /**
+     * 序列化字符序列数组为文本数组。
+     * <p>
+     * 将字符序列数组中的每个元素转换为字典文本，然后写入到一个数组中。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object bean, CharSequence[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         gen.writeStartArray();
         for (CharSequence charSequence : value) {
@@ -123,6 +270,23 @@ public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializer
         gen.writeEndArray();
     }
 
+    /**
+     * 序列化字符序列为文本数组。
+     * <p>
+     * 将字符序列转换为字典文本，然后写入到一个数组中。支持字典树结构的处理。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalse(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         gen.writeStartArray();
         if (dictTree == null) {
@@ -142,6 +306,23 @@ public interface IDictValueSerializerArrayTextFalse extends IDictValueSerializer
         gen.writeEndArray();
     }
 
+    /**
+     * 序列化字符序列为文本数组（内部方法）。
+     * <p>
+     * 处理单个字符序列的序列化，根据字典树配置将其转换为对应的文本并写入数组。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param gen       JSON生成器
+     * @param ctxt      序列化上下文
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void serializeArrayTextFalseFor(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());

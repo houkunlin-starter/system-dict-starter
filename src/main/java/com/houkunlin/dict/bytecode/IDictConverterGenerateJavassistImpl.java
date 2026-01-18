@@ -13,14 +13,21 @@ import org.springframework.core.convert.converter.Converter;
 import java.io.Serializable;
 
 /**
- * 使用 javassist 技术动态创建 {@link Converter} 转换器实现类，并把实现类注入到 Spring 中
+ * 使用 javassist 技术动态创建 {@link Converter} 转换器实现类，并把实现类注入到 Spring 中。
  *
  * @author HouKunLin
+ * @since 1.4.8
  */
 @Slf4j
 public class IDictConverterGenerateJavassistImpl implements IDictConverterGenerate {
+    /**
+     * 类池对象
+     */
     private final ClassPool pool = ClassPool.getDefault();
 
+    /**
+     * 构造方法
+     */
     public IDictConverterGenerateJavassistImpl() {
         if (log.isDebugEnabled()) {
             log.debug("使用 javassist 字节码技术动态创建字典转换器实现类");
@@ -32,13 +39,12 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
     }
 
     /**
-     * 动态创建一个转换器对象
+     * 动态创建一个转换器对象。
      *
      * @param dictEnumClass 枚举对象
      * @param dictConverter 枚举转换器配置参数注解
      * @return 转换器对象
-     * @throws NotFoundException      找不到 Class 异常
-     * @throws CannotCompileException 修改 Class 异常
+     * @throws Exception 异常
      */
     @SuppressWarnings({"unchecked"})
     @Override
@@ -89,12 +95,12 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
     }
 
     /**
-     * 获取方法体内容
+     * 获取方法体内容。
      *
      * @param dictEnumClassName 字典枚举对象类全称
      * @param dictValueClass    字典枚举对象值类型
      * @param dictConverter     字典枚举注解信息
-     * @return 方法体内存
+     * @return 方法体内容
      */
     private String getMethodBody(final String dictEnumClassName, final Class<?> dictValueClass, DictConverter dictConverter) {
         if (String.class == dictValueClass) {
@@ -119,15 +125,15 @@ public class IDictConverterGenerateJavassistImpl implements IDictConverterGenera
     }
 
     /**
-     * 增加实现类转换方法的桥接方法
+     * 增加实现类转换方法的桥接方法。
      *
-     * @param pool      pool
-     * @param makeClass makeClass
+     * @param pool      类池对象
+     * @param makeClass 生成的类
      * @throws NotFoundException      异常信息
      * @throws CannotCompileException 异常信息
      */
     private void addBridgeMethod(ClassPool pool, final CtClass makeClass) throws NotFoundException, CannotCompileException {
-        // // 必须设置一个桥接方法，否则调用方法的时候会报 AbstractMethodError 异常，这个据说是编译器的类型擦除的问题，并且 javassist 不会自动设置桥接方法，因此需要手动构建一个桥接方法
+        // 必须设置一个桥接方法，否则调用方法的时候会报 AbstractMethodError 异常，这个据说是编译器的类型擦除的问题，并且 javassist 不会自动设置桥接方法，因此需要手动构建一个桥接方法
         final CtClass objectCtClass = pool.getCtClass(Object.class.getName());
         final CtMethod method = new CtMethod(objectCtClass, "convert", new CtClass[]{objectCtClass}, makeClass);
         method.setBody("{return this.convert((java.lang.String)$1);}");

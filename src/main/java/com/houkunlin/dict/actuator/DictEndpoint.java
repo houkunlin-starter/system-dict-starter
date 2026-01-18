@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 字典端点
+ * 字典端点，提供字典相关的监控和查询功能。
  *
  * @author HouKunLin
  * @since 1.3.0
@@ -23,14 +23,23 @@ import java.util.stream.Collectors;
 @Endpoint(id = "dict")
 @RequiredArgsConstructor
 public class DictEndpoint {
+    /**
+     * 字典提供者列表
+     */
     private final List<DictProvider> providers;
+    /**
+     * 字典存储
+     */
     private final DictStore store;
+    /**
+     * 远程字典
+     */
     private final RemoteDict remoteDict;
 
     /**
-     * 默认端点接口信息
+     * 默认端点接口信息。
      *
-     * @return 返回系统一些class对象名称
+     * @return 返回系统字典相关的类信息和字典类型列表
      */
     @ReadOperation
     public Object index() {
@@ -46,7 +55,7 @@ public class DictEndpoint {
     }
 
     /**
-     * 获得字典类型信息
+     * 获得字典类型信息。
      *
      * @param dictType 字典类型代码
      * @return 字典类型信息
@@ -57,7 +66,7 @@ public class DictEndpoint {
     }
 
     /**
-     * 获得字典值文本信息
+     * 获得字典值文本信息。
      *
      * @param dictType  字典类型代码
      * @param dictValue 字典值

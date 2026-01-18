@@ -16,8 +16,13 @@ import java.time.Duration;
 
 /**
  * 系统数据字典配置文件配置信息对象
+ * <p>
+ * 该类是系统数据字典的核心配置类，通过 {@code @ConfigurationProperties} 注解绑定到 {@code system.dict} 配置前缀。
+ * 包含了数据字典处理的各种配置选项，如字典值转换方式、缓存配置、消息队列配置等。
+ * </p>
  *
  * @author HouKunLin
+ * @since 1.0.0
  */
 @Data
 @ToString
@@ -27,6 +32,10 @@ import java.time.Duration;
 public class DictProperties {
     /**
      * 默认 MQ 交换器名称
+     * <p>
+     * 当使用消息队列通知其他系统刷新字典时，默认使用的 FanoutExchange 交换器名称。
+     * 该交换器用于广播字典刷新事件到所有订阅的系统。
+     * </p>
      */
     public static final String DEFAULT_MQ_EXCHANGE_NAME = "app.dict.fanout.refreshDict";
     /**
@@ -93,18 +102,25 @@ public class DictProperties {
      */
     private StoreType storeType = StoreType.AUTO;
     /**
-     * 消息队列 FanoutExchange 交换器名称. 在多系统协同的时候刷新字典的时候会用到
+     * 消息队列 FanoutExchange 交换器名称
+     * <p>
+     * 在多系统协同的时候刷新字典的时候会用到。当系统需要通知其他系统刷新字典时，
+     * 会向该交换器发布消息，所有订阅了该交换器的系统都会收到刷新通知。
+     * </p>
      *
      * @param mqExchangeName 交换器名称
      * @return 交换器名称
      */
     private String mqExchangeName = DEFAULT_MQ_EXCHANGE_NAME;
     /**
-     * 两次刷新字典事件的时间间隔；两次刷新事件时间间隔小于配置参数将不会刷新。
-     * 此设置只影响 {@link RefreshDictEvent} 事件
+     * 两次刷新字典事件的时间间隔
+     * <p>
+     * 两次刷新事件时间间隔小于配置参数将不会刷新，用于防止短时间内重复刷新字典。
+     * 此设置只影响 {@link RefreshDictEvent} 事件，可以有效避免因频繁触发刷新事件导致的性能问题。
+     * </p>
      *
-     * @param refreshDictInterval 防止重复刷新，在刷新间隔内多次调用刷新时，只有第一次有效
-     * @return 防止重复刷新，在刷新间隔内多次调用刷新时，只有第一次有效
+     * @param refreshDictInterval 刷新间隔时间，防止重复刷新，在刷新间隔内多次调用刷新时，只有第一次有效
+     * @return 刷新间隔时间，防止重复刷新，在刷新间隔内多次调用刷新时，只有第一次有效
      */
     private Duration refreshDictInterval = Duration.ofSeconds(60);
     /**
@@ -133,11 +149,15 @@ public class DictProperties {
     @NestedConfigurationProperty
     private DictPropertiesStorePrefixKey storeKey = new DictPropertiesStorePrefixKey();
     /**
-     * 选择所使用字节码技术。默认会使用 ASM 字节码技术。
+     * 选择所使用字节码技术
+     * <p>
+     * 默认会使用 ASM 字节码技术。该配置用于选择动态生成字典转换器时使用的字节码技术。
+     * 不同的字节码技术在性能、兼容性和功能支持上有所差异。
+     * </p>
      *
      * @since 1.4.8
-     * @param bytecode 动态字节码技术
-     * @return 动态字节码技术
+     * @param bytecode 动态字节码技术类型
+     * @return 动态字节码技术类型
      */
     private BytecodeType bytecode = BytecodeType.ASM;
 }

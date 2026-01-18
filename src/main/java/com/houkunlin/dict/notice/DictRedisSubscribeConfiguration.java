@@ -24,6 +24,11 @@ import java.util.Objects;
 
 /**
  * 使用 Redis 的发布/订阅 功能来处理字典刷新事件通知
+ * <p>
+ * 该配置类用于在启用 Redis 消息队列模式时，处理字典刷新事件的发布和订阅。
+ * 当系统内部发起刷新字典事件时，会通过 Redis 发布消息通知其他系统；
+ * 同时会订阅 Redis 消息，接收其他系统发来的字典刷新通知。
+ * </p>
  *
  * @author HouKunLin
  * @since 1.4.4
@@ -37,27 +42,27 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
      */
     private static final Logger logger = LoggerFactory.getLogger(DictRedisSubscribeConfiguration.class);
     /**
-     * Redis 消息侦听器容器
+     * Redis 消息侦听器容器，用于管理 Redis 消息的订阅
      */
     private final RedisMessageListenerContainer redisMessageListenerContainer;
     /**
-     * 数据字典注册器
+     * 数据字典注册器，用于刷新字典数据
      */
     private final DictRegistrar dictRegistrar;
     /**
-     * String Redis 连接器
+     * String Redis 模板，用于发布 Redis 消息
      */
     private final StringRedisTemplate stringRedisTemplate;
     /**
-     * JSON 序列化和反序列化
+     * JSON 序列化和反序列化工具，用于消息的序列化和反序列化
      */
     private final ObjectMapper objectMapper;
     /**
-     * 当前应用名称
+     * 当前应用名称，用于标识消息的来源和过滤
      */
     private final String applicationName;
     /**
-     * 交换器名称
+     * 交换器名称，用于指定 Redis 消息的通道
      */
     private final String exchangeName;
 
@@ -66,8 +71,8 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
      *
      * @param redisMessageListenerContainer Redis 消息侦听器容器
      * @param dictRegistrar                 数据字典注册器
-     * @param stringRedisTemplate           String Redis 连接器
-     * @param objectMapper                  JSON 序列化和反序列化
+     * @param stringRedisTemplate           String Redis 模板
+     * @param objectMapper                  JSON 序列化和反序列化工具
      * @param applicationName               当前应用名称
      * @param dictProperties                数据字典配置信息
      */
@@ -87,8 +92,13 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
 
     /**
      * 处理系统内部发起的刷新数据字典事件
+     * <p>
+     * 当收到刷新字典事件且需要通知其他系统时，会将事件封装为 RefreshNoticeData 对象，
+     * 序列化为 JSON 后通过 Redis 发布消息。
+     * </p>
      *
      * @param event 刷新字典事件对象
+     * @throws JacksonException JSON 序列化异常
      */
     @EventListener
     public void refreshDict(RefreshDictEvent event) throws JacksonException {
@@ -105,6 +115,14 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
         }
     }
 
+    /**
+     * 初始化方法
+     * <p>
+     * 创建 Redis 消息监听器并注册到消息监听器容器，用于订阅 Redis 消息。
+     * </p>
+     *
+     * @throws Exception 初始化异常
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         final MessageListener messageListener = new DictRedisMessageListener(dictRegistrar, objectMapper, applicationName, exchangeName);
@@ -113,14 +131,39 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
 
     /**
      * 数据字典 Redis 消息监听器
+     * <p>
+     * 用于监听 Redis 发布的字典刷新消息，并处理刷新字典的逻辑。
+     * </p>
      */
     @RequiredArgsConstructor
     public static class DictRedisMessageListener implements MessageListener {
+        /**
+         * 数据字典注册器，用于刷新字典数据
+         */
         private final DictRegistrar dictRegistrar;
+        /**
+         * JSON 序列化和反序列化工具，用于消息的序列化和反序列化
+         */
         private final ObjectMapper objectMapper;
+        /**
+         * 当前应用名称，用于标识消息的来源和过滤
+         */
         private final String applicationName;
+        /**
+         * 交换器名称，用于指定 Redis 消息的通道
+         */
         private final String exchangeName;
 
+        /**
+         * 处理接收到的 Redis 消息
+         * <p>
+         * 当收到 Redis 消息时，会检查通道是否匹配，然后解析消息内容，
+         * 最后根据消息内容刷新字典数据。
+         * </p>
+         *
+         * @param message 接收到的消息
+         * @param pattern 通道模式
+         */
         @Override
         public void onMessage(@NonNull final Message message, final byte[] pattern) {
             final String channel = pattern != null ? new String(pattern) : "";

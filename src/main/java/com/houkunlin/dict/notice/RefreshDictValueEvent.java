@@ -9,8 +9,16 @@ import org.springframework.context.ApplicationEvent;
 import java.util.Collections;
 
 /**
- * 刷新单个字典文本信息。仅会刷新字典文本值，不会刷新和更新整个字典信息。
+ * 刷新单个字典文本信息事件
+ * <p>
+ * 该事件用于刷新单个字典的文本信息，仅会刷新字典文本值，不会刷新和更新整个字典信息。
  * 使用此事件时 {@link DictValue#dictType} 字段值为必填项，否则会导致数据更新失败。
+ * </p>
+ * <p>
+ * 此事件支持两种模式：
+ * 1. 仅更新字典文本值，不维护字典类型的字典值列表
+ * 2. 更新字典文本值并维护字典类型的字典值列表，确保数据一致性
+ * </p>
  *
  * @author HouKunLin
  * @since 1.4.4
@@ -38,6 +46,10 @@ public class RefreshDictValueEvent extends ApplicationEvent {
 
     /**
      * 刷新单个字典值文本信息
+     * <p>
+     * 此构造方法会自动设置 updateDictType = true 和 removeDictType = true，
+     * 会更新字典文本值并维护字典类型的字典值列表，确保数据一致性。
+     * </p>
      *
      * @param dictValue 字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      */
@@ -48,7 +60,11 @@ public class RefreshDictValueEvent extends ApplicationEvent {
     }
 
     /**
-     * 刷新单个字典值文本信息
+     * 刷新多个字典值文本信息
+     * <p>
+     * 此构造方法会自动设置 updateDictType = true 和 removeDictType = true，
+     * 会更新字典文本值并维护字典类型的字典值列表，确保数据一致性。
+     * </p>
      *
      * @param dictValueVos 多个字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      */
@@ -60,6 +76,9 @@ public class RefreshDictValueEvent extends ApplicationEvent {
 
     /**
      * 刷新单个字典值文本信息
+     * <p>
+     * 此构造方法允许指定是否更新维护字典类型对象里面的字典值列表信息。
+     * </p>
      *
      * @param dictValue    字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      * @param updateDictType 是否更新维护字典类型对象里面的字典值列表信息
@@ -71,7 +90,10 @@ public class RefreshDictValueEvent extends ApplicationEvent {
     }
 
     /**
-     * 刷新单个字典值文本信息
+     * 刷新多个字典值文本信息
+     * <p>
+     * 此构造方法允许指定是否更新维护字典类型对象里面的字典值列表信息。
+     * </p>
      *
      * @param dictValueVos   多个字典值对象（必须要有 {@link DictValue#dictType} 字典类型值）
      * @param updateDictType 是否更新维护字典类型对象里面的字典值列表信息
@@ -82,6 +104,14 @@ public class RefreshDictValueEvent extends ApplicationEvent {
         this.removeDictType = false;
     }
 
+    /**
+     * 获取事件源，即字典值对象集合
+     * <p>
+     * 重写父类方法，返回类型为 Iterable&lt;DictValue&gt;，方便直接使用。
+     * </p>
+     *
+     * @return 字典值对象集合
+     */
     @SuppressWarnings("all")
     @Override
     public Iterable<DictValue> getSource() {

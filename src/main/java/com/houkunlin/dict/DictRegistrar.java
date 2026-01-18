@@ -13,12 +13,12 @@ import com.houkunlin.dict.provider.SystemDictProvider;
 import com.houkunlin.dict.store.DictStore;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-import org.jspecify.annotations.Nullable;
 import org.springframework.scheduling.annotation.Async;
 
 import java.time.Duration;
@@ -28,9 +28,22 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * 字典注册，把字典发送到缓存中
+ * 字典注册器
+ * <p>
+ * 该类负责管理字典提供者和刷新字典数据，将字典数据发送到缓存中。
+ * 主要功能包括：
+ * <ul>
+ * <li>初始化时加载字典数据</li>
+ * <li>处理字典刷新事件</li>
+ * <li>批量处理字典数据</li>
+ * <li>维护字典类型和字典值的关系</li>
+ * <li>支持异步刷新字典</li>
+ * </ul>
+ * 该类实现了 InitializingBean 接口，在 Spring 容器初始化完成后自动加载字典数据。
+ * </p>
  *
  * @author HouKunLin
+ * @since 1.0.0
  */
 @Data
 @Configuration
@@ -39,33 +52,46 @@ public class DictRegistrar implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
     /**
      * 数据字典信息提供商
+     * <p>负责提供字典数据的来源，支持多个不同的字典提供者。</p>
      */
     private final List<DictProvider> providers;
     /**
      * 数据字典信息存储器
+     * <p>负责字典数据的实际存储和读取操作，支持不同的存储实现。</p>
      */
     private final DictStore store;
     /**
      * 数据字典配置信息对象
+     * <p>包含字典系统的各种配置参数，如刷新间隔、批处理大小等。</p>
      */
     private final DictProperties properties;
     /**
      * 上一次刷新字典时间
+     * <p>用于控制字典刷新频率，避免过于频繁的刷新操作。</p>
      */
     private final AtomicLong lastModified = new AtomicLong(0);
     /**
      * 刷新单个字典事件：数据字典值文本数量超过 5 个就使用批量保存
+     * <p>用于优化单个字典值刷新时的性能，当数据量较大时采用批量保存方式。</p>
      */
     private int valueEventBatchSize = 5;
     /**
      * 刷新整个字典事件：数据字典值文本分批次保存，每批次保存 1000 个
+     * <p>用于优化整个字典刷新时的性能，避免一次性处理过多数据导致内存问题。</p>
      */
     private int typeEventBatchSize = 1000;
 
     /**
      * 刷新数据字典信息
+     * <p>
+     * 该方法用于刷新数据字典信息，首先检查距离上一次刷新的时间间隔，
+     * 如果小于配置的刷新间隔，则跳过本次刷新操作。
+     * 然后更新最后刷新时间，并调用 forEachAllDict 方法获取所有字典数据，
+     * 最后将获取到的字典数据存储到 DictStore 中。
+     * 如果开启了调试日志，则会记录刷新操作的耗时。
+     * </p>
      *
-     * @param dictProviderClasses 需要刷新的数据字典提供商类限定名
+     * @param dictProviderClasses 需要刷新的数据字典提供商类限定名，null 表示刷新所有
      */
     public void refreshDict(Set<String> dictProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified.get();
@@ -128,6 +154,18 @@ public class DictRegistrar implements InitializingBean {
         }
     }
 
+    /**
+     * 在 Spring 容器初始化完成后执行
+     * <p>
+     * 该方法实现了 InitializingBean 接口的 afterPropertiesSet 方法，
+     * 在 Spring 容器初始化完成后被调用。
+     * 方法会检查配置文件中是否开启了启动时刷新字典的功能，
+     * 如果开启，则调用 refreshDict 方法刷新所有字典数据。
+     * </p>
+     *
+     * @throws Exception 如果执行过程中发生异常
+     * @see InitializingBean#afterPropertiesSet()
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         if (properties.isOnBootRefreshDict()) {
@@ -137,6 +175,11 @@ public class DictRegistrar implements InitializingBean {
 
     /**
      * 处理系统内部发起的刷新数据字典事件
+     * <p>
+     * 该方法是一个异步事件监听器，用于处理系统内部发起的刷新数据字典事件。
+     * 当收到 RefreshDictEvent 事件时，会调用 refreshDict 方法刷新字典数据。
+     * 如果开启了调试日志，则会记录事件的内容。
+     * </p>
      *
      * @param event RefreshDictEvent 事件
      */
@@ -150,7 +193,13 @@ public class DictRegistrar implements InitializingBean {
     }
 
     /**
-     * 刷新单个字典值文本信息。
+     * 刷新单个字典值文本信息
+     * <p>
+     * 该方法是一个异步事件监听器，用于处理单个字典值文本信息的刷新事件。
+     * 当收到 RefreshDictValueEvent 事件时，会获取事件中的字典值列表，
+     * 然后从中移除属于系统字典的文本信息（系统字典不允许通过事件方式刷新），
+     * 最后根据字典值数量决定采用批量保存还是单个保存的方式将字典值存储到 DictStore 中。
+     * </p>
      *
      * @param event RefreshDictValueEvent 事件
      * @since 1.4.4
@@ -184,9 +233,14 @@ public class DictRegistrar implements InitializingBean {
     }
 
     /**
-     * 检测需要刷新的字典文本列表，从中移除属于系统字典的文本信息，不允许通过刷新字典的方式修改系统字典文本
+     * 检测需要刷新的字典文本列表，从中移除属于系统字典的文本信息
+     * <p>
+     * 该方法用于从字典值列表中移除属于系统字典的文本信息，
+     * 因为系统字典不允许通过事件方式刷新字典值。
+     * 如果检测到系统字典类型，则会记录调试日志并移除该字典值。
+     * </p>
      *
-     * @param iterator           迭代器
+     * @param iterator           字典值迭代器
      * @param systemDictTypeKeys 系统字典代码列表
      * @since 1.5.0
      */
@@ -204,7 +258,12 @@ public class DictRegistrar implements InitializingBean {
     }
 
     /**
-     * 刷新单个字典值文本信息时根据 {@link RefreshDictValueEvent#isUpdateDictType()} 参数决定是否维护的字典类型对象里面的字典值列表信息
+     * 刷新单个字典值文本信息并维护字典类型对象
+     * <p>
+     * 该方法是一个异步事件监听器，用于处理单个字典值文本信息的刷新事件，
+     * 并根据 RefreshDictValueEvent.isUpdateDictType() 参数决定是否维护字典类型对象里面的字典值列表信息。
+     * 当需要更新字典类型时，会将字典值按字典类型分组，然后对每个字典类型调用 maintainHandleDictType 方法进行处理。
+     * </p>
      *
      * @param event RefreshDictValueEvent 事件
      * @since 1.4.5
@@ -239,6 +298,13 @@ public class DictRegistrar implements InitializingBean {
 
     /**
      * 维护处理字典类型信息
+     * <p>
+     * 该方法用于维护处理字典类型信息，根据字典值列表更新字典类型对象。
+     * 处理逻辑如下：
+     * 1. 如果字典类型不存在，则创建一个新的字典类型
+     * 2. 如果字典类型存在但没有字典值列表，则直接设置字典值列表
+     * 3. 如果字典类型存在且有字典值列表，则调用 maintainHandleDictTypeDiffUpdate 方法处理差异
+     * </p>
      *
      * @param dictType       字典类型代码
      * @param valueVos       字典值列表
@@ -273,15 +339,22 @@ public class DictRegistrar implements InitializingBean {
 
     /**
      * 维护处理字典类型信息（处理字典值列表差异合并）
+     * <p>
+     * 该方法用于处理字典类型信息中的字典值列表差异合并，具体步骤如下：
+     * 1. 从现有字典值列表中移除需要删除的字典值
+     * 2. 向现有字典值列表中添加需要更新或新增的字典值
+     * 3. 使用 LinkedHashMap 去重，保持字典值的顺序
+     * 4. 根据 removeDictType 参数决定当字典值列表为空时是否删除字典类型
+     * 5. 最后将更新后的字典类型存储到 DictStore 中
+     * </p>
      *
-     * @param dictType     字典类型对象
-     * @param valueVosUpdate 需要更新或新增的字典值列表
-     * @param valueVosRemove 需要删除的字典值类别
-     * @param removeDictType 没有字典值列表时是否删除字典类型
+     * @param dictType         字典类型对象
+     * @param valueVosUpdate   需要更新或新增的字典值列表
+     * @param valueVosRemove   需要删除的字典值列表
+     * @param removeDictType   没有字典值列表时是否删除字典类型
      * @since 1.4.5.1
      */
-    private void maintainHandleDictTypeDiffUpdate(final DictType dictType, final List<DictValue> valueVosUpdate,
-                                                  final List<DictValue> valueVosRemove, final boolean removeDictType) {
+    private void maintainHandleDictTypeDiffUpdate(final DictType dictType, final List<DictValue> valueVosUpdate, final List<DictValue> valueVosRemove, final boolean removeDictType) {
         final List<DictValue> children = dictType.getChildren();
         // 从列表移除需要删除的字典列表
         children.removeIf(vo1 -> {
@@ -309,6 +382,12 @@ public class DictRegistrar implements InitializingBean {
 
     /**
      * 刷新单个字典值类型信息（包含此字典类型的字典值列表）
+     * <p>
+     * 该方法是一个异步事件监听器，用于处理单个字典类型信息的刷新事件。
+     * 当收到 RefreshDictTypeEvent 事件时，会获取事件中的字典类型列表，
+     * 然后从中移除属于系统字典的类型信息（系统字典不允许通过事件方式刷新），
+     * 最后修复字典类型的字典值列表信息并存储到 DictStore 中。
+     * </p>
      *
      * @param event RefreshDictTypeEvent 事件
      * @since 1.4.5
@@ -336,10 +415,14 @@ public class DictRegistrar implements InitializingBean {
 
     /**
      * 修复数据字典类型的字典项列表信息
+     * <p>
+     * 该方法用于修复数据字典类型的字典项列表信息，确保每个字典值都设置了正确的字典类型代码。
+     * 如果字典值列表为 null，则直接返回 null。
+     * </p>
      *
      * @param dictType     数据字典类型代码
      * @param dictValues 字典值列表
-     * @return 字典值列表
+     * @return 修复后的字典值列表
      */
     @Nullable
     private List<DictValue> fixDictTypeChildren(final String dictType, final List<DictValue> dictValues) {

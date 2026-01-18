@@ -11,17 +11,24 @@ import org.springframework.core.convert.support.GenericConversionService;
 import java.io.Serializable;
 
 /**
- * 动态生成字典转换器
+ * 动态生成字典转换器的接口。
+ * 定义了生成字典转换器的方法，具体实现通过字节码技术动态生成转换器类。
  *
  * @author HouKunLin
  * @since 1.4.8
  */
 public interface IDictConverterGenerate {
+    /**
+     * 日志对象
+     */
     Logger logger = LoggerFactory.getLogger(IDictConverterGenerate.class);
+    /**
+     * 转换器类名（内部使用）
+     */
     String CONVERTER_CLASS_NAME = Converter.class.getName().replace(".", "/");
 
     /**
-     * 获得转换器类（实际是通过字节码技术动态生成的转换器类）
+     * 获得转换器类（实际是通过字节码技术动态生成的转换器类）。
      *
      * @param dictEnumClass 字典枚举类
      * @param dictConverter 字典转换器注解信息
@@ -31,7 +38,7 @@ public interface IDictConverterGenerate {
     <T extends DictEnum<V>, V extends Serializable> Class<T> getConverterClass(Class<T> dictEnumClass, DictConverter dictConverter) throws Exception;
 
     /**
-     * 获取枚举接口的泛型参数对象
+     * 获取枚举接口的泛型参数对象。
      *
      * @param clazz 字典枚举对象
      * @return 泛型对象

@@ -19,6 +19,7 @@ import java.util.Collection;
  * </p>
  *
  * @author HouKunLin
+ * @since 1.7.0
  */
 public class DictWriter {
 
@@ -87,6 +88,7 @@ public class DictWriter {
      * @param gen      JSON生成器
      * @param value    对象数组
      * @param dictText 字典文本配置信息
+     * @param useRawValueType 是否使用原始值模式
      * @throws JacksonException JSON序列化异常
      */
     private void writeDictValue(JsonGenerator gen, Object[] value, DictText dictText, boolean useRawValueType) throws JacksonException {
@@ -106,6 +108,7 @@ public class DictWriter {
      * @param gen      JSON生成器
      * @param value    集合对象
      * @param dictText 字典文本配置信息
+     * @param useRawValueType 是否使用原始值模式
      * @throws JacksonException JSON序列化异常
      */
     private void writeDictValue(JsonGenerator gen, Collection<?> value, DictText dictText, boolean useRawValueType) throws JacksonException {

@@ -11,9 +11,30 @@ import tools.jackson.core.JacksonException;
 
 import java.util.*;
 
+/**
+ * 字典转换数组文本为 false 接口，用于处理字典数组文本为 false 时的转换逻辑。
+ *
+ * @author HouKunLin
+ * @since 2.0.0
+ */
 public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
+    /**
+     * 日志对象
+     */
     Logger logger = LoggerFactory.getLogger(IDictTransformArrayTextFalse.class);
 
+    /**
+     * 转换数组文本为 false 的字典值。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalse(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
@@ -42,6 +63,19 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
         }
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（内部方法）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalseFor(Object bean, Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (value == null) {
             return null;
@@ -72,6 +106,19 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
         }
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（对象数组）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalse(Object bean, Object[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
@@ -80,6 +127,19 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
         return list;
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（集合）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalse(Object bean, Collection<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
@@ -88,6 +148,19 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
         return list;
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（可迭代对象）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalse(Object bean, Iterable<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
@@ -96,14 +169,51 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
         return list;
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（字典枚举）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void transformArrayTextFalse(Object bean, DictEnum<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（Map）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void transformArrayTextFalse(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（字符序列数组）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalse(Object bean, CharSequence[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         for (CharSequence charSequence : value) {
@@ -112,6 +222,19 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
         return list;
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（字符序列）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalse(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<Object> list = new ArrayList<>();
         if (dictTree == null) {
@@ -127,6 +250,19 @@ public interface IDictTransformArrayTextFalse extends IDictValueSerializerTree {
         return list;
     }
 
+    /**
+     * 转换数组文本为 false 的字典值（字符序列，内部方法）。
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的字典值
+     * @throws JacksonException Jackson 异常
+     */
     default Object transformArrayTextFalseFor(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (dictTree == null) {
             return getDictText(bean, fieldName, value, dictText, dictType, value.toString());

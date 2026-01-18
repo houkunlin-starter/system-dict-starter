@@ -30,9 +30,12 @@ import java.lang.reflect.InvocationTargetException;
 @Getter
 public abstract class DictValueSerializer extends ValueSerializer<Object> {
     /**
-     * 字典值写入器
+     * 字典值写入器，用于将字典值写入到JSON生成器
      */
     public static final DictWriter DICT_WRITER = new DictWriter();
+    /**
+     * 日志对象
+     */
     private static final Logger logger = LoggerFactory.getLogger(DictValueSerializer.class);
 
     // ==== Bean 基本信息
@@ -78,15 +81,39 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
     protected final DictTree dictTree;
 
     // ==== DictArray 默认配置，这个 DictArray 可能为空，但是一些场景需要预设默认值
+    /**
+     * 字典数组分隔符，用于分割字符串形式的数组值
+     */
     protected final String dictArraySplit;
+    /**
+     * 字典数组是否转换为文本
+     */
     protected final boolean dictArrayToText;
+    /**
+     * 字典数组文本分隔符，用于连接多个字典文本
+     */
     protected final String dictArrayDelimiter;
+    /**
+     * 字典数组空值处理策略
+     */
     protected final NullStrategy dictArrayNullStrategy;
 
     // ==== DictTree 默认配置，这个 DictTree 可能为空，但是一些场景需要预设默认值
+    /**
+     * 字典树最大深度
+     */
     protected final int dictTreeMaxDepth;
+    /**
+     * 字典树是否转换为文本
+     */
     protected final boolean dictTreeToText;
+    /**
+     * 字典树文本分隔符，用于连接字典树的层级文本
+     */
     protected final String dictTreeDelimiter;
+    /**
+     * 字典树空值处理策略
+     */
     protected final NullStrategy dictTreeNullStrategy;
 
     // ==== 输出配置
@@ -146,6 +173,18 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
      */
     protected final DictTypeKeyHandler<Object> dictTypeKeyHandler;
 
+    /**
+     * 构造方法
+     * <p>
+     * 初始化字典值序列化器，设置字段信息和注解配置
+     * </p>
+     *
+     * @param fieldName        字段名称
+     * @param javaTypeRawClass Java类型信息
+     * @param dictText         字典文本注解配置
+     * @param dictArray        字典数组注解配置
+     * @param dictTree         字典树注解配置
+     */
     public DictValueSerializer(String fieldName, Class<?> javaTypeRawClass, DictText dictText, DictArray dictArray, DictTree dictTree) {
         this.fieldName = fieldName;
         this.javaTypeRawClass = javaTypeRawClass;
@@ -189,6 +228,15 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         }
     }
 
+    /**
+     * 获取字典类型键处理器。
+     * <p>
+     * 尝试从Spring容器中获取字典类型键处理器实例，如果不存在则通过反射创建
+     * </p>
+     *
+     * @param dictText 字典文本注解配置
+     * @return 字典类型键处理器
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static DictTypeKeyHandler<Object> getDictTypeKeyHandler(DictText dictText) {
         Class<? extends DictTypeKeyHandler> dictTypeHandlerClazz = dictText.dictTypeHandler();
@@ -209,6 +257,17 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         return null;
     }
 
+    /**
+     * 转换字典值。
+     * <p>
+     * 抽象方法，子类需要实现具体的字典值转换逻辑。
+     * 该方法将字段值转换为对应的字典文本值。
+     * </p>
+     *
+     * @param bean       Bean 对象
+     * @param fieldValue 字段值
+     * @return 转换后的字典值
+     */
     public abstract Object transform(final Object bean, @Nullable final Object fieldValue);
 
 }

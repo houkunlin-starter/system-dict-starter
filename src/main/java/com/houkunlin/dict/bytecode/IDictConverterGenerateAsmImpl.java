@@ -27,8 +27,14 @@ import static org.springframework.asm.Opcodes.*;
  */
 @Slf4j
 public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
+    /**
+     * 字典枚举类名（内部使用）
+     */
     public static final String DICT_ENUM_CLASS_NAME = DictEnum.class.getName().replace(".", "/");
 
+    /**
+     * 构造方法
+     */
     public IDictConverterGenerateAsmImpl() {
         if (log.isDebugEnabled()) {
             log.debug("使用 ASM 字节码技术动态创建字典转换器实现类");
@@ -36,11 +42,12 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
     }
 
     /**
-     * 动态创建一个转换器对象
+     * 动态创建一个转换器对象。
      *
      * @param dictEnumClass 枚举对象
      * @param dictConverter 枚举转换器配置参数注解
      * @return 转换器对象
+     * @throws Exception 异常
      */
     @SuppressWarnings({"unchecked"})
     @Override
@@ -78,7 +85,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
     }
 
     /**
-     * 尝试使用字典枚举名称转换，字典名称转换失败后再尝试使用字典值转换
+     * 尝试使用字典枚举名称转换，字典名称转换失败后再尝试使用字典值转换。
      *
      * @param converterClassName 转换器类名
      * @param dictEnumClassName  枚举类名
@@ -138,7 +145,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
     }
 
     /**
-     * 只使用字典值转换枚举对象
+     * 只使用字典值转换枚举对象。
      *
      * @param converterClassName 转换器类名
      * @param dictClassName      枚举类名
@@ -183,7 +190,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
     }
 
     /**
-     * 初始化和构造方法
+     * 初始化和构造方法。
      *
      * @param classWriter                  类写入器
      * @param converterClassName           转换器类名
@@ -211,7 +218,7 @@ public class IDictConverterGenerateAsmImpl implements IDictConverterGenerate {
     }
 
     /**
-     * 增加实现类转换方法的桥接方法
+     * 增加实现类转换方法的桥接方法。
      *
      * @param classWriter                  类写入器
      * @param converterClassName           转换器类名

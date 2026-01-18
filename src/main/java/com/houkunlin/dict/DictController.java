@@ -21,6 +21,16 @@ import java.util.function.UnaryOperator;
 
 /**
  * 系统字典控制器
+ * <p>
+ * 该控制器提供了字典相关的 RESTful API 接口，主要功能包括：
+ * <ul>
+ * <li>获取字典类型信息</li>
+ * <li>获取字典值文本信息</li>
+ * <li>支持树形结构的字典数据</li>
+ * <li>支持通过路径参数和查询参数获取字典数据</li>
+ * </ul>
+ * 该控制器使用了 Swagger 注解来生成 API 文档，方便前端开发人员了解接口用法。
+ * </p>
  *
  * @author HouKunLin
  * @since 1.4.1
@@ -30,10 +40,14 @@ import java.util.function.UnaryOperator;
 @RequestMapping("${system.dict.controller.prefix:/dict}")
 public class DictController {
     /**
-     * 获取字典类型信息
+     * 获取字典类型信息（路径参数方式）
+     * <p>
+     * 该方法通过路径参数获取字典类型代码，返回对应的字典类型对象。
+     * 支持可选的树形结构参数，当传入 tree 参数时，会按照指定的长度将字典值分隔成树形结构。
+     * </p>
      *
      * @param dict 字典类型代码
-     * @param tree v1.4.9 以字典文本值的代码长度来截取成树结构数据，此值传入分隔长度（树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值）
+     * @param tree 树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值
      * @return 字典类型对象
      */
     @Operation(summary = "获取字典类型[PATH]")
@@ -44,10 +58,14 @@ public class DictController {
     }
 
     /**
-     * 获取字典类型信息
+     * 获取字典类型信息（查询参数方式）
+     * <p>
+     * 该方法通过查询参数获取字典类型代码，返回对应的字典类型对象。
+     * 支持可选的树形结构参数，当传入 tree 参数时，会按照指定的长度将字典值分隔成树形结构。
+     * </p>
      *
      * @param dict 字典类型代码
-     * @param tree v1.4.9 以字典文本值的代码长度来截取成树结构数据，此值传入分隔长度（树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值）
+     * @param tree 树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值
      * @return 字典类型对象
      */
     @Operation(summary = "获取字典类型[QUERY]")
@@ -58,7 +76,15 @@ public class DictController {
     }
 
     /**
-     * 转换字典信息。
+     * 转换字典信息为树形结构
+     * <p>
+     * 该方法用于将字典信息转换为树形结构，具体实现如下：
+     * 1. 首先从字典存储中获取字典类型对象
+     * 2. 如果没有指定树形结构参数，则直接返回字典类型对象
+     * 3. 否则，使用 handlerTreeDatasource 方法处理字典值列表，生成树形结构
+     * 4. 最后将处理后的树形结构设置回字典类型对象并返回
+     * </p>
+     * <p>树形结构示例：</p>
      * <ol>
      *     <li>10   分类1</li>
      *     <li>1010 分类1-1</li>
@@ -70,7 +96,7 @@ public class DictController {
      *
      * @param dict 字典类型代码
      * @param tree 树形结构的KEY长度，按照这个长度去分隔字典值，由字典值拿到父级字典值
-     * @return 字典信息
+     * @return 转换后的字典类型对象
      * @since 1.4.9
      */
     private DictType transform(final String dict, final Integer tree) {
@@ -101,6 +127,16 @@ public class DictController {
         return dictType;
     }
 
+    /**
+     * 从字典值对象中获取键值
+     * <p>
+     * 该方法用于从字典值对象中获取键值，用于树形结构的构建。
+     * 如果字典值是字符串类型，则直接返回该字符串；否则返回空字符串。
+     * </p>
+     *
+     * @param vo 字典值对象
+     * @return 字典值的键值
+     */
     private String getKey(final DictValue vo) {
         final Object object = vo.getValue();
         if (object instanceof String) {
@@ -110,7 +146,10 @@ public class DictController {
     }
 
     /**
-     * 获取字典值文本信息
+     * 获取字典值文本信息（路径参数方式）
+     * <p>
+     * 该方法通过路径参数获取字典类型代码和字典值代码，返回对应的字典值文本信息。
+     * </p>
      *
      * @param dict  字典类型代码
      * @param value 字典值代码
@@ -125,7 +164,10 @@ public class DictController {
     }
 
     /**
-     * 获取字典值文本信息
+     * 获取字典值文本信息（查询参数方式）
+     * <p>
+     * 该方法通过查询参数获取字典类型代码和字典值代码，返回对应的字典值文本信息。
+     * </p>
      *
      * @param dict  字典类型代码
      * @param value 字典值代码

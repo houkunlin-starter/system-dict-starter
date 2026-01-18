@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 /**
- * 字典缓存工厂配置
+ * 字典缓存工厂配置类，用于构建字典缓存对象。
  *
  * @author HouKunLin
  * @since 1.4.2
@@ -22,24 +22,20 @@ import java.util.List;
 public class DictCacheFactory {
     /**
      * 数据字典配置信息
-     *
-     * @return 数据字典配置信息
      */
     private final DictProperties dictProperties;
     /**
-     * 数据字典自定义缓存定制器
-     *
-     * @return 数据字典自定义缓存定制器
+     * 数据字典自定义缓存定制器列表
      */
     private final List<DictCacheCustomizer> cacheCustomizers;
 
     /**
-     * 构建缓存对象
+     * 构建缓存对象。
      *
      * @param name 缓存名称
-     * @param <K>  KEY
-     * @param <V>  VALUE
-     * @return 缓存对象
+     * @param <K>  KEY 类型
+     * @param <V>  VALUE 类型
+     * @return 缓存对象，当缓存未启用时返回 null
      * @since 1.5.5
      */
     public <K, V> Cache<K, V> build(String name) {
@@ -61,12 +57,12 @@ public class DictCacheFactory {
     }
 
     /**
-     * 回调构建成功的缓存对象
+     * 回调构建成功的缓存对象。
      *
      * @param name  缓存名称
      * @param cache 缓存对象
-     * @param <K>   KEY
-     * @param <V>   VALUE
+     * @param <K>   KEY 类型
+     * @param <V>   VALUE 类型
      * @since 1.5.5
      */
     public <K, V> void callbackCache(String name, Cache<K, V> cache) {

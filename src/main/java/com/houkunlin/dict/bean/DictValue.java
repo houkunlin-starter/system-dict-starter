@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 字典值信息对象
+ * 字典值信息对象，用于表示数据字典中的具体值信息。
  *
  * @author HouKunLin
  */
@@ -25,32 +25,33 @@ import java.util.List;
 @NoArgsConstructor
 public class DictValue implements Serializable {
     /**
-     * 字典类型代码
+     * 字典类型代码，用于标识字典值所属的字典类型。
      */
     @Schema(description = "字典类型代码", hidden = true)
     @JsonIgnore
     private String dictType;
     /**
      * 父级字典值，由父级字典值可以组成一个类似树形结构数据的字典信息。
-     * 构建树形结构字典数据所需要的一个父级值；
+     * 构建树形结构字典数据所需要的一个父级值。
      *
      * @since 1.4.6
      */
     @Schema(description = "父级字典值")
     private Object parentValue;
     /**
-     * 字典值
+     * 字典值，字典的实际值。
      */
     @Schema(description = "字典值")
     private Object value;
     /**
-     * 字典名称。
+     * 字典名称，字典值的显示文本。
      * <p>在使用 {@link RefreshDictValueEvent} 事件时，此值为 null 意为删除这个字典值文本信息</p>
      */
     @Schema(description = "字典名称")
     private String title;
     /**
-     * 数据字典值列表排序值（系统不会使用此字段进行排序和维护排序，需要前端根据此字段来自行排序展示）
+     * 数据字典值列表排序值。
+     * 系统不会使用此字段进行排序和维护排序，需要前端根据此字段来自行排序展示。
      */
     @Schema(description = "排序值，系统不会执行排序后再返回给前端，系统不会使用此字段进行排序和维护排序，需要前端根据此字段来自行排序展示")
     private int sorted;
@@ -63,13 +64,21 @@ public class DictValue implements Serializable {
     @Schema(description = "是否禁用")
     private boolean disabled;
     /**
-     * 子字典值列表
+     * 子字典值列表，用于存储树形结构中的子节点。
      *
      * @since 1.4.9
      */
     @Schema(description = "子字典值列表")
     private List<DictValue> children;
 
+    /**
+     * 构造字典值信息对象。
+     *
+     * @param dictType 字典类型代码
+     * @param value    字典值
+     * @param title    字典名称
+     * @param sorted   排序值
+     */
     public DictValue(final String dictType, final Object value, final String title, final int sorted) {
         this.dictType = dictType;
         this.value = value;
@@ -77,6 +86,15 @@ public class DictValue implements Serializable {
         this.sorted = sorted;
     }
 
+    /**
+     * 构造字典值信息对象（支持树形结构）。
+     *
+     * @param dictType    字典类型代码
+     * @param parentValue 父级字典值
+     * @param value       字典值
+     * @param title       字典名称
+     * @param sorted      排序值
+     */
     public DictValue(final String dictType, final Object parentValue, final Object value, final String title, final int sorted) {
         this.dictType = dictType;
         this.parentValue = parentValue;

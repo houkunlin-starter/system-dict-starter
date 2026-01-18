@@ -1,22 +1,28 @@
 package com.houkunlin.dict.properties;
 
-import com.houkunlin.dict.store.LocalDictStore;
-import com.houkunlin.dict.store.RedisDictStore;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.store.LocalDictStore;
+import com.houkunlin.dict.store.RedisDictStore;
 import lombok.*;
 
 import java.time.Duration;
 
 /**
- * <p>获取字典值缓存配置。配置在使用 {@link DictUtil} 获取字典文本时是否使用缓存。</p>
- * <p>{@link DictText} 最后的处理实际也会调用 {@link DictUtil} 来获取字典文本信息。</p>
- * <p>在使用 {@link LocalDictStore} 存储时是否启用缓存影响不大，</p>
+ * 获取字典值缓存配置类
  * <p>
+ * 配置在使用 {@link DictUtil} 获取字典文本时是否使用缓存。
+ * {@link DictText} 最后的处理实际也会调用 {@link DictUtil} 来获取字典文本信息。
+ * </p>
+ * <p>
+ * 在使用 {@link LocalDictStore} 存储时是否启用缓存影响不大，
  * 但是在使用 {@link RedisDictStore} 存储时，列表页场景可能会有较大的影响，
  * 因为每次获取字典文本都会从Redis中调用，此时假如字典值一致的时候会频繁重复调用，因此增加耗时。
  * </p>
- * <p>启用缓存功能能够有效的解决相同字典值重复从Redis读取数据导致耗时增加问题。</p>
+ * <p>
+ * 启用缓存功能能够有效的解决相同字典值重复从Redis读取数据导致耗时增加问题。
+ * 缓存采用Caffeine实现，支持容量限制、过期时间和未命中保护等特性。
+ * </p>
  *
  * @author HouKunLin
  * @since 1.4.2
@@ -29,18 +35,34 @@ import java.time.Duration;
 public class DictPropertiesCache {
     /**
      * 是否启用缓存
+     * <p>
+     * 控制是否启用字典值缓存功能。当设置为 {@code true} 时，相同的字典值在缓存有效期内只会从数据源读取一次。
+     * 当设置为 {@code false} 时，每次获取字典文本都会直接从数据源读取。
+     * </p>
      */
     private boolean enabled = true;
     /**
      * 缓存最大容量
+     * <p>
+     * 缓存中最多可以存储的条目数量。当缓存条目数量达到此限制时，
+     * 会根据缓存淘汰策略（如LRU）移除最久未使用的条目。
+     * </p>
      */
     private int maximumSize = 500;
     /**
      * 缓存初始化容量
+     * <p>
+     * 缓存初始创建时的容量大小。设置合适的初始容量可以减少缓存扩容的次数，
+     * 提高缓存性能。通常设置为预期缓存条目数量的一个合理比例。
+     * </p>
      */
     private int initialCapacity = 50;
     /**
      * 有效期时长
+     * <p>
+     * 缓存条目的有效时间。超过此时间的缓存条目会被自动移除。
+     * 设置合适的有效期可以保证字典数据的及时更新，同时减少对数据源的频繁访问。
+     * </p>
      */
     private Duration duration = Duration.ofSeconds(30);
     /**

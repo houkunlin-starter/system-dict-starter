@@ -1,7 +1,7 @@
 package com.houkunlin.dict.enums;
 
 /**
- * 存储字典数据的存储类型
+ * 字典数据存储类型枚举，用于指定字典数据的存储方式。
  *
  * @author HouKunLin
  * @since 1.4.11
@@ -18,6 +18,6 @@ public enum StoreType {
     /**
      * 使用 Redis 来存储字典数据
      */
-    REDIS,
+    REDIS
     ;
 }

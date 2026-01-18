@@ -11,20 +11,21 @@ import java.util.Set;
 import static org.springframework.asm.Opcodes.*;
 
 /**
- * 生成一个简单类的子类对象，动态继承这个简单类，然后给子类添加字段和方法
+ * 动态生成简单类的子类对象的工具类。
+ * 通过字节码技术动态继承指定类，并为子类添加字段和对应的 getter/setter 方法。
  *
  * @author HouKunLin
  * @since 1.4.9
  */
 public class DictChildrenObjectGenerate {
     /**
-     * 私有构造方法
+     * 私有构造方法，防止实例化
      */
     private DictChildrenObjectGenerate() {
     }
 
     /**
-     * 动态新建一个子类
+     * 动态新建一个子类。
      *
      * @param supperClazz 基本 bean 对象类
      * @param fieldNames  需要动态新增的字段名称
@@ -42,7 +43,7 @@ public class DictChildrenObjectGenerate {
     }
 
     /**
-     * 动态新建一个子类
+     * 动态新建一个子类。
      *
      * @param supperClazz 基本 bean 对象类
      * @param fieldNames  需要动态新增的字段名称
@@ -53,6 +54,16 @@ public class DictChildrenObjectGenerate {
         return newClass(supperClazz, fieldNames.toArray(new String[0]));
     }
 
+    /**
+     * 生成类的字节码。
+     *
+     * @param className           类名
+     * @param classNameDescriptor 类名描述符
+     * @param supperClazzName     父类名
+     * @param fieldNames          字段名数组
+     * @return 类的字节码
+     * @throws Exception 异常
+     */
     private static byte[] getClassBytes(final String className, final String classNameDescriptor, final String supperClazzName, final String... fieldNames) throws Exception {
         final ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
@@ -84,6 +95,14 @@ public class DictChildrenObjectGenerate {
         return classWriter.toByteArray();
     }
 
+    /**
+     * 为类添加字段和对应的 getter/setter 方法。
+     *
+     * @param classWriter           类写入器
+     * @param fieldName             字段名
+     * @param className             类名
+     * @param classNameDescriptor   类名描述符
+     */
     private static void newField(final ClassWriter classWriter, final String fieldName, final String className, final String classNameDescriptor) {
         final FieldVisitor fieldVisitor = classWriter.visitField(ACC_PRIVATE, fieldName, "Ljava/lang/Object;", null, null);
         fieldVisitor.visitEnd();
@@ -92,6 +111,15 @@ public class DictChildrenObjectGenerate {
         newFieldSetter(classWriter, fieldName, "set" + method, className, classNameDescriptor);
     }
 
+    /**
+     * 为字段添加 getter 方法。
+     *
+     * @param classWriter           类写入器
+     * @param fieldName             字段名
+     * @param methodName            方法名
+     * @param className             类名
+     * @param classNameDescriptor   类名描述符
+     */
     private static void newFieldGetter(final ClassWriter classWriter, final String fieldName, final String methodName, final String className, final String classNameDescriptor) {
         final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, methodName, "()Ljava/lang/Object;", null, null);
         methodVisitor.visitCode();
@@ -107,6 +135,15 @@ public class DictChildrenObjectGenerate {
         methodVisitor.visitEnd();
     }
 
+    /**
+     * 为字段添加 setter 方法。
+     *
+     * @param classWriter           类写入器
+     * @param fieldName             字段名
+     * @param methodName            方法名
+     * @param className             类名
+     * @param classNameDescriptor   类名描述符
+     */
     private static void newFieldSetter(final ClassWriter classWriter, final String fieldName, final String methodName, final String className, final String classNameDescriptor) {
         final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, methodName, "(Ljava/lang/Object;)V", null, null);
         methodVisitor.visitParameter(fieldName, ACC_FINAL);
@@ -126,7 +163,7 @@ public class DictChildrenObjectGenerate {
     }
 
     /**
-     * 首字母大写
+     * 将字符串首字母大写。
      *
      * @param val 字符串
      * @return 首字母大写的字符串

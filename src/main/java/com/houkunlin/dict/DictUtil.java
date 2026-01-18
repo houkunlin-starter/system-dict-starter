@@ -10,7 +10,6 @@ import com.houkunlin.dict.jackson.DictValueSerializer;
 import com.houkunlin.dict.jackson.DictValueSerializerUtil;
 import com.houkunlin.dict.notice.RefreshDictEvent;
 import com.houkunlin.dict.properties.DictPropertiesStorePrefixKey;
-import com.houkunlin.dict.provider.DictProvider;
 import com.houkunlin.dict.store.DictStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
- * 系统字典工具
+ * 系统字典工具类
+ * <p>
+ * 该类是数据字典系统的核心工具类，提供了字典操作的各种实用方法，包括：
+ * <ul>
+ * <li>字典数据的存储和获取</li>
+ * <li>字典文本的查询和缓存</li>
+ * <li>字典键的构建和管理</li>
+ * <li>字典对象的转换和处理</li>
+ * <li>字典事件的处理和响应</li>
+ * </ul>
+ * 该类使用了缓存机制来提高字典查询性能，同时支持动态生成字典相关的类。
+ * </p>
  *
  * @author HouKunLin
+ * @since 1.0.0
  */
 @SuppressWarnings("all")
 public class DictUtil {
@@ -34,20 +45,66 @@ public class DictUtil {
      * 手动处理含有字典注解的对象，对象可能需要动态生成字典，缓存对应的子类对象信息
      */
     private static final Map<Class<?>, Class<?>> TRANSFORM_CACHE = new ConcurrentHashMap<>();
+    /**
+     * 字典类型缓存键前缀
+     * <p>用于构建字典类型在缓存中的键，格式为：dict:t:{type}
+     */
     public static String TYPE_PREFIX = "dict:t:";
+    /**
+     * 系统字典类型缓存键前缀
+     * <p>用于构建系统字典类型在缓存中的键，格式为：dict:t_system:{type}
+     */
     public static String TYPE_SYSTEM_PREFIX = "dict:t_system:";
+    /**
+     * 字典值缓存键前缀
+     * <p>用于构建字典值在缓存中的键，格式为：dict:v:{type}:{value}
+     */
     public static String VALUE_PREFIX = "dict:v:";
+    /**
+     * 字典父级值缓存键前缀
+     * <p>用于构建字典父级值在缓存中的键，格式为：dict:p:{type}:{value}
+     *
+     * @since 1.4.6
+     */
     public static String PARENT_PREFIX = "dict:p:";
+    /**
+     * 字典注册器
+     * <p>负责管理字典提供者和刷新字典数据
+     */
     private static DictRegistrar dictRegistrar;
 
+    /**
+     * 字典存储
+     * <p>负责字典数据的实际存储和读取操作
+     */
     private static DictStore store;
     /**
      * 字典值缓存
+     * <p>缓存字典值对应的文本信息，提高查询性能
      */
     private static Cache<String, String> cache;
+    /**
+     * 字典值未命中缓存
+     * <p>缓存字典值的未命中次数，用于防止频繁查询不存在的字典值
+     */
     private static Cache<String, AtomicInteger> missCache;
+    /**
+     * 字典值未命中阈值
+     * <p>在有效期内同一个字典值未命中指定次数将快速返回，不再重复请求获取数据字典信息
+     */
     private static int missNum = Integer.MAX_VALUE;
 
+    /**
+     * DictUtil 构造方法
+     * <p>
+     * 初始化 DictUtil 类的静态字段，包括字典注册器、字典存储和缓存。
+     * 该构造方法由 Spring 容器调用，用于依赖注入。
+     * </p>
+     *
+     * @param dictRegistrar 字典注册器，负责管理字典提供者和刷新字典数据
+     * @param store 字典存储，负责字典数据的实际存储和读取操作
+     * @param cacheFactory 缓存工厂，用于创建和管理字典缓存
+     */
     public DictUtil(final DictRegistrar dictRegistrar, final DictStore store, final DictCacheFactory cacheFactory) {
         DictUtil.dictRegistrar = dictRegistrar;
         DictUtil.store = store;
@@ -59,12 +116,16 @@ public class DictUtil {
     }
 
     /**
-     * 设置字典数据存储对象。对外提供在运行期间更改 DictStore 存储的方法。
+     * 设置字典数据存储对象
+     * <p>
+     * 对外提供在运行期间更改 DictStore 存储的方法。
+     * 调用此方法后，系统将使用新的存储对象进行字典操作。
      * 注意：
      * <ul>
      *     <li>1. 调用此接口后请发起 {@link RefreshDictEvent} 事件刷新字典数据，把系统的字典信息写入到新的 {@link DictStore} 存储对象中</li>
      *     <li>2. （推荐）或者在调用此接口前，请先调用 {@link DictUtil#forEachAllDict(Set, Consumer, Consumer, Consumer)} 此接口把所有的字典数据写入新的 {@link DictStore} 存储对象中</li>
      * </ul>
+     * </p>
      *
      * @param store 字典数据存储对象
      * @since 1.4.11
@@ -74,10 +135,15 @@ public class DictUtil {
     }
 
     /**
-     * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
+     * 循环获取所有字典提供者提供的字典数据并存储
+     * <p>
+     * 该方法调用 DictRegistrar 的 forEachAllDict 方法，循环获取所有 DictProvider 提供的字典数据，
+     * 并将获取到的字典类型和字典值数据存储到指定的 DictStore 对象中。
+     * 该方法用于在切换字典存储实现时，将所有字典数据迁移到新的存储中。
+     * </p>
      *
-     * @param dictProviderClasses 需要刷新的字典提供商类限定名
-     * @param store 字典存储 {@link DictStore} 对象
+     * @param dictProviderClasses 需要刷新的字典提供商类限定名，null 表示刷新所有
+     * @param store 字典存储对象，用于存储字典数据
      * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.5.0
      */
@@ -88,11 +154,17 @@ public class DictUtil {
     }
 
     /**
-     * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
+     * 循环获取所有字典提供者提供的字典数据并通过消费者处理
+     * <p>
+     * 该方法调用 DictRegistrar 的 forEachAllDict 方法，循环获取所有 DictProvider 提供的字典数据，
+     * 并通过提供的消费者函数处理获取到的字典类型和字典值数据。
+     * 该方法提供了更灵活的字典数据处理方式，可以根据需要自定义处理逻辑。
+     * </p>
      *
-     * @param dictProviderClasses 只获取特定的 {@link DictProvider} 数据，会调用 {@link DictProvider#supportRefresh(Set)} 来判断
-     * @param dictTypeConsumer    保存字典类型的方法
-     * @param dictValueConsumer   保存字典值数据的方法
+     * @param dictProviderClasses 需要刷新的字典提供商类限定名，null 表示刷新所有
+     * @param dictTypeConsumer    保存普通字典类型的消费者函数
+     * @param systemDictTypeConsumer 保存系统字典类型的消费者函数
+     * @param dictValueConsumer   保存字典值数据的消费者函数
      * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.4.11
      */
@@ -103,9 +175,13 @@ public class DictUtil {
     }
 
     /**
-     * 初始化 缓存键 前缀信息
+     * 初始化缓存键前缀信息
+     * <p>
+     * 该方法根据配置信息初始化字典类型、系统字典类型、字典值和父级字典值的缓存键前缀。
+     * 这些前缀用于构建字典数据在缓存中的键，确保不同类型的字典数据不会冲突。
+     * </p>
      *
-     * @param properties 配置信息
+     * @param properties 缓存键前缀配置信息
      * @since 1.4.7
      */
     public static void initPrefix(final DictPropertiesStorePrefixKey properties) {
@@ -117,9 +193,14 @@ public class DictUtil {
 
     /**
      * 通过字典类型代码获取一个字典类型对象
+     * <p>
+     * 该方法通过字典类型代码从字典存储中获取对应的字典类型对象。
+     * 首先检查类型代码是否为 null，以及字典存储是否初始化，
+     * 然后调用 store.getDictType 方法获取字典类型对象。
+     * </p>
      *
      * @param type 字典类型代码
-     * @return 字典类型
+     * @return 字典类型对象，如果类型代码为 null 或存储未初始化则返回 null
      */
     public static DictType getDictType(String type) {
         if (type == null || store == null) {
@@ -130,10 +211,20 @@ public class DictUtil {
 
     /**
      * 获取字典文本
+     * <p>
+     * 该方法通过字典类型代码和字典值获取对应的字典文本。
+     * 实现逻辑如下：
+     * 1. 检查类型和值是否为 null，以及字典存储是否初始化
+     * 2. 如果缓存未初始化，直接从存储中获取
+     * 3. 否则，尝试从缓存中获取字典文本
+     * 4. 如果缓存未命中，检查未命中次数是否超过阈值
+     * 5. 如果未超过阈值，从存储中获取并更新缓存
+     * 6. 返回获取到的字典文本或 null
+     * </p>
      *
-     * @param type  字典类型
+     * @param type  字典类型代码
      * @param value 字典值
-     * @return 字典文本
+     * @return 字典文本，如果类型或值为 null、存储未初始化或未找到则返回 null
      */
     public static String getDictText(String type, String value) {
         if (type == null || value == null || store == null) {
@@ -164,10 +255,20 @@ public class DictUtil {
 
     /**
      * 获取字典父级值
+     * <p>
+     * 该方法通过字典类型代码和字典值获取对应的父级字典值。
+     * 实现逻辑与 getDictText 方法类似，但获取的是父级值而不是文本：
+     * 1. 检查类型和值是否为 null，以及字典存储是否初始化
+     * 2. 如果缓存未初始化，直接从存储中获取
+     * 3. 否则，尝试从缓存中获取父级值
+     * 4. 如果缓存未命中，检查未命中次数是否超过阈值
+     * 5. 如果未超过阈值，从存储中获取并更新缓存
+     * 6. 返回获取到的父级值或 null
+     * </p>
      *
-     * @param type  字典类型
+     * @param type  字典类型代码
      * @param value 字典值
-     * @return 字典父级值
+     * @return 字典父级值，如果类型或值为 null、存储未初始化或未找到则返回 null
      * @since 1.4.6
      */
     public static String getDictParentValue(String type, String value) {
@@ -197,20 +298,54 @@ public class DictUtil {
         return parentValue;
     }
 
+    /**
+     * 构建字典类型缓存键
+     * <p>
+     * 该方法使用 TYPE_PREFIX 前缀和字典类型代码构建字典类型在缓存中的键。
+     * 格式为：dict:t:{type}
+     * </p>
+     *
+     * @param type 字典类型代码
+     * @return 字典类型缓存键
+     */
     public static String dictKey(String type) {
         return TYPE_PREFIX + type;
     }
 
+    /**
+     * 构建系统字典类型缓存键
+     * <p>
+     * 该方法使用 TYPE_SYSTEM_PREFIX 前缀和字典类型代码构建系统字典类型在缓存中的键。
+     * 格式为：dict:t_system:{type}
+     * </p>
+     *
+     * @param type 字典类型代码
+     * @return 系统字典类型缓存键
+     */
     public static String dictSystemKey(String type) {
         return TYPE_SYSTEM_PREFIX + type;
     }
 
+    /**
+     * 构建字典值缓存键
+     * <p>
+     * 该方法使用 VALUE_PREFIX 前缀、字典类型代码和字典值构建字典值在缓存中的键。
+     * 格式为：dict:v:{type}:{value}
+     * </p>
+     *
+     * @param value 字典值对象
+     * @return 字典值缓存键
+     */
     public static String dictKey(DictValue value) {
         return VALUE_PREFIX + value.getDictType() + ":" + value.getValue();
     }
 
     /**
      * 构建字典父级值缓存 KEY
+     * <p>
+     * 该方法使用 PARENT_PREFIX 前缀、字典类型代码和字典值构建字典父级值在缓存中的键。
+     * 格式为：dict:p:{type}:{value}
+     * </p>
      *
      * @param value 字典值对象
      * @return 字典父级值缓存 KEY
@@ -220,12 +355,27 @@ public class DictUtil {
         return PARENT_PREFIX + value.getDictType() + ":" + value.getValue();
     }
 
+    /**
+     * 构建字典值缓存键
+     * <p>
+     * 该方法使用 VALUE_PREFIX 前缀、字典类型代码和字典值构建字典值在缓存中的键。
+     * 格式为：dict:v:{type}:{value}
+     * </p>
+     *
+     * @param type 字典类型代码
+     * @param value 字典值
+     * @return 字典值缓存键
+     */
     public static String dictKey(String type, Object value) {
         return VALUE_PREFIX + type + ":" + value;
     }
 
     /**
      * 构建字典父级值缓存 KEY
+     * <p>
+     * 该方法使用 PARENT_PREFIX 前缀、字典类型代码和字典值构建字典父级值在缓存中的键。
+     * 格式为：dict:p:{type}:{value}
+     * </p>
      *
      * @param type  字典类型
      * @param value 字典值
@@ -237,10 +387,15 @@ public class DictUtil {
     }
 
     /**
-     * Redis Dict Value Hash Key
+     * 构建字典值哈希缓存键
+     * <p>
+     * 该方法使用 VALUE_PREFIX 前缀和字典类型代码构建字典值哈希在缓存中的键。
+     * 格式为：dict:v:{type}
+     * 该键用于 Redis 哈希结构，存储同一字典类型下的所有字典值。
+     * </p>
      *
      * @param value 字典值对象
-     * @return key
+     * @return 字典值哈希缓存键
      * @since 1.5.0
      */
     public static String dictKeyHash(DictValue value) {
@@ -248,11 +403,15 @@ public class DictUtil {
     }
 
     /**
-     * 构建字典父级值缓存 KEY
-     * Redis Dict Value Hash Key
+     * 构建字典父级值哈希缓存 KEY
+     * <p>
+     * 该方法使用 PARENT_PREFIX 前缀和字典类型代码构建字典父级值哈希在缓存中的键。
+     * 格式为：dict:p:{type}
+     * 该键用于 Redis 哈希结构，存储同一字典类型下的所有字典父级值。
+     * </p>
      *
      * @param value 字典值对象
-     * @return 字典父级值缓存 KEY
+     * @return 字典父级值哈希缓存 KEY
      * @since 1.5.0
      */
     public static String dictParentKeyHash(DictValue value) {
@@ -260,9 +419,15 @@ public class DictUtil {
     }
 
     /**
-     * Redis Dict Value Hash Key
+     * 构建字典值哈希缓存键
+     * <p>
+     * 该方法使用 VALUE_PREFIX 前缀和字典类型代码构建字典值哈希在缓存中的键。
+     * 格式为：dict:v:{type}
+     * 该键用于 Redis 哈希结构，存储同一字典类型下的所有字典值。
+     * </p>
      *
-     * @return key 字典类型
+     * @param type 字典类型
+     * @return 字典值哈希缓存键
      * @since 1.5.0
      */
     public static String dictKeyHash(String type) {
@@ -270,10 +435,15 @@ public class DictUtil {
     }
 
     /**
-     * 构建字典父级值缓存 KEY
+     * 构建字典父级值哈希缓存 KEY
+     * <p>
+     * 该方法使用 PARENT_PREFIX 前缀和字典类型代码构建字典父级值哈希在缓存中的键。
+     * 格式为：dict:p:{type}
+     * 该键用于 Redis 哈希结构，存储同一字典类型下的所有字典父级值。
+     * </p>
      *
      * @param type  字典类型
-     * @return 字典父级值缓存 KEY
+     * @return 字典父级值哈希缓存 KEY
      * @since 1.5.0
      */
     public static String dictParentKeyHash(String type) {

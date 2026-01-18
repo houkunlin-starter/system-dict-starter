@@ -1,9 +1,10 @@
 package com.houkunlin.dict.enums;
 
 /**
- * 空值处理策略
+ * 空值处理策略枚举，用于指定字典值为空时的处理方式。
  *
  * @author HouKunLin
+ * @since 2.0.0
  */
 public enum NullStrategy {
     /**

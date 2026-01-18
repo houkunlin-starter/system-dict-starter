@@ -7,7 +7,14 @@ import org.springframework.context.ApplicationEvent;
 import java.util.Set;
 
 /**
- * 刷新字典事件，通知系统刷新Redis数据字典
+ * 刷新字典事件
+ * <p>
+ * 该事件用于通知系统刷新Redis数据字典，支持多种刷新模式：
+ * 1. 仅刷新本地系统的字典数据
+ * 2. 同时通知其他系统刷新字典数据
+ * 3. 通知其他系统的同时，也通知本系统的兄弟实例
+ * 4. 限定只刷新指定的字典提供者
+ * </p>
  *
  * @author HouKunLin
  */
@@ -28,10 +35,12 @@ public class RefreshDictEvent extends ApplicationEvent {
     private final Set<String> dictProviderClasses;
 
     /**
-     * Create a new {@code ApplicationEvent}.
+     * 创建刷新字典事件
+     * <p>
+     * 默认不通知其他系统，也不通知兄弟系统，刷新所有字典提供者的数据。
+     * </p>
      *
-     * @param source the object on which the event initially occurred or with
-     *               which the event is associated (never {@code null})
+     * @param source 事件来源等相关信息
      */
     public RefreshDictEvent(final Object source) {
         super(source);
@@ -41,10 +50,12 @@ public class RefreshDictEvent extends ApplicationEvent {
     }
 
     /**
-     * Create a new {@code ApplicationEvent}.
+     * 创建刷新字典事件
+     * <p>
+     * 默认不通知其他系统，也不通知兄弟系统，只刷新指定的字典提供者的数据。
+     * </p>
      *
-     * @param source             the object on which the event initially occurred or with
-     *                           which the event is associated (never {@code null})
+     * @param source             事件来源等相关信息
      * @param dictProviderClasses 限定只刷新指定的 DictProvider 对象。当为 null 或者 空列表 时会刷新所有的 DictProvider 数据
      */
     public RefreshDictEvent(final Object source, final Set<String> dictProviderClasses) {
@@ -55,7 +66,10 @@ public class RefreshDictEvent extends ApplicationEvent {
     }
 
     /**
-     * 刷新字典事件，通知系统刷新Redis数据字典
+     * 创建刷新字典事件
+     * <p>
+     * 可选择是否通知其他系统，默认不通知兄弟系统，刷新所有字典提供者的数据。
+     * </p>
      *
      * @param source            事件来源等相关信息
      * @param notifyOtherSystem 是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
@@ -68,7 +82,10 @@ public class RefreshDictEvent extends ApplicationEvent {
     }
 
     /**
-     * 刷新字典事件，通知系统刷新Redis数据字典
+     * 创建刷新字典事件
+     * <p>
+     * 可选择是否通知其他系统，默认不通知兄弟系统，只刷新指定的字典提供者的数据。
+     * </p>
      *
      * @param source             事件来源等相关信息
      * @param notifyOtherSystem  是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
@@ -82,7 +99,10 @@ public class RefreshDictEvent extends ApplicationEvent {
     }
 
     /**
-     * 刷新字典事件，通知系统刷新Redis数据字典
+     * 创建刷新字典事件
+     * <p>
+     * 可选择是否通知其他系统和兄弟系统，刷新所有字典提供者的数据。
+     * </p>
      *
      * @param source                      事件来源等相关信息
      * @param notifyOtherSystem           是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
@@ -95,6 +115,17 @@ public class RefreshDictEvent extends ApplicationEvent {
         this.dictProviderClasses = null;
     }
 
+    /**
+     * 创建刷新字典事件
+     * <p>
+     * 可选择是否通知其他系统和兄弟系统，只刷新指定的字典提供者的数据。
+     * </p>
+     *
+     * @param source                      事件来源等相关信息
+     * @param notifyOtherSystem           是否通知其他的系统。使用 MQ 进行广播通知其他系统更新数据字典
+     * @param notifyOtherSystemAndBrother 使用MQ通知其他系统的同时，也通知本系统的兄弟系统（同一个系统部署多个实例）
+     * @param dictProviderClasses         限定只刷新指定的 DictProvider 对象。当为 null 或者 空列表 时会刷新所有的 DictProvider 数据
+     */
     public RefreshDictEvent(final Object source, final boolean notifyOtherSystem, final boolean notifyOtherSystemAndBrother, final Set<String> dictProviderClasses) {
         super(source);
         this.notifyOtherSystem = notifyOtherSystem;

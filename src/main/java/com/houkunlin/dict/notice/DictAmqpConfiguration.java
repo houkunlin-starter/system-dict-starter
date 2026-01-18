@@ -17,7 +17,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import java.util.Objects;
 
 /**
- * 数据字典消息队列配置
+ * 数据字典 AMQP 消息队列配置
+ * <p>
+ * 该配置类用于在启用 AMQP 消息队列模式时，处理字典刷新事件的发布和订阅。
+ * 当系统内部发起刷新字典事件时，会通过 AMQP 发布消息通知其他系统；
+ * 同时会订阅 AMQP 消息，接收其他系统发来的字典刷新通知。
+ * </p>
  *
  * @author HouKunLin
  */
@@ -25,17 +30,32 @@ import java.util.Objects;
 @ConditionalOnClass(AmqpTemplate.class)
 @Configuration(proxyBeanMethods = false)
 public class DictAmqpConfiguration {
+    /**
+     * 日志
+     */
     private static final Logger logger = LoggerFactory.getLogger(DictAmqpConfiguration.class);
+    /**
+     * 数据字典注册器，用于刷新字典数据
+     */
     private final DictRegistrar dictRegistrar;
+    /**
+     * AMQP 模板，用于发布 AMQP 消息
+     */
     private final AmqpTemplate amqpTemplate;
+    /**
+     * 当前应用名称，用于标识消息的来源和过滤
+     */
     private final String applicationName;
+    /**
+     * 交换器名称，用于指定 AMQP 消息的交换器
+     */
     private final String exchangeName;
 
     /**
      * 构造方法
      *
      * @param dictRegistrar   数据字典注册器
-     * @param amqpTemplate    AmqpTemplate 对象
+     * @param amqpTemplate    AMQP 模板
      * @param applicationName 当前应用名称
      * @param dictProperties  数据字典配置参数信息
      */
@@ -50,7 +70,10 @@ public class DictAmqpConfiguration {
     }
 
     /**
-     * 配置匿名队列，应用停止时会自动删除队列，并且能够保证队列唯一性
+     * 配置匿名队列
+     * <p>
+     * 应用停止时会自动删除队列，并且能够保证队列唯一性。
+     * </p>
      *
      * @return 队列
      */
@@ -61,8 +84,11 @@ public class DictAmqpConfiguration {
 
     /**
      * 配置交换器
+     * <p>
+     * 使用 FanoutExchange 类型的交换器，实现广播消息的功能。
+     * </p>
      *
-     * @return 日志交换器
+     * @return 交换器
      */
     @Bean
     Exchange dictExchange() {
@@ -70,7 +96,10 @@ public class DictAmqpConfiguration {
     }
 
     /**
-     * 配置交换器和队列的绑定，
+     * 配置交换器和队列的绑定
+     * <p>
+     * 将队列绑定到交换器，实现消息的接收。
+     * </p>
      *
      * @param dictQueue    队列
      * @param dictExchange 交换器
@@ -83,6 +112,10 @@ public class DictAmqpConfiguration {
 
     /**
      * 监听刷新数据字典消息队列广播通知
+     * <p>
+     * 当收到 AMQP 消息时，会检查消息是否来自当前系统且不需要通知兄弟系统，
+     * 如果是则忽略处理，否则刷新字典数据。
+     * </p>
      *
      * @param noticeData 刷新通知数据
      */
@@ -99,6 +132,10 @@ public class DictAmqpConfiguration {
 
     /**
      * 处理系统内部发起的刷新数据字典事件
+     * <p>
+     * 当收到刷新字典事件且需要通知其他系统时，会将事件封装为 RefreshNoticeData 对象，
+     * 通过 AMQP 发布消息。
+     * </p>
      *
      * @param event 刷新字典通知事件
      */

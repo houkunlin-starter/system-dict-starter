@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 数据字典（类别、分类）
+ * 数据字典类型信息对象，用于表示数据字典的类别、分类信息。
  *
  * @author HouKunLin
  */
@@ -22,40 +22,32 @@ import java.util.List;
 public class DictType implements Serializable {
     /**
      * 数据字典名称
-     *
-     * @return 数据字典名称
      */
     @Schema(description = "数据字典名称")
     private String title;
     /**
      * 数据字典类型（唯一值）
-     *
-     * @return 数据字典类型（唯一值）
      */
     @Schema(description = "数据字典类型（唯一值）")
     private String type;
     /**
      * 备注信息
-     *
-     * @return 备注信息
      */
     @Schema(description = "备注信息")
     private String remark;
     /**
      * 字典值列表
      * <p>在使用 {@link RefreshDictTypeEvent} 事件时，此值为 null 意为删除这个字典类型对象信息</p>
-     *
-     * @return 字典值列表
      */
     @Schema(description = "字典值列表")
     private List<DictValue> children;
 
     /**
-     * 构造字典类型信息
+     * 构造字典类型信息构建器。
      *
      * @param type  字典类型代码
      * @param title 字典类型名称
-     * @return DictType.DictTypeBuilder
+     * @return DictType.DictTypeBuilder 构建器对象
      * @since 1.4.3
      */
     public static DictType.DictTypeBuilder newBuilder(final String type, final String title) {
@@ -63,12 +55,12 @@ public class DictType implements Serializable {
     }
 
     /**
-     * 构造字典类型信息
+     * 构造字典类型信息构建器。
      *
      * @param type   字典类型代码
      * @param title  字典类型名称
      * @param remark 备注信息
-     * @return DictType.DictTypeBuilder
+     * @return DictType.DictTypeBuilder 构建器对象
      * @since 1.4.3
      */
     public static DictType.DictTypeBuilder newBuilder(final String type, final String title, final String remark) {
@@ -76,7 +68,8 @@ public class DictType implements Serializable {
     }
 
     /**
-     * 字典类型构建
+     * 字典类型构建器，用于链式构建字典类型对象。
+     *
      * @since 1.4.3
      */
     public static class DictTypeBuilder {
@@ -126,7 +119,7 @@ public class DictType implements Serializable {
          * 增加一个字典值信息
          *
          * @param dictValue 字典值对象
-         * @return Builder
+         * @return DictTypeBuilder 构建器对象
          */
         public DictType.DictTypeBuilder add(final DictValue dictValue) {
             dictValue.setDictType(type);
@@ -139,7 +132,7 @@ public class DictType implements Serializable {
          *
          * @param value 字典值
          * @param title 字典值文本
-         * @return Builder
+         * @return DictTypeBuilder 构建器对象
          */
         public DictType.DictTypeBuilder add(final Object value, final String title) {
             this.children.add(new DictValue(type, value, title, 0));
@@ -148,10 +141,11 @@ public class DictType implements Serializable {
 
         /**
          * 增加一个字典值信息
-         * @param value 字典值
-         * @param title 字典值文本
+         *
+         * @param value  字典值
+         * @param title  字典值文本
          * @param sorted 字典值排序
-         * @return Builder
+         * @return DictTypeBuilder 构建器对象
          */
         public DictType.DictTypeBuilder add(final Object value, final String title, final int sorted) {
             this.children.add(new DictValue(type, value, title, sorted));
@@ -159,12 +153,12 @@ public class DictType implements Serializable {
         }
 
         /**
-         * 树形结构数据
+         * 增加一个树形结构字典值信息
          *
          * @param parentValue 字典父级值
          * @param value       字典值
          * @param title       字典文本
-         * @return this
+         * @return DictTypeBuilder 构建器对象
          * @since 1.4.6
          */
         public DictType.DictTypeBuilder add(final Object parentValue, final Object value, final String title) {
@@ -173,13 +167,13 @@ public class DictType implements Serializable {
         }
 
         /**
-         * 树形结构数据
+         * 增加一个树形结构字典值信息
          *
          * @param parentValue 字典父级值
          * @param value       字典值
          * @param title       字典文本
          * @param sorted      排序值
-         * @return this
+         * @return DictTypeBuilder 构建器对象
          * @since 1.4.6
          */
         public DictType.DictTypeBuilder add(final Object parentValue, final Object value, final String title, final int sorted) {
@@ -189,6 +183,7 @@ public class DictType implements Serializable {
 
         /**
          * 构建一个字典类型对象
+         *
          * @return 字典类型对象
          */
         public DictType build() {
@@ -196,7 +191,8 @@ public class DictType implements Serializable {
         }
 
         /**
-         * 字典值列表
+         * 获取字典值列表
+         *
          * @return 字典值列表
          */
         public List<DictValue> dictValues() {

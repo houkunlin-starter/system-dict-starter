@@ -1,7 +1,7 @@
 package com.houkunlin.dict.enums;
 
 /**
- * 消息类型
+ * 消息中间件类型枚举，用于指定字典刷新时使用的消息通知方式。
  *
  * @author HouKunLin
  * @since 1.4.4
@@ -18,6 +18,6 @@ public enum MqType {
     /**
      * 使用 Redis 的发布/订阅来通知其他系统刷新字典
      */
-    REDIS,
+    REDIS
     ;
 }

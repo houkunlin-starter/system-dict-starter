@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 系统字典提供者端点
+ * 系统字典提供者端点，用于查询系统字典提供者的缓存信息。
  *
  * @author HouKunLin
  * @since 1.3.0
@@ -18,10 +18,13 @@ import java.util.Map;
 @Endpoint(id = "dictSystem")
 @RequiredArgsConstructor
 public class SystemDictProviderEndpoint {
+    /**
+     * 系统字典提供者
+     */
     private final SystemDictProvider provider;
 
     /**
-     * 默认端点，返回系统字典类型代码列表
+     * 默认端点，返回系统字典类型代码列表。
      *
      * @return 系统字典类型代码列表
      */
@@ -33,7 +36,7 @@ public class SystemDictProviderEndpoint {
     }
 
     /**
-     * 获取字典类型信息
+     * 获取字典类型信息。
      *
      * @param dictType 字典类型代码
      * @return 字典类型信息

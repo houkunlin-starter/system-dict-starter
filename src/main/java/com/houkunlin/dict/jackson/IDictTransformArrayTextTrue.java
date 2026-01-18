@@ -15,9 +15,37 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 字典数组文本为 true 的转换接口，用于处理字典数组文本为 true 时的转换逻辑。
+ * <p>
+ * 该接口提供了将字典数组值转换为文本字符串的方法，支持将多个字典文本连接成一个字符串。
+ * 例如：当数组值为 ["1", "2"] 时，会转换为 "字典1、字典2" 这样的格式。
+ * </p>
+ *
+ * @author HouKunLin
+ * @since 1.9.0
+ */
 public interface IDictTransformArrayTextTrue extends IDictValueSerializerTree {
+    /**
+     * 日志对象
+     */
     Logger logger = LoggerFactory.getLogger(IDictTransformArrayTextTrue.class);
 
+    /**
+     * 转换字典数组值为文本字符串。
+     * <p>
+     * 根据字段值类型，将字典数组值转换为文本字符串，使用配置的分隔符连接多个字典文本。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @return 转换后的文本字符串
+     * @throws JacksonException Jackson 异常
+     */
     default String transformArrayTextTrue(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
@@ -46,6 +74,22 @@ public interface IDictTransformArrayTextTrue extends IDictValueSerializerTree {
         }
     }
 
+    /**
+     * 转换字典数组值为文本字符串（内部方法）。
+     * <p>
+     * 处理单个字典值的转换，根据值类型返回对应的文本字符串。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的文本字符串
+     * @throws JacksonException Jackson 异常
+     */
     default String transformArrayTextTrueFor(Object bean, Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (value == null) {
             return null;
@@ -76,6 +120,22 @@ public interface IDictTransformArrayTextTrue extends IDictValueSerializerTree {
         }
     }
 
+    /**
+     * 转换对象数组为文本字符串。
+     * <p>
+     * 将对象数组中的每个元素转换为字典文本，然后使用配置的分隔符连接成一个字符串。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的文本字符串
+     * @throws JacksonException Jackson 异常
+     */
     default String transformArrayTextTrue(Object bean, Object[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
@@ -85,6 +145,22 @@ public interface IDictTransformArrayTextTrue extends IDictValueSerializerTree {
         return String.join(dictArray.delimiter(), textList);
     }
 
+    /**
+     * 转换集合为文本字符串。
+     * <p>
+     * 将集合中的每个元素转换为字典文本，然后使用配置的分隔符连接成一个字符串。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的文本字符串
+     * @throws JacksonException Jackson 异常
+     */
     default String transformArrayTextTrue(Object bean, Collection<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
@@ -94,6 +170,22 @@ public interface IDictTransformArrayTextTrue extends IDictValueSerializerTree {
         return String.join(dictArray.delimiter(), textList);
     }
 
+    /**
+     * 转换可迭代对象为文本字符串。
+     * <p>
+     * 将可迭代对象中的每个元素转换为字典文本，然后使用配置的分隔符连接成一个字符串。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的文本字符串
+     * @throws JacksonException Jackson 异常
+     */
     default String transformArrayTextTrue(Object bean, Iterable<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
@@ -103,14 +195,60 @@ public interface IDictTransformArrayTextTrue extends IDictValueSerializerTree {
         return String.join(dictArray.delimiter(), textList);
     }
 
+    /**
+     * 转换字典枚举为文本字符串。
+     * <p>
+     * 处理字典枚举类型的转换，返回枚举的标题。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void transformArrayTextTrue(Object bean, DictEnum<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
+    /**
+     * 转换Map为文本字符串。
+     * <p>
+     * 处理Map类型的转换，目前不支持Map类型的字典数组转换。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @throws JacksonException Jackson 异常
+     */
     default void transformArrayTextTrue(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
 
     }
 
+    /**
+     * 转换字符序列数组为文本字符串。
+     * <p>
+     * 将字符序列数组中的每个元素转换为字典文本，然后使用配置的分隔符连接成一个字符串。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的文本字符串
+     * @throws JacksonException Jackson 异常
+     */
     default String transformArrayTextTrue(Object bean, CharSequence[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         List<String> textList = new ArrayList<>();
         for (CharSequence charSequence : value) {
@@ -133,6 +271,22 @@ public interface IDictTransformArrayTextTrue extends IDictValueSerializerTree {
         return String.join(dictArray.delimiter(), textList);
     }
 
+    /**
+     * 转换字符序列为文本字符串。
+     * <p>
+     * 将字符序列转换为字典文本，支持字典树结构的处理。
+     * </p>
+     *
+     * @param bean      Bean 对象
+     * @param value     字段值
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解配置
+     * @param dictArray 字典数组注解配置
+     * @param dictTree  字典树注解配置
+     * @param dictType  字典类型
+     * @return 转换后的文本字符串
+     * @throws JacksonException Jackson 异常
+     */
     default String transformArrayTextTrue(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
         if (dictTree == null) {
             return getDictText(bean, fieldName, value, dictText, dictType, value.toString());
