@@ -15,8 +15,8 @@ public class DictTypeKeyHandlerImpl implements DictTypeKeyHandler<Object> {
     }
 
     @Override
-    public String getDictType(final Object bean, final String fieldName, final String fieldValueItem, final DictText dictText) {
-        logger.info("对象 {} 字段 {} = {} 注解 {}", bean, fieldName, fieldValueItem, dictText);
+    public String getDictType(final Object bean, final String fieldName, final DictText dictText) {
+        logger.info("对象 {} 字段 {} 注解 {}", bean, fieldName, dictText);
         return "PeopleType";
     }
 }

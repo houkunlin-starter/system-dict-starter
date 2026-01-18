@@ -17,14 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Bean1 {
-    @DictArray
+    @DictArray(split = ",")
     @DictText(value = "PeopleType")
     private String userType = "0,1";
 
     @DictText("PeopleType")
     private String userType1 = "1";
 
-    @DictArray
+    @DictArray(split = ",")
     @DictText(value = "PeopleType", enums = {PeopleType.class})
     private String userType3 = "0,1,3,0,0,2";
 
@@ -69,11 +69,10 @@ public class Bean1 {
     @DictText
     private String accidentType2 = "0";
 
-    @DictArray
     @DictText(nullable = DictBoolType.YES)
     private String accidentType21 = "0";
 
-    @DictArray(split = "|", joinSeparator = ",")
+    @DictArray(split = "\\|", delimiter = ",")
     @DictText(nullable = DictBoolType.NO)
     private String accidentType22 = "0";
 

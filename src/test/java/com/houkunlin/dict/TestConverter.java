@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  * 测试转换器
@@ -17,6 +18,7 @@ import org.springframework.core.convert.ConversionService;
  * @author HouKunLin
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SystemDictScan
 class TestConverter {
     @Autowired

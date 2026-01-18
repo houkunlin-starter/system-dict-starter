@@ -1,11 +1,9 @@
 package com.houkunlin.dict;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.common.bean.Bean1;
 import com.houkunlin.dict.common.bean.PeopleType;
 import com.houkunlin.dict.enums.DictBoolType;
-import com.houkunlin.dict.annotation.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +17,12 @@ import org.springframework.expression.*;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.test.annotation.DirtiesContext;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SystemDictScan
 class DictUtilTransformTest {
     private static final Logger logger = LoggerFactory.getLogger(DictUtilTransformTest.class);

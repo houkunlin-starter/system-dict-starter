@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureMockMvc
 @SystemDictScan
 class ExamplesTests {
@@ -87,14 +89,17 @@ class ExamplesTests {
     @Test
     void testDbTree() throws Exception {
         final Bean bean = Bean.builder()
+            .treeData0("2")
             .treeData1("2")
             .treeData2("2-2")
             .city1("110101")
             .city2("130102")
             .city3("130203,130204,130205")
+            .city4("130203,130204,130205")
             .build();
         String json = objectMapper.writeValueAsString(bean);
-        assertEquals("{\"treeData1\":\"2\",\"treeData1Text\":\"节点2\",\"treeData2\":\"2-2\",\"treeData2Text\":\"节点2-2\",\"city1\":\"110101\",\"city1Text\":\"东城区\",\"city2\":\"130102\",\"city2Text\":\"长安区\",\"city3\":\"130203,130204,130205\",\"city3Text\":[\"路北区\",\"古冶区\",\"开平区\"]}", json);
+        assertEquals("""
+            {"treeData0":"2","treeData0Text":"节点2","treeData1":"2","treeData1Text":"节点2","treeData2":"2-2","treeData2Text":"节点2/节点2-2","city1":"110101","city1Text":"北京市/东城区","city2":"130102","city2Text":"河北省/石家庄市/长安区","city3":"130203,130204,130205","city3Text":"河北省/唐山市/路北区、河北省/唐山市/古冶区、河北省/唐山市/开平区","city4":"130203,130204,130205","city4Text":[["河北省","唐山市","路北区"],["河北省","唐山市","古冶区"],["河北省","唐山市","开平区"]]}""", json);
     }
 
     @Test
@@ -232,21 +237,27 @@ class ExamplesTests {
     @Builder
     @AllArgsConstructor
     static class Bean {
-        @DictTree
+        @DictText(value = "TreeData")
+        private String treeData0;
+        @DictTree(toText = true)
         @DictText(value = "TreeData")
         private String treeData1;
-        @DictTree
+        @DictTree(toText = true)
         @DictText(value = "TreeData")
         private String treeData2;
-        @DictTree
+        @DictTree(toText = true)
         @DictText(value = "City")
         private String city1;
-        @DictTree
+        @DictTree(toText = true)
         @DictText(value = "City")
         private String city2;
-        @DictTree
-        @DictArray(toText = false)
+        @DictTree(toText = false)
+        @DictArray(split = ",")
         @DictText(value = "City")
         private String city3;
+        @DictTree(toText = false)
+        @DictArray(toText = false, split = ",")
+        @DictText(value = "City")
+        private String city4;
     }
 }
