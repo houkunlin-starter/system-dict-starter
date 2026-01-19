@@ -25,7 +25,7 @@ public class DictValueSerializerUtil {
     /**
      * 默认字典数组注解配置，当字段没有显式配置 DictArray 注解时使用
      */
-    public static final DictArray DEFAULT_DICT_ARRAY = AnnotationUtils.synthesizeAnnotation(Map.of(
+    public static final DictArray DEFAULT_DICT_ARRAY_TEXT = AnnotationUtils.synthesizeAnnotation(Map.of(
         "split", "",
         "toText", true,
         "delimiter", "、",
@@ -51,21 +51,61 @@ public class DictValueSerializerUtil {
      * @return 字典值序列化器
      */
     public static DictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
-        final String cacheKey = cacheKey(javaTypeRawClass, fieldName, annotation, dictArray == null ? DEFAULT_DICT_ARRAY : dictArray, dictTree);
-
-        if (dictArray == null) {
-            return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, DEFAULT_DICT_ARRAY, dictTree)
-            );
-        } else if (dictArray.toText()) {
-            return CACHE.computeIfAbsent(cacheKey, key ->
-                new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
-            );
-        }
-
+        final String cacheKey = cacheKey(javaTypeRawClass, fieldName, annotation, dictArray == null ? DEFAULT_DICT_ARRAY_TEXT : dictArray, dictTree);
         return CACHE.computeIfAbsent(cacheKey, key ->
-            new DictValueSerializerToArrayImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree)
+            newDictTextValueSerializer(beanClazz, javaTypeRawClass, fieldName, annotation, dictArray, dictTree)
         );
+    }
+
+    /**
+     * 创建新的字典文本值序列化器。
+     * <p>
+     * 根据字段上的注解配置组合，创建并返回合适的字典值序列化器实例。
+     * 不同的注解组合会产生不同类型的序列化器：
+     * <ul>
+     *     <li>仅存在 DictText 注解：返回文本类型序列化器</li>
+     *     <li>同时存在 DictText、DictArray、DictTree 注解：优先使用 DictArray 配置，由 DictArray 决定结果是否返回文本</li>
+     *     <li>仅存在 DictText、DictArray 注解：根据 DictArray.toText() 配置选择序列化器类型</li>
+     *     <li>仅存在 DictText、DictTree 注解：根据 DictTree.toText() 配置选择序列化器类型</li>
+     * </ul>
+     * </p>
+     *
+     * @param beanClazz        Bean 类
+     * @param javaTypeRawClass Java 类型信息
+     * @param fieldName        字段名称
+     * @param annotation       字典文本注解配置
+     * @param dictArray        字典数组注解配置
+     * @param dictTree         字典树注解配置
+     * @return 字典值序列化器实例
+     */
+    private static DictValueSerializer newDictTextValueSerializer(final Class<?> beanClazz, final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
+        if (dictArray == null && dictTree == null) {
+            // 只存在 DictText 注解，返回文本
+            return new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, DEFAULT_DICT_ARRAY_TEXT, dictTree);
+        }
+        if (dictArray != null && dictTree != null) {
+            // 同时存在 DictText 、 DictArray 、 DictTree 注解
+            if (dictArray.toText()) {
+                // 则 DictArray 的优先级高一点，由 DictArray 决定结果是否返回文本
+                return new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree);
+            } else {
+                return new DictValueSerializerToArrayImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree);
+            }
+        }
+        if (dictArray != null) {
+            // 只存在 DictText 、 DictArray 注解
+            if (dictArray.toText()) {
+                return new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree);
+            } else {
+                return new DictValueSerializerToArrayImpl(fieldName, javaTypeRawClass, annotation, dictArray, dictTree);
+            }
+        }
+        // 只存在 DictText 、 DictTree 注解
+        if (dictTree.toText()) {
+            return new DictValueSerializerToTextImpl(fieldName, javaTypeRawClass, annotation, DEFAULT_DICT_ARRAY_TEXT, dictTree);
+        } else {
+            return new DictValueSerializerToArrayImpl(fieldName, javaTypeRawClass, annotation, DEFAULT_DICT_ARRAY_TEXT, dictTree);
+        }
     }
 
     /**

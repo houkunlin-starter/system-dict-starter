@@ -59,9 +59,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             return Collections.singleton("");
-        } else if (value instanceof Map<?, ?>) {
-            logger.warn("不支持 Map 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
-            return Collections.singleton("");
+        } else if (value instanceof Map<?, ?> v) {
+            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
                 return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
@@ -105,9 +104,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             return "";
-        } else if (value instanceof Map<?, ?>) {
-            logger.warn("不支持 Map 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
-            return "";
+        } else if (value instanceof Map<?, ?> v) {
+            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
                 return transformBeanFieldValueToArrayForFunc(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
@@ -229,8 +227,27 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictType  字典类型
      * @throws JacksonException Jackson 异常
      */
-    default void transformBeanFieldValueToArray(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
-
+    default Object transformBeanFieldValueToArray(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+        Map<String, Object> map = new LinkedHashMap<>();
+        for (Map.Entry<?, ?> entry : value.entrySet()) {
+            String v = entry.getKey().toString();
+            Object result;
+            if (dictArray.split().isEmpty()) {
+                if (dictTree == null) {
+                    List<Object> item = new ArrayList<>();
+                    Object o = transformBeanFieldValueToArrayForFunc(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+                    item.add(o);
+                    result = item;
+                } else {
+                    result = transformBeanFieldValueToArrayForFunc(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+                }
+            } else {
+                String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
+                result = transformBeanFieldValueToArray(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
+            }
+            map.put(v, result);
+        }
+        return map;
     }
 
     /**

@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 import tools.jackson.core.JacksonException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 字典值转换为文本字符串的接口，用于处理字典值转换为单个文本字符串的逻辑。
@@ -49,7 +46,7 @@ public interface IDictBeanTransformToText extends IDictValueSerializerTree {
      * @return 转换后的文本字符串
      * @throws JacksonException Jackson 异常
      */
-    default String transformBeanFieldValueToText(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
+    default Object transformBeanFieldValueToText(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
             return transformBeanFieldValueToText(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
@@ -62,9 +59,8 @@ public interface IDictBeanTransformToText extends IDictValueSerializerTree {
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             return "";
-        } else if (value instanceof Map<?, ?>) {
-            logger.warn("不支持 Map 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
-            return "";
+        } else if (value instanceof Map<?, ?> v) {
+            return transformBeanFieldValueToText(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
                 return transformBeanFieldValueToText(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
@@ -108,9 +104,9 @@ public interface IDictBeanTransformToText extends IDictValueSerializerTree {
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             return "";
-        } else if (value instanceof Map<?, ?>) {
-            logger.warn("不支持 Map 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
-            return "";
+        } else if (value instanceof Map<?, ?> v) {
+            Map<String, String> map = transformBeanFieldValueToText(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+            return String.join("、", map.values());
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
                 return transformBeanFieldValueToText(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
@@ -232,8 +228,20 @@ public interface IDictBeanTransformToText extends IDictValueSerializerTree {
      * @param dictType  字典类型
      * @throws JacksonException Jackson 异常
      */
-    default void transformBeanFieldValueToText(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
-
+    default Map<String, String> transformBeanFieldValueToText(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+        Map<String, String> map = new LinkedHashMap<>();
+        for (Map.Entry<?, ?> entry : value.entrySet()) {
+            String v = entry.getKey().toString();
+            String text;
+            if (dictArray.split().isEmpty()) {
+                text = transformBeanFieldValueToText(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+            } else {
+                String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
+                text = transformBeanFieldValueToText(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
+            }
+            map.put(v, text);
+        }
+        return map;
     }
 
     /**

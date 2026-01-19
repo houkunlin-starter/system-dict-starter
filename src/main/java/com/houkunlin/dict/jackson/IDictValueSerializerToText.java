@@ -66,9 +66,9 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             text = "";
-        } else if (value instanceof Map<?, ?>) {
-            logger.warn("不支持 Map 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
-            text = "";
+        } else if (value instanceof Map<?, ?> v) {
+            serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            return;
         } else if (value instanceof CharSequence v) {
             if (dictArray.split().isEmpty()) {
                 text = serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
@@ -256,7 +256,20 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @throws JacksonException Jackson 异常
      */
     default void serializeValueToText(Object bean, Map<?, ?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
-
+        gen.writeStartObject(value);
+        for (Map.Entry<?, ?> entry : value.entrySet()) {
+            String v = entry.getKey().toString();
+            gen.writeName(v);
+            String text;
+            if (dictArray.split().isEmpty()) {
+                text = serializeValueToText(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            } else {
+                String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
+                text = serializeValueToText(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            }
+            gen.writeString(text);
+        }
+        gen.writeEndObject();
     }
 
     /**
