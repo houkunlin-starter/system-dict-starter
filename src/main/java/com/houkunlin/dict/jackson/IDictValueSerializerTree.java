@@ -98,6 +98,9 @@ public interface IDictValueSerializerTree extends IDictValueSerializer {
             return getDictText(bean, fieldName, value, dictText, dictType, arrayItemValue);
         }
         final Collection<String> values = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, arrayItemValue);
+        if (values.isEmpty()) {
+            return null;
+        }
         return String.join(dictTree.delimiter(), values);
     }
 }

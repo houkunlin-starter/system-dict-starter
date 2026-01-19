@@ -1,19 +1,20 @@
 package com.houkunlin.dict;
 
 import com.houkunlin.dict.annotation.DictArray;
+import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.bean.DictType;
-import org.springframework.test.annotation.DirtiesContext;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
-import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.test.annotation.DirtiesContext;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 /**
  * 默认注解使用测试
@@ -28,8 +29,6 @@ class TreeDataTest {
     public static final String DICT_TYPE = "TreeData";
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private static ApplicationEventPublisher publisher;
 
     @Autowired
     public void setPublisher(final ApplicationEventPublisher publisher) {
@@ -68,7 +67,7 @@ class TreeDataTest {
             @DictText(value = DICT_TYPE)
             private String userType1;
             @DictTree
-            @DictArray(toText = false)
+            @DictArray(toText = false, split = ",")
             @DictText(value = DICT_TYPE)
             private String userType3;
         }
@@ -76,6 +75,8 @@ class TreeDataTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
+        Assertions.assertEquals("""
+            {"userType":"1","userTypeText":"节点1","userType1":"3-3","userType1Text":"节点3/节点3-3","userType3":"1-1,1-2,1-3,2-1,2-2,2-3,3-1,3-2,3-3,3-4","userType3Text":["节点1/节点1-1","节点1/节点1-2","节点1/节点1-3","节点2/节点2-1","节点2/节点2-2","节点2/节点2-3","节点3/节点3-1","节点3/节点3-2","节点3/节点3-3"]}""", value);
     }
 
 }
