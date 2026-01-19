@@ -1,5 +1,18 @@
 # 更改日志
 
+## 2.0.0 版本
+
+- 基于 SpringBoot 4.x 开发
+- 对 1.7.0 版本进行完全重构
+    - 包名重构
+    - 核心序列化代码重构
+    - 独立 DictArray 注解
+    - 独立 DictTree 注解
+- 移除一些不需要的依赖（javassist、Swagger2）
+- 增加 DictArray 注解
+- 增加 DictTree 注解
+- 改变数组字典文本处理的一些默认行为，分割字符串需要明确指定分割字符 `@DictArray(split = ",", )`，详情请查看 DictArray 注解，
+
 ## 1.7.0 版本
 
 - 适配 SpringBoot 4.x 版本
