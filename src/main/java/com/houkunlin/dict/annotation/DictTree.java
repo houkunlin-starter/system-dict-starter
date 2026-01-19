@@ -33,7 +33,7 @@ public @interface DictTree {
      *
      * @return 是否转换为字符串显示
      */
-    boolean toText() default false;
+    boolean toText() default true;
 
     /**
      * 字典文本转换为字符串时的分隔符。此参数仅当 {@link #toText()} 设置为 true 时有效。
