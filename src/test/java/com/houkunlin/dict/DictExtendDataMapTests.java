@@ -1,8 +1,8 @@
-package com.houkunlin.system.dict.starter;
+package com.houkunlin.dict;
 
-import com.houkunlin.system.dict.starter.bean.DictTypeVo;
-import com.houkunlin.system.dict.starter.common.bean.ACLStatusEnum;
-import com.houkunlin.system.dict.starter.json.DictText;
+import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.bean.DictType;
+import com.houkunlin.dict.common.bean.ACLStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hamcrest.core.StringContains;
@@ -53,7 +53,7 @@ class DictExtendDataMapTests {
         System.out.println(value);
         Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"不可读写\",\"userType1\":null}", value);
 
-        DictTypeVo dictType = DictUtil.getDictType(DICT_TYPE);
+        DictType dictType = DictUtil.getDictType(DICT_TYPE);
         System.out.println(dictType);
         Assertions.assertNotNull(dictType);
         Assertions.assertNotNull(dictType.getChildren());

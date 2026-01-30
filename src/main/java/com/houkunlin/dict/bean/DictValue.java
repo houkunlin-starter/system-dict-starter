@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 字典值信息对象，用于表示数据字典中的具体值信息。
@@ -63,6 +64,34 @@ public class DictValue implements Serializable {
      */
     @Schema(description = "是否禁用")
     private boolean disabled;
+
+    /**
+     * 扩展数据
+     * <p>
+     * 用于存储字典项的额外信息，可根据业务需求自由扩展
+     * </p>
+     * <p>
+     * 使用场景示例：
+     * <ul>
+     * <li>1. 存储字典项的颜色值，如状态字典中不同状态对应不同颜色</li>
+     * <li>2. 存储字典项的图标信息，如菜单类型字典中不同类型对应不同图标</li>
+     * <li>3. 存储字典项的业务属性，如用户类型字典中不同类型对应的权限标识</li>
+     * <li>4. 存储字典项的国际化信息，如多语言环境下的不同语言文本</li>
+     * <li>5. 存储字典项的关联信息，如部门字典中关联的上级部门详情</li>
+     * </ul>
+     * </p>
+     * <p>
+     * 注意事项：
+     * <ul>
+     * <li>1. 扩展数据的键值对可以根据业务需求自定义，不强制要求使用固定的键名</li>
+     * <li>2. 扩展数据的键值对可以为空，即返回 null 或空 Map</li>
+     * </ul>
+     * </p>
+     *
+     * @since 仅 1.6.3 和 1.7.1 和 2.0.1 版本开始有的特性
+     */
+    @Schema(title = "扩展数据")
+    private Map<String, Object> data;
     /**
      * 子字典值列表，用于存储树形结构中的子节点。
      *
@@ -101,5 +130,14 @@ public class DictValue implements Serializable {
         this.value = value;
         this.title = title;
         this.sorted = sorted;
+    }
+
+    public DictValue(final String dictType, final Object parentValue, final Object value, final String title, final int sorted, Map<String, Object> data) {
+        this.dictType = dictType;
+        this.parentValue = parentValue;
+        this.value = value;
+        this.title = title;
+        this.sorted = sorted;
+        this.data = data;
     }
 }
