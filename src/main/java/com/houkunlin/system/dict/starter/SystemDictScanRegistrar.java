@@ -163,6 +163,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
                     .title(enums.getTitle())
                     .sorted(enums.getSorted())
                     .disabled(enums.isDisabled())
+                    .data(enums.getData())
                     .build();
                 list.add(vo);
             }
