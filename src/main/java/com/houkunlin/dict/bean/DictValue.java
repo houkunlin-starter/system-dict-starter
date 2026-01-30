@@ -1,6 +1,7 @@
 package com.houkunlin.dict.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import com.houkunlin.dict.notice.RefreshDictValueEvent;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -90,6 +91,7 @@ public class DictValue implements Serializable {
      *
      * @since 仅 1.6.3 和 1.7.1 和 2.0.1 版本开始有的特性
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(title = "扩展数据")
     private Map<String, Object> data;
     /**
@@ -97,6 +99,7 @@ public class DictValue implements Serializable {
      *
      * @since 1.4.9
      */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "子字典值列表")
     private List<DictValue> children;
 
