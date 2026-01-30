@@ -1,6 +1,15 @@
 # 更改日志
 
-## 1.6.0 版本
+## 1.6.3 版本
+
+- refactor: 重构数据字典 Jackson 的配置方式
+- feat: 枚举字典项支持自定义扩展属性
+
+## 1.6.2 版本
+
+- feat: 重构字典枚举转换器的初始化方式，由 Spring Bean 注册，改为在 WebMvcConfigurer#addFormatters 中注册
+
+## 1.6.1 版本
 
 基于 Java 17 和 Spring Boot 3.4.6 进行开发构建，删除了 Java 8 的动态生成类加载方式，其他的与 1.5.7.2 版本一致
 
