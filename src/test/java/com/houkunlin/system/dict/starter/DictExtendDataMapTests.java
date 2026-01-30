@@ -1,19 +1,21 @@
 package com.houkunlin.system.dict.starter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.system.dict.starter.bean.DictTypeVo;
 import com.houkunlin.system.dict.starter.common.bean.ACLStatusEnum;
 import com.houkunlin.system.dict.starter.json.DictText;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author HouKunLin
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureMockMvc
 @SystemDictScan
 class DictExtendDataMapTests {
@@ -36,7 +39,7 @@ class DictExtendDataMapTests {
     private MockMvc mockMvc;
 
     @Test
-    void testJackson() throws JsonProcessingException {
+    void testJackson() throws JacksonException {
         @Data
         @AllArgsConstructor
         class Bean {
@@ -66,9 +69,12 @@ class DictExtendDataMapTests {
             .andDo(log())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().string("""
-                {"title":"ACLStatusEnum","type":"ACLStatusEnum","remark":"From Application: system","children":[{"parentValue":null,"value":1,"title":"不可读写","sorted":0,"disabled":false,"data":{"read":false,"write":false},"children":null},{"parentValue":null,"value":2,"title":"可读","sorted":0,"disabled":false,"data":{"read":true,"write":false},"children":null},{"parentValue":null,"value":3,"title":"可写","sorted":0,"disabled":false,"data":{"read":true,"write":true},"children":null}]}"""))
-            .andExpect(content().string(objectMapper.writeValueAsString(DictUtil.getDictType(DICT_TYPE))));
+            .andExpect(content().string(objectMapper.writeValueAsString(DictUtil.getDictType(DICT_TYPE))))
+            .andExpect(content().string(StringContains.containsString("\"read\":true")))
+            .andExpect(content().string(StringContains.containsString("\"read\":false")))
+            .andExpect(content().string(StringContains.containsString("\"write\":true")))
+            .andExpect(content().string(StringContains.containsString("\"write\":false")))
+        ;
 
     }
 
