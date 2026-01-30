@@ -1,4 +1,4 @@
-package com.houkunlin.dict;
+package com.houkunlin.system.dict.starter;
 
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.DictBoolType;
