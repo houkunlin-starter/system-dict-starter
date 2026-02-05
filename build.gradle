@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'com.houkunlin'
-version = '1.6.3'
+version = '1.6.4'
 description = """
 系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
 SpringBoot 2.7.18 和 Java 8 请使用 1.5.8 版本.
