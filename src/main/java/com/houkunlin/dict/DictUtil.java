@@ -111,8 +111,6 @@ public class DictUtil {
         cache = cacheFactory.build("dict-text");
         missCache = cacheFactory.build("dict-number-of-miss");
         missNum = cacheFactory.getDictProperties().getCache().getMissNum();
-        cacheFactory.callbackCache("dict-text", cache);
-        cacheFactory.callbackCache("dict-number-of-miss", missCache);
     }
 
     /**

@@ -17,6 +17,10 @@
 - 增加 DictTree 注解
 - 改变数组字典文本处理的一些默认行为，分割字符串需要明确指定分割字符 `@DictArray(split = ",", )`，详情请查看 DictArray 注解，
 
+## 1.7.2 版本
+
+- feat(cache): 重构缓存的配置方式，使用 system.dict.cache.caffeine.spec 来配置
+
 ## 1.7.1 版本
 
 - feat: 枚举字典项支持自定义扩展属性
@@ -28,6 +32,10 @@
 - 优化字典值、字典文本的JSON输出代码
 - 删除 SpringBoot 2 版本的 DictValid 注解（使用了 javax 包名）
 - 把 DictValid3 更名为 DictValid
+
+## 1.6.4 版本
+
+- feat(cache): 重构缓存的配置方式，使用 system.dict.cache.caffeine.spec 来配置
 
 ## 1.6.3 版本
 
