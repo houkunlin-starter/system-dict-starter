@@ -1,10 +1,13 @@
 package com.houkunlin.dict.properties;
 
+import com.github.benmanes.caffeine.cache.CaffeineSpec;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.store.LocalDictStore;
 import com.houkunlin.dict.store.RedisDictStore;
 import lombok.*;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 
@@ -33,6 +36,7 @@ import java.time.Duration;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DictPropertiesCache {
+    public static final String DEFAULT_CAFFEINE_SPEC = "maximumSize=500,initialCapacity=50,expireAfterWrite=30s";
     /**
      * 是否启用缓存
      * <p>
@@ -48,6 +52,7 @@ public class DictPropertiesCache {
      * 会根据缓存淘汰策略（如LRU）移除最久未使用的条目。
      * </p>
      */
+    @Deprecated(since = "1.6.4", forRemoval = true)
     private int maximumSize = 500;
     /**
      * 缓存初始化容量
@@ -56,6 +61,7 @@ public class DictPropertiesCache {
      * 提高缓存性能。通常设置为预期缓存条目数量的一个合理比例。
      * </p>
      */
+    @Deprecated(since = "1.6.4", forRemoval = true)
     private int initialCapacity = 50;
     /**
      * 有效期时长
@@ -64,6 +70,7 @@ public class DictPropertiesCache {
      * 设置合适的有效期可以保证字典数据的及时更新，同时减少对数据源的频繁访问。
      * </p>
      */
+    @Deprecated(since = "1.6.4", forRemoval = true)
     private Duration duration = Duration.ofSeconds(30);
     /**
      * 在有效期内同一个字典值未命中指定次数  将快速返回，不再重复请求获取数据字典信息。
@@ -71,4 +78,35 @@ public class DictPropertiesCache {
      * 特别是在使用 Redis 存储数据字典信息时，频繁未命中数据将会频繁进行网络IO，因此可能会增加单个接口返回数据的耗时（数据量大转换次数多时）
      */
     private int missNum = 50;
+    /**
+     * Caffeine Spec 字符串参数，默认值：maximumSize=500,initialCapacity=50,expireAfterWrite=30s
+     *
+     * @see CaffeineSpec
+     * @see CaffeineSpec#parse(String)
+     */
+    @NestedConfigurationProperty
+    private Caffeine caffeine = new Caffeine();
+
+    /**
+     * 是否设置了 Caffeine Spec 参数
+     *
+     * @return 是否设置了 Caffeine Spec 参数
+     */
+    public boolean isUseCaffeineSpec() {
+        return this.caffeine != null && StringUtils.hasText(this.caffeine.spec);
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Caffeine {
+
+        /**
+         * Caffeine Spec 字符串参数，默认值：maximumSize=500,initialCapacity=50,expireAfterWrite=30s
+         *
+         * @see CaffeineSpec
+         * @see CaffeineSpec#parse(String)
+         */
+        private String spec;
+    }
 }
