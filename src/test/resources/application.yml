@@ -38,8 +38,8 @@ system:
     mq-type: none
     cache:
       enabled: false
-      maximum-size: 10
-      initial-capacity: 5
+      caffeine:
+        spec: maximumSize=500,initialCapacity=50,expireAfterWrite=30s
     controller:
       enabled: true
     store-key:

@@ -6,7 +6,10 @@ import com.houkunlin.system.dict.starter.properties.DictProperties;
 import com.houkunlin.system.dict.starter.properties.DictPropertiesCache;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
  * @author HouKunLin
  * @since 1.4.2
  */
+@Slf4j
 @Getter
 @Configuration(proxyBeanMethods = false)
 @AllArgsConstructor
@@ -32,6 +36,10 @@ public class DictCacheFactory {
      * @return 数据字典自定义缓存定制器
      */
     private final List<DictCacheCustomizer> cacheCustomizers;
+    /**
+     * 环境变量
+     */
+    private final Environment environment;
 
     /**
      * 构建缓存对象
@@ -60,17 +68,45 @@ public class DictCacheFactory {
         if (!propertiesCache.isEnabled()) {
             return null;
         }
-        final Caffeine<Object, Object> builder = Caffeine.newBuilder();
-        builder
-            .expireAfterWrite(propertiesCache.getDuration())
-            .maximumSize(propertiesCache.getMaximumSize())
-            .initialCapacity(propertiesCache.getInitialCapacity());
+        final Caffeine<Object, Object> builder;
+        if (propertiesCache.isUseCaffeineSpec()) {
+            builder = Caffeine.from(getCaffeineSpec(propertiesCache.getCaffeine()));
+        } else {
+            boolean b1 = environment.containsProperty("system.dict.cache.maximum-size");
+            boolean b2 = environment.containsProperty("system.dict.cache.initial-capacity");
+            boolean b3 = environment.containsProperty("system.dict.cache.duration");
+            if (b1 || b2 || b3) {
+                builder = Caffeine.newBuilder();
+                builder
+                    .expireAfterWrite(propertiesCache.getDuration())
+                    .maximumSize(propertiesCache.getMaximumSize())
+                    .initialCapacity(propertiesCache.getInitialCapacity());
+                if (log.isWarnEnabled()) {
+                    log.warn("建议使用 system.dict.cache.caffeine.spec 设置缓存参数配置");
+                }
+                if (b1 && log.isWarnEnabled()) {
+                    log.warn("配置参数 system.dict.cache.maximum-size 已经过时，请使用 system.dict.cache.caffeine.spec");
+                }
+                if (b2 && log.isWarnEnabled()) {
+                    log.warn("配置参数 system.dict.cache.initial-capacity 已经过时，请使用 system.dict.cache.caffeine.spec");
+                }
+                if (b3 && log.isWarnEnabled()) {
+                    log.warn("配置参数 system.dict.cache.duration 已经过时，请使用 system.dict.cache.caffeine.spec");
+                }
+            } else {
+                builder = Caffeine.from(getCaffeineSpec(propertiesCache.getCaffeine()));
+            }
+        }
 
         for (final DictCacheCustomizer customizer : cacheCustomizers) {
             customizer.customize(name, builder);
         }
 
-        return builder.build();
+        Cache<K, V> cache = builder.build();
+
+        callbackCache(name, cache);
+
+        return cache;
     }
 
     /**
@@ -87,4 +123,22 @@ public class DictCacheFactory {
             customizer.callbackCache(name, cache);
         }
     }
+
+    /**
+     * 获取 CaffeineSpec
+     *
+     * @param caffeineProperties caffeineProperties
+     * @return CaffeineSpec
+     */
+    private String getCaffeineSpec(DictPropertiesCache.Caffeine caffeineProperties) {
+        if (caffeineProperties == null) {
+            return DictPropertiesCache.DEFAULT_CAFFEINE_SPEC;
+        }
+        String caffeineSpec = caffeineProperties.getSpec();
+        if (StringUtils.hasText(caffeineSpec)) {
+            return caffeineSpec;
+        }
+        return DictPropertiesCache.DEFAULT_CAFFEINE_SPEC;
+    }
+
 }
