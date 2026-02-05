@@ -1,5 +1,9 @@
 # 更改日志
 
+## 1.7.2 版本
+
+- feat(cache): 重构缓存的配置方式，使用 system.dict.cache.caffeine.spec 来配置
+
 ## 1.7.1 版本
 
 - feat: 枚举字典项支持自定义扩展属性
