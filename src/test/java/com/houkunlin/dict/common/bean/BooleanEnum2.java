@@ -1,0 +1,16 @@
+package com.houkunlin.dict.common.bean;
+
+import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.annotation.DictConverter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@DictConverter
+@Getter
+@AllArgsConstructor
+public enum BooleanEnum2 implements DictEnum<Boolean> {
+    ITEM1(true, "选项1"),
+    ITEM2(false, "选项2");
+    private final Boolean value;
+    private final String title;
+}

@@ -1,0 +1,17 @@
+package com.houkunlin.dict.common.bean;
+
+import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.annotation.DictConverter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@DictConverter(onlyDictValue = true)
+@Getter
+@AllArgsConstructor
+public enum ShortEnum3 implements DictEnum<Short> {
+    ITEM1((short) 1, "选项1"),
+    ITEM2((short) 2, "选项2"),
+    ITEM3((short) 3, "选项3");
+    private final Short value;
+    private final String title;
+}
