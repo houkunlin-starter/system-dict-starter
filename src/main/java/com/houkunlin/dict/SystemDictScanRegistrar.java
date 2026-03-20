@@ -11,7 +11,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -38,7 +37,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private SystemDictProvider systemDictProvider;
     private String applicationName;
     private BeanFactory beanFactory;
-    private BeanDefinitionRegistry registry;
 
     public SystemDictScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
@@ -47,7 +45,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
 
     @Override
     public void setBeanFactory(@NonNull BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = (DefaultListableBeanFactory) beanFactory;
+        this.beanFactory = beanFactory;
     }
 
     @Override
@@ -60,7 +58,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     public void registerBeanDefinitions(@NonNull AnnotationMetadata annotationMetadata, @NonNull BeanDefinitionRegistry registry) {
         final Environment environment = beanFactory.getBean(Environment.class);
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
-        this.registry = registry;
         this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
