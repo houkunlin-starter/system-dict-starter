@@ -2,7 +2,6 @@ package com.houkunlin.dict.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
-import com.houkunlin.dict.annotation.DictConverter;
 import com.houkunlin.dict.annotation.DictType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +13,6 @@ import java.util.Map;
  * @author HouKunLin
  */
 @DictType
-@DictConverter
 @Getter
 @AllArgsConstructor
 public enum ACLStatusEnum implements DictEnum<Integer> {

@@ -2,7 +2,6 @@ package com.houkunlin.dict.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
-import com.houkunlin.dict.annotation.DictConverter;
 import com.houkunlin.dict.annotation.DictType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +11,6 @@ import lombok.Getter;
  */
 @DictType(comment = "是否")
 @DictType(value = "OPEN", comment = "开关状态")
-@DictConverter
 @Getter
 @AllArgsConstructor
 public enum Whether implements DictEnum<Boolean> {

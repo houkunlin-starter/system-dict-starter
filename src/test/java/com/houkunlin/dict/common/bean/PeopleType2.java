@@ -2,7 +2,6 @@ package com.houkunlin.dict.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
-import com.houkunlin.dict.annotation.DictConverter;
 import com.houkunlin.dict.annotation.DictType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import lombok.Getter;
 /**
  * @author HouKunLin
  */
-@DictConverter(onlyDictValue = true)
 @DictType(value = "PeopleType", comment = "用户类型")
 @Getter
 @AllArgsConstructor

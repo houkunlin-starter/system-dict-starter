@@ -69,14 +69,9 @@ public class Application {
 - 需要实现 `DictEnum` 接口的枚举对象才能被扫描到
 - 使用 `DictType` 注解应用到枚举上自定义字典类型名称和说明
 
-> `@DictConverter` 一般与 `@DictType` 配合使用。
->
 > `@DictType` 用来标记枚举对象的字典类型代码
->
-> `@DictConverter` 用来标记是否对这个枚举对象生成 `org.springframework.core.convert.converter.Converter` 转换对象，提供使用枚举接收参数时自动转换字典值到相应枚举对象类型的功能
 
 ```java
-@DictConverter
 @DictType(value = "PeopleType", comment = "用户类型")
 @Getter
 @AllArgsConstructor

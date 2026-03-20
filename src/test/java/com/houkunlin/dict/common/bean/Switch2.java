@@ -2,7 +2,6 @@ package com.houkunlin.dict.common.bean;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
-import com.houkunlin.dict.annotation.DictConverter;
 import com.houkunlin.dict.annotation.DictType;
 import com.houkunlin.dict.annotation.DictTypes;
 import lombok.AllArgsConstructor;
@@ -13,7 +12,6 @@ import lombok.Getter;
  */
 @DictTypes({@DictType(comment = "开关"),
     @DictType(value = "OPEN", comment = "开关状态")})
-@DictConverter(onlyDictValue = true)
 @Getter
 @AllArgsConstructor
 public enum Switch2 implements DictEnum<String> {

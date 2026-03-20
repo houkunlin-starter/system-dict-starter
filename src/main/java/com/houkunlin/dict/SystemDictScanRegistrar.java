@@ -39,7 +39,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
     private String applicationName;
     private BeanFactory beanFactory;
     private BeanDefinitionRegistry registry;
-    private SystemDictConverterWebMvcConfigurer webMvcConfigurer;
 
     public SystemDictScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
@@ -63,7 +62,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
         this.registry = registry;
         this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
-        this.webMvcConfigurer = beanFactory.getBean(SystemDictConverterWebMvcConfigurer.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
     }

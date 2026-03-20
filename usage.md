@@ -61,13 +61,12 @@ public class Application {
 
 ### 1.1 数据准备
 
-直接使用枚举对象来做字典场景，枚举对象需要实现一个 `DictEnum<V>` 接口才能被正常扫描到，枚举对象有两个自定义的注解 `@DictConverter` 和 `@DictType` 可以做一些相关配置
+直接使用枚举对象来做字典场景，枚举对象需要实现一个 `DictEnum<V>` 接口才能被正常扫描到，枚举对象有一个自定义的注解
+`@DictType` 可以做一些相关配置
 
 - `@DictType` 用来标记枚举对象的字典类型代码
-- `@DictConverter` 用来标记是否对这个枚举对象生成 `org.springframework.core.convert.converter.Converter` 转换对象，提供使用枚举接收参数时自动转换字典值到相应枚举对象类型的功能，未加此注解将不会生成转换器对象。
 
 ```java
-@DictConverter
 @DictType(value = "PeopleType", comment = "用户类型")
 @Getter
 @AllArgsConstructor
