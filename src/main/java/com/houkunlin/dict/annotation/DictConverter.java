@@ -28,6 +28,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Deprecated(since = "1.7.3 and 2.0.3", forRemoval = true)
 public @interface DictConverter {
     /**
      * 是否只支持字典值转换。SpringBoot默认支持枚举名称转换。

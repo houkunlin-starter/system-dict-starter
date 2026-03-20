@@ -1,13 +1,8 @@
 package com.houkunlin.dict;
 
 import org.jspecify.annotations.NonNull;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * 系统字典转换器 WebMvc 配置器
@@ -17,19 +12,6 @@ import java.util.Set;
  * @author HouKunLin
  */
 public class SystemDictConverterWebMvcConfigurer implements WebMvcConfigurer {
-    /**
-     * 转换器类集合，存储需要注册的转换器类
-     */
-    private final Set<Class<?>> classes = new LinkedHashSet<>();
-
-    /**
-     * 添加转换器类
-     *
-     * @param clazz 转换器类
-     */
-    public void addConverterClass(Class<?> clazz) {
-        this.classes.add(clazz);
-    }
 
     /**
      * 添加格式化器和转换器到注册表

@@ -159,5 +159,6 @@ public class DictProperties {
      * @param bytecode 动态字节码技术类型
      * @return 动态字节码技术类型
      */
+    @Deprecated(since = "1.7.3 and 2.0.3", forRemoval = true)
     private BytecodeType bytecode = BytecodeType.ASM;
 }

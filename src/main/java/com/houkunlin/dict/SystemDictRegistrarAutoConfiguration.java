@@ -1,14 +1,9 @@
 package com.houkunlin.dict;
 
-import com.houkunlin.dict.bytecode.IDictConverterGenerate;
-import com.houkunlin.dict.bytecode.IDictConverterGenerateAsmImpl;
-import com.houkunlin.dict.bytecode.IDictConverterGenerateJavassistImpl;
 import com.houkunlin.dict.provider.SystemDictProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,31 +26,6 @@ public class SystemDictRegistrarAutoConfiguration {
     @Bean
     public SystemDictProvider systemDictProvider() {
         return new SystemDictProvider();
-    }
-
-    /**
-     * ASM 字节码编码实现
-     *
-     * @return IDictConverterGenerate
-     */
-    @ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "ASM", matchIfMissing = true)
-    @ConditionalOnMissingBean
-    @Bean
-    public IDictConverterGenerate dictConverterGenerateAsm() {
-        return new IDictConverterGenerateAsmImpl();
-    }
-
-    /**
-     * JAVASSIST 字节码编码实现
-     *
-     * @return IDictConverterGenerate
-     */
-    @ConditionalOnProperty(prefix = "system.dict", name = "bytecode", havingValue = "JAVASSIST")
-    @ConditionalOnClass(name = "javassist.ClassPool")
-    @ConditionalOnMissingBean
-    @Bean
-    public IDictConverterGenerate dictConverterGenerateJavassist() {
-        return new IDictConverterGenerateJavassistImpl();
     }
 
     /**

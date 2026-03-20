@@ -2,9 +2,8 @@ package com.houkunlin.dict;
 
 import com.houkunlin.dict.annotation.DictType;
 import com.houkunlin.dict.bean.DictValue;
-import com.houkunlin.dict.bytecode.IDictConverterGenerate;
-import com.houkunlin.dict.annotation.DictConverter;
 import com.houkunlin.dict.provider.SystemDictProvider;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -21,7 +20,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AssignableTypeFilter;
-import org.jspecify.annotations.NonNull;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -36,7 +34,6 @@ import java.util.*;
 public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanFactoryAware {
     private static final Logger logger = LoggerFactory.getLogger(SystemDictScanRegistrar.class);
     private final ClassPathScanningCandidateComponentProvider provider;
-    private IDictConverterGenerate generateConverter;
     private ClassLoader classLoader;
     private SystemDictProvider systemDictProvider;
     private String applicationName;
@@ -66,7 +63,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
         this.applicationName = environment.getProperty("spring.application.name", "default-app");
         this.registry = registry;
         this.systemDictProvider = beanFactory.getBean(SystemDictProvider.class);
-        this.generateConverter = beanFactory.getBean(IDictConverterGenerate.class);
         this.webMvcConfigurer = beanFactory.getBean(SystemDictConverterWebMvcConfigurer.class);
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
         packagesToScan.forEach(this::scanPackage);
@@ -98,15 +94,6 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      * @param dictClass 字典对象
      */
     private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass) {
-        final DictConverter converter = dictClass.getDeclaredAnnotation(DictConverter.class);
-        if (converter != null) {
-            try {
-                final Class<DictEnum<T>> converterClass = generateConverter.getConverterClass(dictClass, converter);
-                webMvcConfigurer.addConverterClass(converterClass);
-            } catch (Exception e) {
-                logger.error("自动创建系统字典枚举 {} 的 Converter 转换器失败，不影响系统启动，但是会影响此枚举转换器功能", dictClass.getName(), e);
-            }
-        }
         final DictType[] annotation = dictClass.getDeclaredAnnotationsByType(DictType.class);
         if (annotation.length > 0) {
             for (final DictType dictType : annotation) {
