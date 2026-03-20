@@ -1,5 +1,10 @@
 # 更改日志
 
+## 2.0.3 版本
+
+- feat(converter,asm): 重构字典枚举转换器，删除了 ASM 字节码技术，改为使用 ConverterFactory
+  实现转换枚举值转换成枚举，默认支持枚举名称转换+字典值转换，兼容旧版，对旧版一些无法兼容的情况进行了处理
+
 ## 2.0.2 版本
 
 - feat(cache): 重构缓存的配置方式，使用 system.dict.cache.caffeine.spec 来配置
