@@ -1,5 +1,6 @@
 package com.houkunlin.dict.common.bean;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.annotation.DictConverter;
 import lombok.AllArgsConstructor;
@@ -14,4 +15,9 @@ public enum FloatEnum3 implements DictEnum<Float> {
     ITEM3(3.0F, "选项3");
     private final Float value;
     private final String title;
+
+    @JsonCreator
+    public static FloatEnum3 fromValue(Float value) {
+        return DictEnum.valueOf(values(), value);
+    }
 }

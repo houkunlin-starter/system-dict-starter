@@ -1,5 +1,6 @@
 package com.houkunlin.dict.common.bean;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.annotation.DictConverter;
 import lombok.AllArgsConstructor;
@@ -14,4 +15,9 @@ public enum ByteEnum2 implements DictEnum<Byte> {
     ITEM3((byte) 3, "选项3");
     private final Byte value;
     private final String title;
+
+    @JsonCreator
+    public static ByteEnum2 fromValue(Byte value) {
+        return DictEnum.valueOf(values(), value);
+    }
 }

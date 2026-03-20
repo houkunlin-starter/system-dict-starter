@@ -1,5 +1,6 @@
 package com.houkunlin.dict.common.bean;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,4 +13,9 @@ public enum DoubleEnum1 implements DictEnum<Double> {
     ITEM3(3.0D, "选项3");
     private final Double value;
     private final String title;
+
+    @JsonCreator
+    public static DoubleEnum1 fromValue(Double value) {
+        return DictEnum.valueOf(values(), value);
+    }
 }

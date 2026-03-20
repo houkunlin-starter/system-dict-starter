@@ -1,5 +1,6 @@
 package com.houkunlin.dict.common.bean;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.houkunlin.dict.DictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,4 +13,9 @@ public enum ShortEnum1 implements DictEnum<Short> {
     ITEM3((short) 3, "选项3");
     private final Short value;
     private final String title;
+
+    @JsonCreator
+    public static ShortEnum1 fromValue(Short value) {
+        return DictEnum.valueOf(values(), value);
+    }
 }

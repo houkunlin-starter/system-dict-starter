@@ -1,10 +1,12 @@
 package com.houkunlin.dict;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
+import java.util.function.Function;
 
 /**
  * 类工具类
@@ -114,5 +116,102 @@ public class ClassUtil {
             return aClass;
         }
         return Class.forName(className);
+    }
+
+    /**
+     * 获取一个将字符串转换为指定值类型的解析函数
+     * 根据传入的valueType参数，返回相应的字符串解析函数
+     *
+     * @param valueType 需要转换的目标类型
+     * @return 解析函数，可以将字符串转换为指定的值类型
+     */
+    public static Function<@NonNull String, Object> getParseValueFunction(Class<?> valueType) {
+        if (valueType == String.class) {
+            // 对于字符串类型，直接返回原字符串
+            return s -> s;
+        } else if (valueType == Integer.class || valueType == int.class) {
+            // 对于整数类型，使用Integer.parseInt方法进行解析
+            return Integer::parseInt;
+        } else if (valueType == Long.class || valueType == long.class) {
+            // 对于长整型，使用Long.parseLong方法进行解析
+            return Long::parseLong;
+        } else if (valueType == Boolean.class || valueType == boolean.class) {
+            // 对于布尔类型，使用Boolean.parseBoolean方法进行解析
+            return Boolean::parseBoolean;
+        } else if (valueType == Double.class || valueType == double.class) {
+            // 对于双精度浮点型，使用Double.parseDouble方法进行解析
+            return Double::parseDouble;
+        } else if (valueType == Float.class || valueType == float.class) {
+            // 对于单精度浮点型，使用Float.parseFloat方法进行解析
+            return Float::parseFloat;
+        } else if (valueType == Short.class || valueType == short.class) {
+            // 对于短整型，使用Short.parseShort方法进行解析
+            return Short::parseShort;
+        } else if (valueType == Byte.class || valueType == byte.class) {
+            // 对于字节类型，使用Byte.parseByte方法进行解析
+            return Byte::parseByte;
+        }
+        // 其他复杂类型，尝试直接使用原始字符串
+        return s -> s;
+    }
+
+    /**
+     * 解析ClassEnum的泛型参数类型
+     *
+     * <p>通过反射获取ClassEnum接口的第一个泛型参数类型，如果无法获取则默认为String类型。</p>
+     *
+     * @param clazz 枚举类
+     * @return 泛型参数类型
+     */
+    public static <T> Class<?> getInterfaceParameterFirst(Class<T> clazz) {
+        Type genericInterface = clazz.getGenericInterfaces()[0];
+        Class<?> parameterFirst = null;
+        // 强转成 参数化类型 实体.
+        if (genericInterface instanceof ParameterizedType parameterizedType) {
+            // 获取超类的泛型类型数组. 即 <> 中的内容, 因为泛型可以有多个, 所以用数组表示
+            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+            // 检查泛型参数数组长度是否大于指定索引，防止数组越界
+            if (actualTypeArguments.length > 0) {
+                Type typeArgument = actualTypeArguments[0];
+                // 检查获取到的类型是否为Class类型，如果是则直接返回
+                if (typeArgument instanceof Class<?> c) {
+                    parameterFirst = c;
+                }
+            }
+        }
+        return parameterFirst;
+    }
+
+    /**
+     * 查找带有@JsonCreator注解或符合特定条件的静态方法
+     * 该方法用于查找枚举类中用于创建枚举实例的静态方法
+     *
+     * @param <T>       枚举类型
+     * @param clazz     目标类
+     * @param valueType 参数类型
+     * @return 符合条件的方法，如果没有找到则返回null
+     */
+    public static <T> Method findJsonCreatorMethod(Class<T> clazz, Class<?> valueType) {
+        Method findMethod = null;
+        for (Method method : clazz.getDeclaredMethods()) {
+            // 优先查找带有@JsonCreator注解且参数类型匹配的方法
+            if (method.isAnnotationPresent(JsonCreator.class) && method.getParameters()[0].getType() == valueType) {
+                return method;
+            }
+            // 查找符合以下条件的静态方法：
+            // 1. 是静态方法
+            // 2. 是公共方法
+            // 3. 只有一个参数
+            // 4. 参数类型与valueType匹配
+            // 5. 返回类型与clazz相同
+            if (Modifier.isStatic(method.getModifiers())
+                && Modifier.isPublic(method.getModifiers())
+                && method.getParameterCount() == 1
+                && method.getParameters()[0].getType() == valueType
+                && method.getReturnType() == clazz) {
+                findMethod = method;
+            }
+        }
+        return findMethod;
     }
 }
