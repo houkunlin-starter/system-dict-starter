@@ -24,11 +24,12 @@ import java.lang.annotation.*;
  *
  * @author HouKunLin
  * @since 2.0.0
+ * @deprecated 2.0.3 版本已废弃，已经改为使用 ConverterFactory 实现转换枚举值转换成枚举，默认支持枚举名称转换+字典值转换，兼容旧版，对旧版一些无法兼容的情况进行了处理。
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Deprecated(since = "1.7.3 and 2.0.3", forRemoval = true)
+@Deprecated(since = "2.0.3", forRemoval = true)
 public @interface DictConverter {
     /**
      * 是否只支持字典值转换。SpringBoot默认支持枚举名称转换。
@@ -38,6 +39,8 @@ public @interface DictConverter {
      * </ul>
      *
      * @return 是否只支持字典值转换
+     * @deprecated 2.0.3 版本已废弃，已经改为使用 ConverterFactory 实现转换枚举值转换成枚举，默认支持枚举名称转换+字典值转换，兼容旧版，对旧版一些无法兼容的情况进行了处理。
      */
+    @Deprecated(since = "2.0.3", forRemoval = true)
     boolean onlyDictValue() default false;
 }

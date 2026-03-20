@@ -1,6 +1,6 @@
 package com.houkunlin.dict.properties;
 
-import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.enums.BytecodeType;
 import com.houkunlin.dict.enums.MqType;
 import com.houkunlin.dict.enums.StoreType;
@@ -63,7 +63,7 @@ public class DictProperties {
      * 为防止陷入死循环，请设置树形结构数据的向访问的最大访问深度，超过最大访问深度则直接返回。
      * int &lt;= 0 视为不限制深度
      *
-     * @see DictText#treeDepth()
+     * @see DictTree#maxDepth()
      * @since 1.4.6.1
      * @param treeDepth 树形结构深度
      * @return 树形结构深度
@@ -158,7 +158,8 @@ public class DictProperties {
      * @since 1.4.8
      * @param bytecode 动态字节码技术类型
      * @return 动态字节码技术类型
+     * @deprecated 2.0.3 版本已废弃，已经改为使用 ConverterFactory 实现转换枚举值转换成枚举，默认支持枚举名称转换+字典值转换，兼容旧版，对旧版一些无法兼容的情况进行了处理。
      */
-    @Deprecated(since = "1.7.3 and 2.0.3", forRemoval = true)
+    @Deprecated(since = "2.0.3", forRemoval = true)
     private BytecodeType bytecode = BytecodeType.ASM;
 }
