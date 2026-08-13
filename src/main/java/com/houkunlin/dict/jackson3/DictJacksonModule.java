@@ -1,4 +1,4 @@
-package com.houkunlin.dict.jackson;
+package com.houkunlin.dict.jackson3;
 
 import tools.jackson.core.Version;
 import tools.jackson.databind.module.SimpleModule;

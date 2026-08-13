@@ -1,4 +1,4 @@
-package com.houkunlin.dict.jackson;
+package com.houkunlin.dict.jackson3;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;

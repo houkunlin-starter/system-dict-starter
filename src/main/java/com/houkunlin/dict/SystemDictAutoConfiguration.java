@@ -1,7 +1,7 @@
 package com.houkunlin.dict;
 
 import com.houkunlin.dict.cache.DictCacheFactory;
-import com.houkunlin.dict.jackson.DictJsonMapperBuilderCustomizer;
+import com.houkunlin.dict.jackson3.DictJsonMapperBuilderCustomizer;
 import com.houkunlin.dict.properties.DictProperties;
 import com.houkunlin.dict.store.DictStore;
 import com.houkunlin.dict.store.RemoteDict;

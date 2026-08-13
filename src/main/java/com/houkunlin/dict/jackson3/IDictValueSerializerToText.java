@@ -1,9 +1,10 @@
-package com.houkunlin.dict.jackson;
+package com.houkunlin.dict.jackson3;
 
 import com.houkunlin.dict.DictEnum;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
+import com.houkunlin.dict.jackson.IDictValueSerializerTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;

@@ -4,6 +4,9 @@ import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.enums.NullStrategy;
+import com.houkunlin.dict.jackson3.DictValueSerializer;
+import com.houkunlin.dict.jackson3.DictValueSerializerToArrayImpl;
+import com.houkunlin.dict.jackson3.DictValueSerializerToTextImpl;
 import lombok.Getter;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -15,13 +18,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * DictText 注解的序列化器工具类，用于处理 DictText 注解，把字段的数据字典值转换成为数据字典文本信息。
  * <p>
  * 该工具类提供了字典值序列化器的获取和缓存功能，根据字段类型和注解配置生成合适的序列化器。
- *</p>
+ * </p>
  *
  * @author HouKunLin
  * @since 1.0.0
  */
 @Getter
 public class DictValueSerializerUtil {
+    private DictValueSerializerUtil() {
+    }
+
     /**
      * 默认字典数组注解配置，当字段没有显式配置 DictArray 注解时使用
      */
@@ -108,7 +114,7 @@ public class DictValueSerializerUtil {
      * 获取数据字典缓存的序列化器。
      * <p>
      * 根据字段上的注解配置生成合适的序列化器。
-     *</p>
+     * </p>
      *
      * @param beanClazz Bean 类
      * @param field     字段

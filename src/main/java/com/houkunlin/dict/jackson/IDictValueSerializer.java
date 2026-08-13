@@ -7,9 +7,9 @@ import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.NullStrategy;
 import org.springframework.util.ObjectUtils;
-import tools.jackson.core.JsonGenerator;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 字典值序列化核心接口
@@ -118,11 +118,11 @@ public interface IDictValueSerializer {
      * 如果字典类型键处理器为 null，则直接使用 DictUtil.getDictParentValue 方法获取。
      * </p>
      *
-     * @param bean          目标对象
-     * @param fieldName     字段名称
-     * @param value         字段值
-     * @param dictText      字典文本注解
-     * @param dictType      字典类型代码
+     * @param bean           目标对象
+     * @param fieldName      字段名称
+     * @param value          字段值
+     * @param dictText       字典文本注解
+     * @param dictType       字典类型代码
      * @param arrayItemValue 数组项值
      * @return 字典父级值
      */
@@ -142,7 +142,7 @@ public interface IDictValueSerializer {
      * 如果相等，则返回该枚举常量的标题作为字典文本。
      * </p>
      *
-     * @param enums         枚举类数组
+     * @param enums          枚举类数组
      * @param arrayItemValue 数组项值
      * @return 字典文本，如果未找到则返回 null
      */
@@ -168,13 +168,13 @@ public interface IDictValueSerializer {
      * 该方法用于处理数组类型的字典值，根据配置的空值策略将文本添加到列表中：
      * 1. 如果文本不为 null，则直接添加到列表中
      * 2. 如果文本为 null，则根据 DictArray 注解中的 nullStrategy 处理：
-     *    - IGNORE：忽略该值，不添加到列表中
-     *    - NULL：添加 null 到列表中
-     *    - EMPTY：添加空字符串到列表中
+     * - IGNORE：忽略该值，不添加到列表中
+     * - NULL：添加 null 到列表中
+     * - EMPTY：添加空字符串到列表中
      * </p>
      *
-     * @param textList 文本列表
-     * @param text     文本
+     * @param textList  文本列表
+     * @param text      文本
      * @param dictArray 字典数组注解
      */
     default void appendTextToList(List<String> textList, String text, DictArray dictArray) {
@@ -226,23 +226,24 @@ public interface IDictValueSerializer {
      * 该方法用于将数组类型的字典文本写入 JSON 生成器，根据配置的空值策略处理：
      * 1. 如果文本不为 null，则写入字符串
      * 2. 如果文本为 null，则根据 DictArray 注解中的 nullStrategy 处理：
-     *    - IGNORE：忽略该值，不写入
-     *    - NULL：写入 null
-     *    - EMPTY：写入空字符串
+     * - IGNORE：忽略该值，不写入
+     * - NULL：写入 null
+     * - EMPTY：写入空字符串
      * </p>
      *
-     * @param gen      JSON 生成器
-     * @param text     文本
-     * @param dictArray 字典数组注解
+     * @param writeString 向 json 写入文本
+     * @param writeNull   向 json 写入 null
+     * @param text        文本
+     * @param dictArray   字典数组注解
      */
-    default void writeArrayText(JsonGenerator gen, String text, DictArray dictArray) {
+    default void writeArrayText(Consumer<String> writeString, Runnable writeNull, String text, DictArray dictArray) {
         if (text != null) {
-            gen.writeString(text);
+            writeString.accept(text);
         } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {
             if (dictArray.nullStrategy() == NullStrategy.NULL) {
-                gen.writeNull();
+                writeNull.run();
             } else {
-                gen.writeString("");
+                writeString.accept("");
             }
         }
     }

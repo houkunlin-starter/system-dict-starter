@@ -1,4 +1,4 @@
-package com.houkunlin.dict.jackson;
+package com.houkunlin.dict.jackson3;
 
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
