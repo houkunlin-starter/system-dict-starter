@@ -63,18 +63,18 @@ public class DictValueWriter {
             gen.writeString("");
         } else if (value.getClass().isArray()) {
             writeDictValueToText(gen, (Object[]) value, dictText);
-        } else if (value instanceof Collection<?> v) {
-            writeDictValueToText(gen, v, dictText);
-        } else if (value instanceof Iterable<?> v) {
-            writeDictValueToText(gen, v, dictText);
-        } else if (value instanceof DictEnum<?> v) {
-            gen.writeString(v.getValue().toString());
+        } else if (value instanceof Collection<?>) {
+            writeDictValueToText(gen, (Collection<?>) value, dictText);
+        } else if (value instanceof Iterable<?>) {
+            writeDictValueToText(gen, (Iterable<?>) value, dictText);
+        } else if (value instanceof DictEnum<?>) {
+            gen.writeString(((DictEnum<?>) value).getValue().toString());
         } else if (value.getClass().isEnum()) {
             gen.writeString(value.toString());
-        } else if (value instanceof String v) {
-            gen.writeString(v);
-        } else if (value instanceof BigDecimal v) {
-            gen.writeString(v.toPlainString());
+        } else if (value instanceof String) {
+            gen.writeString((String) value);
+        } else if (value instanceof BigDecimal) {
+            gen.writeString(((BigDecimal) value).toPlainString());
         } else {
             gen.writeString(value.toString());
         }

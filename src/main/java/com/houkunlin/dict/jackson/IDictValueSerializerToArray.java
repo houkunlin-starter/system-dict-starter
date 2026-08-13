@@ -52,26 +52,26 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
             serializeValueToArray(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Collection<?> v) {
-            serializeValueToArray(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Iterable<?> v) {
-            serializeValueToArray(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof DictEnum<?> v) {
+        } else if (value instanceof Collection<?>) {
+            serializeValueToArray(bean, (Collection<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof Iterable<?>) {
+            serializeValueToArray(bean, (Iterable<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof DictEnum<?>) {
             gen.writeStartArray();
-            gen.writeString(v.getTitle());
+            gen.writeString(((DictEnum<?>) value).getTitle());
             gen.writeEndArray();
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             gen.writeStartArray();
             gen.writeString("");
             gen.writeEndArray();
-        } else if (value instanceof Map<?, ?> v) {
-            serializeValueToArray(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof CharSequence v) {
+        } else if (value instanceof Map<?, ?>) {
+            serializeValueToArray(bean, (Map<?, ?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof CharSequence) {
             if (dictArray.split().isEmpty()) {
-                serializeValueToArray(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                serializeValueToArray(bean, (CharSequence) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
-                String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
+                String[] split = ObjectUtils.getDisplayString(value).split(dictArray.split());
                 serializeValueToArray(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
@@ -102,22 +102,22 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
         }
         if (value.getClass().isArray()) {
             serializeValueToArray(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Collection<?> v) {
-            serializeValueToArray(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Iterable<?> v) {
-            serializeValueToArray(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof DictEnum<?> v) {
-            gen.writeString(v.getTitle());
+        } else if (value instanceof Collection<?>) {
+            serializeValueToArray(bean, (Collection<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof Iterable<?>) {
+            serializeValueToArray(bean, (Iterable<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof DictEnum<?>) {
+            gen.writeString(((DictEnum<?>) value).getTitle());
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             gen.writeString("");
-        } else if (value instanceof Map<?, ?> v) {
-            serializeValueToArray(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof CharSequence v) {
+        } else if (value instanceof Map<?, ?>) {
+            serializeValueToArray(bean, (Map<?, ?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof CharSequence) {
             if (dictArray.split().isEmpty()) {
-                serializeValueToArrayForFunc(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                serializeValueToArrayForFunc(bean, (CharSequence) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
-                String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
+                String[] split = ObjectUtils.getDisplayString(value).split(dictArray.split());
                 serializeValueToArray(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {

@@ -48,22 +48,22 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
             return transformBeanFieldValueToArray(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Collection<?> v) {
-            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Iterable<?> v) {
-            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof DictEnum<?> v) {
-            return Collections.singleton(v.getTitle());
+        } else if (value instanceof Collection<?>) {
+            return transformBeanFieldValueToArray(bean, (Collection<?>) value, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof Iterable<?>) {
+            return transformBeanFieldValueToArray(bean, (Iterable<?>) value, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof DictEnum<?>) {
+            return Collections.singleton(((DictEnum<?>) value).getTitle());
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             return Collections.singleton("");
-        } else if (value instanceof Map<?, ?> v) {
-            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof CharSequence v) {
+        } else if (value instanceof Map<?, ?>) {
+            return transformBeanFieldValueToArray(bean, (Map<?, ?>) value, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof CharSequence) {
             if (dictArray.split().isEmpty()) {
-                return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+                return transformBeanFieldValueToArray(bean, (CharSequence) value, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
-                String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
+                String[] split = ObjectUtils.getDisplayString(value).split(dictArray.split());
                 return transformBeanFieldValueToArray(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
@@ -92,22 +92,22 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
         }
         if (value.getClass().isArray()) {
             return transformBeanFieldValueToArray(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Collection<?> v) {
-            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof Iterable<?> v) {
-            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof DictEnum<?> v) {
-            return v.getTitle();
+        } else if (value instanceof Collection<?>) {
+            return transformBeanFieldValueToArray(bean, (Collection<?>) value, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof Iterable<?>) {
+            return transformBeanFieldValueToArray(bean, (Iterable<?>) value, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof DictEnum<?>) {
+            return ((DictEnum<?>) value).getTitle();
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
             return "";
-        } else if (value instanceof Map<?, ?> v) {
-            return transformBeanFieldValueToArray(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
-        } else if (value instanceof CharSequence v) {
+        } else if (value instanceof Map<?, ?>) {
+            return transformBeanFieldValueToArray(bean, (Map<?, ?>) value, fieldName, dictText, dictArray, dictTree, dictType);
+        } else if (value instanceof CharSequence) {
             if (dictArray.split().isEmpty()) {
-                return transformBeanFieldValueToArrayForFunc(bean, v, fieldName, dictText, dictArray, dictTree, dictType);
+                return transformBeanFieldValueToArrayForFunc(bean, (CharSequence) value, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
-                String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
+                String[] split = ObjectUtils.getDisplayString(value).split(dictArray.split());
                 return transformBeanFieldValueToArray(bean, split, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {

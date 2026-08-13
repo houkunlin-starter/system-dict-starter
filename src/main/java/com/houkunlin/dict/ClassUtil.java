@@ -35,7 +35,7 @@ public class ClassUtil {
      * </p>
      *
      * @param clazz 类对象
-     * @param <T> 类类型
+     * @param <T>   类类型
      * @return 默认构造方法，如果没有无参构造方法则返回 {@code null}
      */
     @SuppressWarnings({"unchecked"})
@@ -167,15 +167,15 @@ public class ClassUtil {
         Type genericInterface = clazz.getGenericInterfaces()[0];
         Class<?> parameterFirst = null;
         // 强转成 参数化类型 实体.
-        if (genericInterface instanceof ParameterizedType parameterizedType) {
+        if (genericInterface instanceof ParameterizedType) {
             // 获取超类的泛型类型数组. 即 <> 中的内容, 因为泛型可以有多个, 所以用数组表示
-            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+            Type[] actualTypeArguments = ((ParameterizedType) genericInterface).getActualTypeArguments();
             // 检查泛型参数数组长度是否大于指定索引，防止数组越界
             if (actualTypeArguments.length > 0) {
                 Type typeArgument = actualTypeArguments[0];
                 // 检查获取到的类型是否为Class类型，如果是则直接返回
-                if (typeArgument instanceof Class<?> c) {
-                    parameterFirst = c;
+                if (typeArgument instanceof Class<?>) {
+                    parameterFirst = (Class<?>) typeArgument;
                 }
             }
         }
