@@ -144,7 +144,7 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> {
         this.dictText = dictText;
         this.dictArray = dictArray;
         this.dictTree = dictTree;
-        this.outputFieldName = dictText.fieldName().isBlank() ? fieldName + "Text" : dictText.fieldName();
+        this.outputFieldName = dictText.fieldName().trim().isEmpty() ? fieldName + "Text" : dictText.fieldName();
         this.useMap = dictText.mapValue().getValue(SystemDictAutoConfiguration::isMapValue);
         this.useRawValueType = SystemDictAutoConfiguration.isRawValue();
         this.useReplaceFieldValue = dictText.replace().getValue(SystemDictAutoConfiguration::isReplaceValue);
