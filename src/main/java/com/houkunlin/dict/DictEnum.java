@@ -1,7 +1,6 @@
 package com.houkunlin.dict;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.google.common.base.Objects;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -258,13 +257,13 @@ public interface DictEnum<T extends Serializable> {
      * 该方法用于判断传入的值是否与当前字典枚举的字典值相等。
      * 实现逻辑是：
      * 1. 首先判断传入的对象是否就是当前枚举对象本身
-     * 2. 如果不是，则使用 Objects.equal 方法比较传入的对象是否与当前枚举的字典值相等
+     * 2. 如果不是，则使用 java.util.Objects.equals 方法比较传入的对象是否与当前枚举的字典值相等
      * </p>
      *
      * @param o 传入的值，可为当前的枚举对象或其他类型的对象
      * @return 如果相等则返回 true，否则返回 false
      */
     default boolean eq(Object o) {
-        return this == o || Objects.equal(o, getValue());
+        return this == o || java.util.Objects.equals(o, getValue());
     }
 }
