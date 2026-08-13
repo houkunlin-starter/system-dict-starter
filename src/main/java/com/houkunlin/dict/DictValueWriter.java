@@ -1,7 +1,6 @@
 package com.houkunlin.dict;
 
 import com.houkunlin.dict.annotation.DictText;
-import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 
 import java.math.BigDecimal;
@@ -58,9 +57,8 @@ public class DictValueWriter {
      * @param gen      JSON生成器，用于写入JSON数据
      * @param value    要序列化的字典值，支持多种类型
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws JacksonException JSON序列化异常
      */
-    public static void writeDictValueToText(JsonGenerator gen, Object value, DictText dictText) throws JacksonException {
+    public static void writeDictValueToText(JsonGenerator gen, Object value, DictText dictText) {
         if (value == null) {
             gen.writeString("");
         } else if (value.getClass().isArray()) {
@@ -92,9 +90,8 @@ public class DictValueWriter {
      * @param gen      JSON生成器，用于写入JSON数据
      * @param value    对象数组，需要序列化的数组值
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws JacksonException JSON序列化异常
      */
-    private static void writeDictValueToText(JsonGenerator gen, Object[] value, DictText dictText) throws JacksonException {
+    private static void writeDictValueToText(JsonGenerator gen, Object[] value, DictText dictText) {
         gen.writeStartArray(value);
         for (Object o : value) {
             writeDictValueToText(gen, o, dictText);
@@ -112,9 +109,8 @@ public class DictValueWriter {
      * @param gen      JSON生成器，用于写入JSON数据
      * @param value    集合对象，需要序列化的集合值
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws JacksonException JSON序列化异常
      */
-    private static void writeDictValueToText(JsonGenerator gen, Collection<?> value, DictText dictText) throws JacksonException {
+    private static void writeDictValueToText(JsonGenerator gen, Collection<?> value, DictText dictText) {
         gen.writeStartArray(value);
         for (Object o : value) {
             writeDictValueToText(gen, o, dictText);
@@ -132,9 +128,8 @@ public class DictValueWriter {
      * @param gen      JSON生成器，用于写入JSON数据
      * @param value    可迭代对象，需要序列化的可迭代值
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws JacksonException JSON序列化异常
      */
-    private static void writeDictValueToText(JsonGenerator gen, Iterable<?> value, DictText dictText) throws JacksonException {
+    private static void writeDictValueToText(JsonGenerator gen, Iterable<?> value, DictText dictText) {
         gen.writeStartArray(value);
         for (Object o : value) {
             writeDictValueToText(gen, o, dictText);

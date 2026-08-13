@@ -7,7 +7,6 @@ import com.houkunlin.dict.annotation.DictTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
-import tools.jackson.core.JacksonException;
 
 import java.util.*;
 
@@ -44,9 +43,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @return 转换后的文本数组
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArray(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
+    default Object transformBeanFieldValueToArray(final Object bean, final Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) {
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
             return transformBeanFieldValueToArray(bean, (Object[]) value, fieldName, dictText, dictArray, dictTree, dictType);
@@ -87,9 +85,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 转换后的文本数组元素
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArrayForFunc(Object bean, Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArrayForFunc(Object bean, Object value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (value == null) {
             return null;
         }
@@ -132,9 +129,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 转换后的文本数组
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArray(Object bean, Object[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, Object[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
             Object result = transformBeanFieldValueToArrayForFunc(bean, o, fieldName, dictText, dictArray, dictTree, dictType);
@@ -157,9 +153,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 转换后的文本数组
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArray(Object bean, Collection<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, Collection<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
             Object result = transformBeanFieldValueToArrayForFunc(bean, o, fieldName, dictText, dictArray, dictTree, dictType);
@@ -182,9 +177,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 转换后的文本数组
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArray(Object bean, Iterable<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, Iterable<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<Object> list = new ArrayList<>();
         for (Object o : value) {
             Object result = transformBeanFieldValueToArrayForFunc(bean, o, fieldName, dictText, dictArray, dictTree, dictType);
@@ -206,9 +200,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
-     * @throws JacksonException Jackson 异常
      */
-    default void transformBeanFieldValueToArray(Object bean, DictEnum<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default void transformBeanFieldValueToArray(Object bean, DictEnum<?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
 
     }
 
@@ -225,9 +218,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArray(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, Map<?, ?> value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         Map<String, Object> map = new LinkedHashMap<>();
         for (Map.Entry<?, ?> entry : value.entrySet()) {
             String v = entry.getKey().toString();
@@ -264,9 +256,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 转换后的文本数组
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArray(Object bean, CharSequence[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, CharSequence[] value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<Object> list = new ArrayList<>();
         for (CharSequence charSequence : value) {
             Object result = transformBeanFieldValueToArrayForFunc(bean, charSequence, fieldName, dictText, dictArray, dictTree, dictType);
@@ -289,9 +280,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 转换后的文本数组
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArray(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArray(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<Object> list = new ArrayList<>();
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
@@ -320,9 +310,8 @@ public interface IDictBeanTransformToArray extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 转换后的文本
-     * @throws JacksonException Jackson 异常
      */
-    default Object transformBeanFieldValueToArrayForFunc(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default Object transformBeanFieldValueToArrayForFunc(Object bean, CharSequence value, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (dictTree == null) {
             return getDictText(bean, fieldName, value, dictText, dictType, value.toString());
         } else if (dictTree.toText()) {

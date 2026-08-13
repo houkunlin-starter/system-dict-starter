@@ -7,7 +7,6 @@ import com.houkunlin.dict.annotation.DictTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
-import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
 
@@ -49,9 +48,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
-     * @throws JacksonException Jackson 异常
      */
-    default void serializeValueToText(Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) throws JacksonException {
+    default void serializeValueToText(Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) {
         Object bean = gen.currentValue();
         String dictType = getDictType(bean, fieldName, dictText);
         String text;
@@ -104,9 +102,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 序列化后的文本字符串
-     * @throws JacksonException Jackson 异常
      */
-    default String serializeValueToTextForFunc(Object bean, Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToTextForFunc(Object bean, Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (value == null) {
             return null;
         }
@@ -152,9 +149,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 序列化后的文本字符串
-     * @throws JacksonException Jackson 异常
      */
-    default String serializeValueToText(Object bean, Object[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, Object[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
             String text = serializeValueToTextForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
@@ -179,9 +175,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 序列化后的文本字符串
-     * @throws JacksonException Jackson 异常
      */
-    default String serializeValueToText(Object bean, Collection<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, Collection<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
             String text = serializeValueToTextForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
@@ -206,9 +201,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 序列化后的文本字符串
-     * @throws JacksonException Jackson 异常
      */
-    default String serializeValueToText(Object bean, Iterable<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, Iterable<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<String> textList = new ArrayList<>();
         for (Object o : value) {
             String text = serializeValueToTextForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
@@ -232,9 +226,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
-     * @throws JacksonException Jackson 异常
      */
-    default void serializeValueToText(Object bean, DictEnum<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default void serializeValueToText(Object bean, DictEnum<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
 
     }
 
@@ -253,9 +246,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
-     * @throws JacksonException Jackson 异常
      */
-    default void serializeValueToText(Object bean, Map<?, ?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default void serializeValueToText(Object bean, Map<?, ?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         gen.writeStartObject(value);
         for (Map.Entry<?, ?> entry : value.entrySet()) {
             String v = entry.getKey().toString();
@@ -288,9 +280,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 序列化后的文本字符串
-     * @throws JacksonException Jackson 异常
      */
-    default String serializeValueToText(Object bean, CharSequence[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, CharSequence[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         List<String> textList = new ArrayList<>();
         for (CharSequence charSequence : value) {
             String text;
@@ -320,9 +311,8 @@ public interface IDictValueSerializerToText extends IDictValueSerializerTree {
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      * @return 序列化后的文本字符串
-     * @throws JacksonException Jackson 异常
      */
-    default String serializeValueToText(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws JacksonException {
+    default String serializeValueToText(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (dictTree == null) {
             return getDictText(bean, fieldName, value, dictText, dictType, value.toString());
         } else {
