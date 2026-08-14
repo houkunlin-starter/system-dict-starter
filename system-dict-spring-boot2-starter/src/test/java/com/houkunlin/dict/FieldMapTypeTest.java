@@ -9,7 +9,6 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,7 +73,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"0\":\"测试0\",\"1\":\"测试1\"},\"userTypeText\":{\"0\":\"系统管理\",\"1\":\"普通用户\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"0\":\"测试0\",\"1\":\"测试1\"},\"userTypeText\":{\"0\":\"系统管理\",\"1\":\"普通用户\"}}", value);
     }
 
     /**
@@ -99,7 +98,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"0\":\"测试0\",\"1\":\"测试1\"},\"userTypeText\":{\"0\":\"系统管理\",\"1\":\"普通用户\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"0\":\"测试0\",\"1\":\"测试1\"},\"userTypeText\":{\"0\":\"系统管理\",\"1\":\"普通用户\"}}", value);
     }
 
     /**
@@ -124,7 +123,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"0\":\"测试0\",\"1\":\"测试1\"},\"userTypeText\":{\"0\":[\"系统管理\"],\"1\":[\"普通用户\"]}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"0\":\"测试0\",\"1\":\"测试1\"},\"userTypeText\":{\"0\":[\"系统管理\"],\"1\":[\"普通用户\"]}}", value);
     }
 
     /**
@@ -149,7 +148,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"0\":\"测试0\",\"0,1\":\"测试1\"},\"userTypeText\":{\"0\":\"系统管理\",\"0,1\":\"系统管理、普通用户\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"0\":\"测试0\",\"0,1\":\"测试1\"},\"userTypeText\":{\"0\":\"系统管理\",\"0,1\":\"系统管理、普通用户\"}}", value);
     }
 
     /**
@@ -174,7 +173,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"0\":\"测试0\",\"0,1\":\"测试0和测试1\"},\"userTypeText\":{\"0\":[\"系统管理\"],\"0,1\":[\"系统管理\",\"普通用户\"]}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"0\":\"测试0\",\"0,1\":\"测试0和测试1\"},\"userTypeText\":{\"0\":[\"系统管理\"],\"0,1\":[\"系统管理\",\"普通用户\"]}}", value);
     }
 
     /**
@@ -199,7 +198,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1\":\"测试1-1\"},\"userTypeText\":{\"1\":[\"节点1\"],\"1-1\":[\"节点1\",\"节点1-1\"]}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1\":\"测试1-1\"},\"userTypeText\":{\"1\":[\"节点1\"],\"1-1\":[\"节点1\",\"节点1-1\"]}}", value);
     }
 
     /**
@@ -224,7 +223,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1\":\"测试1-1\"},\"userTypeText\":{\"1\":\"节点1\",\"1-1\":\"节点1/节点1-1\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1\":\"测试1-1\"},\"userTypeText\":{\"1\":\"节点1\",\"1-1\":\"节点1/节点1-1\"}}", value);
     }
 
     /**
@@ -250,7 +249,7 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1,2\":\"测试1-1\"},\"userTypeText\":{\"1\":\"节点1\",\"1-1,2\":\"节点1/节点1-1、节点2\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1,2\":\"测试1-1\"},\"userTypeText\":{\"1\":\"节点1\",\"1-1,2\":\"节点1/节点1-1、节点2\"}}", value);
     }
 
     /**
@@ -276,6 +275,6 @@ class FieldMapTypeTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1,2\":\"测试1-1\"},\"userTypeText\":{\"1\":[\"节点1\"],\"1-1,2\":[\"节点1/节点1-1\",\"节点2\"]}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"1\":\"测试1\",\"1-1,2\":\"测试1-1\"},\"userTypeText\":{\"1\":[\"节点1\"],\"1-1,2\":[\"节点1/节点1-1\",\"节点2\"]}}", value);
     }
 }

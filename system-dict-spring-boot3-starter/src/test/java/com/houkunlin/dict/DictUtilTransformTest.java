@@ -100,30 +100,30 @@ class DictUtilTransformTest {
         Bean01 bean0101 = new Bean01(null); // Bean01 { userType = null }
         Bean01 bean0101transform = DictUtil.transform(bean0101); // Bean01$DictChildren { userType = null, userTypeText = "" }
         Assertions.assertNotSame(bean0101, bean0101transform);
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0101));
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0101));
         Assertions.assertEquals(bean0101transform.getClass().getName(), bean0101.getClass().getName() + "$DictChildren");
         // Jackson 序列化时是动态插入json字段的，因此导致多了一个 userTypeText 字段内容，但又不报错
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\",\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0101transform));
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\",\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0101transform));
         Assertions.assertEquals("", parseExpression("#{#bean.userTypeText}", bean0101transform));
 
         // 动态创建子类
         Bean01 bean0102 = new Bean01("1"); // Bean01 { userType = "1" }
         Bean01 bean0102transform = DictUtil.transform(bean0102); // Bean01$DictChildren { userType = "1", userTypeText = "普通用户" }
         Assertions.assertNotSame(bean0102, bean0102transform);
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0102));
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0102));
         Assertions.assertEquals(bean0102transform.getClass().getName(), bean0102.getClass().getName() + "$DictChildren");
         // Jackson 序列化时是动态插入json字段的，因此导致多了一个 userTypeText 字段内容，但又不报错
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0102transform));
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0102transform));
         Assertions.assertEquals("普通用户", parseExpression("#{#bean.userTypeText}", bean0102transform));
 
 
         // 不创建子类，直接替换本身字段值
         Bean02 bean0201 = new Bean02(null); // Bean02 { userType = null }
-        Assertions.assertEquals("{\"userType\":\"\"}", objectMapper.writeValueAsString(bean0201));
+        JsonAssertUtil.assertEquals("{\"userType\":\"\"}", objectMapper.writeValueAsString(bean0201));
         Bean02 bean0201transform = DictUtil.transform(bean0201); // Bean02 { userType = "" }
         Assertions.assertSame(bean0201, bean0201transform);
         Assertions.assertEquals(bean0201transform.getClass().getName(), bean0201.getClass().getName());
-        Assertions.assertEquals("{\"userType\":\"\"}", objectMapper.writeValueAsString(bean0201transform));
+        JsonAssertUtil.assertEquals("{\"userType\":\"\"}", objectMapper.writeValueAsString(bean0201transform));
         Assertions.assertEquals("", parseExpression("#{#bean.userType}", bean0201));
         Assertions.assertEquals("", parseExpression("#{#bean.userType}", bean0201transform));
         Assertions.assertEquals("", bean0201transform.getUserType());
@@ -131,12 +131,12 @@ class DictUtilTransformTest {
 
         // 不创建子类，直接替换本身字段值
         Bean02 bean0202 = new Bean02("1"); // Bean02 { userType = "1" }
-        Assertions.assertEquals("{\"userType\":\"普通用户\"}", objectMapper.writeValueAsString(bean0202));
+        JsonAssertUtil.assertEquals("{\"userType\":\"普通用户\"}", objectMapper.writeValueAsString(bean0202));
         Bean02 bean0202transform = DictUtil.transform(bean0202); // Bean02 { userType = "普通用户" }
         Assertions.assertSame(bean0202, bean0202transform);
         Assertions.assertEquals(bean0202transform.getClass().getName(), bean0202.getClass().getName());
         // 因为 userType 值已经变为字典文本了（code -> text == text string），但是注解还在字段上，此时再用 Jackson 序列化，就会找不到字典文本（code[but is code dict text] -> text == empty string）
-        Assertions.assertEquals("{\"userType\":\"\"}", objectMapper.writeValueAsString(bean0202transform));
+        JsonAssertUtil.assertEquals("{\"userType\":\"\"}", objectMapper.writeValueAsString(bean0202transform));
         Assertions.assertEquals("普通用户", parseExpression("#{#bean.userType}", bean0202));
         Assertions.assertEquals("普通用户", parseExpression("#{#bean.userType}", bean0202transform));
         Assertions.assertEquals("普通用户", bean0202.getUserType());
@@ -149,10 +149,10 @@ class DictUtilTransformTest {
         Bean03 bean0301transform = DictUtil.transform(bean0301); // Bean03 { userType = null, userTypeText = "" }
         Assertions.assertSame(bean0301, bean0301transform);
         // Jackson 序列化时是动态插入json字段的，因此导致多了一个 userTypeText 字段内容，但又不报错
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\",\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0301));
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\",\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0301));
         Assertions.assertEquals(bean0301transform.getClass().getName(), bean0301.getClass().getName());
         // Jackson 序列化时是动态插入json字段的，因此导致多了一个 userTypeText 字段内容，但又不报错
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\",\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0301transform));
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\",\"userTypeText\":\"\"}", objectMapper.writeValueAsString(bean0301transform));
         Assertions.assertEquals("", parseExpression("#{#bean.userTypeText}", bean0301));
         Assertions.assertEquals("", parseExpression("#{#bean.userTypeText}", bean0301transform));
         Assertions.assertEquals("", bean0301.getUserTypeText());
@@ -164,9 +164,9 @@ class DictUtilTransformTest {
         Bean03 bean0302transform = DictUtil.transform(bean0302); // Bean03 { userType = "1", userType = "普通用户" }
         Assertions.assertSame(bean0302, bean0302transform);
         // Jackson 序列化时是动态插入json字段的，因此导致多了一个 userTypeText 字段内容，但又不报错
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0302));
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0302));
         Assertions.assertEquals(bean0302transform.getClass().getName(), bean0302.getClass().getName());
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0302transform));
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userTypeText\":\"普通用户\"}", objectMapper.writeValueAsString(bean0302transform));
         Assertions.assertEquals("普通用户", parseExpression("#{#bean.userTypeText}", bean0302));
         Assertions.assertEquals("普通用户", parseExpression("#{#bean.userTypeText}", bean0302transform));
         Assertions.assertEquals("普通用户", bean0302.getUserTypeText());

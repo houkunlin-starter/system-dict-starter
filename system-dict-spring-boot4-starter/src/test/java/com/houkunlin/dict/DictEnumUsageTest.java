@@ -7,7 +7,6 @@ import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.enums.NullStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,7 +42,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=0)
         System.out.println(value); // {"userType":0,"userTypeText":"系统管理"}
-        Assertions.assertEquals("{\"userType\":0,\"userTypeText\":\"系统管理\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":0,\"userTypeText\":\"系统管理\"}", value);
     }
 
     @Test
@@ -58,7 +57,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=0)
         System.out.println(value); // {"userType":0,"userTypeTitle":"系统管理"}
-        Assertions.assertEquals("{\"userType\":0,\"userTypeTitle\":\"系统管理\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":0,\"userTypeTitle\":\"系统管理\"}", value);
     }
 
     @Test
@@ -73,7 +72,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=0)
         System.out.println(value); // {"userType":"系统管理"}
-        Assertions.assertEquals("{\"userType\":\"系统管理\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"系统管理\"}", value);
     }
 
     @Test
@@ -88,7 +87,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":""}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
     @Test
@@ -103,7 +102,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeTitle":""}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
     }
 
     @Test
@@ -118,7 +117,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":""}
-        Assertions.assertEquals("{\"userType\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"\"}", value);
     }
 
     @Test
@@ -134,7 +133,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[0,1])
         System.out.println(value); // {"userType":[0,1],"userTypeText":"系统管理、普通用户"}
-        Assertions.assertEquals("{\"userType\":[0,1],\"userTypeText\":\"系统管理、普通用户\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[0,1],\"userTypeText\":\"系统管理、普通用户\"}", value);
     }
 
     @Test
@@ -150,7 +149,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[0,1])
         System.out.println(value); // {"userType":[0,1],"userTypeText":"系统管理、普通用户"}
-        Assertions.assertEquals("{\"userType\":[0,1],\"userTypeText\":[\"系统管理\",\"普通用户\"]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[0,1],\"userTypeText\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
     @Test
@@ -166,7 +165,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[null,0,1])
         System.out.println(value); // {"userType":[null,0,1],"userTypeText":"null、系统管理、普通用户"}
-        Assertions.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":\"null、系统管理、普通用户\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":\"null、系统管理、普通用户\"}", value);
     }
 
     @Test
@@ -182,7 +181,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[null,0,1])
         System.out.println(value); // {"userType":[null,0,1],"userTypeText":"null、系统管理、普通用户"}
-        Assertions.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":[null,\"系统管理\",\"普通用户\"]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":[null,\"系统管理\",\"普通用户\"]}", value);
     }
 
     @Test
@@ -198,7 +197,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[null,0,1])
         System.out.println(value); // {"userType":[null,0,1],"userTypeText":["系统管理","普通用户"]}
-        Assertions.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":[\"系统管理\",\"普通用户\"]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
     @Test
@@ -214,7 +213,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[null,0,1])
         System.out.println(value); // {"userType":[null,0,1],"userTypeText":["系统管理","普通用户"]}
-        Assertions.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":[null,\"系统管理\",\"普通用户\"]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":[null,\"系统管理\",\"普通用户\"]}", value);
     }
 
     @Test
@@ -230,7 +229,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[null,0,1])
         System.out.println(value); // {"userType":[null,0,1],"userTypeText":["系统管理","普通用户"]}
-        Assertions.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":\"系统管理、普通用户\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[null,0,1],\"userTypeText\":\"系统管理、普通用户\"}", value);
     }
 
     @Test
@@ -246,7 +245,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[null,0,1])
         System.out.println(value); // {"userType":["系统管理","普通用户"]}
-        Assertions.assertEquals("{\"userType\":[null,\"系统管理\",\"普通用户\"]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[null,\"系统管理\",\"普通用户\"]}", value);
     }
 
     @Test
@@ -262,7 +261,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=[null,0,1])
         System.out.println(value); // {"userType":["系统管理","普通用户"]}
-        Assertions.assertEquals("{\"userType\":[\"系统管理\",\"普通用户\"]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
     @Test
@@ -278,7 +277,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":""}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
     @Test
@@ -294,7 +293,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":""}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
     }
 
     @Test
@@ -310,7 +309,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":""}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
     @Test
@@ -326,7 +325,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":[]}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
     }
 
     @Test
@@ -342,7 +341,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":[]}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
     @Test
@@ -358,7 +357,7 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":[]}
-        Assertions.assertEquals("{\"userType\":[]}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":[]}", value);
     }
 
     @Test
@@ -374,6 +373,6 @@ class DictEnumUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":[]}
-        Assertions.assertEquals("{\"userType\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"\"}", value);
     }
 }

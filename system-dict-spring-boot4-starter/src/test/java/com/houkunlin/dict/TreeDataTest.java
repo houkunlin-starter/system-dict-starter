@@ -7,7 +7,6 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -75,7 +74,7 @@ class TreeDataTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("""
+        JsonAssertUtil.assertEquals("""
             {"userType":"1","userTypeText":"节点1","userType1":"3-3","userType1Text":"节点3/节点3-3","userType3":"1-1,1-2,1-3,2-1,2-2,2-3,3-1,3-2,3-3,3-4","userType3Text":["节点1/节点1-1","节点1/节点1-2","节点1/节点1-3","节点2/节点2-1","节点2/节点2-2","节点2/节点2-3","节点3/节点3-1","节点3/节点3-2","节点3/节点3-3"]}""", value);
     }
 

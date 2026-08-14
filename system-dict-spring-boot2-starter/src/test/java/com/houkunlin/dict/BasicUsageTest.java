@@ -6,7 +6,6 @@ import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.DictBoolType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +37,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1,userType1=null)
         System.out.println(value); // {"userType":"1","userTypeText":"普通用户","userType1":null}
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userType1\":null}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userType1\":null}", value);
     }
 
     @Test
@@ -53,7 +52,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)
         System.out.println(value); // {"userType":"1","userTypeTitle":"普通用户"}
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeTitle\":\"普通用户\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeTitle\":\"普通用户\"}", value);
     }
 
     @Test
@@ -68,7 +67,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)
         System.out.println(value); // {"userType":"普通用户"}
-        Assertions.assertEquals("{\"userType\":\"普通用户\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"普通用户\"}", value);
     }
 
     @Test
@@ -83,7 +82,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeText":""}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
     @Test
@@ -98,7 +97,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"userTypeTitle":""}
-        Assertions.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
     }
 
     @Test
@@ -113,7 +112,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":""}
-        Assertions.assertEquals("{\"userType\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"\"}", value);
     }
 
     @Test
@@ -128,7 +127,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","userTypeText":null}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"userTypeText\":null}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"userTypeText\":null}", value);
     }
 
     @Test
@@ -143,7 +142,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","userTypeText":""}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"userTypeText\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"userTypeText\":\"\"}", value);
     }
 
     @Test
@@ -158,7 +157,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":""}
-        Assertions.assertEquals("{\"userType\":\"\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"\"}", value);
     }
 
     @Test
@@ -173,7 +172,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)
         System.out.println(value); // {"userType":"1","userTypeText":"普通用户"}
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\"}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\"}", value);
     }
 
     @Test
@@ -188,7 +187,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)
         System.out.println(value); // {"userType":{"text":"普通用户","value":"1"}}
-        Assertions.assertEquals("{\"userType\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
     }
 
     @Test
@@ -203,7 +202,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -218,7 +217,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=1)
         System.out.println(value); // {"userType":"1","map":{"text":"普通用户","value":"1"}}
-        Assertions.assertEquals("{\"userType\":\"1\",\"map\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"map\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
     }
 
     @Test
@@ -233,7 +232,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","map":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -248,7 +247,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -263,7 +262,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":null,"value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":null}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":null}}", value);
     }
 
     @Test
@@ -278,7 +277,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -293,7 +292,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","map":{"text":null,"value":"-1"}}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":null}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":null}}", value);
     }
 
     @Test
@@ -308,7 +307,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":"-1","map":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -323,7 +322,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=-1)
         System.out.println(value); // {"userType":{"text":"","value":"-1"}}
-        Assertions.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
     @Test
@@ -338,7 +337,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":{"text":null,"value":null}}
-        Assertions.assertEquals("{\"userType\":{\"value\":null,\"text\":null}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":null,\"text\":null}}", value);
     }
 
     @Test
@@ -353,7 +352,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":{"text":"","value":null}}
-        Assertions.assertEquals("{\"userType\":{\"value\":null,\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":null,\"text\":\"\"}}", value);
     }
 
     @Test
@@ -368,7 +367,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"map":{"text":null,"value":null}}
-        Assertions.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":null}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":null}}", value);
     }
 
     @Test
@@ -383,7 +382,7 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":null,"map":{"text":"","value":null}}
-        Assertions.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":\"\"}}", value);
     }
 
     @Test
@@ -398,6 +397,6 @@ class BasicUsageTest {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean); // Bean(userType=null)
         System.out.println(value); // {"userType":{"text":"","value":null}}
-        Assertions.assertEquals("{\"userType\":{\"value\":null,\"text\":\"\"}}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":{\"value\":null,\"text\":\"\"}}", value);
     }
 }

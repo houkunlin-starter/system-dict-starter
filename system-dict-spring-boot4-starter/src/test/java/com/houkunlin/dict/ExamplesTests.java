@@ -25,8 +25,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -73,12 +74,12 @@ class ExamplesTests {
             .typeEnum1("0")
             .name("用户姓名").build();
         final String userJson = objectMapper.writeValueAsString(user);
-        assertEquals(expect, userJson);
+        JsonAssertUtil.assertEquals(expect, userJson);
         mockMvc.perform(get("/test/user-get?id=1&gender=0&sex=1&type=0&typeArrays0=0,1&typeArrays1=0,1&typeArrays2=0,1&typeEnum0=0&typeEnum1=0&name=用户姓名"))
             .andDo(log())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(content().string(expect));
+            .andExpect(result -> JsonAssertUtil.assertEquals(expect, result.getResponse().getContentAsString(StandardCharsets.UTF_8)));
         // mockMvc.perform(post("/test/user-post").characterEncoding(StandardCharsets.UTF_8).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(expect))
         //     .andDo(log())
         //     .andExpect(status().isOk())
@@ -98,20 +99,19 @@ class ExamplesTests {
             .city4("130203,130204,130205")
             .build();
         String json = objectMapper.writeValueAsString(bean);
-        assertEquals("""
-            {"treeData0":"2","treeData0Text":"节点2","treeData1":"2","treeData1Text":"节点2","treeData2":"2-2","treeData2Text":"节点2/节点2-2","city1":"110101","city1Text":"北京市/东城区","city2":"130102","city2Text":"河北省/石家庄市/长安区","city3":"130203,130204,130205","city3Text":"河北省/唐山市/路北区、河北省/唐山市/古冶区、河北省/唐山市/开平区","city4":"130203,130204,130205","city4Text":[["河北省","唐山市","路北区"],["河北省","唐山市","古冶区"],["河北省","唐山市","开平区"]]}""", json);
+        JsonAssertUtil.assertEquals("{\"treeData0\":\"2\",\"treeData0Text\":\"节点2\",\"treeData1\":\"2\",\"treeData1Text\":\"节点2\",\"treeData2\":\"2-2\",\"treeData2Text\":\"节点2/节点2-2\",\"city1\":\"110101\",\"city1Text\":\"北京市/东城区\",\"city2\":\"130102\",\"city2Text\":\"河北省/石家庄市/长安区\",\"city3\":\"130203,130204,130205\",\"city3Text\":\"河北省/唐山市/路北区、河北省/唐山市/古冶区、河北省/唐山市/开平区\",\"city4\":\"130203,130204,130205\",\"city4Text\":[[\"河北省\",\"唐山市\",\"路北区\"],[\"河北省\",\"唐山市\",\"古冶区\"],[\"河北省\",\"唐山市\",\"开平区\"]]}", json);
     }
 
     @Test
     void testProvider() throws Exception {
-        final String expect = "\"hobby\":\"1\",\"hobbyText\":\"打篮球\",\"nation\":\"2\",\"nationText\":\"回族\",\"createdBy\":\"12\",\"createdByText\":\"用户姓名 - 12\"";
+        final String expect = "{\"hobby\":\"1\",\"hobbyText\":\"打篮球\",\"nation\":\"2\",\"nationText\":\"回族\",\"createdBy\":\"12\",\"createdByText\":\"用户姓名 - 12\"}";
         final User1 user = User1.builderUser1()
             .hobby("1")
             .createdBy("12")
             .nation("2")
             .build();
         final String userJson = objectMapper.writeValueAsString(user);
-        assertTrue(userJson.contains(expect));
+        JsonAssertUtil.assertContains(userJson, expect);
     }
 
     @Test

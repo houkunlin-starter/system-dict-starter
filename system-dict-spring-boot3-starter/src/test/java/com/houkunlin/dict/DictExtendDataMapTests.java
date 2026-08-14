@@ -53,7 +53,7 @@ class DictExtendDataMapTests {
         final String value = objectMapper.writeValueAsString(bean);
         System.out.println(bean);
         System.out.println(value);
-        Assertions.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"不可读写\",\"userType1\":null}", value);
+        JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"不可读写\",\"userType1\":null}", value);
 
         DictType dictType = DictUtil.getDictType(DICT_TYPE);
         System.out.println(dictType);
@@ -71,7 +71,7 @@ class DictExtendDataMapTests {
             .andDo(log())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(result -> Assertions.assertEquals(objectMapper.writeValueAsString(DictUtil.getDictType(DICT_TYPE)), result.getResponse().getContentAsString(StandardCharsets.UTF_8)))
+            .andExpect(result -> JsonAssertUtil.assertEquals(objectMapper.writeValueAsString(DictUtil.getDictType(DICT_TYPE)), result.getResponse().getContentAsString(StandardCharsets.UTF_8)))
             .andExpect(content().string(StringContains.containsString("\"read\":true")))
             .andExpect(content().string(StringContains.containsString("\"read\":false")))
             .andExpect(content().string(StringContains.containsString("\"write\":true")))
