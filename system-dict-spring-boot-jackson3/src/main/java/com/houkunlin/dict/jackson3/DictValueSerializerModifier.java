@@ -12,7 +12,7 @@ import tools.jackson.databind.ser.ValueSerializerModifier;
 
 import java.util.List;
 
-import static com.houkunlin.dict.jackson.DictValueSerializerUtil.getDictTextValueSerializer;
+import static com.houkunlin.dict.jackson3.DictValueSerializerUtil.getDictTextValueSerializer;
 
 /**
  * 数据字典值序列化对象编辑器，用于修改 Bean 属性的序列化器，为带有 DictText 注解的字段添加字典值序列化器。

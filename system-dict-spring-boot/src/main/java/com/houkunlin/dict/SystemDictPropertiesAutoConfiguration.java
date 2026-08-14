@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
-public class SystemDictPropertiesConfiguration {
+public class SystemDictPropertiesAutoConfiguration {
 
     @ConfigurationProperties("system.dict")
     @Bean

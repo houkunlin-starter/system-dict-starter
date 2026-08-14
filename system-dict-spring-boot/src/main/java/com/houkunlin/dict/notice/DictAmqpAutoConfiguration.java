@@ -29,11 +29,11 @@ import java.util.Objects;
 @ConditionalOnProperty(prefix = "system.dict", name = "mq-type", havingValue = "AMQP")
 @ConditionalOnClass(AmqpTemplate.class)
 @Configuration(proxyBeanMethods = false)
-public class DictAmqpConfiguration {
+public class DictAmqpAutoConfiguration {
     /**
      * 日志
      */
-    private static final Logger logger = LoggerFactory.getLogger(DictAmqpConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(DictAmqpAutoConfiguration.class);
     /**
      * 数据字典注册器，用于刷新字典数据
      */
@@ -59,7 +59,7 @@ public class DictAmqpConfiguration {
      * @param applicationName 当前应用名称
      * @param dictProperties  数据字典配置参数信息
      */
-    public DictAmqpConfiguration(final DictRegistrar dictRegistrar,
+    public DictAmqpAutoConfiguration(final DictRegistrar dictRegistrar,
                                  final AmqpTemplate amqpTemplate,
                                  @Value("${spring.application.name:'system-dict'}") final String applicationName,
                                  final DictProperties dictProperties) {

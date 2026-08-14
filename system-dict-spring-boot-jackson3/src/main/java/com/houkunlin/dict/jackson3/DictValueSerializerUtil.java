@@ -1,12 +1,10 @@
-package com.houkunlin.dict.jackson;
+package com.houkunlin.dict.jackson3;
 
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.enums.NullStrategy;
-import com.houkunlin.dict.jackson3.AbstractDictValueSerializer;
-import com.houkunlin.dict.jackson3.DictValueSerializerToArrayImpl;
-import com.houkunlin.dict.jackson3.DictValueSerializerToTextImpl;
+import com.houkunlin.dict.jackson.DictValueSerializer;
 import lombok.Getter;
 import org.springframework.core.annotation.AnnotationUtils;
 

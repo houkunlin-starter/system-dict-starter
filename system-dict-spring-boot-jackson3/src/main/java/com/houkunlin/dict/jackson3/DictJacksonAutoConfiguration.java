@@ -4,7 +4,6 @@ import com.houkunlin.dict.DictJsonCodec;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.DictValueSerializerFactory;
 import com.houkunlin.dict.bean.DictType;
-import com.houkunlin.dict.jackson.DictValueSerializerUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

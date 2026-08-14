@@ -21,7 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  */
 @ConditionalOnClass(RedisTemplate.class)
 @Configuration(proxyBeanMethods = false)
-public class RedisDictStoreConfiguration {
+public class RedisDictStoreAutoConfiguration {
 
     /**
      * 自动配置 Redis 字典存储 Bean

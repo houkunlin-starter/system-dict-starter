@@ -21,7 +21,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
  */
 @ConditionalOnClass(RedisTemplate.class)
 @Configuration(proxyBeanMethods = false)
-public class DictRedisConfiguration {
+public class DictRedisAutoConfiguration {
     /**
      * 系统字典 RedisTemplate Bean 名称
      */

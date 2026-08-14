@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
-public class LocalDictStoreConfiguration {
+public class LocalDictStoreAutoConfiguration {
     /**
      * 自动配置本地字典存储 Bean
      * <p>

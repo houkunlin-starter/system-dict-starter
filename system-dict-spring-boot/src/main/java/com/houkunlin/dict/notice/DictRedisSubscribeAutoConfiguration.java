@@ -35,11 +35,11 @@ import java.util.Objects;
 @ConditionalOnProperty(prefix = "system.dict", name = "mq-type", havingValue = "REDIS")
 @ConditionalOnClass(StringRedisTemplate.class)
 @Configuration(proxyBeanMethods = false)
-public class DictRedisSubscribeConfiguration implements InitializingBean {
+public class DictRedisSubscribeAutoConfiguration implements InitializingBean {
     /**
      * 日志
      */
-    private static final Logger logger = LoggerFactory.getLogger(DictRedisSubscribeConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(DictRedisSubscribeAutoConfiguration.class);
     /**
      * Redis 消息侦听器容器，用于管理 Redis 消息的订阅
      */
@@ -75,7 +75,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
      * @param applicationName               当前应用名称
      * @param dictProperties                数据字典配置信息
      */
-    public DictRedisSubscribeConfiguration(final RedisMessageListenerContainer redisMessageListenerContainer,
+    public DictRedisSubscribeAutoConfiguration(final RedisMessageListenerContainer redisMessageListenerContainer,
                                            final DictRegistrar dictRegistrar,
                                            final StringRedisTemplate stringRedisTemplate,
                                            final DictJsonCodec dictJsonCodec,
