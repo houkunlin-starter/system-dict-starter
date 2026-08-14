@@ -4,18 +4,16 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'java-library'
-    id 'application'
     id 'idea'
     id 'java-test-fixtures'
 }
 dependencies {
     api project(':system-dict-core')
-    compileOnly('org.slf4j:slf4j-api:2.0.17')
+    compileOnly 'org.slf4j:slf4j-api:2.0.17'
     compileOnly 'com.github.ben-manes.caffeine:caffeine:2.9.3'
-    compileOnly 'org.jspecify:jspecify:1.0.0'
     compileOnly 'com.google.guava:guava:33.5.0-jre'
+    compileOnly 'org.jspecify:jspecify:1.0.0'
     compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.41'
-    compileOnly 'org.springframework:spring-core:5.2.25.RELEASE'
     compileOnly 'org.springframework:spring-webmvc:5.3.31'
     compileOnly 'org.springframework.boot:spring-boot:2.7.18'
     compileOnly 'org.springframework.boot:spring-boot-autoconfigure:2.7.18'
