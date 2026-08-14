@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.Matchers.hasItems;
@@ -38,6 +39,13 @@ class DictExtendDataMapTests {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot4-starter"));
+    }
 
     @Test
     void testJackson() throws JacksonException {

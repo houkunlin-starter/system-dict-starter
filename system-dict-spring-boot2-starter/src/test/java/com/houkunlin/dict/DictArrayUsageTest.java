@@ -8,11 +8,13 @@ import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.enums.NullStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +30,13 @@ class DictArrayUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
+    }
 
     @Test
     void testString1() throws JacksonException {

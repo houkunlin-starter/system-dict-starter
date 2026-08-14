@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,6 +52,13 @@ class ExamplesTests {
     private ApplicationEventPublisher publisher;
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
+    }
 
     @Test
     void testBasic() throws Exception {

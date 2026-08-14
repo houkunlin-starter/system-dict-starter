@@ -7,6 +7,7 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,6 +34,13 @@ class FieldMapTypeTest {
     public static final String DICT_TYPE2 = "TreeData2";
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot4-starter"));
+    }
 
     @Autowired
     public void setPublisher(final ApplicationEventPublisher publisher) {

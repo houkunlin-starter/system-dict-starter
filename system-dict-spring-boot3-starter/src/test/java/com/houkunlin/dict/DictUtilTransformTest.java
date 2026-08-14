@@ -21,6 +21,8 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.io.File;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SystemDictScan
@@ -30,6 +32,13 @@ class DictUtilTransformTest {
     private ObjectMapper objectMapper;
     private final ParserContext parserContext = new TemplateParserContext();
     private final ExpressionParser parser = new SpelExpressionParser();
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+    }
 
     @Test
     void testA() throws JacksonException {

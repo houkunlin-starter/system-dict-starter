@@ -6,10 +6,13 @@ import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.enums.DictBoolType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.io.File;
 
 /**
  * 默认注解使用测试
@@ -23,6 +26,13 @@ class BasicUsageTest {
     public static final String DICT_TYPE = "PeopleType";
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+    }
 
     @Test
     void testBasic1() throws JacksonException {

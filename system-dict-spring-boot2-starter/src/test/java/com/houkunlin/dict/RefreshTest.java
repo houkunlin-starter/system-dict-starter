@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -55,6 +56,13 @@ class RefreshTest {
         } catch (JacksonException e) {
             return "";
         }
+    }
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
     }
 
     @Test

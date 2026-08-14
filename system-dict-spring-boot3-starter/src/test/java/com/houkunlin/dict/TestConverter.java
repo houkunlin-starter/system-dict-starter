@@ -10,6 +10,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.io.File;
+
 /**
  * 测试转换器
  *
@@ -21,6 +23,13 @@ import org.springframework.test.annotation.DirtiesContext;
 class TestConverter {
     @Autowired
     private ConversionService conversionService;
+
+    @Test
+    void testJavaAtPath() {
+        String absolutePath = new File(".").getAbsolutePath();
+        System.out.println(absolutePath);
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+    }
 
     @Test
     void testPeopleType() {
