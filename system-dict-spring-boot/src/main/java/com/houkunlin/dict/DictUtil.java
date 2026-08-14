@@ -6,7 +6,6 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.bean.DictValue;
 import com.houkunlin.dict.bytecode.DictChildrenObjectGenerate;
 import com.houkunlin.dict.cache.IDictCacheFactory;
-import com.houkunlin.dict.jackson.DictValueSerializerUtil;
 import com.houkunlin.dict.jackson.IDictValueSerializer;
 import com.houkunlin.dict.properties.DictPropertiesStorePrefixKey;
 import com.houkunlin.dict.store.DictStore;
@@ -73,6 +72,26 @@ public class DictUtil {
     private static IDictRegistrar dictRegistrar;
 
     /**
+     * 字典值序列化器工厂
+     * <p>
+     * 由各版本 Starter 在启动时注册，用于创建具体版本（Jackson2/Jackson3）的字典值序列化器。
+     * </p>
+     */
+    private static IDictValueSerializerFactory serializerFactory;
+
+    /**
+     * 注册字典值序列化器工厂。
+     * <p>
+     * 由各版本 Starter 在启动时调用，向 {@link DictUtil} 注册当前版本（Jackson2/Jackson3）的序列化器工厂实现。
+     * </p>
+     *
+     * @param factory 序列化器工厂
+     */
+    public static void setSerializerFactory(final IDictValueSerializerFactory factory) {
+        DictUtil.serializerFactory = factory;
+    }
+
+    /**
      * 字典存储
      * <p>负责字典数据的实际存储和读取操作
      */
@@ -101,8 +120,8 @@ public class DictUtil {
      * </p>
      *
      * @param dictRegistrar 字典注册器，负责管理字典提供者和刷新字典数据
-     * @param store 字典存储，负责字典数据的实际存储和读取操作
-     * @param cacheFactory 缓存工厂，用于创建和管理字典缓存
+     * @param store         字典存储，负责字典数据的实际存储和读取操作
+     * @param cacheFactory  缓存工厂，用于创建和管理字典缓存
      */
     public DictUtil(final IDictRegistrar dictRegistrar, final DictStore store, final IDictCacheFactory cacheFactory) {
         DictUtil.dictRegistrar = dictRegistrar;
@@ -140,7 +159,7 @@ public class DictUtil {
      * </p>
      *
      * @param dictProviderClasses 需要刷新的字典提供商类限定名，null 表示刷新所有
-     * @param store 字典存储对象，用于存储字典数据
+     * @param store               字典存储对象，用于存储字典数据
      * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.5.0
      */
@@ -158,10 +177,10 @@ public class DictUtil {
      * 该方法提供了更灵活的字典数据处理方式，可以根据需要自定义处理逻辑。
      * </p>
      *
-     * @param dictProviderClasses 需要刷新的字典提供商类限定名，null 表示刷新所有
-     * @param dictTypeConsumer    保存普通字典类型的消费者函数
+     * @param dictProviderClasses    需要刷新的字典提供商类限定名，null 表示刷新所有
+     * @param dictTypeConsumer       保存普通字典类型的消费者函数
      * @param systemDictTypeConsumer 保存系统字典类型的消费者函数
-     * @param dictValueConsumer   保存字典值数据的消费者函数
+     * @param dictValueConsumer      保存字典值数据的消费者函数
      * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.4.11
      */
@@ -359,7 +378,7 @@ public class DictUtil {
      * 格式为：dict:v:{type}:{value}
      * </p>
      *
-     * @param type 字典类型代码
+     * @param type  字典类型代码
      * @param value 字典值
      * @return 字典值缓存键
      */
@@ -439,7 +458,7 @@ public class DictUtil {
      * 该键用于 Redis 哈希结构，存储同一字典类型下的所有字典父级值。
      * </p>
      *
-     * @param type  字典类型
+     * @param type 字典类型
      * @return 字典父级值哈希缓存 KEY
      * @since 1.5.0
      */
@@ -491,7 +510,7 @@ public class DictUtil {
         final Map<String, Object> newFields = new HashMap<>();
         for (final Field field : fields) {
             ReflectionUtils.makeAccessible(field);
-            final IDictValueSerializer jsonSerializer = DictValueSerializerUtil.getDictTextValueSerializer(objectClass, field);
+            final IDictValueSerializer jsonSerializer = serializerFactory.getDictTextValueSerializer(objectClass, field);
             if (jsonSerializer == null) {
                 continue;
             }

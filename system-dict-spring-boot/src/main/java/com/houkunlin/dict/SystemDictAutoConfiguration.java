@@ -1,7 +1,6 @@
 package com.houkunlin.dict;
 
 import com.houkunlin.dict.cache.DictCacheFactory;
-import com.houkunlin.dict.jackson2.DictJsonMapperBuilderCustomizer;
 import com.houkunlin.dict.properties.DictProperties;
 import com.houkunlin.dict.store.DictStore;
 import com.houkunlin.dict.store.RemoteDict;
@@ -195,17 +194,6 @@ public class SystemDictAutoConfiguration {
     @Bean
     public DictUtil dictUtil(final DictRegistrar dictRegistrar, final DictStore store, final DictCacheFactory cacheFactory) {
         return new DictUtil(dictRegistrar, store, cacheFactory);
-    }
-
-    /**
-     * 数据字典JSONMapper初始化处理
-     * 用于配置Jackson序列化时的字典值处理
-     *
-     * @return {@link DictJsonMapperBuilderCustomizer} JSON映射构建器自定义器
-     */
-    @Bean
-    public DictJsonMapperBuilderCustomizer dictJsonMapperBuilderCustomizer() {
-        return new DictJsonMapperBuilderCustomizer();
     }
 
     /**
