@@ -7,6 +7,8 @@ plugins {
     id 'idea'
     id 'java-test-fixtures'
 }
+apply from: rootProject.file("publishing.gradle")
+
 dependencies {
     api project(':system-dict-core')
     compileOnly 'org.slf4j:slf4j-api:2.0.17'

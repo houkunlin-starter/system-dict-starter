@@ -6,6 +6,8 @@ plugins {
     id 'java-library'
     id 'idea'
 }
+apply from: rootProject.file("publishing.gradle")
+
 dependencies {
     compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.20'
     compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.41'
