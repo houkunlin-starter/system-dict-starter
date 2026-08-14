@@ -23,9 +23,9 @@ import java.util.Map;
  * 该接口使用了泛型 T 来表示字典值的类型，要求实现类的字典值类型必须实现 Serializable 接口。
  * </p>
  *
+ * @param <T> 字典值类型，必须实现 Serializable 接口
  * @author HouKunLin
  * @since 1.0.0
- * @param <T> 字典值类型，必须实现 Serializable 接口
  */
 public interface DictEnum<T extends Serializable> {
     /**
@@ -136,10 +136,9 @@ public interface DictEnum<T extends Serializable> {
      * </p>
      * <p>
      * 示例：
-     * <pre>{@code
-     *
+     * <pre><code>
      * // 示例1：状态字典中存储颜色值
-     * public enum StatusDictEnum implements DictEnum<Integer> {
+     * public enum StatusDictEnum implements DictEnum&lt;Integer&gt; {
      *     SUCCESS(1, "成功"),
      *     FAILURE(2, "失败");
      *
@@ -151,18 +150,18 @@ public interface DictEnum<T extends Serializable> {
      *         this.title = title;
      *     }
      *
-     *     @Override
+     *     &#64;Override
      *     public Integer getValue() {
      *         return value;
      *     }
      *
-     *     @Override
+     *     &#64;Override
      *     public String getTitle() {
      *         return title;
      *     }
      *
-     *     @Override
-     *     public Map<String, Object> getData() {
+     *     &#64;Override
+     *     public Map&lt;String, Object&gt; getData() {
      *         // 根据不同状态返回不同的颜色值
      *         if (this == SUCCESS) {
      *             return Map.of("color", "green", "icon", "check-circle");
@@ -174,7 +173,7 @@ public interface DictEnum<T extends Serializable> {
      * }
      *
      * // 示例2：用户类型字典中存储权限标识
-     * public enum UserTypeDictEnum implements DictEnum<String> {
+     * public enum UserTypeDictEnum implements DictEnum&lt;String&gt; {
      *     ADMIN("admin", "管理员"),
      *     USER("user", "普通用户");
      *
@@ -186,18 +185,18 @@ public interface DictEnum<T extends Serializable> {
      *         this.title = title;
      *     }
      *
-     *     @Override
+     *     &#64;Override
      *     public String getValue() {
      *         return value;
      *     }
      *
-     *     @Override
+     *     &#64;Override
      *     public String getTitle() {
      *         return title;
      *     }
      *
-     *     @Override
-     *     public Map<String, Object> getData() {
+     *     &#64;Override
+     *     public Map&lt;String, Object&gt; getData() {
      *         // 根据不同用户类型返回不同的权限标识
      *         if (this == ADMIN) {
      *             return Map.of("permissions", Arrays.asList("read", "write", "delete"), "role", "admin");
@@ -209,7 +208,7 @@ public interface DictEnum<T extends Serializable> {
      * }
      *
      * // 示例3：使用多个字段扩展数据项，字典项初始化时就有了图标信息、颜色值、权限标识等字段
-     * public enum MenuTypeDictEnum implements DictEnum<String> {
+     * public enum MenuTypeDictEnum implements DictEnum&lt;String&gt; {
      *     DIR("dir", "目录", "folder", "blue"),
      *     MENU("menu", "菜单", "file", "green"),
      *     BUTTON("button", "按钮", "play", "orange");
@@ -226,26 +225,26 @@ public interface DictEnum<T extends Serializable> {
      *         this.color = color;
      *     }
      *
-     *     @Override
+     *     &#64;Override
      *     public String getValue() {
      *         return value;
      *     }
      *
-     *     @Override
+     *     &#64;Override
      *     public String getTitle() {
      *         return title;
      *     }
      *
-     *     @Override
-     *     public Map<String, Object> getData() {
+     *     &#64;Override
+     *     public Map&lt;String, Object&gt; getData() {
      *         return Map.of("icon", icon, "color", color);
      *     }
      * }
-     * }</pre>
+     * </code></pre>
      * </p>
      *
      * @return 扩展数据，返回字典项的额外信息，默认返回 null
-     * @since 仅 1.6.3 和 1.7.1 和 2.0.1 版本开始有的特性
+     * @since 1.6.3、1.7.1、2.0.1 版本开始支持
      */
     default Map<String, Object> getData() {
         return null;

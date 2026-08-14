@@ -8,14 +8,14 @@ import com.houkunlin.dict.annotation.DictText;
  * 需求场景：实体类Bean有字段A和B，字段A的字典值需要根据字段B的值来决定。
  * 通过实现此接口，可以根据Bean对象的其他字段值动态计算字典类型。
  * </p>
- * <pre>
+ * <pre><code>
  *  class Bean {
- *      @ DictText(dictTypeHandler = BeanDictTypeKeyHandler.class)
+ *      &#64;DictText(dictTypeHandler = BeanDictTypeKeyHandler.class)
  *      private int key;
  *      private int keyType;
  *  }
  *  public class BeanDictTypeKeyHandler implements DictTypeKeyHandler&lt;Bean&gt; {
- *      @ Override
+ *      &#64;Override
  *      public String getDictType(final Bean bean, final String fieldName, final DictText dictText) {
  *          if (!"key".equals(fieldName)) {
  *              // 只有 BeanDictTypeKeyHandler 被重复使用时才需要判断 fieldName， 否则的话 fieldName 就是注解所在的字段
@@ -31,7 +31,7 @@ import com.houkunlin.dict.annotation.DictText;
  *          return null;
  *      }
  *  }
- * </pre>
+ * </code></pre>
  *
  * @param <T> 实体类类型
  * @author HouKunLin

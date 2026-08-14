@@ -49,7 +49,14 @@ It is mainly used to automatically translate dictionary values into dictionary t
 
     javadoc {
         enabled = true
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+
+    tasks.withType(Javadoc).configureEach {
         options.encoding = "UTF-8"
+        options.charSet = "UTF-8"
+        options.docEncoding = "UTF-8"
+        options.addStringOption('encoding', 'UTF-8')
         options.addStringOption('Xdoclint:none', '-quiet')
     }
 
