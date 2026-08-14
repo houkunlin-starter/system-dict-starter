@@ -6,12 +6,12 @@ package com.houkunlin.dict;
  * 该接口抽象了 Jackson2（{@code com.fasterxml.jackson.databind.ObjectMapper}）与
  * Jackson3（{@code tools.jackson.databind.ObjectMapper}）的 JSON 序列化操作，
  * 使字典刷新消息的序列化逻辑与具体 Jackson 版本解耦。
- * 各版本 Starter 提供对应的 {@link JsonCodec} 实现。
+ * 各版本 Starter 提供对应的 {@link DictJsonCodec} 实现。
  * </p>
  *
  * @author HouKunLin
  */
-public interface JsonCodec {
+public interface DictJsonCodec {
     /**
      * 将对象序列化为 JSON 字符串。
      *

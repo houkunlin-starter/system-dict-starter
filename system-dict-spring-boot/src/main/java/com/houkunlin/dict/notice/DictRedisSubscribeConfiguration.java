@@ -1,7 +1,7 @@
 package com.houkunlin.dict.notice;
 
+import com.houkunlin.dict.DictJsonCodec;
 import com.houkunlin.dict.DictRegistrar;
-import com.houkunlin.dict.JsonCodec;
 import com.houkunlin.dict.properties.DictProperties;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -55,7 +55,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
     /**
      * JSON 序列化和反序列化工具，用于消息的序列化和反序列化
      */
-    private final JsonCodec jsonCodec;
+    private final DictJsonCodec dictJsonCodec;
     /**
      * 当前应用名称，用于标识消息的来源和过滤
      */
@@ -71,20 +71,20 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
      * @param redisMessageListenerContainer Redis 消息侦听器容器
      * @param dictRegistrar                 数据字典注册器
      * @param stringRedisTemplate           String Redis 模板
-     * @param jsonCodec                     JSON 序列化和反序列化工具
+     * @param dictJsonCodec                     JSON 序列化和反序列化工具
      * @param applicationName               当前应用名称
      * @param dictProperties                数据字典配置信息
      */
     public DictRedisSubscribeConfiguration(final RedisMessageListenerContainer redisMessageListenerContainer,
                                            final DictRegistrar dictRegistrar,
                                            final StringRedisTemplate stringRedisTemplate,
-                                           final JsonCodec jsonCodec,
+                                           final DictJsonCodec dictJsonCodec,
                                            @Value("${spring.application.name:'system-dict'}") final String applicationName,
                                            final DictProperties dictProperties) {
         this.redisMessageListenerContainer = redisMessageListenerContainer;
         this.dictRegistrar = dictRegistrar;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.jsonCodec = jsonCodec;
+        this.dictJsonCodec = dictJsonCodec;
         this.applicationName = applicationName;
         this.exchangeName = dictProperties.getMqExchangeName();
     }
@@ -109,7 +109,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
                 .applicationName(applicationName)
                 .notifyBrother(event.isNotifyOtherSystemAndBrother())
                 .dictProviderClasses(event.getDictProviderClasses()).build();
-            final String json = jsonCodec.writeValueAsString(noticeData);
+            final String json = dictJsonCodec.writeValueAsString(noticeData);
             stringRedisTemplate.convertAndSend(exchangeName, json);
         }
     }
@@ -124,7 +124,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        final MessageListener messageListener = new DictRedisMessageListener(dictRegistrar, jsonCodec, applicationName, exchangeName);
+        final MessageListener messageListener = new DictRedisMessageListener(dictRegistrar, dictJsonCodec, applicationName, exchangeName);
         redisMessageListenerContainer.addMessageListener(messageListener, new ChannelTopic(exchangeName));
     }
 
@@ -143,7 +143,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
         /**
          * JSON 序列化和反序列化工具，用于消息的序列化和反序列化
          */
-        private final JsonCodec jsonCodec;
+        private final DictJsonCodec dictJsonCodec;
         /**
          * 当前应用名称，用于标识消息的来源和过滤
          */
@@ -172,7 +172,7 @@ public class DictRedisSubscribeConfiguration implements InitializingBean {
             }
             final RefreshNoticeData noticeData;
             try {
-                noticeData = jsonCodec.readValue(message.getBody(), RefreshNoticeData.class);
+                noticeData = dictJsonCodec.readValue(message.getBody(), RefreshNoticeData.class);
             } catch (Exception e) {
                 logger.error("订阅来自 Redis 的字典刷新事件在解析Json时出现错误", e);
                 return;

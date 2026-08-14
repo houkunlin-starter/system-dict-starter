@@ -1,22 +1,22 @@
-package com.houkunlin.dict.jackson2;
+package com.houkunlin.dict.jackson3;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.houkunlin.dict.JsonCodec;
+import com.houkunlin.dict.DictJsonCodec;
+import tools.jackson.databind.ObjectMapper;
 
 /**
- * Jackson2 ObjectMapper 的 {@link JsonCodec} 实现。
+ * Jackson3 ObjectMapper 的 {@link DictJsonCodec} 实现。
  *
  * @author HouKunLin
  */
-public class JsonCodecImpl implements JsonCodec {
+public class DictJsonCodecImpl implements DictJsonCodec {
     private final ObjectMapper objectMapper;
 
     /**
      * 构造方法
      *
-     * @param objectMapper Jackson2 ObjectMapper
+     * @param objectMapper Jackson3 ObjectMapper
      */
-    public JsonCodecImpl(ObjectMapper objectMapper) {
+    public DictJsonCodecImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
