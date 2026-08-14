@@ -133,7 +133,7 @@ public class DictProperties {
      * @return 接口配置
      */
     @NestedConfigurationProperty
-    private DictPropertiesController controller = new DictPropertiesController();
+    private DictControllerProperties controller = new DictControllerProperties();
     /**
      * 缓存存储 键前缀
      *

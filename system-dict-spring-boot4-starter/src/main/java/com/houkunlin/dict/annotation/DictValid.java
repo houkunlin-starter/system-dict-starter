@@ -1,6 +1,6 @@
 package com.houkunlin.dict.annotation;
 
-import com.houkunlin.dict.DictValidConstraintValidator;
+import com.houkunlin.dict.DictValidValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
  * @author HouKunLin
  * @since 2.0.0
  */
-@Constraint(validatedBy = {DictValidConstraintValidator.class})
+@Constraint(validatedBy = {DictValidValidator.class})
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DictValid {

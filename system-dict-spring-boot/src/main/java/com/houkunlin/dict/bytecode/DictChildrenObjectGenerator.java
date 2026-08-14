@@ -19,11 +19,11 @@ import static org.springframework.asm.Opcodes.*;
  * @author HouKunLin
  * @since 1.4.9
  */
-public class DictChildrenObjectGenerate {
+public class DictChildrenObjectGenerator {
     /**
      * 私有构造方法，防止实例化
      */
-    private DictChildrenObjectGenerate() {
+    private DictChildrenObjectGenerator() {
     }
 
     /**

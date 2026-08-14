@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * 系统字典转换器Web MVC配置类
  * 该类实现了WebMvcConfigurer接口，用于注册各种数据类型到字典枚举类型的转换器工厂
  */
-public class SystemDictConverterWebMvcConfigurer implements WebMvcConfigurer {
+public class DictConverterWebMvcConfigurer implements WebMvcConfigurer {
 
     /**
      * 添加格式化转换器

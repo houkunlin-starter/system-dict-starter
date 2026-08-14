@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.bean.DictValue;
-import com.houkunlin.dict.bytecode.DictChildrenObjectGenerate;
+import com.houkunlin.dict.bytecode.DictChildrenObjectGenerator;
 import com.houkunlin.dict.cache.IDictCacheFactory;
 import com.houkunlin.dict.jackson.IDictValueSerializer;
 import com.houkunlin.dict.properties.DictPropertiesStorePrefixKey;
@@ -558,7 +558,7 @@ public class DictUtil {
                 newObjectClass = TRANSFORM_CACHE.get(objectClass);
             } else {
                 // 动态生成 T 对象继承类，在继承类中添加 outFieldName 字段
-                newObjectClass = DictChildrenObjectGenerate.newClass(objectClass, newFields.keySet());
+                newObjectClass = DictChildrenObjectGenerator.newClass(objectClass, newFields.keySet());
                 TRANSFORM_CACHE.put(objectClass, newObjectClass);
             }
             newObject = (T) newObjectClass.getConstructor().newInstance();

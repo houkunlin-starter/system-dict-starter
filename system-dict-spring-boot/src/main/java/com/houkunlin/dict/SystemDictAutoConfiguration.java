@@ -4,7 +4,7 @@ import com.houkunlin.dict.cache.DictCacheFactory;
 import com.houkunlin.dict.properties.DictProperties;
 import com.houkunlin.dict.store.DictStore;
 import com.houkunlin.dict.store.RemoteDict;
-import com.houkunlin.dict.store.RemoteDictDefaultImpl;
+import com.houkunlin.dict.store.RemoteDictImpl;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,7 +180,7 @@ public class SystemDictAutoConfiguration {
     @ConditionalOnMissingBean
     @Bean
     public RemoteDict remoteDict() {
-        return new RemoteDictDefaultImpl();
+        return new RemoteDictImpl();
     }
 
     /**

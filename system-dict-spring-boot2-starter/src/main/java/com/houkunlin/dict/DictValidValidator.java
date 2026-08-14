@@ -1,8 +1,9 @@
 package com.houkunlin.dict;
 
 import com.houkunlin.dict.annotation.DictValid;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * 校验字典信息是否在字典列表中。校验字典信息的填写是否符合需求
@@ -19,7 +20,7 @@ import jakarta.validation.ConstraintValidatorContext;
  *
  * @author HouKunLin
  */
-public class DictValidConstraintValidator implements ConstraintValidator<DictValid, Object> {
+public class DictValidValidator implements ConstraintValidator<DictValid, Object> {
     /**
      * 字典类型代码，用于指定要校验的字典类型
      */

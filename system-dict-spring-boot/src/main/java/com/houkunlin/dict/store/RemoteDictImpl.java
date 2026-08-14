@@ -13,7 +13,7 @@ import com.houkunlin.dict.bean.DictType;
  * @author HouKunLin
  * @since 1.4.4
  */
-public class RemoteDictDefaultImpl implements RemoteDict {
+public class RemoteDictImpl implements RemoteDict {
     /**
      * 通过字典类型获取完整的字典信息
      * <p>

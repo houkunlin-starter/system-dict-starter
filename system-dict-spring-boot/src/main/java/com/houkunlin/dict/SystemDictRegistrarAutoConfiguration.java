@@ -34,7 +34,7 @@ public class SystemDictRegistrarAutoConfiguration {
      * @return MvcConfigurer
      */
     @Bean
-    public SystemDictConverterWebMvcConfigurer systemDictConverterWebMvcConfigurer() {
-        return new SystemDictConverterWebMvcConfigurer();
+    public DictConverterWebMvcConfigurer dictConverterWebMvcConfigurer() {
+        return new DictConverterWebMvcConfigurer();
     }
 }

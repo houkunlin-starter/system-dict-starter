@@ -19,7 +19,7 @@ import jakarta.validation.ConstraintValidatorContext;
  *
  * @author HouKunLin
  */
-public class DictValidConstraintValidator implements ConstraintValidator<DictValid, Object> {
+public class DictValidValidator implements ConstraintValidator<DictValid, Object> {
     /**
      * 字典类型代码，用于指定要校验的字典类型
      */

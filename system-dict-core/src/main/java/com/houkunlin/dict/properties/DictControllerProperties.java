@@ -17,7 +17,7 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class DictPropertiesController {
+public class DictControllerProperties {
     /**
      * 是否启用 WEB 请求接口
      * <p>
