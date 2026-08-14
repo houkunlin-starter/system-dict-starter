@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * <p>
  * 使用该注解将自动向SpringBoot提供一个对应的 {@code org.springframework.core.convert.converter.Converter<String, DictEnumObject>} 对象；
  * 该功能需要使用到字节码技术，在运行时动态生成 {@code org.springframework.core.convert.converter.Converter} 转换器实现类并注入到 SpringBoot Bean 中。
- * 目前已经内置了 ASM/javassist 两种字节码实现方式，可通过 system.dict.bytecode 配置文件来配置。
+ * 目前已经内置了 ASM/javassist 两种字节码实现方式。
  * </p>
  * <p>
  * 转换器实现代码参考：

@@ -48,7 +48,6 @@ system:
       parent-prefix: 'u:parent:'
       type-system-prefix: 'u:type_system:'
     store-type: local
-#    bytecode: asm
 #    map-value: true
 management:
   endpoint:

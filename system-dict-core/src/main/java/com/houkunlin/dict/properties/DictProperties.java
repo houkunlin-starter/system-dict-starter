@@ -1,7 +1,6 @@
 package com.houkunlin.dict.properties;
 
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.enums.BytecodeType;
 import com.houkunlin.dict.enums.MqType;
 import com.houkunlin.dict.enums.StoreType;
 import lombok.Data;
@@ -143,18 +142,4 @@ public class DictProperties {
      */
     @NestedConfigurationProperty
     private DictPropertiesStorePrefixKey storeKey = new DictPropertiesStorePrefixKey();
-    /**
-     * 选择所使用字节码技术
-     * <p>
-     * 默认会使用 ASM 字节码技术。该配置用于选择动态生成字典转换器时使用的字节码技术。
-     * 不同的字节码技术在性能、兼容性和功能支持上有所差异。
-     * </p>
-     *
-     * @since 1.4.8
-     * @param bytecode 动态字节码技术类型
-     * @return 动态字节码技术类型
-     * @deprecated 2.0.3 版本已废弃，已经改为使用 ConverterFactory 实现转换枚举值转换成枚举，默认支持枚举名称转换+字典值转换，兼容旧版，对旧版一些无法兼容的情况进行了处理。
-     */
-    @Deprecated
-    private BytecodeType bytecode = BytecodeType.ASM;
 }
