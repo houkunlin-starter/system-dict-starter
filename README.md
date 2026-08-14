@@ -11,14 +11,67 @@
 
 **本项目只适用使用 Jackson 做 JSON 序列化，在 fastjson 下失效**
 
-**`v1.5.8` 将成为最后一个基于 Java 8 字节码发布的版本（基于 Spring Boot 2.7）**
+## 版本与依赖
 
-| 版本                  | 基于 SpringBoot 版本 | 测试兼容 SpringBoot 版本 |
-|---------------------|------------------|--------------------|
-| `v1.5.8` 及以下        | `2.7.18`         | `2.7.18` `3.4.5`   |
-| `v1.6.0` - `v1.6.4` | `3.4.6`          | `3.4.6`            |
-| `v1.7.0` 及以上        | `4.0.1`          | `4.0.1`            |
-| `v2.0.0` 及以上        | `4.0.1`          | `4.0.1`            |
+**当前版本：`2.1.0`**
+
+自 `v2.1.0` 起，本项目按 Spring Boot 版本拆分为三个独立的 Starter 模块，请根据项目使用的 Spring Boot 版本选择对应的依赖坐标。不同
+Starter 使用不同的 Jackson 实现（Jackson 2 或 Jackson 3）。
+
+| Starter 坐标                       | 基于 SpringBoot 版本 | Java 版本 | Jackson                        |
+|------------------------------------|----------------------|-----------|--------------------------------|
+| `system-dict-spring-boot2-starter` | `2.7.18`             | Java 8    | Jackson 2（`com.fasterxml.*`） |
+| `system-dict-spring-boot3-starter` | `3.0.0`              | Java 17   | Jackson 2（`com.fasterxml.*`） |
+| `system-dict-spring-boot4-starter` | `4.0.1`              | Java 17   | Jackson 3（`tools.jackson.*`） |
+
+**Maven**
+
+```xml
+<!-- Spring Boot 2.x -->
+<dependency>
+    <groupId>com.houkunlin</groupId>
+    <artifactId>system-dict-spring-boot2-starter</artifactId>
+    <version>${latest.version}</version>
+</dependency>
+
+    <!-- Spring Boot 3.x -->
+<dependency>
+<groupId>com.houkunlin</groupId>
+<artifactId>system-dict-spring-boot3-starter</artifactId>
+<version>${latest.version}</version>
+</dependency>
+
+    <!-- Spring Boot 4.x -->
+<dependency>
+<groupId>com.houkunlin</groupId>
+<artifactId>system-dict-spring-boot4-starter</artifactId>
+<version>${latest.version}</version>
+</dependency>
+```
+
+**Gradle**
+
+```groovy
+// Spring Boot 2.x
+implementation "com.houkunlin:system-dict-spring-boot2-starter:${latest.release}"
+
+// Spring Boot 3.x
+implementation "com.houkunlin:system-dict-spring-boot3-starter:${latest.release}"
+
+// Spring Boot 4.x
+implementation "com.houkunlin:system-dict-spring-boot4-starter:${latest.release}"
+```
+
+## 历史版本兼容说明
+
+| 版本                | 基于 SpringBoot 版本  | 测试兼容 SpringBoot 版本 |
+|---------------------|-----------------------|--------------------------|
+| `v1.5.8` 及以下     | `2.7.18`              | `2.7.18` `3.4.5`         |
+| `v1.6.0` - `v1.6.4` | `3.4.6`               | `3.4.6`                  |
+| `v1.7.0`            | `4.0.1`               | `4.0.1`                  |
+| `v2.0.0` 及以上     | 见上方 Starter 对照表 | -                        |
+
+**`v1.5.8` 将成为最后一个基于 Java 8 字节码发布的版本（基于 Spring Boot 2.7）**
 
 **从 `v1.4.11` 到 `v1.5.0` 版本产生了一些破坏性变更，请谨慎升级。移除了 DictText.Type 改为使用 DictBoolType；修改了 Redis
 存储字典文本的方式，改为 Redis Hash 存储字典文本内容。**
@@ -28,26 +81,24 @@
 **从 `v1.7.0` 到 `v2.0.0` 版本产生了一些破坏性变更，请谨慎升级。涵盖：包名重构、独立 DictArray 注解、独立 DictTree
 注解、移除非必要依赖（javassist、Swagger2）、核心序列化代码重构。**
 
-**Maven**
+## 版本特性
 
-```xml
-<dependency>
-    <groupId>com.houkunlin</groupId>
-    <artifactId>system-dict-starter</artifactId>
-    <version>${latest.version}</version>
-</dependency>
-```
+- **`v2.x`（当前）**：
+    - 按 Spring Boot 版本拆分 `system-dict-spring-boot2/3/4-starter` 三个独立模块
+    - 使用 ConverterFactory 实现枚举字典转换，默认支持枚举名称转换 + 字典值转换，移除 ASM 字节码依赖（`v2.0.3`）
+    - 重构缓存配置方式，使用 `system.dict.cache.caffeine.spec` 配置（`v2.0.2`）
+    - 枚举字典项支持自定义扩展属性（`v2.0.1`）
+    - 基于 Spring Boot 4.x 完全重构：包名重构、核心序列化代码重构、独立 `DictArray`/`DictTree` 注解、移除 javassist/Swagger2
+      依赖（`v2.0.0`）
+- **`v1.7.x`**：适配 Spring Boot 4.x，重构 Jackson 配置方式，优化字典值/字典文本 JSON 输出代码，`DictValid3` 更名为
+  `DictValid`
+- **`v1.6.x`**：基于 Spring Boot 3.4.6 / Java 17，重构字典枚举转换器初始化方式（改由 `WebMvcConfigurer#addFormatters`
+  注册），重构 Jackson 配置方式，缓存支持 `system.dict.cache.caffeine.spec` 配置
+- **`v1.5.x`**：最后一个基于 Java 8 / Spring Boot 2.7 字节码发布的版本线，重构缓存存储方式（Redis Hash 存储字典文本）
 
-**Gradle**
+#### 详细使用文档请点击查看 [基础用法文档](./usage.md)
 
-```groovy
-implementation "com.houkunlin:system-dict-starter:${latest.release}"
-```
-
-
-
-#### 详细使用文档请点击查看 [基础用法文档](./usage.md) 
-#### 系统更新日志 [系统更新日志](./changelog.md) 
+#### 系统更新日志 [系统更新日志](./changelog.md)
 
 ## 如何启用？
 
@@ -72,6 +123,7 @@ public class Application {
 > `@DictType` 用来标记枚举对象的字典类型代码
 
 ```java
+
 @DictType(value = "PeopleType", comment = "用户类型")
 @Getter
 @AllArgsConstructor
@@ -97,13 +149,12 @@ public enum PeopleType implements DictEnum<Integer> {
 }
 ```
 
-
-
 ## 字典文本自动转换
 
 - 在字段中使用 `DictText` 注解
 
 ```java
+
 @Data
 @AllArgsConstructor
 class Bean {
@@ -120,13 +171,12 @@ class Bean {
 }
 ```
 
-
-
 ## 提供一些其他字典信息到系统字典存储对象中
 
 - 实现 `DictProvider` 接口并扫描到SpringBoot中
 
 ```java
+
 @Component
 public class MyProvider implements DictProvider {
     @Override
@@ -135,10 +185,10 @@ public class MyProvider implements DictProvider {
     }
 
     @Override
-    public Iterator<DictTypeVo> dictTypeIterator() {
+    public Iterator<DictType> dictTypeIterator() {
         // 从其他地方（其他服务、数据库、本地文件）加载完整的数据字典信息（字典类型+字典值列表）
         // 从这里返回的数据字典信息将会被存入缓存中，以便下次直接调用，当有数据变动时可以发起 RefreshDictEvent 事件通知更新字典信息
-        final DictTypeVo typeVo = DictTypeVo.newBuilder("name", "测试字典")
+        final DictType typeVo = DictType.newBuilder("name", "测试字典")
             .add("1", "测试1")
             .add("2", "测试2")
             .build();
@@ -147,18 +197,17 @@ public class MyProvider implements DictProvider {
 }
 ```
 
-
-
 ## 当在系统字典中获取不到数据时，请求第三方服务获取字典信息
 
 - 实现 `RemoteDict` 接口并扫描到SpringBoot中，当自行定义 `LocalDictStore` 对象时，此时的默认`RemoteDict`无法生效，需要手动处理此类情况。
 - 例如无法从 `DictStore` 获取到字典信息时，可以使用 `RemoteDict` 从特定的系统服务中获取字典信息
 
 ```java
+
 @Component
 public class MyRemoteDict implements RemoteDict {
     @Override
-    public DictTypeVo getDictType(final String type) {
+    public DictType getDictType(final String type) {
         // 从其他地方（其他服务、数据库、本地文件）加载一个完整的数据字典信息（字典类型+字典值列表）
         return null;
     }
@@ -171,13 +220,12 @@ public class MyRemoteDict implements RemoteDict {
 }
 ```
 
-
-
 ## 全局工具类直接获取字典信息
 
 - 调用 `DictUtil` 对象
 
 ```java
+
 @Component
 @AllArgsConstructor
 public class CommandRunnerTests implements CommandLineRunner {
