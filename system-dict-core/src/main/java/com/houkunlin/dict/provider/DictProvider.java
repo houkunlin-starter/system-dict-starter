@@ -23,7 +23,7 @@ public interface DictProvider {
      * 判断是否支持刷新当前字典提供者的数据
      * <p>
      * 在发起 {@code com.houkunlin.dict.notice.RefreshDictEvent} 刷新事件时，可以指定刷新某个或多个 {@link DictProvider} 对象。
-     * 在 {@code com.houkunlin.dict.DictRegistrar} 刷新字典时将调用此方法来判断是否刷新此 {@link DictProvider} 的字典数据。
+     * 在 {@code com.houkunlin.dict.DictRegistrarImpl} 刷新字典时将调用此方法来判断是否刷新此 {@link DictProvider} 的字典数据。
      * 默认实现检查当前类的全限定名是否在指定的刷新列表中。
      * </p>
      *

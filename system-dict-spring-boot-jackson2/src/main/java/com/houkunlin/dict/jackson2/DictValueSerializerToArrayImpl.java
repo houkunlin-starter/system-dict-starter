@@ -7,8 +7,8 @@ import com.houkunlin.dict.DictTypeKeyHandler;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.jackson.IDictBeanTransformToArray;
-import com.houkunlin.dict.jackson.IDictValueSerializerToArray;
+import com.houkunlin.dict.jackson.DictBeanTransformToArray;
+import com.houkunlin.dict.jackson.DictValueSerializerToArray;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -24,14 +24,14 @@ import java.util.Map;
  * 例如：当值为 ["1", "2"] 时，会转换为 ["字典1", "字典2"] 这样的格式。
  * </p>
  * <p>
- * 实现了 {@link IDictValueSerializerToArray} 接口，支持处理字典树结构，
+ * 实现了 {@link DictValueSerializerToArray} 接口，支持处理字典树结构，
  * 可根据配置将字典树转换为文本数组。
  * </p>
  *
  * @author HouKunLin
  * @since 2.0.0
  */
-public class DictValueSerializerToArrayImpl extends DictValueSerializer implements IDictValueSerializerToArray, IDictBeanTransformToArray {
+public class DictValueSerializerToArrayImpl extends AbstractDictValueSerializer implements DictValueSerializerToArray, DictBeanTransformToArray {
     /**
      * 构造方法
      *

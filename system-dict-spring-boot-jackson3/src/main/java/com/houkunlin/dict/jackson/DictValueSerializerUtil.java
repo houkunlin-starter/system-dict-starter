@@ -4,7 +4,7 @@ import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.enums.NullStrategy;
-import com.houkunlin.dict.jackson3.DictValueSerializer;
+import com.houkunlin.dict.jackson3.AbstractDictValueSerializer;
 import com.houkunlin.dict.jackson3.DictValueSerializerToArrayImpl;
 import com.houkunlin.dict.jackson3.DictValueSerializerToTextImpl;
 import lombok.Getter;
@@ -49,7 +49,7 @@ public class DictValueSerializerUtil {
     /**
      * bean 字段对应的序列化对象缓存，用于提高序列化性能
      */
-    protected static final ConcurrentHashMap<String, IDictValueSerializer> CACHE = new ConcurrentHashMap<>();
+    protected static final ConcurrentHashMap<String, DictValueSerializer> CACHE = new ConcurrentHashMap<>();
 
     /**
      * 获取字典文本值序列化器。
@@ -65,7 +65,7 @@ public class DictValueSerializerUtil {
      * @param dictTree         字典树注解配置
      * @return 字典值序列化器
      */
-    public static DictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
+    public static AbstractDictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Class<?> javaTypeRawClass, final String fieldName, final DictText annotation, DictArray dictArray, DictTree dictTree) {
         final String cacheKey = cacheKey(javaTypeRawClass, fieldName, annotation, dictArray == null ? DEFAULT_DICT_ARRAY_TEXT : dictArray, dictTree);
 
         if (dictArray == null && dictTree == null) {
@@ -120,7 +120,7 @@ public class DictValueSerializerUtil {
      * @param field     字段
      * @return 字典值序列化器，如果字段没有 DictText 注解则返回 null
      */
-    public static IDictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Field field) {
+    public static DictValueSerializer getDictTextValueSerializer(final Class<?> beanClazz, final Field field) {
         if (field == null) {
             return null;
         }

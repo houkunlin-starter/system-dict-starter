@@ -29,11 +29,11 @@ import java.util.Map;
  * @author HouKunLin
  * @since 2.0.0
  */
-public interface IDictValueSerializerToText extends IDictValueSerializerTree {
+public interface DictValueSerializerToText extends DictValueSerializerTree {
     /**
      * 日志对象
      */
-    Logger logger = LoggerFactory.getLogger(IDictValueSerializerToText.class);
+    Logger logger = LoggerFactory.getLogger(DictValueSerializerToText.class);
 
     /**
      * 序列化字典数组值为文本字符串。

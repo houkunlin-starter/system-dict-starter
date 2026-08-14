@@ -1,6 +1,5 @@
-package com.houkunlin.dict.jackson2;
+package com.houkunlin.dict.jackson3;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.houkunlin.dict.*;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
@@ -9,6 +8,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
+import tools.jackson.databind.ValueSerializer;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -23,11 +23,11 @@ import java.lang.reflect.InvocationTargetException;
  * @since 2.0.0
  */
 @Getter
-public abstract class DictValueSerializer extends JsonSerializer<Object> implements com.houkunlin.dict.jackson.IDictValueSerializer {
+public abstract class AbstractDictValueSerializer extends ValueSerializer<Object> implements com.houkunlin.dict.jackson.DictValueSerializer {
     /**
      * 日志对象
      */
-    private static final Logger logger = LoggerFactory.getLogger(DictValueSerializer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDictValueSerializer.class);
 
     // ==== Bean 基本信息
     /**
@@ -132,7 +132,7 @@ public abstract class DictValueSerializer extends JsonSerializer<Object> impleme
      * @param dictArray        字典数组注解配置
      * @param dictTree         字典树注解配置
      */
-    public DictValueSerializer(String fieldName, Class<?> javaTypeRawClass, DictText dictText, DictArray dictArray, DictTree dictTree) {
+    public AbstractDictValueSerializer(String fieldName, Class<?> javaTypeRawClass, DictText dictText, DictArray dictArray, DictTree dictTree) {
         this.fieldName = fieldName;
         this.javaTypeRawClass = javaTypeRawClass;
         this.dictText = dictText;

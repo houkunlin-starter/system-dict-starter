@@ -5,8 +5,8 @@ import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.bean.DictValue;
 import com.houkunlin.dict.bytecode.DictChildrenObjectGenerator;
-import com.houkunlin.dict.cache.IDictCacheFactory;
-import com.houkunlin.dict.jackson.IDictValueSerializer;
+import com.houkunlin.dict.cache.DictCacheFactory;
+import com.houkunlin.dict.jackson.DictValueSerializer;
 import com.houkunlin.dict.properties.DictPropertiesStorePrefixKey;
 import com.houkunlin.dict.store.DictStore;
 import org.slf4j.Logger;
@@ -69,7 +69,7 @@ public class DictUtil {
      * 字典注册器
      * <p>负责管理字典提供者和刷新字典数据
      */
-    private static IDictRegistrar dictRegistrar;
+    private static DictRegistrar dictRegistrar;
 
     /**
      * 字典值序列化器工厂
@@ -77,7 +77,7 @@ public class DictUtil {
      * 由各版本 Starter 在启动时注册，用于创建具体版本（Jackson2/Jackson3）的字典值序列化器。
      * </p>
      */
-    private static IDictValueSerializerFactory serializerFactory;
+    private static DictValueSerializerFactory serializerFactory;
 
     /**
      * 注册字典值序列化器工厂。
@@ -87,7 +87,7 @@ public class DictUtil {
      *
      * @param factory 序列化器工厂
      */
-    public static void setSerializerFactory(final IDictValueSerializerFactory factory) {
+    public static void setSerializerFactory(final DictValueSerializerFactory factory) {
         DictUtil.serializerFactory = factory;
     }
 
@@ -123,7 +123,7 @@ public class DictUtil {
      * @param store         字典存储，负责字典数据的实际存储和读取操作
      * @param cacheFactory  缓存工厂，用于创建和管理字典缓存
      */
-    public DictUtil(final IDictRegistrar dictRegistrar, final DictStore store, final IDictCacheFactory cacheFactory) {
+    public DictUtil(final DictRegistrar dictRegistrar, final DictStore store, final DictCacheFactory cacheFactory) {
         DictUtil.dictRegistrar = dictRegistrar;
         DictUtil.store = store;
         cache = cacheFactory.build("dict-text");
@@ -153,14 +153,14 @@ public class DictUtil {
     /**
      * 循环获取所有字典提供者提供的字典数据并存储
      * <p>
-     * 该方法调用 DictRegistrar 的 forEachAllDict 方法，循环获取所有 DictProvider 提供的字典数据，
+     * 该方法调用 DictRegistrarImpl 的 forEachAllDict 方法，循环获取所有 DictProvider 提供的字典数据，
      * 并将获取到的字典类型和字典值数据存储到指定的 DictStore 对象中。
      * 该方法用于在切换字典存储实现时，将所有字典数据迁移到新的存储中。
      * </p>
      *
      * @param dictProviderClasses 需要刷新的字典提供商类限定名，null 表示刷新所有
      * @param store               字典存储对象，用于存储字典数据
-     * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
+     * @see DictRegistrarImpl#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.5.0
      */
     public static void forEachAllDict(final Set<String> dictProviderClasses, final DictStore store) {
@@ -172,7 +172,7 @@ public class DictUtil {
     /**
      * 循环获取所有字典提供者提供的字典数据并通过消费者处理
      * <p>
-     * 该方法调用 DictRegistrar 的 forEachAllDict 方法，循环获取所有 DictProvider 提供的字典数据，
+     * 该方法调用 DictRegistrarImpl 的 forEachAllDict 方法，循环获取所有 DictProvider 提供的字典数据，
      * 并通过提供的消费者函数处理获取到的字典类型和字典值数据。
      * 该方法提供了更灵活的字典数据处理方式，可以根据需要自定义处理逻辑。
      * </p>
@@ -181,7 +181,7 @@ public class DictUtil {
      * @param dictTypeConsumer       保存普通字典类型的消费者函数
      * @param systemDictTypeConsumer 保存系统字典类型的消费者函数
      * @param dictValueConsumer      保存字典值数据的消费者函数
-     * @see DictRegistrar#forEachAllDict(Set, Consumer, Consumer, Consumer)
+     * @see DictRegistrarImpl#forEachAllDict(Set, Consumer, Consumer, Consumer)
      * @since 1.4.11
      */
     public static void forEachAllDict(final Set<String> dictProviderClasses, final Consumer<DictType> dictTypeConsumer, final Consumer<DictType> systemDictTypeConsumer, final Consumer<Iterator<DictValue>> dictValueConsumer) {
@@ -510,7 +510,7 @@ public class DictUtil {
         final Map<String, Object> newFields = new HashMap<>();
         for (final Field field : fields) {
             ReflectionUtils.makeAccessible(field);
-            final IDictValueSerializer jsonSerializer = serializerFactory.getDictTextValueSerializer(objectClass, field);
+            final DictValueSerializer jsonSerializer = serializerFactory.getDictTextValueSerializer(objectClass, field);
             if (jsonSerializer == null) {
                 continue;
             }

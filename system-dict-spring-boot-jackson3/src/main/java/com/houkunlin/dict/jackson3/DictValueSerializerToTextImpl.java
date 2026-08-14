@@ -5,8 +5,8 @@ import com.houkunlin.dict.DictTypeKeyHandler;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.jackson.IDictBeanTransformToText;
-import com.houkunlin.dict.jackson.IDictValueSerializerToText;
+import com.houkunlin.dict.jackson.DictBeanTransformToText;
+import com.houkunlin.dict.jackson.DictValueSerializerToText;
 import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
@@ -23,14 +23,14 @@ import java.util.Map;
  * 例如：当值为 ["1", "2"] 时，会转换为 "字典1、字典2" 这样的格式。
  * </p>
  * <p>
- * 实现了 {@link IDictValueSerializerToText} 接口，支持处理字典树结构，
+ * 实现了 {@link DictValueSerializerToText} 接口，支持处理字典树结构，
  * 可根据配置将字典树转换为单个文本字符串。
  * </p>
  *
  * @author HouKunLin
  * @since 2.0.0
  */
-public class DictValueSerializerToTextImpl extends DictValueSerializer implements IDictValueSerializerToText, IDictBeanTransformToText {
+public class DictValueSerializerToTextImpl extends AbstractDictValueSerializer implements DictValueSerializerToText, DictBeanTransformToText {
     /**
      * 构造方法
      *

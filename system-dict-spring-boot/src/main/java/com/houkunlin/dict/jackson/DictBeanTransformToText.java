@@ -24,11 +24,11 @@ import java.util.*;
  * @author HouKunLin
  * @since 2.0.0
  */
-public interface IDictBeanTransformToText extends IDictValueSerializerTree {
+public interface DictBeanTransformToText extends DictValueSerializerTree {
     /**
      * 日志对象
      */
-    Logger logger = LoggerFactory.getLogger(IDictBeanTransformToText.class);
+    Logger logger = LoggerFactory.getLogger(DictBeanTransformToText.class);
 
     /**
      * 转换字典数组值为文本字符串。

@@ -14,7 +14,7 @@ import java.util.LinkedList;
 /**
  * 字典树结构序列化接口，用于处理字典树结构的序列化和转换逻辑。
  * <p>
- * 该接口继承自 {@link IDictValueSerializer}，提供了处理字典树结构的方法，
+ * 该接口继承自 {@link DictValueSerializer}，提供了处理字典树结构的方法，
  * 支持从字典值开始递归获取其父节点的文本值，直到达到最大深度或没有父节点为止。
  * </p>
  * <p>
@@ -32,7 +32,7 @@ import java.util.LinkedList;
  * @author HouKunLin
  * @since 2.0.0
  */
-public interface IDictValueSerializerTree extends IDictValueSerializer {
+public interface DictValueSerializerTree extends DictValueSerializer {
 
     /**
      * 获取树形结构的字典文本值列表。

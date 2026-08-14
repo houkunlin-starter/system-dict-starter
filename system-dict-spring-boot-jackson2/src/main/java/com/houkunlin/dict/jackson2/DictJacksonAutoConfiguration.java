@@ -3,7 +3,7 @@ package com.houkunlin.dict.jackson2;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.dict.DictJsonCodec;
 import com.houkunlin.dict.DictUtil;
-import com.houkunlin.dict.IDictValueSerializerFactory;
+import com.houkunlin.dict.DictValueSerializerFactory;
 import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.jackson.DictValueSerializerUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,7 +19,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
  * 该配置类负责：
  * <ul>
  * <li>向 Spring 注册 {@link DictJsonMapperBuilderCustomizer}，启用 Jackson2 的字典值序列化功能；</li>
- * <li>向 {@link DictUtil} 注册当前版本（Jackson2）的 {@link IDictValueSerializerFactory} 序列化器工厂；</li>
+ * <li>向 {@link DictUtil} 注册当前版本（Jackson2）的 {@link DictValueSerializerFactory} 序列化器工厂；</li>
  * <li>注册当前版本（Jackson2）的 {@link DictJsonCodec} 与 DictType 的 Redis 值序列化器。</li>
  * </ul>
  * </p>

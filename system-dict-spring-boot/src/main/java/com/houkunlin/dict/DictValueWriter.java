@@ -21,7 +21,7 @@ import java.util.Collection;
  * </ul>
  * </p>
  * <p>
- * 该类在字典值序列化过程中扮演重要角色，被 DictValueSerializer 及其实现类调用，
+ * 该类在字典值序列化过程中扮演重要角色，被 AbstractDictValueSerializer 及其实现类调用，
  * 用于将字典值转换为适合JSON输出的格式。
  * 通过 {@link DictJsonWriter} 抽象与具体 Jackson 版本解耦。
  * </p>

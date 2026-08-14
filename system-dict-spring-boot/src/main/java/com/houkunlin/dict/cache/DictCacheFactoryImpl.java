@@ -23,7 +23,7 @@ import java.util.List;
 @Getter
 @Configuration(proxyBeanMethods = false)
 @AllArgsConstructor
-public class DictCacheFactory implements IDictCacheFactory {
+public class DictCacheFactoryImpl implements DictCacheFactory {
     /**
      * 数据字典配置信息
      */

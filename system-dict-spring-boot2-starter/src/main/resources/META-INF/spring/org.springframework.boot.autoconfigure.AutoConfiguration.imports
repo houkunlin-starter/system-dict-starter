@@ -6,7 +6,7 @@ com.houkunlin.dict.store.RedisDictStoreConfiguration
 com.houkunlin.dict.notice.DictAmqpConfiguration
 com.houkunlin.dict.notice.DictRedisSubscribeConfiguration
 com.houkunlin.dict.actuator.SystemDictActuatorAutoConfiguration
-com.houkunlin.dict.DictRegistrar
-com.houkunlin.dict.cache.DictCacheFactory
+com.houkunlin.dict.DictRegistrarImpl
+com.houkunlin.dict.cache.DictCacheFactoryImpl
 com.houkunlin.dict.SystemDictRegistrarAutoConfiguration
 com.houkunlin.dict.jackson2.DictJacksonAutoConfiguration

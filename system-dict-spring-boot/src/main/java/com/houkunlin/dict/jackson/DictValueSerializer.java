@@ -35,7 +35,7 @@ import java.util.List;
  * @author HouKunLin
  * @since 2.0.0
  */
-public interface IDictValueSerializer {
+public interface DictValueSerializer {
     /**
      * 是否忽略 null 值
      * <p>

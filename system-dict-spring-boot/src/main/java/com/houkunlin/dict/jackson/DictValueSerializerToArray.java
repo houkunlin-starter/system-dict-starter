@@ -27,11 +27,11 @@ import java.util.Map;
  * @author HouKunLin
  * @since 2.0.0
  */
-public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
+public interface DictValueSerializerToArray extends DictValueSerializerTree {
     /**
      * 日志对象
      */
-    Logger logger = LoggerFactory.getLogger(IDictValueSerializerToArray.class);
+    Logger logger = LoggerFactory.getLogger(DictValueSerializerToArray.class);
 
     /**
      * 序列化字典数组值为文本数组。

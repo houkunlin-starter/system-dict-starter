@@ -73,7 +73,7 @@ public class SystemDictProvider implements DictProvider {
      * <p>
      * 返回缓存中所有字典类型对象的迭代器。
      * 在调试模式下，会记录当前系统字典类型的数量。
-     * 该方法用于 {@link DictRegistrar} 注册字典数据时遍历所有系统字典。
+     * 该方法用于 {@link DictRegistrarImpl} 注册字典数据时遍历所有系统字典。
      * </p>
      *
      * @return 字典类型对象的迭代器

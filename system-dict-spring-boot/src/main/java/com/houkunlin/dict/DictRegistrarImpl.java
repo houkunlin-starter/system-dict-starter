@@ -48,8 +48,8 @@ import java.util.stream.Collectors;
 @Data
 @Configuration
 @RequiredArgsConstructor
-public class DictRegistrar implements InitializingBean, IDictRegistrar {
-    private static final Logger logger = LoggerFactory.getLogger(DictRegistrar.class);
+public class DictRegistrarImpl implements InitializingBean, DictRegistrar {
+    private static final Logger logger = LoggerFactory.getLogger(DictRegistrarImpl.class);
     /**
      * 数据字典信息提供商
      * <p>负责提供字典数据的来源，支持多个不同的字典提供者。</p>
@@ -93,6 +93,7 @@ public class DictRegistrar implements InitializingBean, IDictRegistrar {
      *
      * @param dictProviderClasses 需要刷新的数据字典提供商类限定名，null 表示刷新所有
      */
+    @Override
     public void refreshDict(Set<String> dictProviderClasses) {
         final long interval = System.currentTimeMillis() - lastModified.get();
         final Duration refreshDictInterval = properties.getRefreshDictInterval();
