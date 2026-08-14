@@ -33,7 +33,7 @@ public class DictJacksonAutoConfiguration implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() {
-        DictUtil.setSerializerFactory((beanClazz, field) -> DictValueSerializerUtil.getDictTextValueSerializer(beanClazz, field));
+        DictUtil.setSerializerFactory(DictValueSerializerUtil::getDictTextValueSerializer);
     }
 
     /**
