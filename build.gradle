@@ -63,7 +63,7 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
-    test {
+    tasks.withType(Test).configureEach {
         useJUnitPlatform()
     }
 
