@@ -9,11 +9,10 @@ import com.houkunlin.dict.enums.NullStrategy;
 import org.jspecify.annotations.Nullable;
 import org.springframework.util.ObjectUtils;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
- * /**
  * 字典值序列化核心接口
  * <p>
  * 该接口定义了字典值序列化的核心方法，是字典序列化系统的基础组件，
@@ -238,7 +237,7 @@ public interface IDictValueSerializer {
      * @param text        文本
      * @param dictArray   字典数组注解
      */
-    default void writeArrayText(ThrowingConsumer<String> writeString, ThrowingRunnable writeNull, String text, DictArray dictArray) throws IOException {
+    default void writeArrayText(Consumer<String> writeString, Runnable writeNull, String text, DictArray dictArray) {
         if (text != null) {
             writeString.accept(text);
         } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {

@@ -7,6 +7,7 @@ import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.jackson.IDictValueSerializerTree;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
@@ -34,6 +35,27 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      * 日志对象
      */
     Logger logger = LoggerFactory.getLogger(IDictValueSerializerToArray.class);
+
+    /**
+     * 向 JsonGenerator 写入字符串值，使用 {@code @SneakyThrows} 隐藏受检 IO 异常。
+     *
+     * @param gen JSON生成器
+     * @param s   字符串值
+     */
+    @SneakyThrows
+    static void writeString(JsonGenerator gen, String s) {
+        gen.writeString(s);
+    }
+
+    /**
+     * 向 JsonGenerator 写入 null 值，使用 {@code @SneakyThrows} 隐藏受检 IO 异常。
+     *
+     * @param gen JSON生成器
+     */
+    @SneakyThrows
+    static void writeNull(JsonGenerator gen) {
+        gen.writeNull();
+    }
 
     /**
      * 序列化字典数组值为文本数组。
@@ -101,7 +123,7 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      */
     default void serializeValueToArrayForFunc(Object bean, Object value, JsonGenerator gen, SerializerProvider ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws IOException {
         if (value == null) {
-            writeArrayText(gen::writeString, gen::writeNull, null, dictArray);
+            writeArrayText(s -> writeString(gen, s), () -> writeNull(gen), null, dictArray);
             return;
         }
         if (value.getClass().isArray()) {
@@ -309,15 +331,15 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
         gen.writeStartArray();
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(s -> writeString(gen, s), () -> writeNull(gen), text, dictArray);
         } else if (dictTree.toText()) {
             String text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(s -> writeString(gen, s), () -> writeNull(gen), text, dictArray);
         } else {
             Collection<String> treeDictTextList = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
             gen.writeStartArray();
             for (String text : treeDictTextList) {
-                writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+                writeArrayText(s -> writeString(gen, s), () -> writeNull(gen), text, dictArray);
             }
             gen.writeEndArray();
         }
@@ -344,15 +366,15 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
     default void serializeValueToArrayForFunc(Object bean, CharSequence value, JsonGenerator gen, SerializerProvider ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) throws IOException {
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(s -> writeString(gen, s), () -> writeNull(gen), text, dictArray);
         } else if (dictTree.toText()) {
             String text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(s -> writeString(gen, s), () -> writeNull(gen), text, dictArray);
         } else {
             Collection<String> treeDictTextList = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
             gen.writeStartArray();
             for (String text : treeDictTextList) {
-                writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+                writeArrayText(s -> writeString(gen, s), () -> writeNull(gen), text, dictArray);
             }
             gen.writeEndArray();
         }
