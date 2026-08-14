@@ -91,7 +91,7 @@ public class DictAmqpAutoConfiguration {
      * @return 交换器
      */
     @Bean
-    Exchange dictExchange() {
+    public Exchange dictExchange() {
         return new FanoutExchange(exchangeName);
     }
 
@@ -106,7 +106,7 @@ public class DictAmqpAutoConfiguration {
      * @return 绑定关系
      */
     @Bean
-    public Binding dictBindingExchangeMessage(Queue dictQueue, Exchange dictExchange) {
+    public Binding dictQueueBinding(Queue dictQueue, Exchange dictExchange) {
         return BindingBuilder.bind(dictQueue).to(dictExchange).with("").noargs();
     }
 
