@@ -1,0 +1,65 @@
+server:
+  port: 0
+  servlet:
+    context-path: '/api/system'
+spring:
+  application:
+    name: system
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+  mvc:
+    log-request-details: true
+  profiles:
+    active: ''
+    include: jackson,mvc,redis,mq
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+logging:
+  level:
+    root: warn
+    web: warn
+    sql: debug
+    p6spy: info
+    org.springframework: info
+    org.springframework.context: debug
+    org.springframework.boot.context: debug
+    com.houkunlin: debug
+    test: debug
+system:
+  dict:
+    raw-value: true
+    text-value-default-null: false
+    replace-value: false
+    refresh-dict-interval: 0
+    mq-type: none
+    cache:
+      enabled: false
+      caffeine:
+        spec: maximumSize=500,initialCapacity=50,expireAfterWrite=30s
+    controller:
+      enabled: true
+    store-key:
+      value-prefix: 'u:value:'
+      type-prefix: 'u:type:'
+      parent-prefix: 'u:parent:'
+      type-system-prefix: 'u:type_system:'
+    store-type: local
+#    bytecode: asm
+#    map-value: true
+management:
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+  endpoints:
+    web:
+      cors:
+        allowed-headers: '*'
+        allowed-methods: '*'
+        allowed-origins: '*'
+      exposure:
+        include: '*'
