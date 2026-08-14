@@ -8,5 +8,4 @@ com.houkunlin.dict.notice.DictRedisSubscribeConfiguration
 com.houkunlin.dict.actuator.SystemDictActuatorAutoConfiguration
 com.houkunlin.dict.DictRegistrar
 com.houkunlin.dict.cache.DictCacheFactory
-com.houkunlin.dict.properties.DictProperties
 com.houkunlin.dict.SystemDictRegistrarAutoConfiguration
