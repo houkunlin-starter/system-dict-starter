@@ -95,7 +95,7 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      */
     default void serializeValueToArrayForFunc(Object bean, Object value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (value == null) {
-            writeArrayText(writer::writeString, writer::writeNull, null, dictArray);
+            writeArrayText(writer, null, dictArray);
             return;
         }
         if (value.getClass().isArray()) {
@@ -289,15 +289,15 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
         writer.writeStartArray();
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
-            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
+            writeArrayText(writer, text, dictArray);
         } else if (dictTree.toText()) {
             String text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
+            writeArrayText(writer, text, dictArray);
         } else {
             Collection<String> treeDictTextList = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
             writer.writeStartArray();
             for (String text : treeDictTextList) {
-                writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
+                writeArrayText(writer, text, dictArray);
             }
             writer.writeEndArray();
         }
@@ -322,15 +322,15 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
     default void serializeValueToArrayForFunc(Object bean, CharSequence value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
-            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
+            writeArrayText(writer, text, dictArray);
         } else if (dictTree.toText()) {
             String text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
+            writeArrayText(writer, text, dictArray);
         } else {
             Collection<String> treeDictTextList = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
             writer.writeStartArray();
             for (String text : treeDictTextList) {
-                writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
+                writeArrayText(writer, text, dictArray);
             }
             writer.writeEndArray();
         }

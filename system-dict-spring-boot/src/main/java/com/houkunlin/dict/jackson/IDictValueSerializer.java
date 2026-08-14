@@ -1,6 +1,7 @@
 package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.DictJsonWriter;
 import com.houkunlin.dict.DictTypeKeyHandler;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.annotation.DictArray;
@@ -10,7 +11,6 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * 字典值序列化核心接口
@@ -232,19 +232,18 @@ public interface IDictValueSerializer {
      * - EMPTY：写入空字符串
      * </p>
      *
-     * @param writeString 向 json 写入文本
-     * @param writeNull   向 json 写入 null
-     * @param text        文本
-     * @param dictArray   字典数组注解
+     * @param writer    JSON写入器
+     * @param text      文本
+     * @param dictArray 字典数组注解
      */
-    default void writeArrayText(Consumer<String> writeString, Runnable writeNull, String text, DictArray dictArray) {
+    default void writeArrayText(DictJsonWriter writer, String text, DictArray dictArray) {
         if (text != null) {
-            writeString.accept(text);
+            writer.writeString(text);
         } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {
             if (dictArray.nullStrategy() == NullStrategy.NULL) {
-                writeNull.run();
+                writer.writeNull();
             } else {
-                writeString.accept("");
+                writer.writeString("");
             }
         }
     }
