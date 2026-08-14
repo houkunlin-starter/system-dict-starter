@@ -7,7 +7,6 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.common.bean.ACLStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * 枚举扩展数据测试
@@ -72,10 +71,8 @@ class DictExtendDataMapTests {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(result -> JsonAssertUtil.assertEquals(objectMapper.writeValueAsString(DictUtil.getDictType(DICT_TYPE)), result.getResponse().getContentAsString(StandardCharsets.UTF_8)))
-            .andExpect(content().string(StringContains.containsString("\"read\":true")))
-            .andExpect(content().string(StringContains.containsString("\"read\":false")))
-            .andExpect(content().string(StringContains.containsString("\"write\":true")))
-            .andExpect(content().string(StringContains.containsString("\"write\":false")))
+            .andExpect(jsonPath("$..read", hasItems(true, false)))
+            .andExpect(jsonPath("$..write", hasItems(true, false)))
         ;
 
     }
