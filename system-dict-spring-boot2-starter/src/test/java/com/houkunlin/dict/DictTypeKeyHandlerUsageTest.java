@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.File;
 
 /**
  * 默认注解使用测试
@@ -32,9 +31,7 @@ class DictTypeKeyHandlerUsageTest {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("2");
     }
 
     @Test

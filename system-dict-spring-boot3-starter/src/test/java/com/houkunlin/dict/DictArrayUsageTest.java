@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,9 +32,7 @@ class DictArrayUsageTest {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("3");
     }
 
     @Test

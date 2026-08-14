@@ -26,6 +26,7 @@ dependencies {
     testFixturesCompileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.13.5'
     testFixturesCompileOnly 'com.github.ben-manes.caffeine:caffeine:2.9.3'
     testFixturesCompileOnly('org.slf4j:slf4j-api:2.0.17')
+    testFixturesCompileOnly('org.junit.jupiter:junit-jupiter-api:5.10.2')
     testFixturesApi 'org.skyscreamer:jsonassert:1.5.3'
 }
 java {

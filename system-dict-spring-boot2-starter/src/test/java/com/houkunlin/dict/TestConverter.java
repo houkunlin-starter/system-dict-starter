@@ -10,7 +10,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.File;
 
 /**
  * 测试转换器
@@ -26,9 +25,7 @@ class TestConverter {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("2");
     }
 
     @Test

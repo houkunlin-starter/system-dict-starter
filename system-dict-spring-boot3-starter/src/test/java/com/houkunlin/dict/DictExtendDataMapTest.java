@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.Matchers.hasItems;
@@ -42,9 +41,7 @@ class DictExtendDataMapTest {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("3");
     }
 
     @Test

@@ -26,7 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,9 +54,7 @@ class ExamplesTest {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("2");
     }
 
     @Test

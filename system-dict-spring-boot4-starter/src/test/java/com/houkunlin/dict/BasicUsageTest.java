@@ -12,7 +12,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
-import java.io.File;
 
 /**
  * 默认注解使用测试
@@ -29,9 +28,7 @@ class BasicUsageTest {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot4-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("4");
     }
 
     @Test

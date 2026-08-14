@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,9 +36,7 @@ class FieldMapTypeTest {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("3");
     }
 
     @Autowired

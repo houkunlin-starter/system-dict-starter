@@ -6,7 +6,6 @@ import com.houkunlin.dict.enums.DictBoolType;
 import com.houkunlin.dict.enums.NullStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,9 +31,7 @@ class DictArrayUsageTest {
 
     @Test
     void testJavaAtPath() {
-        String absolutePath = new File(".").getAbsolutePath();
-        System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot4-starter"));
+        TestStarterAssertions.assertCurrentStarterModule("4");
     }
 
     @Test
