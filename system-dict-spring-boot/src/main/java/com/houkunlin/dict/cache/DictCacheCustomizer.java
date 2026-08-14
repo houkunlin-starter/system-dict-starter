@@ -31,7 +31,7 @@ public interface DictCacheCustomizer {
 
     /**
      * 回调构建成功的缓存对象。
-     * 可在此方法中把缓存加入到 {@link org.springframework.cache.caffeine.CaffeineCacheManager#registerCustomCache(String, Cache)} 进行统一管理
+     * 可在此方法中把缓存加入到 {@code CaffeineCacheManager#registerCustomCache(String, Cache)} 进行统一管理
      *
      * @param name  缓存名称
      * @param cache 缓存对象

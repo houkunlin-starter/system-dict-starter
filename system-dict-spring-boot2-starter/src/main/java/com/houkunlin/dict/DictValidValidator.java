@@ -13,7 +13,7 @@ import javax.validation.ConstraintValidatorContext;
  * </p>
  * <pre>
  *  class Bean {
- *      @DictValid("dictUserStatus")
+ *      &#64;DictValid("dictUserStatus")
  *      private Integer status;
  *  }
  * </pre>

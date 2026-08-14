@@ -16,6 +16,7 @@ dependencies {
     compileOnly 'com.google.guava:guava:33.5.0-jre'
     compileOnly 'org.jspecify:jspecify:1.0.0'
     compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.41'
+    compileOnly 'com.fasterxml.jackson.core:jackson-annotations:2.13.5'
     compileOnly 'org.springframework:spring-webmvc:5.3.31'
     compileOnly 'org.springframework.boot:spring-boot:2.7.18'
     compileOnly 'org.springframework.boot:spring-boot-autoconfigure:2.7.18'

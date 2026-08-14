@@ -15,6 +15,7 @@ dependencies {
     api project(':system-dict-spring-boot')
     api project(':system-dict-spring-boot-jackson2')
     compileOnly 'org.springframework.boot:spring-boot-starter-validation'
+    compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.41'
 
     api 'com.github.ben-manes.caffeine:caffeine'
     api 'com.google.guava:guava:33.5.0-jre'
@@ -46,3 +47,4 @@ jar {
     enabled = true
     setArchiveClassifier("")
 }
+

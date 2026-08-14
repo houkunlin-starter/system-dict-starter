@@ -58,10 +58,18 @@ It is mainly used to automatically translate dictionary values into dictionary t
         options.docEncoding = "UTF-8"
         options.addStringOption('encoding', 'UTF-8')
         options.addStringOption('Xdoclint:none', '-quiet')
+        // javadoc 需要解析 DictController 等类中的 Swagger/Jackson 注解枚举，补充编译期依赖到 javadoc classpath
+        classpath += configurations.compileClasspath
     }
 
     compileJava {
         options.encoding = "UTF-8"
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+        options.fork = true
+        options.forkOptions.jvmArgs += ['-Dfile.encoding=UTF-8']
     }
 
     tasks.withType(Test).configureEach {
