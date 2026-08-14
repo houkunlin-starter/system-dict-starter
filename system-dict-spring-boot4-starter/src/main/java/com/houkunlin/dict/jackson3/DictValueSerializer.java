@@ -1,9 +1,6 @@
 package com.houkunlin.dict.jackson3;
 
-import com.houkunlin.dict.ClassUtil;
-import com.houkunlin.dict.DictTypeKeyHandler;
-import com.houkunlin.dict.DictValueWriter;
-import com.houkunlin.dict.SystemDictAutoConfiguration;
+import com.houkunlin.dict.*;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
@@ -11,8 +8,6 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
-import tools.jackson.core.JsonGenerator;
-import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueSerializer;
 
 import java.lang.reflect.InvocationTargetException;
@@ -195,27 +190,26 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> implem
      * </p>
      *
      * @param value 字段值，需要进行序列化的原始值
-     * @param gen   JSON生成器，用于写入JSON数据
-     * @param ctxt  序列化上下文，提供序列化相关的上下文信息
+     * @param writer JSON写入器，用于写入JSON数据
      */
-    public void startSerialize(Object value, JsonGenerator gen, SerializationContext ctxt) {
+    public void startSerialize(Object value, DictJsonWriter writer) {
         if (!useReplaceFieldValue) {
             if (useRawValueType) {
-                gen.writePOJO(value);
+                writer.writeObject(value);
             } else {
-                DictValueWriter.writeDictValueToText(gen, value, dictText);
+                DictValueWriter.writeDictValueToText(writer, value, dictText);
             }
-            gen.writeName(outputFieldName);
+            writer.writeName(outputFieldName);
         }
         if (useMap) {
-            gen.writeStartObject();
-            gen.writeName("value");
+            writer.writeStartObject();
+            writer.writeName("value");
             if (useRawValueType) {
-                gen.writePOJO(value);
+                writer.writeObject(value);
             } else {
-                DictValueWriter.writeDictValueToText(gen, value, dictText);
+                DictValueWriter.writeDictValueToText(writer, value, dictText);
             }
-            gen.writeName("text");
+            writer.writeName("text");
         }
     }
 
@@ -227,12 +221,11 @@ public abstract class DictValueSerializer extends ValueSerializer<Object> implem
      * </p>
      *
      * @param value 字段值，需要进行序列化的原始值
-     * @param gen   JSON生成器，用于写入JSON数据
-     * @param ctxt  序列化上下文，提供序列化相关的上下文信息
+     * @param writer JSON写入器，用于写入JSON数据
      */
-    public void endSerialize(Object value, JsonGenerator gen, SerializationContext ctxt) {
+    public void endSerialize(Object value, DictJsonWriter writer) {
         if (useMap) {
-            gen.writeEndObject();
+            writer.writeEndObject();
         }
     }
 

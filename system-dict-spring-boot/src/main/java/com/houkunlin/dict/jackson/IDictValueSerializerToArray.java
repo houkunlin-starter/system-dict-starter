@@ -1,15 +1,13 @@
-package com.houkunlin.dict.jackson3;
+package com.houkunlin.dict.jackson;
 
 import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.DictJsonWriter;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
-import com.houkunlin.dict.jackson.IDictValueSerializerTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
-import tools.jackson.core.JsonGenerator;
-import tools.jackson.databind.SerializationContext;
 
 import java.util.Collection;
 import java.util.Map;
@@ -23,6 +21,7 @@ import java.util.Map;
  * </p>
  * <p>
  * 支持处理字典树结构，可根据配置将字典树转换为文本数组。
+ * 通过 {@link DictJsonWriter} 抽象与具体 Jackson 版本解耦。
  * </p>
  *
  * @author HouKunLin
@@ -41,42 +40,41 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      * </p>
      *
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      */
-    default void serializeValueToArray(Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) {
-        Object bean = gen.currentValue();
+    default void serializeValueToArray(Object value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree) {
+        Object bean = writer.currentValue();
         String dictType = getDictType(bean, fieldName, dictText);
         if (value.getClass().isArray()) {
-            serializeValueToArray(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Object[]) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Collection<?>) {
-            serializeValueToArray(bean, (Collection<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Collection<?>) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Iterable<?>) {
-            serializeValueToArray(bean, (Iterable<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Iterable<?>) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof DictEnum<?>) {
-            gen.writeStartArray();
-            gen.writeString(((DictEnum<?>) value).getTitle());
-            gen.writeEndArray();
+            writer.writeStartArray();
+            writer.writeString(((DictEnum<?>) value).getTitle());
+            writer.writeEndArray();
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
-            gen.writeStartArray();
-            gen.writeString("");
-            gen.writeEndArray();
+            writer.writeStartArray();
+            writer.writeString("");
+            writer.writeEndArray();
         } else if (value instanceof Map<?, ?>) {
-            serializeValueToArray(bean, (Map<?, ?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Map<?, ?>) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof CharSequence) {
             if (dictArray.split().isEmpty()) {
-                serializeValueToArray(bean, (CharSequence) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                serializeValueToArray(bean, (CharSequence) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
                 String[] split = ObjectUtils.getDisplayString(value).split(dictArray.split());
-                serializeValueToArray(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                serializeValueToArray(bean, split, writer, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
-            serializeValueToArray(bean, value.toString(), gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, value.toString(), writer, fieldName, dictText, dictArray, dictTree, dictType);
         }
     }
 
@@ -88,41 +86,40 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArrayForFunc(Object bean, Object value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+    default void serializeValueToArrayForFunc(Object bean, Object value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (value == null) {
-            writeArrayText(gen::writeString, gen::writeNull, null, dictArray);
+            writeArrayText(writer::writeString, writer::writeNull, null, dictArray);
             return;
         }
         if (value.getClass().isArray()) {
-            serializeValueToArray(bean, (Object[]) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Object[]) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Collection<?>) {
-            serializeValueToArray(bean, (Collection<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Collection<?>) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof Iterable<?>) {
-            serializeValueToArray(bean, (Iterable<?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Iterable<?>) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof DictEnum<?>) {
-            gen.writeString(((DictEnum<?>) value).getTitle());
+            writer.writeString(((DictEnum<?>) value).getTitle());
         } else if (value.getClass().isEnum()) {
             logger.warn("不支持 Enum 类型的字典数组序列化，字段名：{}，字段值：{}", fieldName, value);
-            gen.writeString("");
+            writer.writeString("");
         } else if (value instanceof Map<?, ?>) {
-            serializeValueToArray(bean, (Map<?, ?>) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArray(bean, (Map<?, ?>) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
         } else if (value instanceof CharSequence) {
             if (dictArray.split().isEmpty()) {
-                serializeValueToArrayForFunc(bean, (CharSequence) value, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                serializeValueToArrayForFunc(bean, (CharSequence) value, writer, fieldName, dictText, dictArray, dictTree, dictType);
             } else {
                 String[] split = ObjectUtils.getDisplayString(value).split(dictArray.split());
-                serializeValueToArray(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                serializeValueToArray(bean, split, writer, fieldName, dictText, dictArray, dictTree, dictType);
             }
         } else {
-            serializeValueToArrayForFunc(bean, value.toString(), gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArrayForFunc(bean, value.toString(), writer, fieldName, dictText, dictArray, dictTree, dictType);
         }
     }
 
@@ -134,20 +131,19 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArray(Object bean, Object[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
-        gen.writeStartArray();
+    default void serializeValueToArray(Object bean, Object[] value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+        writer.writeStartArray();
         for (Object o : value) {
-            serializeValueToArrayForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArrayForFunc(bean, o, writer, fieldName, dictText, dictArray, dictTree, dictType);
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 
     /**
@@ -158,20 +154,19 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArray(Object bean, Collection<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
-        gen.writeStartArray();
+    default void serializeValueToArray(Object bean, Collection<?> value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+        writer.writeStartArray();
         for (Object o : value) {
-            serializeValueToArrayForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArrayForFunc(bean, o, writer, fieldName, dictText, dictArray, dictTree, dictType);
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 
     /**
@@ -182,20 +177,19 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArray(Object bean, Iterable<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
-        gen.writeStartArray();
+    default void serializeValueToArray(Object bean, Iterable<?> value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+        writer.writeStartArray();
         for (Object o : value) {
-            serializeValueToArrayForFunc(bean, o, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArrayForFunc(bean, o, writer, fieldName, dictText, dictArray, dictTree, dictType);
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 
     /**
@@ -206,15 +200,14 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArray(Object bean, DictEnum<?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+    default void serializeValueToArray(Object bean, DictEnum<?> value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
 
     }
 
@@ -226,33 +219,32 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArray(Object bean, Map<?, ?> value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
-        gen.writeStartObject(value);
+    default void serializeValueToArray(Object bean, Map<?, ?> value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+        writer.writeStartObject(value);
         for (Map.Entry<?, ?> entry : value.entrySet()) {
             String v = entry.getKey().toString();
-            gen.writeName(v);
+            writer.writeName(v);
             if (dictArray.split().isEmpty()) {
                 if (dictTree == null) {
-                    gen.writeStartArray();
-                    serializeValueToArrayForFunc(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
-                    gen.writeEndArray();
+                    writer.writeStartArray();
+                    serializeValueToArrayForFunc(bean, v, writer, fieldName, dictText, dictArray, dictTree, dictType);
+                    writer.writeEndArray();
                 } else {
-                    serializeValueToArrayForFunc(bean, v, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                    serializeValueToArrayForFunc(bean, v, writer, fieldName, dictText, dictArray, dictTree, dictType);
                 }
             } else {
                 String[] split = ObjectUtils.getDisplayString(v).split(dictArray.split());
-                serializeValueToArray(bean, split, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+                serializeValueToArray(bean, split, writer, fieldName, dictText, dictArray, dictTree, dictType);
             }
         }
-        gen.writeEndObject();
+        writer.writeEndObject();
     }
 
     /**
@@ -263,20 +255,19 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArray(Object bean, CharSequence[] value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
-        gen.writeStartArray();
+    default void serializeValueToArray(Object bean, CharSequence[] value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+        writer.writeStartArray();
         for (CharSequence charSequence : value) {
-            serializeValueToArrayForFunc(bean, charSequence, gen, ctxt, fieldName, dictText, dictArray, dictTree, dictType);
+            serializeValueToArrayForFunc(bean, charSequence, writer, fieldName, dictText, dictArray, dictTree, dictType);
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 
     /**
@@ -287,31 +278,30 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArray(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
-        gen.writeStartArray();
+    default void serializeValueToArray(Object bean, CharSequence value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+        writer.writeStartArray();
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
         } else if (dictTree.toText()) {
             String text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
         } else {
             Collection<String> treeDictTextList = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            gen.writeStartArray();
+            writer.writeStartArray();
             for (String text : treeDictTextList) {
-                writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+                writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
             }
-            gen.writeEndArray();
+            writer.writeEndArray();
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 
     /**
@@ -322,28 +312,27 @@ public interface IDictValueSerializerToArray extends IDictValueSerializerTree {
      *
      * @param bean      Bean 对象
      * @param value     字段值
-     * @param gen       JSON生成器
-     * @param ctxt      序列化上下文
+     * @param writer    JSON写入器
      * @param fieldName 字段名称
      * @param dictText  字典文本注解配置
      * @param dictArray 字典数组注解配置
      * @param dictTree  字典树注解配置
      * @param dictType  字典类型
      */
-    default void serializeValueToArrayForFunc(Object bean, CharSequence value, JsonGenerator gen, SerializationContext ctxt, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
+    default void serializeValueToArrayForFunc(Object bean, CharSequence value, DictJsonWriter writer, String fieldName, DictText dictText, DictArray dictArray, DictTree dictTree, String dictType) {
         if (dictTree == null) {
             String text = getDictText(bean, fieldName, value, dictText, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
         } else if (dictTree.toText()) {
             String text = getTreeDictTextString(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+            writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
         } else {
             Collection<String> treeDictTextList = getTreeDictTextList(bean, fieldName, value, dictText, dictTree, dictType, value.toString());
-            gen.writeStartArray();
+            writer.writeStartArray();
             for (String text : treeDictTextList) {
-                writeArrayText(gen::writeString, gen::writeNull, text, dictArray);
+                writeArrayText(writer::writeString, writer::writeNull, text, dictArray);
             }
-            gen.writeEndArray();
+            writer.writeEndArray();
         }
     }
 }

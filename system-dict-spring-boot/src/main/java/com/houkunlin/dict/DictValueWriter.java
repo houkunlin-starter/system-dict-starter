@@ -1,9 +1,7 @@
 package com.houkunlin.dict;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.houkunlin.dict.annotation.DictText;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collection;
 
@@ -25,6 +23,7 @@ import java.util.Collection;
  * <p>
  * 该类在字典值序列化过程中扮演重要角色，被 DictValueSerializer 及其实现类调用，
  * 用于将字典值转换为适合JSON输出的格式。
+ * 通过 {@link DictJsonWriter} 抽象与具体 Jackson 版本解耦。
  * </p>
  *
  * @author HouKunLin
@@ -55,30 +54,29 @@ public class DictValueWriter {
      * </ul>
      * </p>
      *
-     * @param gen      JSON生成器，用于写入JSON数据
+     * @param writer   JSON写入器，用于写入JSON数据
      * @param value    要序列化的字典值，支持多种类型
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws IOException IO 异常
      */
-    public static void writeDictValueToText(JsonGenerator gen, Object value, DictText dictText) throws IOException {
+    public static void writeDictValueToText(DictJsonWriter writer, Object value, DictText dictText) {
         if (value == null) {
-            gen.writeString("");
+            writer.writeString("");
         } else if (value.getClass().isArray()) {
-            writeDictValueToText(gen, (Object[]) value, dictText);
+            writeDictValueToText(writer, (Object[]) value, dictText);
         } else if (value instanceof Collection<?>) {
-            writeDictValueToText(gen, (Collection<?>) value, dictText);
+            writeDictValueToText(writer, (Collection<?>) value, dictText);
         } else if (value instanceof Iterable<?>) {
-            writeDictValueToText(gen, (Iterable<?>) value, dictText);
+            writeDictValueToText(writer, (Iterable<?>) value, dictText);
         } else if (value instanceof DictEnum<?>) {
-            gen.writeString(((DictEnum<?>) value).getValue().toString());
+            writer.writeString(((DictEnum<?>) value).getValue().toString());
         } else if (value.getClass().isEnum()) {
-            gen.writeString(value.toString());
+            writer.writeString(value.toString());
         } else if (value instanceof String) {
-            gen.writeString((String) value);
+            writer.writeString((String) value);
         } else if (value instanceof BigDecimal) {
-            gen.writeString(((BigDecimal) value).toPlainString());
+            writer.writeString(((BigDecimal) value).toPlainString());
         } else {
-            gen.writeString(value.toString());
+            writer.writeString(value.toString());
         }
     }
 
@@ -89,17 +87,16 @@ public class DictValueWriter {
      * 确保数组中的每个元素都能正确序列化为字典文本值。
      * </p>
      *
-     * @param gen      JSON生成器，用于写入JSON数据
+     * @param writer   JSON写入器，用于写入JSON数据
      * @param value    对象数组，需要序列化的数组值
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws IOException IO 异常
      */
-    private static void writeDictValueToText(JsonGenerator gen, Object[] value, DictText dictText) throws IOException {
-        gen.writeStartArray(value);
+    private static void writeDictValueToText(DictJsonWriter writer, Object[] value, DictText dictText) {
+        writer.writeStartArray(value);
         for (Object o : value) {
-            writeDictValueToText(gen, o, dictText);
+            writeDictValueToText(writer, o, dictText);
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 
     /**
@@ -109,17 +106,16 @@ public class DictValueWriter {
      * 确保集合中的每个元素都能正确序列化为字典文本值。
      * </p>
      *
-     * @param gen      JSON生成器，用于写入JSON数据
+     * @param writer   JSON写入器，用于写入JSON数据
      * @param value    集合对象，需要序列化的集合值
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws IOException IO 异常
      */
-    private static void writeDictValueToText(JsonGenerator gen, Collection<?> value, DictText dictText) throws IOException {
-        gen.writeStartArray(value);
+    private static void writeDictValueToText(DictJsonWriter writer, Collection<?> value, DictText dictText) {
+        writer.writeStartArray(value);
         for (Object o : value) {
-            writeDictValueToText(gen, o, dictText);
+            writeDictValueToText(writer, o, dictText);
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 
     /**
@@ -129,16 +125,15 @@ public class DictValueWriter {
      * 确保可迭代对象中的每个元素都能正确序列化为字典文本值。
      * </p>
      *
-     * @param gen      JSON生成器，用于写入JSON数据
+     * @param writer   JSON写入器，用于写入JSON数据
      * @param value    可迭代对象，需要序列化的可迭代值
      * @param dictText 字典文本配置信息，提供字典处理相关的配置
-     * @throws IOException IO 异常
      */
-    private static void writeDictValueToText(JsonGenerator gen, Iterable<?> value, DictText dictText) throws IOException {
-        gen.writeStartArray(value);
+    private static void writeDictValueToText(DictJsonWriter writer, Iterable<?> value, DictText dictText) {
+        writer.writeStartArray(value);
         for (Object o : value) {
-            writeDictValueToText(gen, o, dictText);
+            writeDictValueToText(writer, o, dictText);
         }
-        gen.writeEndArray();
+        writer.writeEndArray();
     }
 }

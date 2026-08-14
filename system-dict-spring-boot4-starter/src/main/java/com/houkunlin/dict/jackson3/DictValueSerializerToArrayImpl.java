@@ -1,10 +1,12 @@
 package com.houkunlin.dict.jackson3;
 
+import com.houkunlin.dict.DictJsonWriter;
 import com.houkunlin.dict.DictTypeKeyHandler;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.jackson.IDictBeanTransformToArray;
+import com.houkunlin.dict.jackson.IDictValueSerializerToArray;
 import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
@@ -69,27 +71,28 @@ public class DictValueSerializerToArrayImpl extends DictValueSerializer implemen
      * @throws JacksonException Jackson 异常
      */
     @Override
-    public void serialize(Object value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
-        startSerialize(value, gen, ctxt);
+    public void serialize(Object value, JsonGenerator gen, SerializationContext ctxt) {
+        final DictJsonWriter writer = new DictJsonWriterImpl(gen);
+        startSerialize(value, writer);
         if (value != null) {
-            serializeValueToArray(value, gen, ctxt, fieldName, dictText, dictArray, dictTree);
+            serializeValueToArray(value, writer, fieldName, dictText, dictArray, dictTree);
         } else {
             if (textNullable) {
-                gen.writeNull();
+                writer.writeNull();
             } else if (javaTypeRawClass.isArray() ||
                 Collection.class.isAssignableFrom(javaTypeRawClass) ||
                 Iterable.class.isAssignableFrom(javaTypeRawClass)) {
-                gen.writeStartArray();
-                gen.writeEndArray();
+                writer.writeStartArray();
+                writer.writeEndArray();
             } else if (Map.class.isAssignableFrom(javaTypeRawClass)) {
-                gen.writeStartObject();
-                gen.writeEndObject();
+                writer.writeStartObject();
+                writer.writeEndObject();
             } else {
-                gen.writeStartArray();
-                gen.writeEndArray();
+                writer.writeStartArray();
+                writer.writeEndArray();
             }
         }
-        endSerialize(value, gen, ctxt);
+        endSerialize(value, writer);
     }
 
     /**

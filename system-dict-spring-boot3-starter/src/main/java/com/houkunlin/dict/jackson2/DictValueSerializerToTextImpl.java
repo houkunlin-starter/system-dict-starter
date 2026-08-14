@@ -2,11 +2,13 @@ package com.houkunlin.dict.jackson2;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.houkunlin.dict.DictJsonWriter;
 import com.houkunlin.dict.DictTypeKeyHandler;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
 import com.houkunlin.dict.jackson.IDictBeanTransformToText;
+import com.houkunlin.dict.jackson.IDictValueSerializerToText;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -68,23 +70,24 @@ public class DictValueSerializerToTextImpl extends DictValueSerializer implement
      */
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider ctxt) throws IOException {
-        startSerialize(value, gen, ctxt);
+        final DictJsonWriter writer = new DictJsonWriterImpl(gen);
+        startSerialize(value, writer);
         if (value != null) {
-            serializeValueToText(value, gen, ctxt, fieldName, dictText, dictArray, dictTree);
+            serializeValueToText(value, writer, fieldName, dictText, dictArray, dictTree);
         } else {
             if (textNullable) {
-                gen.writeNull();
+                writer.writeNull();
             } else if (javaTypeRawClass.isArray() ||
                 Collection.class.isAssignableFrom(javaTypeRawClass) ||
                 Iterable.class.isAssignableFrom(javaTypeRawClass)) {
-                gen.writeString("");
+                writer.writeString("");
             } else if (Map.class.isAssignableFrom(javaTypeRawClass)) {
-                gen.writeString("");
+                writer.writeString("");
             } else {
-                gen.writeString("");
+                writer.writeString("");
             }
         }
-        endSerialize(value, gen, ctxt);
+        endSerialize(value, writer);
     }
 
     /**
