@@ -1,7 +1,5 @@
 package com.houkunlin.dict;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.common.bean.ACLStatusEnum;
@@ -10,11 +8,13 @@ import lombok.Data;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureMockMvc
 @SystemDictScan
-class DictExtendDataMapTests {
+class DictExtendDataMapTest {
     public static final String DICT_TYPE = "ACLStatusEnum";
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,7 +44,7 @@ class DictExtendDataMapTests {
     void testJavaAtPath() {
         String absolutePath = new File(".").getAbsolutePath();
         System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot4-starter"));
     }
 
     @Test

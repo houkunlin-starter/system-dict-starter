@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureMockMvc
 @SystemDictScan
-class DictExtendDataMapTests {
+class DictExtendDataMapTest {
     public static final String DICT_TYPE = "ACLStatusEnum";
     @Autowired
     private ObjectMapper objectMapper;

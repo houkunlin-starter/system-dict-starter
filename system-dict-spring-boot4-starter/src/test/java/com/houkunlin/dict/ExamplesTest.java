@@ -1,6 +1,5 @@
 package com.houkunlin.dict;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.houkunlin.dict.annotation.DictArray;
 import com.houkunlin.dict.annotation.DictText;
 import com.houkunlin.dict.annotation.DictTree;
@@ -19,12 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureMockMvc
 @SystemDictScan
-class ExamplesTests {
+class ExamplesTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -57,7 +57,7 @@ class ExamplesTests {
     void testJavaAtPath() {
         String absolutePath = new File(".").getAbsolutePath();
         System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot4-starter"));
     }
 
     @Test

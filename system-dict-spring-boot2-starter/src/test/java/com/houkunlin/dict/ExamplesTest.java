@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureMockMvc
 @SystemDictScan
-class ExamplesTests {
+class ExamplesTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -57,7 +57,7 @@ class ExamplesTests {
     void testJavaAtPath() {
         String absolutePath = new File(".").getAbsolutePath();
         System.out.println(absolutePath);
-        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot3-starter"));
+        Assertions.assertTrue(absolutePath.contains("system-dict-spring-boot2-starter"));
     }
 
     @Test

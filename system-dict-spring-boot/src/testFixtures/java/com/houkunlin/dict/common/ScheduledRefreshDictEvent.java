@@ -18,16 +18,16 @@ import java.util.List;
  */
 @ConditionalOnProperty("system.dict.test.scheduled")
 @Configuration
-public class ScheduledRefreshDicEvent {
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledRefreshDicEvent.class);
+public class ScheduledRefreshDictEvent {
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledRefreshDictEvent.class);
     private final ApplicationEventPublisher publisher;
 
-    public ScheduledRefreshDicEvent(final ApplicationEventPublisher publisher) {
+    public ScheduledRefreshDictEvent(final ApplicationEventPublisher publisher) {
         this.publisher = publisher;
     }
 
     @Scheduled(fixedRate = 30000)
-    public void refreshDicEvent() {
+    public void refreshDictEvent() {
         logger.info("开始定时刷新事件");
         publisher.publishEvent(new RefreshDictEvent("定时刷新字典：" + System.currentTimeMillis(), true, false));
         logger.info("结束定时刷新事件");
