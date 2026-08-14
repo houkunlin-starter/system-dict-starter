@@ -14,6 +14,7 @@ apply from: rootProject.file("publishing.gradle")
 dependencies {
     api project(':system-dict-core')
     api project(':system-dict-spring-boot')
+    api project(':system-dict-spring-boot-jackson2')
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'

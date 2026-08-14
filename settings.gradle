@@ -2,6 +2,8 @@ rootProject.name = 'system-dict-starter'
 
 include ':system-dict-core'
 include ':system-dict-spring-boot'
+include ':system-dict-spring-boot-jackson2'
+include ':system-dict-spring-boot-jackson3'
 include ':system-dict-spring-boot2-starter'
 include ':system-dict-spring-boot3-starter'
 include ':system-dict-spring-boot4-starter'

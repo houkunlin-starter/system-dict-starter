@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.0'
+    id 'org.springframework.boot' version '4.0.1'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'io.freefair.lombok' version '8.13.1'
     id 'org.jreleaser' version '1.22.0'
@@ -14,11 +14,12 @@ apply from: rootProject.file("publishing.gradle")
 dependencies {
     api project(':system-dict-core')
     api project(':system-dict-spring-boot')
-    api project(':system-dict-spring-boot-jackson2')
+    compileOnly('org.slf4j:slf4j-api:2.0.17')
+    compileOnly 'org.jspecify:jspecify:1.0.0'
     compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
-    compileOnly 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.springframework.boot:spring-boot-starter-webmvc'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc'
     compileOnly 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.boot:spring-boot-starter-validation'
     compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -32,7 +33,6 @@ dependencies {
     api 'com.github.ben-manes.caffeine:caffeine'
     compileOnly 'org.javassist:javassist:3.30.2-GA'
     testCompileOnly 'org.javassist:javassist:3.30.2-GA'
-    compileOnly 'jakarta.validation:jakarta.validation-api:3.1.1'
     compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.41'
     testImplementation 'io.swagger.core.v3:swagger-annotations:2.2.41'
 
