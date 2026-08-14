@@ -31,7 +31,6 @@ dependencies {
     api 'com.github.ben-manes.caffeine:caffeine'
     compileOnly 'org.javassist:javassist:3.30.2-GA'
     testCompileOnly 'org.javassist:javassist:3.30.2-GA'
-    compileOnly 'jakarta.validation:jakarta.validation-api:3.1.1'
     compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.41'
     testImplementation 'io.swagger.core.v3:swagger-annotations:2.2.41'
 

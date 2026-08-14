@@ -7,6 +7,7 @@ import org.springframework.asm.Label;
 import org.springframework.asm.MethodVisitor;
 
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import static org.springframework.asm.Opcodes.*;
@@ -68,7 +69,7 @@ public class DictChildrenObjectGenerate {
     private static byte[] getClassBytes(final String className, final String classNameDescriptor, final String supperClazzName, final String... fieldNames) throws Exception {
         final ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
-        classWriter.visit(V17, ACC_PUBLIC | ACC_SUPER, className, null, supperClazzName, null);
+        classWriter.visit(V1_8, ACC_PUBLIC | ACC_SUPER, className, null, supperClazzName, null);
 
         final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
         methodVisitor.visitCode();
@@ -178,9 +179,10 @@ public class DictChildrenObjectGenerate {
     /**
      * 动态加载字节码类
      * <p>
-     * 该方法使用 Java 7 引入的 MethodHandles API 来动态加载字节码类。
+     * 该方法优先使用 Java 9 引入的 MethodHandles API 来动态加载字节码类（通过反射调用，保证 Java 8 源码兼容）。
      * 首先，确保当前模块可以读取邻居类所在的模块，然后通过 MethodHandles.Lookup
      * 获取对邻居类的私有访问权限，最后使用该访问权限定义新类。
+     * 当运行在 Java 8 环境时，则回退使用自定义 ClassLoader 的 defineClass 方式来定义新类。
      * 该方法在数据字典系统中用于动态生成字典转换器类。
      * </p>
      *
@@ -188,12 +190,81 @@ public class DictChildrenObjectGenerate {
      * @param name     类名
      * @param b        字节码数组
      * @return 动态加载的类对象
-     * @throws IllegalAccessException 如果无法获取访问权限
+     * @throws Exception 如果无法获取访问权限或加载失败
      */
-    public static Class<?> define(Class<?> neighbor, String name, byte[] b) throws IllegalAccessException {
-        ClassUtil.class.getModule().addReads(neighbor.getModule());
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
-        MethodHandles.Lookup prvlookup = MethodHandles.privateLookupIn(neighbor, lookup);
-        return prvlookup.defineClass(b);
+    public static Class<?> define(Class<?> neighbor, String name, byte[] b) throws Exception {
+        final String version = System.getProperty("java.specification.version", "8");
+        final int majorVersion = Integer.parseInt(version.startsWith("1.") ? version.substring(2) : version);
+        if (majorVersion >= 9) {
+            return defineOnJava9(neighbor, name, b);
+        }
+        return defineOnJava8(neighbor, name, b);
+    }
+
+    /**
+     * 在 Java 9 及更高版本环境中动态加载字节码类。
+     * <p>
+     * 使用反射调用 getModule / addReads / privateLookupIn / defineClass 方法，
+     * 避免在 Java 8 源码编译时直接引用 Java 9 的 API。
+     * </p>
+     *
+     * @param neighbor 新类的邻居类对象，用于获取模块信息和访问权限
+     * @param name     类名
+     * @param b        字节码数组
+     * @return 动态加载的类对象
+     * @throws Exception 反射调用异常
+     */
+    private static Class<?> defineOnJava9(Class<?> neighbor, String name, byte[] b) throws Exception {
+        final Method getModule = Class.class.getMethod("getModule");
+        final Class<?> moduleClass = Class.forName("java.lang.Module");
+        final Method addReads = moduleClass.getMethod("addReads", moduleClass);
+        addReads.invoke(getModule.invoke(ClassUtil.class), getModule.invoke(neighbor));
+
+        final Method lookupMethod = MethodHandles.class.getMethod("lookup");
+        final Object lookup = lookupMethod.invoke(null);
+        final Method privateLookupIn = MethodHandles.class.getMethod("privateLookupIn", Class.class, MethodHandles.Lookup.class);
+        final Object prvlookup = privateLookupIn.invoke(null, neighbor, lookup);
+        final Method defineClass = prvlookup.getClass().getMethod("defineClass", byte[].class);
+        return (Class<?>) defineClass.invoke(prvlookup, b);
+    }
+
+    /**
+     * 在 Java 8 环境中动态加载字节码类。
+     * <p>
+     * 使用自定义 ClassLoader 的 defineClass 方式定义新类。
+     * </p>
+     *
+     * @param neighbor 新类的邻居类对象
+     * @param name     类名
+     * @param b        字节码数组
+     * @return 动态加载的类对象
+     */
+    private static Class<?> defineOnJava8(Class<?> neighbor, String name, byte[] b) {
+        return new DictChildrenClassLoader(neighbor.getClassLoader()).defineClass(name, b);
+    }
+
+    /**
+     * 用于在 Java 8 环境中动态定义类的 ClassLoader
+     */
+    private static class DictChildrenClassLoader extends ClassLoader {
+        /**
+         * 构造方法
+         *
+         * @param parent 父 ClassLoader
+         */
+        DictChildrenClassLoader(final ClassLoader parent) {
+            super(parent);
+        }
+
+        /**
+         * 通过 ClassLoader 的 defineClass 方法定义类
+         *
+         * @param name 类名
+         * @param b    字节码数组
+         * @return 动态加载的类对象
+         */
+        Class<?> defineClass(final String name, final byte[] b) {
+            return super.defineClass(name, b, 0, b.length);
+        }
     }
 }

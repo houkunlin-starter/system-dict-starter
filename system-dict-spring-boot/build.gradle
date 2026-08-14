@@ -11,7 +11,15 @@ plugins {
 dependencies {
     api project(':system-dict-core')
     compileOnly('org.slf4j:slf4j-api:2.0.17')
-    compileOnly 'com.github.ben-manes.caffeine:caffeine:3.2.3'
+    compileOnly 'com.github.ben-manes.caffeine:caffeine:2.9.3'
+    compileOnly 'org.jspecify:jspecify:1.0.0'
     compileOnly 'org.springframework:spring-core:5.2.25.RELEASE'
     compileOnly 'org.springframework.boot:spring-boot:2.7.18'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
 }
