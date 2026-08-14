@@ -1,0 +1,129 @@
+def gitRepo = "github.com/houkunlin-starter/system-dict-starter.git"
+
+def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
+
+if (isSnapshot && !version.endsWith('SNAPSHOT')) {
+    version += '-BUILD-SNAPSHOT'
+}
+
+// 获取环境变量信息
+def GETENV(name) {
+    return findProperty(name) ?: System.getenv(name)
+}
+
+// 获取 GPG KEY 信息，并尝试判断是否需要使用 Base64 进行解码数据
+def GETGPGKEY(name) {
+    String value = GETENV(name)
+    if (value == null) {
+        return null
+    }
+    // value.startsWith("-----BEGIN PGP")
+    if (value.startsWith("LS0tLS1CRUdJTiBQR1Ag")) {
+        return new String(java.util.Base64.getDecoder().decode(value))
+    }
+    return value
+}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            pom {
+                name = project.name
+                packaging = 'jar'
+                description = project.description
+                url = "https://${gitRepo}"
+                // properties = []
+                licenses {
+                    license {
+                        name = 'Mulan Permissive Software License，Version 2'
+                        url = 'https://license.coscl.org.cn/MulanPSL2'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'houkunlin'
+                        name = 'HouKunLin'
+                        email = 'houkunlin@aliyun.com'
+                    }
+                }
+                scm {
+                    connection = "scm:git://${gitRepo}"
+                    developerConnection = "scm:git://${gitRepo}"
+                    url = "git://${gitRepo}"
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'buildDir'
+            // 发布到本地路径，在发布到正式仓库时会用到这个步骤的输出内容
+            url = layout.buildDirectory.dir('staging-deploy')
+        }
+    }
+}
+
+signing {
+    // 使用 gradle.properties 设置参数，或者在命令行中增加 -Pgpg_private_key= -Pgpg_password= 设置参数
+    // 或者在环境变量中设置相应的环境变量
+    String signingKey = GETGPGKEY("gpg_private_key")
+    if (signingKey != null) {
+        String signingPassword = GETENV("gpg_password")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+    sign publishing.publications
+}
+
+jreleaser {
+    signing {
+        active = 'ALWAYS'
+        armored = true
+        mode = 'MEMORY'
+        publicKey = GETGPGKEY("gpg_public_key")
+        secretKey = GETGPGKEY("gpg_private_key")
+        passphrase = GETENV("gpg_password")
+    }
+    deploy {
+        maven {
+            mavenCentral {
+                releaseDeployToCentral {
+                    active = 'RELEASE'
+                    applyMavenCentralRules = true
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    stagingRepository('build/staging-deploy')
+                }
+            }
+            nexus2 {
+                snapshotDeployToCentral {
+                    // 发布快照版本
+                    // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
+                    active = 'SNAPSHOT'
+                    url = 'https://central.sonatype.com/repository/maven-snapshots/'
+                    snapshotUrl = 'https://central.sonatype.com/repository/maven-snapshots/'
+                    snapshotSupported = true
+                    username = GETENV("sonatype_username")
+                    password = GETENV("sonatype_password")
+                    stagingRepository('build/staging-deploy')
+                    verifyUrl = "https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/{{path}}/{{filename}}"
+                }
+            }
+        }
+    }
+    release {
+        github {
+            repoOwner = "houkunlin-starter"
+            skipTag = true
+            overwrite = true
+            skipRelease = isSnapshot
+            username = "houkunlin"
+            token = GETENV("GITHUB_TOKEN")
+            commitAuthor {
+                name = "houkunlin"
+                email = "houkunlin@aliyun.com"
+            }
+        }
+    }
+}

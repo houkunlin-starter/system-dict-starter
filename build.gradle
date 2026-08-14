@@ -1,11 +1,11 @@
 plugins {
-    id 'org.springframework.boot' version '4.0.1'
-    id 'io.spring.dependency-management' version '1.1.7'
-    id "io.freefair.lombok" version '8.13.1'
+    // id 'org.springframework.boot' version '4.0.1'
+    // id 'io.spring.dependency-management' version '1.1.7'
+    // id "io.freefair.lombok" version '8.13.1'
     id 'org.jreleaser' version '1.22.0'
-    id 'maven-publish'
-    id 'signing'
-    id 'java-library'
+    // id 'maven-publish'
+    // id 'signing'
+    // id 'java-library'
     id 'application'
     id 'idea'
 }
@@ -25,236 +25,46 @@ The user data dictionary stored in the system database can be aggregated, and th
 It is mainly used to automatically translate dictionary values into dictionary text information when returning data to the front end.
 """
 
-def gitRepo = "github.com/houkunlin-starter/system-dict-starter.git"
-def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
-
-if (isSnapshot && !version.endsWith('SNAPSHOT')) {
-    version += '-BUILD-SNAPSHOT'
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        url = "https://repo.spring.io/artifactory/libs-milestone-local/"
-    }
-    maven {
-        url = "https://repo.spring.io/artifactory/libs-release-local/"
-    }
-}
-
-dependencies {
-    compileOnly 'org.springframework.boot:spring-boot-starter-actuator'
-    testImplementation 'org.springframework.boot:spring-boot-starter-actuator'
-    compileOnly 'org.springframework.boot:spring-boot-starter-webmvc'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    compileOnly 'org.springframework.boot:spring-boot-starter-validation'
-    testImplementation 'org.springframework.boot:spring-boot-starter-validation'
-    compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
-    testCompileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis-test'
-    // implementation 'org.redisson:redisson-spring-boot-starter:+'
-    compileOnly 'org.springframework.boot:spring-boot-starter-amqp'
-    // testImplementation 'org.springframework.boot:spring-boot-starter-amqp'
-    // https://mvnrepository.com/artifact/com.google.guava/guava
-    api 'com.google.guava:guava:33.5.0-jre'
-    api 'com.github.ben-manes.caffeine:caffeine'
-    compileOnly 'org.javassist:javassist:3.30.2-GA'
-    testCompileOnly 'org.javassist:javassist:3.30.2-GA'
-    compileOnly 'jakarta.validation:jakarta.validation-api:3.1.1'
-    compileOnly 'io.swagger.core.v3:swagger-annotations:2.2.41'
-    testImplementation 'io.swagger.core.v3:swagger-annotations:2.2.41'
-
-    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-    testAnnotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-// 获取环境变量信息
-def GETENV(name) {
-    return findProperty(name) ?: System.getenv(name)
-}
-
-// 获取 GPG KEY 信息，并尝试判断是否需要使用 Base64 进行解码数据
-def GETGPGKEY(name) {
-    String value = GETENV(name)
-    if (value == null) {
-        return null
-    }
-    // value.startsWith("-----BEGIN PGP")
-    if (value.startsWith("LS0tLS1CRUdJTiBQR1Ag")) {
-        return new String(java.util.Base64.getDecoder().decode(value))
-    }
-    return value
-}
-
-publishing {
-    publications {
-        library(MavenPublication) {
-            from components.java
-            pom {
-                name = project.name
-                packaging = 'jar'
-                description = project.description
-                url = "https://${gitRepo}"
-                // properties = []
-                licenses {
-                    license {
-                        name = 'Mulan Permissive Software License，Version 2'
-                        url = 'https://license.coscl.org.cn/MulanPSL2'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'houkunlin'
-                        name = 'HouKunLin'
-                        email = 'houkunlin@aliyun.com'
-                    }
-                }
-                scm {
-                    connection = "scm:git://${gitRepo}"
-                    developerConnection = "scm:git://${gitRepo}"
-                    url = "git://${gitRepo}"
-                }
-            }
-        }
-    }
+allprojects {
     repositories {
+        mavenCentral()
         maven {
-            name = 'buildDir'
-            // 发布到本地路径，在发布到正式仓库时会用到这个步骤的输出内容
-            url = layout.buildDirectory.dir('staging-deploy')
+            url = "https://repo1.maven.org/maven2"
         }
-    }
-}
-
-signing {
-    // 使用 gradle.properties 设置参数，或者在命令行中增加 -Pgpg_private_key= -Pgpg_password= 设置参数
-    // 或者在环境变量中设置相应的环境变量
-    String signingKey = GETGPGKEY("gpg_private_key")
-    if (signingKey != null) {
-        String signingPassword = GETENV("gpg_password")
-        useInMemoryPgpKeys(signingKey, signingPassword)
-    }
-    sign publishing.publications
-}
-
-jreleaser {
-    signing {
-        active = 'ALWAYS'
-        armored = true
-        mode = 'MEMORY'
-        publicKey = GETGPGKEY("gpg_public_key")
-        secretKey = GETGPGKEY("gpg_private_key")
-        passphrase = GETENV("gpg_password")
-    }
-    deploy {
+        mavenCentral()
         maven {
-            mavenCentral {
-                releaseDeployToCentral {
-                    active = 'RELEASE'
-                    applyMavenCentralRules = true
-                    username = GETENV("sonatype_username")
-                    password = GETENV("sonatype_password")
-                    url = 'https://central.sonatype.com/api/v1/publisher'
-                    stagingRepository('build/staging-deploy')
-                }
-            }
-            nexus2 {
-                snapshotDeployToCentral {
-                    // 发布快照版本
-                    // 快照仓库地址：https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/
-                    active = 'SNAPSHOT'
-                    url = 'https://central.sonatype.com/repository/maven-snapshots/'
-                    snapshotUrl = 'https://central.sonatype.com/repository/maven-snapshots/'
-                    snapshotSupported = true
-                    username = GETENV("sonatype_username")
-                    password = GETENV("sonatype_password")
-                    stagingRepository('build/staging-deploy')
-                    verifyUrl = "https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/{{path}}/{{filename}}"
-                }
-            }
+            url = "https://repo.spring.io/artifactory/libs-milestone-local/"
+        }
+        maven {
+            url = "https://repo.spring.io/artifactory/libs-release-local/"
         }
     }
-    release {
-        github {
-            repoOwner = "houkunlin-starter"
-            skipTag = true
-            overwrite = true
-            skipRelease = isSnapshot
-            username = "houkunlin"
-            token = GETENV("GITHUB_TOKEN")
-            commitAuthor {
-                name = "houkunlin"
-                email = "houkunlin@aliyun.com"
-            }
+
+    def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
+
+    if (isSnapshot && !version.endsWith('SNAPSHOT')) {
+        version += '-BUILD-SNAPSHOT'
+    }
+
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
         }
     }
-}
 
-bootJar {
-    enabled = false
-}
-bootStartScripts {
-    enabled = false
-}
-bootDistTar {
-    enabled = false
-}
-bootDistZip {
-    enabled = false
-}
-startScripts {
-    enabled = false
-}
-distTar {
-    enabled = false
-}
-distZip {
-    enabled = false
-}
-
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
+    javadoc {
+        enabled = true
+        options.encoding = "UTF-8"
+        options.addStringOption('Xdoclint:none', '-quiet')
     }
-}
 
-jar {
-    enabled = true
-    setArchiveClassifier("")
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+    compileJava {
+        options.encoding = "UTF-8"
     }
-}
 
-javadoc {
-    enabled = true
-    options.encoding = "UTF-8"
-    options.addStringOption('Xdoclint:none', '-quiet')
-}
+    test {
+        useJUnitPlatform()
+    }
 
-compileJava {
-    options.encoding = "UTF-8"
-}
-
-test {
-    useJUnitPlatform()
 }

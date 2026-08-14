@@ -1,0 +1,199 @@
+package com.houkunlin.dict.bytecode;
+
+import com.houkunlin.dict.ClassUtil;
+import org.springframework.asm.ClassWriter;
+import org.springframework.asm.FieldVisitor;
+import org.springframework.asm.Label;
+import org.springframework.asm.MethodVisitor;
+
+import java.lang.invoke.MethodHandles;
+import java.util.Set;
+
+import static org.springframework.asm.Opcodes.*;
+
+/**
+ * 动态生成简单类的子类对象的工具类。
+ * 通过字节码技术动态继承指定类，并为子类添加字段和对应的 getter/setter 方法。
+ *
+ * @author HouKunLin
+ * @since 1.4.9
+ */
+public class DictChildrenObjectGenerate {
+    /**
+     * 私有构造方法，防止实例化
+     */
+    private DictChildrenObjectGenerate() {
+    }
+
+    /**
+     * 动态新建一个子类。
+     *
+     * @param supperClazz 基本 bean 对象类
+     * @param fieldNames  需要动态新增的字段名称
+     * @return 新的子类对象
+     * @throws Exception 异常
+     */
+    public static Class<?> newClass(final Class<?> supperClazz, final String... fieldNames) throws Exception {
+        final String supperClazzName = supperClazz.getName().replace(".", "/");
+        final String className = supperClazzName + "$DictChildren";
+        final String classNameDescriptor = "L" + className + ";";
+        final byte[] classBytes = getClassBytes(className, classNameDescriptor, supperClazzName, fieldNames);
+        // 以下代码在 Java17 下编译运行时，未对启动命令做特殊参数配置时会报错出现异常
+        // return ReflectUtils.defineClass(supperClazz.getName() + "$DictChildren", classBytes, Thread.currentThread().getContextClassLoader());
+        return define(supperClazz, supperClazz.getName() + "$DictChildren", classBytes);
+    }
+
+    /**
+     * 动态新建一个子类。
+     *
+     * @param supperClazz 基本 bean 对象类
+     * @param fieldNames  需要动态新增的字段名称
+     * @return 新的子类对象
+     * @throws Exception 异常
+     */
+    public static Class<?> newClass(final Class<?> supperClazz, final Set<String> fieldNames) throws Exception {
+        return newClass(supperClazz, fieldNames.toArray(new String[0]));
+    }
+
+    /**
+     * 生成类的字节码。
+     *
+     * @param className           类名
+     * @param classNameDescriptor 类名描述符
+     * @param supperClazzName     父类名
+     * @param fieldNames          字段名数组
+     * @return 类的字节码
+     * @throws Exception 异常
+     */
+    private static byte[] getClassBytes(final String className, final String classNameDescriptor, final String supperClazzName, final String... fieldNames) throws Exception {
+        final ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+
+        classWriter.visit(V17, ACC_PUBLIC | ACC_SUPER, className, null, supperClazzName, null);
+
+        final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+        methodVisitor.visitCode();
+        Label label0 = new Label();
+        methodVisitor.visitLabel(label0);
+        methodVisitor.visitLineNumber(9, label0);
+        methodVisitor.visitVarInsn(ALOAD, 0);
+        methodVisitor.visitMethodInsn(INVOKESPECIAL, supperClazzName, "<init>", "()V", false);
+        Label label1 = new Label();
+        methodVisitor.visitLabel(label1);
+        methodVisitor.visitLineNumber(10, label1);
+        methodVisitor.visitInsn(RETURN);
+        Label label2 = new Label();
+        methodVisitor.visitLabel(label2);
+        methodVisitor.visitLocalVariable("this", classNameDescriptor, null, label0, label2, 0);
+        methodVisitor.visitMaxs(1, 1);
+        methodVisitor.visitEnd();
+
+        for (final String fieldName : fieldNames) {
+            newField(classWriter, fieldName, className, classNameDescriptor);
+        }
+
+        classWriter.visitEnd();
+
+        return classWriter.toByteArray();
+    }
+
+    /**
+     * 为类添加字段和对应的 getter/setter 方法。
+     *
+     * @param classWriter           类写入器
+     * @param fieldName             字段名
+     * @param className             类名
+     * @param classNameDescriptor   类名描述符
+     */
+    private static void newField(final ClassWriter classWriter, final String fieldName, final String className, final String classNameDescriptor) {
+        final FieldVisitor fieldVisitor = classWriter.visitField(ACC_PRIVATE, fieldName, "Ljava/lang/Object;", null, null);
+        fieldVisitor.visitEnd();
+        final String method = upperCaseFirst(fieldName);
+        newFieldGetter(classWriter, fieldName, "get" + method, className, classNameDescriptor);
+        newFieldSetter(classWriter, fieldName, "set" + method, className, classNameDescriptor);
+    }
+
+    /**
+     * 为字段添加 getter 方法。
+     *
+     * @param classWriter           类写入器
+     * @param fieldName             字段名
+     * @param methodName            方法名
+     * @param className             类名
+     * @param classNameDescriptor   类名描述符
+     */
+    private static void newFieldGetter(final ClassWriter classWriter, final String fieldName, final String methodName, final String className, final String classNameDescriptor) {
+        final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, methodName, "()Ljava/lang/Object;", null, null);
+        methodVisitor.visitCode();
+        Label label0 = new Label();
+        methodVisitor.visitLabel(label0);
+        methodVisitor.visitVarInsn(ALOAD, 0);
+        methodVisitor.visitFieldInsn(GETFIELD, className, fieldName, "Ljava/lang/Object;");
+        methodVisitor.visitInsn(ARETURN);
+        Label label1 = new Label();
+        methodVisitor.visitLabel(label1);
+        methodVisitor.visitLocalVariable("this", classNameDescriptor, null, label0, label1, 0);
+        methodVisitor.visitMaxs(1, 1);
+        methodVisitor.visitEnd();
+    }
+
+    /**
+     * 为字段添加 setter 方法。
+     *
+     * @param classWriter           类写入器
+     * @param fieldName             字段名
+     * @param methodName            方法名
+     * @param className             类名
+     * @param classNameDescriptor   类名描述符
+     */
+    private static void newFieldSetter(final ClassWriter classWriter, final String fieldName, final String methodName, final String className, final String classNameDescriptor) {
+        final MethodVisitor methodVisitor = classWriter.visitMethod(ACC_PUBLIC, methodName, "(Ljava/lang/Object;)V", null, null);
+        methodVisitor.visitParameter(fieldName, ACC_FINAL);
+        methodVisitor.visitCode();
+        Label label0 = new Label();
+        methodVisitor.visitLabel(label0);
+        methodVisitor.visitVarInsn(ALOAD, 0);
+        methodVisitor.visitVarInsn(ALOAD, 1);
+        methodVisitor.visitFieldInsn(PUTFIELD, className, fieldName, "Ljava/lang/Object;");
+        methodVisitor.visitInsn(RETURN);
+        Label label1 = new Label();
+        methodVisitor.visitLabel(label1);
+        methodVisitor.visitLocalVariable("this", classNameDescriptor, null, label0, label1, 0);
+        methodVisitor.visitLocalVariable(fieldName, "Ljava/lang/Object;", null, label0, label1, 1);
+        methodVisitor.visitMaxs(2, 2);
+        methodVisitor.visitEnd();
+    }
+
+    /**
+     * 将字符串首字母大写。
+     *
+     * @param val 字符串
+     * @return 首字母大写的字符串
+     */
+    public static String upperCaseFirst(String val) {
+        char[] arr = val.toCharArray();
+        arr[0] = Character.toUpperCase(arr[0]);
+        return new String(arr);
+    }
+
+    /**
+     * 动态加载字节码类
+     * <p>
+     * 该方法使用 Java 7 引入的 MethodHandles API 来动态加载字节码类。
+     * 首先，确保当前模块可以读取邻居类所在的模块，然后通过 MethodHandles.Lookup
+     * 获取对邻居类的私有访问权限，最后使用该访问权限定义新类。
+     * 该方法在数据字典系统中用于动态生成字典转换器类。
+     * </p>
+     *
+     * @param neighbor 新类的邻居类对象，用于获取模块信息和访问权限
+     * @param name     类名
+     * @param b        字节码数组
+     * @return 动态加载的类对象
+     * @throws IllegalAccessException 如果无法获取访问权限
+     */
+    public static Class<?> define(Class<?> neighbor, String name, byte[] b) throws IllegalAccessException {
+        ClassUtil.class.getModule().addReads(neighbor.getModule());
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandles.Lookup prvlookup = MethodHandles.privateLookupIn(neighbor, lookup);
+        return prvlookup.defineClass(b);
+    }
+}

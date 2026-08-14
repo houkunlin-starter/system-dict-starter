@@ -1,0 +1,274 @@
+package com.houkunlin.dict.jackson;
+
+import com.houkunlin.dict.DictEnum;
+import com.houkunlin.dict.DictTypeKeyHandler;
+import com.houkunlin.dict.DictUtil;
+import com.houkunlin.dict.annotation.DictArray;
+import com.houkunlin.dict.annotation.DictText;
+import com.houkunlin.dict.enums.NullStrategy;
+import org.jspecify.annotations.Nullable;
+import org.springframework.util.ObjectUtils;
+
+import java.util.List;
+import java.util.function.Consumer;
+
+/**
+ * 字典值序列化核心接口
+ * <p>
+ * 该接口定义了字典值序列化的核心方法，是字典序列化系统的基础组件，
+ * 被各种字典序列化实现类所实现。主要功能包括：
+ * <ul>
+ * <li>获取字典类型代码</li>
+ * <li>获取字典文本值</li>
+ * <li>获取字典父级值</li>
+ * <li>通过枚举获取字典文本</li>
+ * <li>处理数组类型的字典值</li>
+ * <li>处理空值策略</li>
+ * <li>将文本添加到列表中</li>
+ * <li>将对象添加到列表中</li>
+ * <li>写入数组文本到 JSON 生成器</li>
+ * </ul>
+ * 该接口为字典序列化提供了统一的基础方法，支持在 JSON 序列化过程中处理字典值的转换，
+ * 以及在对象转换过程中处理字典值的转换。
+ * </p>
+ *
+ * @author HouKunLin
+ * @since 2.0.0
+ */
+public interface IDictValueSerializer {
+    /**
+     * 是否忽略 null 值
+     * <p>
+     * 如果为 true，当字段值为 null 时，不进行序列化输出；
+     * 如果为 false，当字段值为 null 时，根据配置进行序列化输出。
+     * </p>
+     *
+     * @return 是否忽略 null 值
+     */
+    boolean isTextNullable();
+
+    /**
+     * 字典类型键处理器
+     * <p>
+     * 用于动态计算字典类型的处理器，支持运行时字典类型计算。
+     * 当字典类型需要根据运行时上下文动态计算时，使用该处理器。
+     * </p>
+     *
+     * @return 字典类型键处理器
+     */
+    DictTypeKeyHandler<Object> getDictTypeKeyHandler();
+
+    /**
+     * 获取字典类型
+     * <p>
+     * 该方法用于获取字典类型代码，优先使用字典类型键处理器来动态计算字典类型，
+     * 如果字典类型键处理器为 null，则直接使用 DictText 注解中指定的字典类型。
+     * </p>
+     *
+     * @param bean      目标对象
+     * @param fieldName 字段名称
+     * @param dictText  字典文本注解
+     * @return 字典类型代码
+     */
+    default String getDictType(Object bean, String fieldName, DictText dictText) {
+        DictTypeKeyHandler<Object> dictTypeKeyHandler = getDictTypeKeyHandler();
+        if (dictTypeKeyHandler == null) {
+            return dictText.value();
+        }
+        // 框架不考虑这个值为 null 的问题了，如果你没有数据，请自己直接返回 dictText.value() 值做回退处理
+        return dictTypeKeyHandler.getDictType(bean, fieldName, dictText);
+    }
+
+    /**
+     * 获取字典文本
+     * <p>
+     * 该方法用于获取字典文本，处理逻辑如下：
+     * 1. 首先检查 DictText 注解中是否指定了枚举类，如果指定了，则尝试通过枚举获取字典文本
+     * 2. 如果通过枚举获取失败或未指定枚举类，则使用字典类型键处理器获取字典文本
+     * 3. 如果字典类型键处理器为 null，则直接使用 DictUtil.getDictText 方法获取字典文本
+     * </p>
+     *
+     * @param bean           目标对象
+     * @param fieldName      字段名称
+     * @param value          字段值
+     * @param dictText       字典文本注解
+     * @param dictType       字典类型代码
+     * @param arrayItemValue 数组项值
+     * @return 字典文本
+     */
+    @SuppressWarnings({"rawtypes"})
+    default String getDictText(final Object bean, String fieldName, final Object value, DictText dictText, final String dictType, final String arrayItemValue) {
+        Class<? extends DictEnum>[] enums = dictText.enums();
+        if (enums.length > 0) {
+            String dictTextByEnums = getDictTextByEnums(enums, arrayItemValue);
+            if (dictTextByEnums != null) {
+                return dictTextByEnums;
+            }
+        }
+        DictTypeKeyHandler<Object> dictTypeKeyHandler = getDictTypeKeyHandler();
+        if (dictTypeKeyHandler == null) {
+            return DictUtil.getDictText(dictType, arrayItemValue);
+        }
+        return dictTypeKeyHandler.getDictText(bean, fieldName, value, dictText, dictType, arrayItemValue);
+    }
+
+    /**
+     * 获取字典父级值
+     * <p>
+     * 该方法用于获取字典父级值，优先使用字典类型键处理器来获取，
+     * 如果字典类型键处理器为 null，则直接使用 DictUtil.getDictParentValue 方法获取。
+     * </p>
+     *
+     * @param bean           目标对象
+     * @param fieldName      字段名称
+     * @param value          字段值
+     * @param dictText       字典文本注解
+     * @param dictType       字典类型代码
+     * @param arrayItemValue 数组项值
+     * @return 字典父级值
+     */
+    default String getDictParentValue(final Object bean, String fieldName, final Object value, DictText dictText, final String dictType, final String arrayItemValue) {
+        DictTypeKeyHandler<Object> dictTypeKeyHandler = getDictTypeKeyHandler();
+        if (dictTypeKeyHandler == null) {
+            return DictUtil.getDictParentValue(dictType, arrayItemValue);
+        }
+        return dictTypeKeyHandler.getDictParentValue(bean, fieldName, value, dictText, dictType, arrayItemValue);
+    }
+
+    /**
+     * 通过枚举获取字典文本
+     * <p>
+     * 该方法用于通过枚举获取字典文本，遍历指定的枚举类数组，
+     * 对于每个枚举类，获取其所有枚举常量，然后比较枚举常量的值是否与传入的数组项值相等，
+     * 如果相等，则返回该枚举常量的标题作为字典文本。
+     * </p>
+     *
+     * @param enums          枚举类数组
+     * @param arrayItemValue 数组项值
+     * @return 字典文本，如果未找到则返回 null
+     */
+    @SuppressWarnings({"rawtypes"})
+    default String getDictTextByEnums(Class<? extends DictEnum>[] enums, String arrayItemValue) {
+        for (Class<? extends DictEnum> dictEnum : enums) {
+            if (!dictEnum.isEnum()) {
+                continue;
+            }
+            DictEnum<?>[] enumConstants = dictEnum.getEnumConstants();
+            for (DictEnum<?> enumConstant : enumConstants) {
+                if (enumConstant.eq(arrayItemValue) || ObjectUtils.getDisplayString(enumConstant.getValue()).equals(ObjectUtils.getDisplayString(arrayItemValue))) {
+                    return enumConstant.getTitle();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 将文本添加到列表中
+     * <p>
+     * 该方法用于处理数组类型的字典值，根据配置的空值策略将文本添加到列表中：
+     * 1. 如果文本不为 null，则直接添加到列表中
+     * 2. 如果文本为 null，则根据 DictArray 注解中的 nullStrategy 处理：
+     * - IGNORE：忽略该值，不添加到列表中
+     * - NULL：添加 null 到列表中
+     * - EMPTY：添加空字符串到列表中
+     * </p>
+     *
+     * @param textList  文本列表
+     * @param text      文本
+     * @param dictArray 字典数组注解
+     */
+    default void appendTextToList(List<String> textList, String text, DictArray dictArray) {
+        if (text != null) {
+            textList.add(text);
+        } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {
+            if (dictArray.nullStrategy() == NullStrategy.NULL) {
+                textList.add(null);
+            } else {
+                textList.add("");
+            }
+        }
+    }
+
+    /**
+     * 将对象添加到列表中
+     * <p>
+     * 该方法用于处理数组类型的字典值，根据配置的空值策略将对象添加到列表中：
+     * 1. 如果对象不为 null，则直接添加到列表中
+     * 2. 如果对象为 null，则根据 DictArray 注解中的 nullStrategy 处理：
+     * - IGNORE：忽略该值，不添加到列表中
+     * - NULL：添加 null 到列表中
+     * - EMPTY：添加空字符串到列表中
+     * </p>
+     * <p>
+     * 与 {@link #appendTextToList(List, String, DictArray)} 方法类似，
+     * 但该方法支持添加任意类型的对象，而不仅仅是字符串。
+     * </p>
+     *
+     * @param objectList 对象列表，用于存储添加的对象
+     * @param textOrList 文本或列表对象，需要添加到列表中的对象
+     * @param dictArray  字典数组注解，包含空值策略配置
+     */
+    default void appendObjectToList(List<Object> objectList, Object textOrList, DictArray dictArray) {
+        if (textOrList != null) {
+            objectList.add(textOrList);
+        } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {
+            if (dictArray.nullStrategy() == NullStrategy.NULL) {
+                objectList.add(null);
+            } else {
+                objectList.add("");
+            }
+        }
+    }
+
+    /**
+     * 写入数组文本
+     * <p>
+     * 该方法用于将数组类型的字典文本写入 JSON 生成器，根据配置的空值策略处理：
+     * 1. 如果文本不为 null，则写入字符串
+     * 2. 如果文本为 null，则根据 DictArray 注解中的 nullStrategy 处理：
+     * - IGNORE：忽略该值，不写入
+     * - NULL：写入 null
+     * - EMPTY：写入空字符串
+     * </p>
+     *
+     * @param writeString 向 json 写入文本
+     * @param writeNull   向 json 写入 null
+     * @param text        文本
+     * @param dictArray   字典数组注解
+     */
+    default void writeArrayText(Consumer<String> writeString, Runnable writeNull, String text, DictArray dictArray) {
+        if (text != null) {
+            writeString.accept(text);
+        } else if (dictArray.nullStrategy() != NullStrategy.IGNORE) {
+            if (dictArray.nullStrategy() == NullStrategy.NULL) {
+                writeNull.run();
+            } else {
+                writeString.accept("");
+            }
+        }
+    }
+
+    /**
+     * 转换字典字段值，获取值对应字典文本。
+     * <p>
+     * 抽象方法，子类需要实现具体的字典值转换逻辑。
+     * 该方法将字段值转换为对应的字典文本值，支持处理各种类型的字段值，
+     * 包括基本类型、数组、集合、可迭代对象等。
+     * </p>
+     * <p>
+     * 在 {@link com.houkunlin.dict.DictUtil#transform(Object)} 方法中，
+     * 该方法被用于转换对象中含有字典文本翻译注解的字段值，
+     * 将原始字段值转换为对应的字典文本值。
+     * </p>
+     *
+     * @param bean       Bean 对象，用于提供上下文信息，例如在动态计算字典类型时使用
+     * @param fieldValue 字段值，需要进行字典转换的原始值
+     * @return 转换后的字典值，可能是字典文本、字典文本数组或其他转换后的形式
+     */
+    Object transformFieldValue(Object bean, @Nullable Object fieldValue);
+
+    String getOutputFieldName();
+
+    boolean isUseReplaceFieldValue();
+}

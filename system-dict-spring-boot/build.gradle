@@ -1,0 +1,17 @@
+plugins {
+    id 'io.freefair.lombok' version '8.13.1'
+    id 'org.jreleaser' version '1.22.0'
+    id 'maven-publish'
+    id 'signing'
+    id 'java-library'
+    id 'application'
+    id 'idea'
+    id 'java-test-fixtures'
+}
+dependencies {
+    api project(':system-dict-core')
+    compileOnly('org.slf4j:slf4j-api:2.0.17')
+    compileOnly 'com.github.ben-manes.caffeine:caffeine:3.2.3'
+    compileOnly 'org.springframework:spring-core:5.2.25.RELEASE'
+    compileOnly 'org.springframework.boot:spring-boot:2.7.18'
+}
