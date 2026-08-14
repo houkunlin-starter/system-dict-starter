@@ -13,7 +13,8 @@ import java.time.Duration;
 /**
  * 系统数据字典配置文件配置信息对象
  * <p>
- * 该类是系统数据字典的核心配置类，通过 {@code @ConfigurationProperties} 注解绑定到 {@code system.dict} 配置前缀。
+ * 该类是系统数据字典的核心配置类，通过 {@code SystemDictPropertiesAutoConfiguration#dictProperties()} 方法注册为
+ * {@code @ConfigurationProperties} Bean，绑定到 {@code system.dict} 配置前缀。
  * 包含了数据字典处理的各种配置选项，如字典值转换方式、缓存配置、消息队列配置等。
  * </p>
  *

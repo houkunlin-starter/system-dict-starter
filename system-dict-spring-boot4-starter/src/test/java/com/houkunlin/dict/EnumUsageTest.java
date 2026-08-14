@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 数组形式使用
+ * 枚举（enums 属性）使用测试
  *
  * @author HouKunLin
  */
@@ -31,11 +31,17 @@ class EnumUsageTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("4");
     }
 
+    /**
+     * 测试 enums 属性指定枚举的基础字典转换
+     */
     @Test
     void testBasic1() throws JacksonException {
         @Data
@@ -51,6 +57,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\"}", value);
     }
 
+    /**
+     * 测试 enums 属性指定枚举时自定义字段名输出
+     */
     @Test
     void testBasic2() throws JacksonException {
         @Data
@@ -66,6 +75,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeTitle\":\"普通用户\"}", value);
     }
 
+    /**
+     * 测试 enums 属性指定枚举时 replace 替换输出
+     */
     @Test
     void testBasic3() throws JacksonException {
         @Data
@@ -81,6 +93,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"普通用户\"}", value);
     }
 
+    /**
+     * 测试 enums 属性指定枚举时字段为 null 输出空字符串
+     */
     @Test
     void testBasicNull1() throws JacksonException {
         @Data
@@ -96,6 +111,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试 enums 属性指定枚举时字段为 null 且自定义字段名输出空字符串
+     */
     @Test
     void testBasicNull2() throws JacksonException {
         @Data
@@ -111,6 +129,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
     }
 
+    /**
+     * 测试 enums 属性指定枚举时字段为 null 且 replace 输出空字符串
+     */
     @Test
     void testBasicNull3() throws JacksonException {
         @Data
@@ -126,6 +147,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"\"}", value);
     }
 
+    /**
+     * 测试枚举字符串以逗号分割的数组字典转换
+     */
     @Test
     void testString1() throws JacksonException {
         @Data
@@ -142,6 +166,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"0,1\",\"userTypeText\":\"系统管理、普通用户\"}", value);
     }
 
+    /**
+     * 测试枚举字符串以竖线分割的数组字典转换
+     */
     @Test
     void testString2() throws JacksonException {
         @Data
@@ -158,6 +185,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"0|1\",\"userTypeText\":\"系统管理、普通用户\"}", value);
     }
 
+    /**
+     * 测试枚举字符串数组转换输出文本数组
+     */
     @Test
     void testString3() throws JacksonException {
         @Data
@@ -174,6 +204,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"0,1\",\"userTypeText\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
+    /**
+     * 测试枚举字符串数组转换并替换原字段值为文本数组
+     */
     @Test
     void testString4() throws JacksonException {
         @Data
@@ -190,6 +223,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
+    /**
+     * 测试枚举字符串为 null 时数组字典转换输出空字符串
+     */
     @Test
     void testStringNull1() throws JacksonException {
         @Data
@@ -206,6 +242,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试枚举字符串为 null 且带分割符时输出空字符串
+     */
     @Test
     void testStringNull2() throws JacksonException {
         @Data
@@ -222,6 +261,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试枚举字符串为 null 时输出空文本数组
+     */
     @Test
     void testStringNull3() throws JacksonException {
         @Data
@@ -238,6 +280,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
     }
 
+    /**
+     * 测试枚举字符串为 null 时替换输出空数组
+     */
     @Test
     void testStringNull4() throws JacksonException {
         @Data
@@ -254,6 +299,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组字典转换输出拼接文本
+     */
     @Test
     void testArray1() throws JacksonException {
         @Data
@@ -270,6 +318,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"0\",\"1\"],\"userTypeText\":\"系统管理、普通用户\"}", value);
     }
 
+    /**
+     * 测试枚举 List 数组字典转换输出文本数组
+     */
     @Test
     void testArray11() throws JacksonException {
         @Data
@@ -286,6 +337,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"0\",\"1\"],\"userTypeText\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组含未匹配值时拼接文本输出
+     */
     @Test
     void testArray2() throws JacksonException {
         @Data
@@ -302,6 +356,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"-1\",\"0\",\"1\"],\"userTypeText\":\"null、系统管理、普通用户\"}", value);
     }
 
+    /**
+     * 测试枚举 List 数组 EMPTY 策略时输出文本数组
+     */
     @Test
     void testArray22() throws JacksonException {
         @Data
@@ -318,6 +375,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"-1\",\"0\",\"1\"],\"userTypeText\":[\"\",\"系统管理\",\"普通用户\"]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组字典转换输出文本数组
+     */
     @Test
     void testArray3() throws JacksonException {
         @Data
@@ -334,6 +394,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"-1\",\"0\",\"1\"],\"userTypeText\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组分割 + NULL 策略时输出嵌套文本数组
+     */
     @Test
     void testArray33() throws JacksonException {
         @Data
@@ -350,6 +413,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"-1\",\"0\",\"1\"],\"userTypeText\":[[null],[\"系统管理\"],[\"普通用户\"]]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组替换原字段值为文本数组
+     */
     @Test
     void testArray4() throws JacksonException {
         @Data
@@ -366,6 +432,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[\"系统管理\",\"普通用户\"]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组替换 + NULL 策略时输出嵌套文本数组
+     */
     @Test
     void testArray44() throws JacksonException {
         @Data
@@ -382,6 +451,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":[[null],[\"系统管理\"],[\"普通用户\"]]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组为 null 时输出空字符串
+     */
     @Test
     void testArrayNull1() throws JacksonException {
         @Data
@@ -398,6 +470,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试枚举 List 数组为 null 时输出空文本数组
+     */
     @Test
     void testArrayNull11() throws JacksonException {
         @Data
@@ -414,6 +489,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组为 null + NULL 策略时输出空字符串
+     */
     @Test
     void testArrayNull2() throws JacksonException {
         @Data
@@ -430,6 +508,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试枚举 List 数组为 null + IGNORE 策略时输出空字符串
+     */
     @Test
     void testArrayNull22() throws JacksonException {
         @Data
@@ -446,6 +527,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试枚举 List 数组为 null 时输出空文本数组
+     */
     @Test
     void testArrayNull3() throws JacksonException {
         @Data
@@ -462,6 +546,9 @@ class EnumUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":[]}", value);
     }
 
+    /**
+     * 测试枚举 List 数组为 null 时替换输出空数组
+     */
     @Test
     void testArrayNull4() throws JacksonException {
         @Data

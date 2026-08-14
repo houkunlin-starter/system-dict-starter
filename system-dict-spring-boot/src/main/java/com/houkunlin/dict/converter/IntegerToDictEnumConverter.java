@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 /**
  * 将Integer类型转换为实现DictEnum接口的枚举类型的转换器
  * 此转换器通过反射调用目标枚举类的静态of方法来创建枚举实例
- * 如果未找到@JsonCreator方法，则使用默认的枚举构造方式
+ * 如果未找到@JsonCreator方法，则使用默认的枚举常量数组索引方式获取枚举常量
  *
  * @param <T> 实现了DictEnum&lt;Integer&gt;接口的枚举类型
  */

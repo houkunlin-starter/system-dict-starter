@@ -9,7 +9,6 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 
 /**
- * 默认注解使用测试
+ * 树形结构字典数据测试
  *
  * @author HouKunLin
  * @since 1.4.6
@@ -31,6 +30,9 @@ class TreeDataTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("2");
@@ -56,7 +58,7 @@ class TreeDataTest {
     }
 
     /**
-     * 基础测试
+     * 测试树形字典数据在普通字段、多级字段及数组字段上的转换
      *
      * @throws JacksonException 序列化异常
      * @since 1.4.6

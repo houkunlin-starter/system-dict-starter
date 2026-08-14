@@ -56,8 +56,8 @@ public class StringToDictEnumConverter<T extends DictEnum<?>> implements Convert
 
     /**
      * 执行转换操作，将String值转换为对应的枚举实例
-     * 首先将字符串转换为枚举对应的值类型，然后调用of方法创建枚举实例
-     * 如果结果为空且目标类型是枚举，则尝试按枚举名称匹配
+     * 如果目标类型是枚举，则首先尝试按枚举名称进行匹配，匹配成功则直接返回对应枚举常量
+     * 否则将字符串转换为枚举对应的值类型，然后调用of方法创建枚举实例
      *
      * @param source 原始String值
      * @return 转换后的枚举实例，如果输入为null则返回null
@@ -71,7 +71,7 @@ public class StringToDictEnumConverter<T extends DictEnum<?>> implements Convert
 
         try {
             if (enumType.isEnum()) {
-                // 如果通过of方法未能成功创建实例，尝试通过枚举名称进行匹配
+                // 优先尝试通过枚举名称进行匹配
                 for (T enumConstant : enumType.getEnumConstants()) {
                     if (source.equals(((Enum<?>) enumConstant).name())) {
                         return enumConstant;

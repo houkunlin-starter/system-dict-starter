@@ -30,7 +30,7 @@ public class DictControllerProperties {
      * WEB 请求接口前缀
      * <p>
      * 数据字典WEB接口的URL前缀。所有数据字典相关的接口都会以此前缀开头。
-     * 例如，当设置为 {@code "/dict"} 时，获取字典类型的接口路径为 {@code "/dict/{type}"}。
+     * 例如，当设置为 {@code "/dict"} 时，获取字典类型的接口路径为 {@code "/dict/{dict}"}。
      * </p>
      */
     private String prefix = "/dict";

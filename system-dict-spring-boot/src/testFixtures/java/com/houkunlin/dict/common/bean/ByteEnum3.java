@@ -5,6 +5,14 @@ import com.houkunlin.dict.DictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 测试用字节类型字典枚举（3）
+ * <p>
+ * 用于测试字节类型字典值的序列化与反序列化功能。
+ * </p>
+ *
+ * @author HouKunLin
+ */
 @Getter
 @AllArgsConstructor
 public enum ByteEnum3 implements DictEnum<Byte> {

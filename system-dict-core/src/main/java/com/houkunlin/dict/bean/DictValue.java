@@ -133,6 +133,16 @@ public class DictValue implements Serializable {
         this.sorted = sorted;
     }
 
+    /**
+     * 构造字典值信息对象（支持扩展数据）。
+     *
+     * @param dictType    字典类型代码
+     * @param parentValue 父级字典值
+     * @param value       字典值
+     * @param title       字典名称
+     * @param sorted      排序值
+     * @param data        扩展数据信息
+     */
     public DictValue(final String dictType, final Object parentValue, final Object value, final String title, final int sorted, Map<String, Object> data) {
         this.dictType = dictType;
         this.parentValue = parentValue;

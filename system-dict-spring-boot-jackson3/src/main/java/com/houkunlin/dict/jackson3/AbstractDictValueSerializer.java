@@ -91,7 +91,7 @@ public abstract class AbstractDictValueSerializer extends ValueSerializer<Object
     /**
      * 是否使用原始值类型
      * <p>
-     * 如果为true，保留数值类型的原始格式，否则统一转换为字符串
+     * 如果为true，保留字段值的原始类型输出（如数值类型保持数值格式），否则统一转换为字符串输出
      * </p>
      */
     protected final boolean useRawValueType;
@@ -105,9 +105,9 @@ public abstract class AbstractDictValueSerializer extends ValueSerializer<Object
     protected final boolean useReplaceFieldValue;
 
     /**
-     * 是否忽略 null 值
+     * 字典文本值是否允许为 null
      * <p>
-     * 如果为true，当字段值为null时，不进行序列化输出
+     * 如果为true，当字段值为null时，字典文本输出为 null（JSON null）；否则输出空字符串（或空数组、空对象）
      * </p>
      */
     protected final boolean textNullable;

@@ -5,6 +5,14 @@ import com.houkunlin.dict.DictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 测试用短整型类型字典枚举（1）
+ * <p>
+ * 用于测试短整型类型字典值的序列化与反序列化功能。
+ * </p>
+ *
+ * @author HouKunLin
+ */
 @Getter
 @AllArgsConstructor
 public enum ShortEnum1 implements DictEnum<Short> {

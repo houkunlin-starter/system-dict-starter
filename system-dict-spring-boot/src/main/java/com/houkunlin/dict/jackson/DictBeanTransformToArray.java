@@ -208,7 +208,7 @@ public interface DictBeanTransformToArray extends DictValueSerializerTree {
     /**
      * 转换Map为文本数组。
      * <p>
-     * 处理Map类型的转换，目前不支持Map类型的字典值转换。
+     * 处理Map类型的转换，将 Map 的每个键转换为对应的字典文本，结果以新的 Map 返回。
      * </p>
      *
      * @param bean      Bean 对象

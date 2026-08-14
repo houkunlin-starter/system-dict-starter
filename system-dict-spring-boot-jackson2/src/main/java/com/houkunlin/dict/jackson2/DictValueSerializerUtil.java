@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * DictText 注解的序列化器工具类，用于处理 DictText 注解，把字段的数据字典值转换成为数据字典文本信息。
  * <p>
- * 该工具类提供了字典值序列化器的获取和缓存功能，根据字段类型和注解配置生成合适的序列化器。
+ * 该工具类提供了字典值序列化器的获取功能，根据字段类型和注解配置生成合适的序列化器。
  * </p>
  *
  * @author HouKunLin
@@ -51,7 +51,7 @@ public class DictValueSerializerUtil {
         "nullStrategy", NullStrategy.IGNORE
     ), DictArray.class, null);
     /**
-     * 默认字典数组注解配置，当字段没有显式配置 DictArray 注解时使用
+     * 默认字典数组注解配置（数组输出模式），当字段没有显式配置 DictArray 注解时使用
      */
     public static final DictArray DEFAULT_DICT_ARRAY_ARRAY = AnnotationUtils.synthesizeAnnotation(mapOf(
         "split", "",
@@ -60,14 +60,17 @@ public class DictValueSerializerUtil {
         "nullStrategy", NullStrategy.IGNORE
     ), DictArray.class, null);
     /**
-     * bean 字段对应的序列化对象缓存，用于提高序列化性能
+     * bean 字段对应的序列化对象缓存
+     * <p>
+     * 该字段当前保留但暂未在序列化器获取流程中使用，每次调用 {@link #getDictTextValueSerializer} 都会生成新的序列化器实例。
+     * </p>
      */
     protected static final ConcurrentHashMap<String, DictValueSerializer> CACHE = new ConcurrentHashMap<>();
 
     /**
      * 获取字典文本值序列化器。
      * <p>
-     * 根据字段类型和注解配置生成合适的序列化器，并缓存结果以提高性能。
+     * 根据字段类型和注解配置生成合适的序列化器。
      * </p>
      *
      * @param beanClazz        Bean 类
@@ -124,7 +127,7 @@ public class DictValueSerializerUtil {
     }
 
     /**
-     * 获取数据字典缓存的序列化器。
+     * 获取字段对应的字典值序列化器。
      * <p>
      * 根据字段上的注解配置生成合适的序列化器。
      * </p>

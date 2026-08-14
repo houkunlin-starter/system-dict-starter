@@ -18,7 +18,7 @@ import tools.jackson.databind.ObjectMapper;
 
 
 /**
- * 默认注解使用测试
+ * 树形结构字典数据测试
  *
  * @author HouKunLin
  * @since 1.4.6
@@ -31,6 +31,9 @@ class TreeDataTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("4");
@@ -56,7 +59,7 @@ class TreeDataTest {
     }
 
     /**
-     * 基础测试
+     * 测试树形字典数据在普通字段、多级字段及数组字段上的转换
      *
      * @throws JacksonException 序列化异常
      * @since 1.4.6

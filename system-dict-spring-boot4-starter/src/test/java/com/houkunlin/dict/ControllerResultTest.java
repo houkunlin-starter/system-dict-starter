@@ -16,7 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.Collections;
 
 /**
- * 默认注解使用测试
+ * Controller 返回结果包装类序列化测试
  *
  * @author HouKunLin
  * @since 1.4.6
@@ -29,13 +29,16 @@ class ControllerResultTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("4");
     }
 
     /**
-     * 基础测试
+     * 测试 Controller 返回结果（R 包装类）中的字典字段序列化
      *
      * @throws JacksonException 序列化异常
      * @since 1.4.6

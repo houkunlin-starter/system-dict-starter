@@ -26,11 +26,17 @@ class BasicUsageTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("4");
     }
 
+    /**
+     * 测试基本场景：默认输出字典文本到 userTypeText 字段
+     */
     @Test
     void testBasic1() throws JacksonException {
         @Data
@@ -47,6 +53,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\",\"userType1\":null}", value);
     }
 
+    /**
+     * 测试基本场景：自定义字段名输出字典文本
+     */
     @Test
     void testBasic2() throws JacksonException {
         @Data
@@ -62,6 +71,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeTitle\":\"普通用户\"}", value);
     }
 
+    /**
+     * 测试基本场景：replace 替换原字段值为字典文本
+     */
     @Test
     void testBasic3() throws JacksonException {
         @Data
@@ -77,6 +89,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"普通用户\"}", value);
     }
 
+    /**
+     * 测试字段值为 null 时输出空字符串
+     */
     @Test
     void testBasicNull1() throws JacksonException {
         @Data
@@ -92,6 +107,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试字段值为 null 且自定义字段名时输出空字符串
+     */
     @Test
     void testBasicNull2() throws JacksonException {
         @Data
@@ -107,6 +125,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"userTypeTitle\":\"\"}", value);
     }
 
+    /**
+     * 测试字段值为 null 且 replace 时输出空字符串
+     */
     @Test
     void testBasicNull3() throws JacksonException {
         @Data
@@ -122,6 +143,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"\"}", value);
     }
 
+    /**
+     * 测试 nullable=YES 时未匹配字典值输出 null
+     */
     @Test
     void testBasicNullable1() throws JacksonException {
         @Data
@@ -137,6 +161,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"userTypeText\":null}", value);
     }
 
+    /**
+     * 测试 nullable=NO 时未匹配字典值输出空字符串
+     */
     @Test
     void testBasicNullable2() throws JacksonException {
         @Data
@@ -152,6 +179,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"userTypeText\":\"\"}", value);
     }
 
+    /**
+     * 测试 nullable=NO 且 replace 时未匹配字典值输出空字符串
+     */
     @Test
     void testBasicNullable3() throws JacksonException {
         @Data
@@ -167,6 +197,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"\"}", value);
     }
 
+    /**
+     * 测试 mapValue=NO 时输出普通字典文本字段
+     */
     @Test
     void testMapValue1() throws JacksonException {
         @Data
@@ -182,6 +215,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"userTypeText\":\"普通用户\"}", value);
     }
 
+    /**
+     * 测试 mapValue=YES 且 replace 时输出 value/text 结构
+     */
     @Test
     void testMapValue2() throws JacksonException {
         @Data
@@ -197,6 +233,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES 时未匹配字典值输出 value/text 结构
+     */
     @Test
     void testMapValue3() throws JacksonException {
         @Data
@@ -212,6 +251,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES 时输出到自定义字段 map
+     */
     @Test
     void testMapValue4() throws JacksonException {
         @Data
@@ -227,6 +269,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"1\",\"map\":{\"value\":\"1\",\"text\":\"普通用户\"}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES 时未匹配字典值输出到自定义字段 map
+     */
     @Test
     void testMapValue5() throws JacksonException {
         @Data
@@ -242,6 +287,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES 且 replace 时未匹配字典值输出 value/text 结构
+     */
     @Test
     void testMapValue6() throws JacksonException {
         @Data
@@ -257,6 +305,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES、nullable=YES 时未匹配字典值 text 为 null
+     */
     @Test
     void testMapValueNullable1() throws JacksonException {
         @Data
@@ -272,6 +323,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":null}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES、nullable=NO 时未匹配字典值 text 为空字符串
+     */
     @Test
     void testMapValueNullable2() throws JacksonException {
         @Data
@@ -287,6 +341,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES、nullable=YES 且自定义字段名时 text 为 null
+     */
     @Test
     void testMapValueNullable3() throws JacksonException {
         @Data
@@ -302,6 +359,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":null}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES、nullable=NO 且自定义字段名时 text 为空字符串
+     */
     @Test
     void testMapValueNullable4() throws JacksonException {
         @Data
@@ -317,6 +377,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":\"-1\",\"map\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试 mapValue=YES、nullable=NO 且 replace 时输出 value/text 结构
+     */
     @Test
     void testMapValueNullable5() throws JacksonException {
         @Data
@@ -332,6 +395,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":\"-1\",\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试字段值为 null、mapValue=YES、nullable=YES 时输出 value/text 结构
+     */
     @Test
     void testMapValueNullableNull1() throws JacksonException {
         @Data
@@ -347,6 +413,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":null,\"text\":null}}", value);
     }
 
+    /**
+     * 测试字段值为 null、mapValue=YES、nullable=NO 时输出 value/text 结构
+     */
     @Test
     void testMapValueNullableNull2() throws JacksonException {
         @Data
@@ -362,6 +431,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":{\"value\":null,\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试字段值为 null、mapValue=YES、nullable=YES 且自定义字段名时输出 value/text 结构
+     */
     @Test
     void testMapValueNullableNull3() throws JacksonException {
         @Data
@@ -377,6 +449,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":null}}", value);
     }
 
+    /**
+     * 测试字段值为 null、mapValue=YES、nullable=NO 且自定义字段名时输出 value/text 结构
+     */
     @Test
     void testMapValueNullableNull4() throws JacksonException {
         @Data
@@ -392,6 +467,9 @@ class BasicUsageTest {
         JsonAssertUtil.assertEquals("{\"userType\":null,\"map\":{\"value\":null,\"text\":\"\"}}", value);
     }
 
+    /**
+     * 测试字段值为 null、mapValue=YES、nullable=NO 且 replace 时输出 value/text 结构
+     */
     @Test
     void testMapValueNullableNull5() throws JacksonException {
         @Data

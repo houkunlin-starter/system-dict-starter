@@ -37,13 +37,14 @@ import java.util.List;
  */
 public interface DictValueSerializer {
     /**
-     * 是否忽略 null 值
+     * 字典文本值默认为 null 时是否序列化为 JSON null
      * <p>
-     * 如果为 true，当字段值为 null 时，不进行序列化输出；
-     * 如果为 false，当字段值为 null 时，根据配置进行序列化输出。
+     * 当转换后的字典文本值为 null 时：
+     * 如果为 true，则写入 JSON null；
+     * 如果为 false，则写入空字符串。
      * </p>
      *
-     * @return 是否忽略 null 值
+     * @return 字典文本值默认为 null 时是否序列化为 JSON null
      */
     boolean isTextNullable();
 

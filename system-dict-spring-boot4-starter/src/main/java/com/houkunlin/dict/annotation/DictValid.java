@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 /**
  * 字典校验注解，用于校验字段值是否为有效的字典值。
  * 如果找不到字典值文本，则校验失败。
- * 此注解适用于 SpringBoot 3.x 版本，使用 jakarta.validation 包（SpringBoot 3.x 改包名）。
+ * 此注解适用于 SpringBoot 4.x 版本，使用 jakarta.validation 包（SpringBoot 3.x 起由 javax.validation 改名为 jakarta.validation）。
  *
  * @author HouKunLin
  * @since 2.0.0

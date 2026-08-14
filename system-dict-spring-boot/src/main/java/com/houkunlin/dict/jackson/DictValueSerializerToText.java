@@ -228,7 +228,7 @@ public interface DictValueSerializerToText extends DictValueSerializerTree {
     /**
      * 序列化Map为文本字符串。
      * <p>
-     * 处理Map类型的序列化，目前不支持Map类型的字典数组序列化。
+     * 处理Map类型的序列化，将 Map 的每个键转换为对应的字典文本，并以 JSON 对象形式输出。
      * </p>
      *
      * @param bean      Bean 对象

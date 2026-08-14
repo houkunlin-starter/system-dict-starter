@@ -5,6 +5,14 @@ import com.houkunlin.dict.DictEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 测试用浮点类型字典枚举（2）
+ * <p>
+ * 用于测试浮点类型字典值的序列化与反序列化功能。
+ * </p>
+ *
+ * @author HouKunLin
+ */
 @Getter
 @AllArgsConstructor
 public enum FloatEnum2 implements DictEnum<Float> {

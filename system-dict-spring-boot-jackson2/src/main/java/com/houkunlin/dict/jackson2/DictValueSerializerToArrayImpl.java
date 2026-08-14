@@ -62,7 +62,7 @@ public class DictValueSerializerToArrayImpl extends AbstractDictValueSerializer 
      * 序列化字典值。
      * <p>
      * 根据字段值类型和配置，将字典值序列化为JSON格式。支持数组、集合、可迭代对象等类型的字典值序列化。
-     * 当值为null时，根据配置返回null或空数组。
+     * 当值为null时，根据配置输出 null、空数组或空对象。
      * </p>
      *
      * @param value 字段值

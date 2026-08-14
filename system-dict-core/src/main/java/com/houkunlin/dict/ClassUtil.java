@@ -10,7 +10,7 @@ import java.util.function.Function;
  * 类工具类
  * <p>
  * 该类提供了一些实用的类操作工具方法，包括获取类的默认构造方法、创建类实例、
- * 动态加载字节码类以及通过类名加载类等功能。
+ * 获取字符串解析函数、解析接口泛型参数以及查找枚举静态创建方法等功能。
  * 这些工具方法在数据字典系统的运行时操作中起到了重要作用。
  * </p>
  *
@@ -27,8 +27,8 @@ public class ClassUtil {
     /**
      * 获取一个类的默认构造方法
      * <p>
-     * 该方法会查找类的所有构造方法，返回无参构造方法。
-     * 如果类没有无参构造方法，则返回 {@code null}。
+     * 该方法会查找类的所有公共构造方法，返回其中的无参构造方法。
+     * 如果类没有公共的无参构造方法，则返回 {@code null}。
      * </p>
      *
      * @param clazz 类对象
@@ -133,10 +133,10 @@ public class ClassUtil {
     /**
      * 解析ClassEnum的泛型参数类型
      *
-     * <p>通过反射获取ClassEnum接口的第一个泛型参数类型，如果无法获取则默认为String类型。</p>
+     * <p>通过反射获取ClassEnum接口的第一个泛型参数类型，如果无法获取则返回 null。</p>
      *
      * @param clazz 枚举类
-     * @return 泛型参数类型
+     * @return 泛型参数类型，无法获取时返回 null
      */
     public static <T> Class<?> getInterfaceParameterFirst(Class<T> clazz) {
         Type genericInterface = clazz.getGenericInterfaces()[0];

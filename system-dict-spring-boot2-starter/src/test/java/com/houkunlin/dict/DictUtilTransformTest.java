@@ -22,6 +22,11 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.test.annotation.DirtiesContext;
 
 
+/**
+ * 字典转换工具（DictUtil.transform）使用测试
+ *
+ * @author HouKunLin
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SystemDictScan
@@ -32,11 +37,17 @@ class DictUtilTransformTest {
     private final ParserContext parserContext = new TemplateParserContext();
     private final ExpressionParser parser = new SpelExpressionParser();
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("2");
     }
 
+    /**
+     * 测试 Bean1 经 DictUtil.transform 转换后生成 DictChildren 子类，并支持 SpEL 表达式解析字典文本
+     */
     @Test
     void testA() throws JacksonException {
         final Bean1 bean = new Bean1();
@@ -100,6 +111,9 @@ class DictUtilTransformTest {
         }
     }
 
+    /**
+     * 测试不同注解场景下 DictUtil.transform 的转换行为（动态创建子类、替换原字段值、写入其他字段）
+     */
     @Test
     void testB() throws Exception {
         // 动态创建子类

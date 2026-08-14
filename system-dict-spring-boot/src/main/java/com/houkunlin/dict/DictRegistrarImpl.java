@@ -116,9 +116,10 @@ public class DictRegistrarImpl implements InitializingBean, DictRegistrar {
     /**
      * 循环获取所有 {@link DictProvider} 字典提供者提供的所有字典数据信息，把获取到的字典对象和字典值数据存入到 {@link DictStore} 存储对象中
      *
-     * @param dictProviderClasses 只获取特定的 {@link DictProvider} 数据，会调用 {@link DictProvider#supportRefresh(Set)} 来判断
-     * @param dictTypeConsumer    保存字典类型的方法
-     * @param dictValueConsumer   保存字典值数据的方法
+     * @param dictProviderClasses    只获取特定的 {@link DictProvider} 数据，会调用 {@link DictProvider#supportRefresh(Set)} 来判断
+     * @param dictTypeConsumer       保存普通字典类型的方法
+     * @param systemDictTypeConsumer 保存系统字典类型的方法
+     * @param dictValueConsumer      保存字典值数据的方法
      * @since 1.4.11
      */
     @Override

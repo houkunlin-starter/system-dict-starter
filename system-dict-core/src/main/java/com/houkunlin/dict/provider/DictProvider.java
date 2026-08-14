@@ -90,12 +90,22 @@ public interface DictProvider {
     default Iterator<DictValue> dictValueIterator() {
         final Iterator<DictType> iterator = dictTypeIterator();
         return new Iterator<DictValue>() {
+            /**
+             * 当前遍历到的字典值列表
+             */
             List<DictValue> valueVos = null;
+            /**
+             * 当前遍历到的字典值索引
+             */
             int index = 0;
+            /**
+             * 当前字典值列表的大小
+             */
             int size = 0;
 
             @Override
             public boolean hasNext() {
+                // 当前列表已遍历完且字典类型迭代器还有数据时，加载下一个字典类型的字典值列表
                 if (index == size && iterator.hasNext()) {
                     valueVos = iterator.next().getChildren();
                     index = 0;

@@ -26,34 +26,84 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * 系统数据字典自动扫描
+ * 系统数据字典自动扫描注册器
+ * <p>
+ * 配合 {@link SystemDictScan} 注解使用，负责扫描指定包路径下实现了 {@link DictEnum} 接口的枚举类，
+ * 将枚举的字典值信息注册到 {@link SystemDictProvider} 系统字典提供者中。
+ * </p>
  *
  * @author HouKunLin
  */
 public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, BeanFactoryAware {
+    /**
+     * 日志
+     */
     private static final Logger logger = LoggerFactory.getLogger(SystemDictScanRegistrar.class);
+    /**
+     * 类路径扫描组件提供者，用于扫描指定包下的候选组件
+     */
     private final ClassPathScanningCandidateComponentProvider provider;
+    /**
+     * 类加载器
+     */
     private ClassLoader classLoader;
+    /**
+     * 系统字典提供者，用于注册扫描到的系统字典信息
+     */
     private SystemDictProvider systemDictProvider;
+    /**
+     * 当前应用名称
+     */
     private String applicationName;
+    /**
+     * Spring Bean 工厂
+     */
     private BeanFactory beanFactory;
 
+    /**
+     * 构造方法
+     * <p>
+     * 初始化类路径扫描组件提供者，并配置仅扫描实现了 {@link DictEnum} 接口的类。
+     * </p>
+     */
     public SystemDictScanRegistrar() {
         provider = new ClassPathScanningCandidateComponentProvider(false);
         provider.addIncludeFilter(new AssignableTypeFilter(DictEnum.class));
     }
 
+    /**
+     * 设置 Spring Bean 工厂
+     *
+     * @param beanFactory Spring Bean 工厂
+     */
     @Override
     public void setBeanFactory(@NonNull BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 
+    /**
+     * 设置资源加载器
+     * <p>
+     * 从资源加载器中获取类加载器，用于后续加载扫描到的枚举类。
+     * </p>
+     *
+     * @param resourceLoader 资源加载器
+     */
     @Override
     public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.classLoader = resourceLoader.getClassLoader();
         assert this.classLoader != null;
     }
 
+    /**
+     * 注册 Bean 定义
+     * <p>
+     * 获取应用名称与系统字典提供者，解析需要扫描的包路径，并逐个包执行字典枚举扫描。
+     * </p>
+     *
+     * @param annotationMetadata 注解元数据
+     * @param registry           Bean 定义注册器
+     */
     @Override
     public void registerBeanDefinitions(@NonNull AnnotationMetadata annotationMetadata, @NonNull BeanDefinitionRegistry registry) {
         final Environment environment = beanFactory.getBean(Environment.class);
@@ -87,6 +137,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      * 处理系统数据字典对象
      *
      * @param dictClass 字典对象
+     * @param <T>       字典值的类型
      */
     private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass) {
         final DictType[] annotation = dictClass.getDeclaredAnnotationsByType(DictType.class);
@@ -101,8 +152,14 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
 
     /**
      * 处理系统数据字典对象
+     * <p>
+     * 根据 {@link DictType} 注解解析字典类型代码与标题，将枚举的各个字典值注册到系统字典提供者中。
+     * 已存在的字典值将被忽略，避免重复写入缓存。
+     * </p>
      *
      * @param dictClass 字典对象
+     * @param annotation 字典类型注解，可以为 null
+     * @param <T>        字典值的类型
      */
     private <T extends Serializable> void handleDict(final Class<DictEnum<T>> dictClass, final DictType annotation) {
         final String dictType;
@@ -161,7 +218,7 @@ public class SystemDictScanRegistrar implements ImportBeanDefinitionRegistrar, R
      * 获得需要扫描的包列表
      *
      * @param metadata 注解元数据
-     * @return 包列表，至少包含一个默认的 com.pension.system 包路径
+     * @return 包列表，当未指定任何扫描包时，默认使用标注 {@link SystemDictScan} 注解的类所在包路径
      */
     private Set<String> getPackagesToScan(AnnotationMetadata metadata) {
         AnnotationAttributes attributes = AnnotationAttributes.fromMap(metadata.getAnnotationAttributes(SystemDictScan.class.getName()));

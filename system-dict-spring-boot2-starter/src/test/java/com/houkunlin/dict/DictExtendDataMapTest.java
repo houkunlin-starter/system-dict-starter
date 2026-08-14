@@ -39,11 +39,17 @@ class DictExtendDataMapTest {
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("2");
     }
 
+    /**
+     * 测试枚举扩展数据字典转换及字典类型数据加载
+     */
     @Test
     void testJackson() throws JacksonException {
         @Data
@@ -69,6 +75,9 @@ class DictExtendDataMapTest {
         Assertions.assertTrue(dictType.getChildren().get(0).getData().containsKey("write"));
     }
 
+    /**
+     * 测试通过 Web 接口获取枚举扩展数据字典
+     */
     @Test
     void testWeb() throws Exception {
         mockMvc.perform(get("/dict/" + DICT_TYPE))

@@ -37,7 +37,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RedisDictStore implements DictStore, InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(RedisDictStore.class);
+    /**
+     * Redis 模板，用于读写 Redis 中的字典数据
+     */
     private final RedisTemplate<String, DictType> redisTemplate;
+    /**
+     * 远程字典获取接口，用于本地字典不存在时从远程获取字典数据
+     */
     private final RemoteDict remoteDict;
     /**
      * Redis 批量数据写入时的批次大小

@@ -104,10 +104,10 @@ public class DictCacheFactoryImpl implements DictCacheFactory {
     }
 
     /**
-     * 获取 CaffeineSpec
+     * 获取 Caffeine 配置 spec 字符串
      *
      * @param caffeineProperties caffeineProperties
-     * @return CaffeineSpec
+     * @return Caffeine spec 字符串，当未配置或配置为空时返回默认 spec
      */
     private String getCaffeineSpec(DictPropertiesCache.Caffeine caffeineProperties) {
         if (caffeineProperties == null) {

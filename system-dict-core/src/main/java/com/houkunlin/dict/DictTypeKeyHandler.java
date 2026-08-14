@@ -10,7 +10,7 @@ import com.houkunlin.dict.annotation.DictText;
  * </p>
  * <pre>
  *  class Bean {
- *      @ DictText(dictType = BeanDictTypeKeyHandler.class)
+ *      @ DictText(dictTypeHandler = BeanDictTypeKeyHandler.class)
  *      private int key;
  *      private int keyType;
  *  }
@@ -56,7 +56,7 @@ public interface DictTypeKeyHandler<T> {
      * 获取字典文本
      * <p>
      * 根据字典类型和字典值，获取对应的字典文本。
-     * 默认实现使用 DictUtil.getDictText 方法获取字典文本。
+     * 该方法为抽象方法，需要实现类自行实现，通常可调用 DictUtil.getDictText 方法获取字典文本。
      * </p>
      *
      * @param bean           实体类对象
@@ -73,7 +73,7 @@ public interface DictTypeKeyHandler<T> {
      * 获取父级字典值
      * <p>
      * 根据字典类型和字典值，获取对应的父级字典值。
-     * 默认实现使用 DictUtil.getDictParentValue 方法获取父级字典值。
+     * 该方法为抽象方法，需要实现类自行实现，通常可调用 DictUtil.getDictParentValue 方法获取父级字典值。
      * </p>
      *
      * @param bean           实体类对象

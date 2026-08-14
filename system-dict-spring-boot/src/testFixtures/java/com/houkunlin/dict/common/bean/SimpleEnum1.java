@@ -4,6 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 测试用普通枚举（1），不实现字典枚举接口
+ * <p>
+ * 用于测试普通枚举类型字典值的序列化与反序列化功能。
+ * </p>
+ *
+ * @author HouKunLin
+ */
 @Getter
 @AllArgsConstructor
 public enum SimpleEnum1 {

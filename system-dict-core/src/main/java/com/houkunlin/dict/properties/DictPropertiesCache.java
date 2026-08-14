@@ -31,6 +31,13 @@ import org.springframework.util.StringUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DictPropertiesCache {
+    /**
+     * 默认的 Caffeine 缓存规格配置
+     * <p>
+     * 默认值：{@code maximumSize=500,initialCapacity=50,expireAfterWrite=30s}，
+     * 表示最大缓存数量 500、初始容量 50、写入后 30 秒过期。
+     * </p>
+     */
     public static final String DEFAULT_CAFFEINE_SPEC = "maximumSize=500,initialCapacity=50,expireAfterWrite=30s";
     /**
      * 是否启用缓存
@@ -47,7 +54,11 @@ public class DictPropertiesCache {
      */
     private int missNum = 50;
     /**
-     * Caffeine Spec 字符串参数，默认值：maximumSize=500,initialCapacity=50,expireAfterWrite=30s
+     * Caffeine 缓存配置对象
+     * <p>
+     * 通过该对象的 {@link Caffeine#spec} 字段配置 Caffeine 缓存规格参数。
+     * 当 {@link Caffeine#spec} 未设置时，使用默认值 {@link #DEFAULT_CAFFEINE_SPEC}。
+     * </p>
      *
      * @see CaffeineSpec
      * @see CaffeineSpec#parse(String)
@@ -70,7 +81,8 @@ public class DictPropertiesCache {
     public static class Caffeine {
 
         /**
-         * Caffeine Spec 字符串参数，默认值：maximumSize=500,initialCapacity=50,expireAfterWrite=30s
+         * Caffeine Spec 字符串参数，默认为空。
+         * 当此值为空时，将使用 {@link #DEFAULT_CAFFEINE_SPEC} 作为默认规格。
          *
          * @see CaffeineSpec
          * @see CaffeineSpec#parse(String)

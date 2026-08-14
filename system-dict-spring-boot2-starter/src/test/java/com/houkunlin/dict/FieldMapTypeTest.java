@@ -9,7 +9,6 @@ import com.houkunlin.dict.bean.DictType;
 import com.houkunlin.dict.notice.RefreshDictTypeEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * 注解使用测试
+ * Map 字段类型字典转换测试
  *
  * @author HouKunLin
  * @since 2.0.0
@@ -34,6 +33,9 @@ class FieldMapTypeTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * 测试当前 Starter 模块路径是否匹配
+     */
     @Test
     void testJavaAtPath() {
         TestStarterAssertions.assertCurrentStarterModule("2");
@@ -59,7 +61,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型基本字典转换
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -83,7 +85,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型 @DictArray(toText=true) 字典转换
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -108,7 +110,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型 @DictArray(toText=false) 输出文本数组
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -133,7 +135,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型带分割符（toText=true）字典转换
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -158,7 +160,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型带分割符（toText=false）输出文本数组
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -183,7 +185,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型树形字典转换（toText=false）
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -208,7 +210,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型树形字典转换（toText=true）
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -233,7 +235,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型数组 + 树形组合转换（toText=true）
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
@@ -259,7 +261,7 @@ class FieldMapTypeTest {
     }
 
     /**
-     * 基础测试
+     * 测试 Map 字段类型数组 + 树形组合转换（toText=false）
      *
      * @throws JacksonException 序列化异常
      * @since 2.0.0
