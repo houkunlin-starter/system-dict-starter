@@ -90,6 +90,7 @@ jreleaser {
             mavenCentral {
                 releaseDeployToCentral {
                     active = 'RELEASE'
+                    stage = 'UPLOAD'
                     applyMavenCentralRules = true
                     username = GETENV("sonatype_username")
                     password = GETENV("sonatype_password")
@@ -118,7 +119,10 @@ jreleaser {
             repoOwner = "houkunlin-starter"
             skipTag = true
             overwrite = true
-            skipRelease = isSnapshot
+            // 多模块下每个子项目会并行创建同一个 GitHub Release 导致冲突失败。
+            // 默认跳过 GitHub Release 创建，仅上传 Maven Central 后手动确认发布；
+            // 需要创建 GitHub Release 时通过 -PgithubRelease=true 开启
+            skipRelease = findProperty('githubRelease')?.toString()?.toBoolean() != true
             username = "houkunlin"
             token = GETENV("GITHUB_TOKEN")
             commitAuthor {
