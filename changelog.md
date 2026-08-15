@@ -1,5 +1,17 @@
 # 更改日志
 
+## 2.1.1 版本
+
+- fix (redis): 修复未引入 spring-data-redis 依赖的下游项目启动失败问题。Redis 序列化器 Bean 从
+  `DictJacksonAutoConfiguration` 提取到独立的 `DictTypeRedisSerializerAutoConfiguration`，使用类级
+  `@ConditionalOnClass` 保护，避免配置类加载时因 `RedisSerializer` 等类缺失而报错
+- fix (amqp): 修复仅引入 spring-amqp 而未引入 spring-rabbit 时自动配置加载失败问题，`DictAmqpAutoConfiguration`
+  增加 `RabbitListener` 类级条件判断
+- refactor (redis): `RedisTemplate<String, DictType>`、`RedisSerializer<DictType>` 仅在 `system.dict.store-type`
+  为 `AUTO`（默认）或 `REDIS` 时创建，`LOCAL` 模式不再创建 Redis 基础设施对象
+- fix (compat): `system-dict-spring-boot2-starter` 补充 `META-INF/spring.factories`，兼容 SpringBoot 2.7.0 以下的 2.x
+  版本自动配置加载
+
 ## 2.1.0 版本
 
 **破坏性变更：** 自本版本起，按 Spring Boot 版本拆分为三个独立的 Starter 模块，请根据项目使用的 Spring Boot 版本选择对应的依赖坐标：

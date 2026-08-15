@@ -348,6 +348,8 @@ GET /actuator/dictSystem/PeopleType
   - `text-value-default-null=false` 字典文本的值是否默认为null，true 默认为null，false 默认为空字符串
   - `on-boot-refresh-dict=true` 是否在启动的时候刷新字典
   - `map-value=false` 是否把字典值转换成 Map 形式，包含字典值和文本。false 时在 json 中插入字段显示字典文本；true 时把原字段的值变成 Map 数据
+  - `store-type=auto` 字典数据存储类型。可选值：`auto`（默认）存在 Redis 就使用 Redis，否则使用本地 Map；`local` 使用本地 Map
+    存储；`redis` 使用 Redis 存储
   - `mq-type` 通知其他协同系统刷新字典的MQ类型
     - 可选值：`none` 不启用，`amqp` 使用 RabbitMQ， `redis` 使用 Redis 的发布/订阅功能
   - `mq-exchange-name` 消息队列交换器名称 或 Redis channel 名称
