@@ -7,6 +7,11 @@ plugins {
     id 'idea'
 }
 
+// 根项目仅作为聚合工程，不发布任何产物，禁用根项目的 jreleaser 任务
+tasks.matching { it.name.startsWith('jreleaser') }.configureEach {
+    enabled = false
+}
+
 allprojects {
     group = 'com.houkunlin'
     version = '2.1.0'
