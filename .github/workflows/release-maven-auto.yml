@@ -18,6 +18,8 @@ jobs:
         uses: actions/setup-java@v5.7.0
         with:
           java-version: 17
+          # corretto / dragonwell / graalvm / graalvm-community / jetbrains / kona / liberica / liberica-nik / microsoft / oracle / oracle-openjdk / sapmachine / semeru / temurin / zulu
+          distribution: temurin
           show-download-progress: true
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
