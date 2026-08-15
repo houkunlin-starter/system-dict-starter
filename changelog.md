@@ -1,5 +1,24 @@
 # 更改日志
 
+## 2.1.0 版本
+
+**破坏性变更：** 自本版本起，按 Spring Boot 版本拆分为三个独立的 Starter 模块，请根据项目使用的 Spring Boot 版本选择对应的依赖坐标：
+
+- `system-dict-spring-boot2-starter`：基于 SpringBoot 2.7.18 / Java 8 / Jackson 2
+- `system-dict-spring-boot3-starter`：基于 SpringBoot 3.0.0 / Java 17 / Jackson 2
+- `system-dict-spring-boot4-starter`：基于 SpringBoot 4.0.1 / Java 17 / Jackson 3
+
+- feat: 重新支持 SpringBoot 2.x/3.x/4.x，按 Spring Boot 版本拆分为三个独立 Starter 模块
+- refactor (module): 合并 Spring Boot 2/3/4 starter 中的重复代码到统一模块，提取核心代码到 system-dict-core 模块
+- refactor (module): 提取 Jackson 序列化代码到 system-dict-spring-boot-jackson2/jackson3 独立模块，引入
+  DictJsonWriter/JsonCodec 接口解耦 Jackson 依赖
+- refactor (naming): 统一命名规范，去除接口前缀 I、重命名抽象类、自动配置类添加 AutoConfiguration 后缀、去除冗余后缀
+- refactor: 移除已废弃的 DictConverter 注解的使用
+- refactor (core): 移除已废弃的字节码类型配置（BytecodeType、system.dict.bytecode）
+- refactor: 兼容低版本 Java，移除 instanceof 模式匹配语法，替换 String.isBlank () 为 trim ().isEmpty ()
+- test: 增加 SpringBoot 2.x/3.x/4.x 的单元测试
+- ci: 升级 GitHub Actions 依赖，显式指定 JDK 发行版为 Temurin
+
 ## 2.0.3 版本
 
 - feat(converter,asm): 重构字典枚举转换器，删除了 ASM 字节码技术，改为使用 ConverterFactory
