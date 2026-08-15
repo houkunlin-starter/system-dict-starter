@@ -1,0 +1,14 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.houkunlin.dict.SystemDictPropertiesAutoConfiguration,\
+com.houkunlin.dict.SystemDictAutoConfiguration,\
+com.houkunlin.dict.DictRedisAutoConfiguration,\
+com.houkunlin.dict.store.LocalDictStoreAutoConfiguration,\
+com.houkunlin.dict.store.RedisDictStoreAutoConfiguration,\
+com.houkunlin.dict.notice.DictAmqpAutoConfiguration,\
+com.houkunlin.dict.notice.DictRedisSubscribeAutoConfiguration,\
+com.houkunlin.dict.actuator.SystemDictActuatorAutoConfiguration,\
+com.houkunlin.dict.DictRegistrarImpl,\
+com.houkunlin.dict.cache.DictCacheFactoryImpl,\
+com.houkunlin.dict.SystemDictRegistrarAutoConfiguration,\
+com.houkunlin.dict.jackson2.DictJacksonAutoConfiguration,\
+com.houkunlin.dict.jackson2.DictTypeRedisSerializerAutoConfiguration
