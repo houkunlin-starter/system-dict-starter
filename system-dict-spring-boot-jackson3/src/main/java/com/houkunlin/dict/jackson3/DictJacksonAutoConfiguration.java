@@ -3,13 +3,9 @@ package com.houkunlin.dict.jackson3;
 import com.houkunlin.dict.DictJsonCodec;
 import com.houkunlin.dict.DictUtil;
 import com.houkunlin.dict.DictValueSerializerFactory;
-import com.houkunlin.dict.bean.DictType;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import tools.jackson.databind.ObjectMapper;
 
 /**
@@ -19,7 +15,7 @@ import tools.jackson.databind.ObjectMapper;
  * <ul>
  * <li>向 Spring 注册 {@link DictJsonMapperBuilderCustomizer}，启用 Jackson3 的字典值序列化功能；</li>
  * <li>向 {@link DictUtil} 注册当前版本（Jackson3）的 {@link DictValueSerializerFactory} 序列化器工厂；</li>
- * <li>注册当前版本（Jackson3）的 {@link DictJsonCodec} 与 DictType 的 Redis 值序列化器。</li>
+ * <li>注册当前版本（Jackson3）的 {@link DictJsonCodec}。</li>
  * </ul>
  * </p>
  *
@@ -54,16 +50,5 @@ public class DictJacksonAutoConfiguration implements InitializingBean {
     @Bean
     public DictJsonCodec dictJsonCodec(final ObjectMapper objectMapper) {
         return new DictJsonCodecImpl(objectMapper);
-    }
-
-    /**
-     * 注册 DictType 的 Redis 值序列化器。
-     *
-     * @return Redis 值序列化器
-     */
-    @ConditionalOnMissingBean
-    @Bean
-    public RedisSerializer<DictType> dictTypeRedisSerializer() {
-        return new JacksonJsonRedisSerializer<>(DictType.class);
     }
 }

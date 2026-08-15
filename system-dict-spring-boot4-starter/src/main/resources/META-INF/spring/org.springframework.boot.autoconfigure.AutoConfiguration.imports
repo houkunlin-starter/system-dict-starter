@@ -10,3 +10,4 @@ com.houkunlin.dict.DictRegistrarImpl
 com.houkunlin.dict.cache.DictCacheFactoryImpl
 com.houkunlin.dict.SystemDictRegistrarAutoConfiguration
 com.houkunlin.dict.jackson3.DictJacksonAutoConfiguration
+com.houkunlin.dict.jackson3.DictTypeRedisSerializerAutoConfiguration

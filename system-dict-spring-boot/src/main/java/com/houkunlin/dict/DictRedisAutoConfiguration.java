@@ -12,9 +12,11 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
- * Redis 配置（在存在 Redis 环境时自动配置相关对象，无论后续是否需要）
+ * Redis 配置（在存在 Redis 环境时自动配置相关对象）
  * <p>
- * DictType 的值序列化器由各版本 Starter 提供（Jackson2 与 Jackson3 的 Redis 序列化器不同）。
+ * DictType 的 Redis 值序列化器由各版本 Starter 提供（Jackson2 与 Jackson3 的 Redis 序列化器不同）。
+ * dictTypeRedisTemplate 仅在系统配置启用 Redis 存储（store-type 为 AUTO 或 REDIS）时创建；
+ * redisMessageListenerContainer 仅在配置 mq-type=REDIS 时创建。
  * </p>
  *
  * @author HouKunLin
@@ -29,15 +31,49 @@ public class DictRedisAutoConfiguration {
 
     /**
      * 创建一个默认的 DictType 类型 Redis 客户端
+     * <p>
+     * 仅当 store-type 为 AUTO（默认，存在 Redis 时自动使用 Redis 存储）时创建。
+     * </p>
      *
      * @param connectionFactory RedisConnectionFactory
      * @param valueSerializer   DictType 值序列化器
      * @return RedisTemplate&lt;String, DictType&gt;
      */
+    @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "AUTO", matchIfMissing = true)
     @ConditionalOnMissingBean(name = DICT_REDIS_BEAN_NAME)
     @Bean(DICT_REDIS_BEAN_NAME)
     public RedisTemplate<String, DictType> dictTypeRedisTemplate(final RedisConnectionFactory connectionFactory,
                                                                  final RedisSerializer<DictType> valueSerializer) {
+        return createDictTypeRedisTemplate(connectionFactory, valueSerializer);
+    }
+
+    /**
+     * 创建一个默认的 DictType 类型 Redis 客户端
+     * <p>
+     * 仅当 store-type 为 REDIS（显式启用 Redis 存储）时创建。
+     * </p>
+     *
+     * @param connectionFactory RedisConnectionFactory
+     * @param valueSerializer   DictType 值序列化器
+     * @return RedisTemplate&lt;String, DictType&gt;
+     */
+    @ConditionalOnProperty(prefix = "system.dict", name = "store-type", havingValue = "REDIS")
+    @ConditionalOnMissingBean(name = DICT_REDIS_BEAN_NAME)
+    @Bean(DICT_REDIS_BEAN_NAME)
+    public RedisTemplate<String, DictType> dictTypeRedisTemplateForRedis(final RedisConnectionFactory connectionFactory,
+                                                                         final RedisSerializer<DictType> valueSerializer) {
+        return createDictTypeRedisTemplate(connectionFactory, valueSerializer);
+    }
+
+    /**
+     * 创建 DictType 类型的 Redis 客户端
+     *
+     * @param connectionFactory RedisConnectionFactory
+     * @param valueSerializer   DictType 值序列化器
+     * @return RedisTemplate&lt;String, DictType&gt;
+     */
+    private RedisTemplate<String, DictType> createDictTypeRedisTemplate(final RedisConnectionFactory connectionFactory,
+                                                                        final RedisSerializer<DictType> valueSerializer) {
         final RedisTemplate<String, DictType> redisTemplate = new RedisTemplate<>();
         redisTemplate.setBeanClassLoader(Thread.currentThread().getContextClassLoader());
         redisTemplate.setKeySerializer(RedisSerializer.string());
