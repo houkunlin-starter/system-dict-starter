@@ -27,7 +27,7 @@ import java.util.Objects;
  * @author HouKunLin
  */
 @ConditionalOnProperty(prefix = "system.dict", name = "mq-type", havingValue = "AMQP")
-@ConditionalOnClass(AmqpTemplate.class)
+@ConditionalOnClass({AmqpTemplate.class, RabbitListener.class})
 @Configuration(proxyBeanMethods = false)
 public class DictAmqpAutoConfiguration {
     /**
