@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * <p>
  * 该配置类负责：
  * <ul>
- * <li>向 Spring 注册 {@link DictJsonMapperBuilderCustomizer}，启用 Jackson2 的字典值序列化功能；</li>
+ * <li>向 Spring 注册 {@link DictJacksonModule}，启用 Jackson2 的字典值序列化功能；</li>
  * <li>向 {@link DictUtil} 注册当前版本（Jackson2）的 {@link DictValueSerializerFactory} 序列化器工厂；</li>
  * <li>注册当前版本（Jackson2）的 {@link DictJsonCodec}。</li>
  * </ul>
@@ -32,16 +32,6 @@ public class DictJacksonAutoConfiguration implements InitializingBean {
     }
 
     /**
-     * 数据字典 JSONMapper 初始化处理器。
-     *
-     * @return JSON 映射构建器自定义器
-     */
-    @Bean
-    public DictJsonMapperBuilderCustomizer dictJsonMapperBuilderCustomizer() {
-        return new DictJsonMapperBuilderCustomizer();
-    }
-
-    /**
      * 注册 Jackson2 版本的 JSON 序列化工具。
      *
      * @param objectMapper Jackson2 ObjectMapper
@@ -50,6 +40,16 @@ public class DictJacksonAutoConfiguration implements InitializingBean {
     @Bean
     public DictJsonCodec dictJsonCodec(final ObjectMapper objectMapper) {
         return new DictJsonCodecImpl(objectMapper);
+    }
+
+    /**
+     * 注册 Jackson2 版本的字典值序列化模块。
+     *
+     * @return 字典 Jackson 模块
+     */
+    @Bean
+    public DictJacksonModule dictJacksonModule() {
+        return new DictJacksonModule();
     }
 
 }
