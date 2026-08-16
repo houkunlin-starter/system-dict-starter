@@ -14,7 +14,7 @@ tasks.matching { it.name.startsWith('jreleaser') }.configureEach {
 
 allprojects {
     group = 'com.houkunlin'
-    version = '2.1.1'
+    version = '2.1.2'
     description = """
 系统数据字典自动翻译成字典文本。可集合系统数据库中存储的用户数据字典，也可使用枚举做系统数据字典，主要用在返回数据给前端时自动把字典值翻译成字典文本信息；
 implementation '${group}:system-dict-spring-boot2-starter:${version}' build by springboot 2.7.18 java 8.

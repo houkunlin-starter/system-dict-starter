@@ -13,7 +13,7 @@
 
 ## 版本与依赖
 
-**当前版本：`2.1.1`**
+**当前版本：`2.1.2`**
 
 自 `v2.1.0` 起，本项目按 Spring Boot 版本拆分为三个独立的 Starter 模块，请根据项目使用的 Spring Boot 版本选择对应的依赖坐标。不同
 Starter 使用不同的 Jackson 实现（Jackson 2 或 Jackson 3）。
@@ -84,6 +84,9 @@ implementation "com.houkunlin:system-dict-spring-boot4-starter:${latest.release}
 ## 版本特性
 
 - **`v2.x`（当前）**：
+    - 修复 Jackson2 字典模块配置错误，改用直接注册 `DictJacksonModule` Bean 方式，避免
+      `Jackson2ObjectMapperBuilder.modules`
+      覆盖其他模块配置（`v2.1.2`）
     - 修复 Redis/MQ 可选依赖下自动配置导致的启动失败问题；Redis 存储相关 Bean 仅在启用 Redis 存储 （`store-type` 为 `AUTO`
       或 `REDIS`）时创建（`v2.1.1`）
     - 按 Spring Boot 版本拆分 `system-dict-spring-boot2/3/4-starter` 三个独立模块

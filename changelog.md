@@ -1,5 +1,11 @@
 # 更改日志
 
+## 2.1.2 版本
+
+- fix (jackson2): 修复 Jackson2 字典模块配置错误。原实现通过 `Jackson2ObjectMapperBuilder.modules(...)` 注册
+  `DictJacksonModule`，该方法会覆盖 ObjectMapper 上已配置的其他模块，导致用户自定义模块失效；现改为直接在
+  `DictJacksonAutoConfiguration` 中注册 `DictJacksonModule` Bean，由 Spring Boot 自动装配，不再影响其他模块配置
+
 ## 2.1.1 版本
 
 - fix (redis): 修复未引入 spring-data-redis 依赖的下游项目启动失败问题。Redis 序列化器 Bean 从
