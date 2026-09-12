@@ -29,11 +29,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Gradle assemble
-        run: ./gradlew assemble
+        run: ./gradlew assemble -Psnapshot
       - name: Gradle build
-        run: ./gradlew build -x test
+        run: ./gradlew build -x test -Psnapshot
       - name: Gradle publish
-        run: ./gradlew publish
+        run: ./gradlew publish -Psnapshot
         env: # Or as an environment variable
           gpg_public_key: ${{ secrets.GPG_PUBLIC_KEY }}
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
