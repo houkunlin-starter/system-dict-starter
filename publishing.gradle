@@ -1,4 +1,12 @@
-def gitRepo = "github.com/houkunlin-starter/system-dict-starter.git"
+def scmHost = "github.com"
+def scmOwner = "houkunlin-starter"
+def scmRepo = "system-dict-starter"
+// 项目浏览地址（Maven Central 要求可公开访问的 HTTP(S) 地址）
+def scmUrl = "https://${scmHost}/${scmOwner}/${scmRepo}"
+// 只读连接：供构建工具 / 匿名克隆，Maven 规范要求以 scm:git: 开头
+def scmConnection = "scm:git:https://${scmHost}/${scmOwner}/${scmRepo}.git"
+// 开发者连接：需写权限，通常使用 SSH
+def scmDeveloperConnection = "scm:git:git@${scmHost}:${scmOwner}/${scmRepo}.git"
 
 def isSnapshot = findProperty("snapshot") != null || version.endsWith('SNAPSHOT')
 
@@ -33,7 +41,7 @@ publishing {
                 name = project.name
                 packaging = 'jar'
                 description = project.description
-                url = "https://${gitRepo}"
+                url = scmUrl
                 // properties = []
                 licenses {
                     license {
@@ -49,9 +57,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git://${gitRepo}"
-                    developerConnection = "scm:git://${gitRepo}"
-                    url = "git://${gitRepo}"
+                    connection = scmConnection
+                    developerConnection = scmDeveloperConnection
+                    url = scmUrl
                 }
             }
         }
