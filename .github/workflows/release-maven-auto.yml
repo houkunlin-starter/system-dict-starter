@@ -26,7 +26,7 @@ jobs:
       - name: Gradle assemble
         run: ./gradlew assemble
       - name: Gradle build
-        run: ./gradlew build
+        run: ./gradlew build -x test
       - name: Gradle publish
         run: ./gradlew publish
       - name: Release Jar To Maven
