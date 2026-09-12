@@ -75,6 +75,12 @@ signing {
     sign publishing.publications
 }
 
+// jreleaserRelease 必须依赖 publish，确保先发布到本地暂存目录 build/staging-deploy，
+// 否则多模块下 jreleaserRelease 可能先于 publish 执行，导致 stagingRepository 不存在
+tasks.named('jreleaserRelease') {
+    dependsOn tasks.named('publish')
+}
+
 jreleaser {
     gitRootSearch = true
     signing {

@@ -26,5 +26,9 @@ jobs:
           show-download-progress: true
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with Gradle
+      - name: Gradle assemble
         run: ./gradlew assemble
+      - name: Gradle build
+        run: ./gradlew build
+      - name: Gradle publish
+        run: ./gradlew publish

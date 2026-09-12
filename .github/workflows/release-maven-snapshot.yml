@@ -28,6 +28,12 @@ jobs:
           show-download-progress: true
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Gradle assemble
+        run: ./gradlew assemble
+      - name: Gradle build
+        run: ./gradlew build
+      - name: Gradle publish
+        run: ./gradlew publish
       - name: Snapshot Jar To Maven
         # build.gradle 脚本中已支持直接从环境变量中读取相关配置信息，因此这里可以不显式传递相关机密参数
         run: ./gradlew publish jreleaserRelease -Psnapshot
