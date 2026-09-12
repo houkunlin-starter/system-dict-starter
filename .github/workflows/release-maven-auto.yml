@@ -35,7 +35,7 @@ jobs:
           gpg_password: ${{ secrets.GPG_PASSWORD }}
       - name: Release Jar To Maven
         # build.gradle 脚本中已支持直接从环境变量中读取相关配置信息，因此这里可以不显式传递相关机密参数
-        run: ./gradlew publish jreleaserRelease
+        run: ./gradlew publish jreleaserRelease -PgithubRelease=true
         env: # Or as an environment variable
           gpg_public_key: ${{ secrets.GPG_PUBLIC_KEY }}
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
