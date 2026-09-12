@@ -30,6 +30,13 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation testFixtures(project(':system-dict-spring-boot'))
 }
+
+// 生成的 pom.xml 不导入 spring-boot-dependencies BOM，避免污染使用方自身的 dependencyManagement
+dependencyManagement {
+    generatedPomCustomization {
+        enabled = false
+    }
+}
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
