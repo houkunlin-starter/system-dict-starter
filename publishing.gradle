@@ -14,7 +14,8 @@ def GETENV(name) {
 // 获取 GPG KEY 信息，并尝试判断是否需要使用 Base64 进行解码数据
 def GETGPGKEY(name) {
     String value = GETENV(name)
-    if (value == null) {
+    // 未配置或为空字符串（例如 GitHub Actions 中未设置的 secret 会展开为空串）时视为未提供
+    if (value == null || value.trim().isEmpty()) {
         return null
     }
     // value.startsWith("-----BEGIN PGP")
@@ -67,12 +68,14 @@ publishing {
 signing {
     // 使用 gradle.properties 设置参数，或者在命令行中增加 -Pgpg_private_key= -Pgpg_password= 设置参数
     // 或者在环境变量中设置相应的环境变量
+    // 仅在配置了私钥时才注册签名任务：否则未提供签名信息时（例如本地或 CI 的非发布步骤）
+    // 执行 ./gradlew publish 会因 “no configured signatory” 直接失败
     String signingKey = GETGPGKEY("gpg_private_key")
     if (signingKey != null) {
         String signingPassword = GETENV("gpg_password")
         useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications
     }
-    sign publishing.publications
 }
 
 // jreleaserRelease 必须依赖 publish，确保先发布到本地暂存目录 build/staging-deploy，
