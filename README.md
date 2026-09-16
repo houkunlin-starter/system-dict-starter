@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/com.houkunlin/system-dict-starter.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.houkunlin%22%20AND%20a:%22system-dict-starter%22)
+[![Maven Central](https://img.shields.io/maven-central/v/com.houkunlin/system-dict-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.houkunlin%22%20AND%20a:%22system-dict-core%22)
 [![Java CI with Gradle](https://github.com/houkunlin-starter/system-dict-starter/actions/workflows/gradle.yml/badge.svg)](https://github.com/houkunlin-starter/system-dict-starter/actions/workflows/gradle.yml)
 
 # 系统字典 Starter
