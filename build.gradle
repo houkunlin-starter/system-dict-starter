@@ -52,9 +52,8 @@ It is mainly used to automatically translate dictionary values into dictionary t
         }
     }
 
-    javadoc {
-        enabled = true
-        options.addStringOption('Xdoclint:none', '-quiet')
+    tasks.withType(JavaExec).configureEach {
+        systemProperty('file.encoding', 'UTF-8')
     }
 
     tasks.withType(Javadoc).configureEach {
@@ -67,14 +66,11 @@ It is mainly used to automatically translate dictionary values into dictionary t
         classpath += configurations.compileClasspath
     }
 
-    compileJava {
-        options.encoding = "UTF-8"
-    }
-
     tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
         options.fork = true
         options.forkOptions.jvmArgs += ['-Dfile.encoding=UTF-8']
+        options.compilerArgs += ['-parameters']
     }
 
     tasks.withType(Test).configureEach {
